@@ -98,13 +98,17 @@ export function useSaveRow<T extends Record<string, unknown>>(table: Table, opti
   return useMutation({
     mutationFn: async ({ id, values }: { id?: string; values: T }) => {
       if (id) {
-        const { error } = await supabase.from(table).update(values).eq("id", id);
+        const { error } = await supabase
+          .from(table)
+          // Row shapes are validated by each form; the table name is generic here.
+          .update(values as never)
+          .eq("id", id);
         if (error) throw new Error(error.message);
         return id;
       }
       const { data, error } = await supabase
         .from(table)
-        .insert({ ...values, user_id: user!.id })
+        .insert({ ...values, user_id: user!.id } as never)
         .select("id")
         .single();
       if (error) throw new Error(error.message);
@@ -139,7 +143,7 @@ export function useUpdateProfile(successMessage = "Perfil atualizado") {
   const invalidate = useInvalidateFinance();
   return useMutation({
     mutationFn: async (values: Partial<Profile>) => {
-      const { error } = await supabase.from("profiles").update(values).eq("id", user!.id);
+      const { error } = await supabase.from("profiles").update(values as never).eq("id", user!.id);
       if (error) throw new Error(error.message);
     },
     onSuccess: () => {
