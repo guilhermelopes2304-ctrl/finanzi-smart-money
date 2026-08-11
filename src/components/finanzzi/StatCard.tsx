@@ -11,7 +11,7 @@ export function StatCard({
   label: string;
   value: string;
   icon: LucideIcon;
-  hint?: string;
+  hint?: string | undefined;
   tone?: "default" | "income" | "expense" | "warning";
 }) {
   const toneClass = {
