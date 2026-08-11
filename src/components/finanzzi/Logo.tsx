@@ -9,7 +9,7 @@ export function Logo({ className, compact = false }: { className?: string; compa
         </svg>
       </span>
       {!compact && (
-        <span className="font-display text-lg font-700 tracking-tight text-foreground">FINANZZI</span>
+        <span className="font-display text-lg font-bold tracking-tight text-foreground">FINANZZI</span>
       )}
     </span>
   );
