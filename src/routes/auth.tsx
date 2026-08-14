@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/finanzzi/Logo";
+import { ThemeToggle } from "@/components/finanzzi/ThemeToggle";
 
 type Mode = "login" | "signup" | "recover";
 
@@ -82,6 +83,9 @@ function AuthPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      <div className="flex justify-end px-4 pt-4">
+        <ThemeToggle />
+      </div>
       <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-10">
         <Link to="/" className="mx-auto mb-6">
           <Logo />

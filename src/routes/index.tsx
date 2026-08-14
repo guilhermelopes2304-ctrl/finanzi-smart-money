@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/finanzzi/Logo";
+import { ThemeToggle } from "@/components/finanzzi/ThemeToggle";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -74,6 +75,7 @@ function Landing() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <Logo />
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <Button asChild variant="ghost" size="sm">
               <Link to="/auth" search={{ mode: "login" }}>
                 Entrar
