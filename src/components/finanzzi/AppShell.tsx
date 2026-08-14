@@ -17,6 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useProfile } from "@/hooks/useFinanceData";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/finanzzi/Logo";
+import { ThemeToggle } from "@/components/finanzzi/ThemeToggle";
 import { TransactionDialog } from "@/components/finanzzi/TransactionDialog";
 import { cn } from "@/lib/utils";
 
@@ -56,8 +57,9 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-sidebar-border bg-sidebar lg:flex">
-        <div className="px-5 py-5">
+        <div className="flex items-center justify-between px-5 py-5">
           <Logo />
+          <ThemeToggle />
         </div>
         <nav className="flex-1 space-y-1 px-3">
           {NAV.map((item) => {
@@ -95,6 +97,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <header className="sticky top-0 z-20 flex items-center justify-between border-b border-border bg-background/90 px-4 py-3 backdrop-blur lg:hidden">
         <Logo />
         <div className="flex items-center gap-1">
+          <ThemeToggle />
           <Button size="sm" onClick={() => setOpen(true)}>
             <Plus className="size-4" /> Novo
           </Button>
