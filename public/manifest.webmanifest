@@ -1,0 +1,26 @@
+{
+  "name": "FINANZZI",
+  "short_name": "FINANZZI",
+  "description": "Inteligência para o seu dinheiro: organize receitas, despesas, contas, cartões e metas.",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#1f7a4d",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
