@@ -80,7 +80,7 @@ export function normalize(text: string): string {
 function extractAmount(text: string): number | null {
   const match = normalize(text).match(/(\d{1,3}(?:\.\d{3})+(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)/);
   if (!match) return null;
-  const raw = match[1];
+  const raw = match[1] ?? "";
   let normalized = raw;
   if (raw.includes(",")) normalized = raw.replace(/\./g, "").replace(",", ".");
   else if (/\.\d{3}$/.test(raw)) normalized = raw.replace(/\./g, "");
