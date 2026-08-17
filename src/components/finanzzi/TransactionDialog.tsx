@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import {
   useAccounts,
@@ -8,8 +7,8 @@ import {
   useCreditCards,
   useInvalidateFinance,
 } from "@/hooks/useFinanceData";
-import { buildInstallments } from "@/lib/installments";
-import { addDaysISO, addMonthsISO, parseBRL, todayISO } from "@/lib/format";
+import { saveTransaction } from "@/lib/transactions";
+import { parseBRL, todayISO } from "@/lib/format";
 import {
   Dialog,
   DialogContent,
@@ -47,9 +46,16 @@ interface Props {
   onOpenChange: (open: boolean) => void;
   transaction?: Transaction | null;
   defaultCardId?: string;
+  defaultDescription?: string;
 }
 
-export function TransactionDialog({ open, onOpenChange, transaction, defaultCardId }: Props) {
+export function TransactionDialog({
+  open,
+  onOpenChange,
+  transaction,
+  defaultCardId,
+  defaultDescription,
+}: Props) {
   const { user } = useAuth();
   const invalidate = useInvalidateFinance();
   const { data: categories = [] } = useCategories();
@@ -85,7 +91,7 @@ export function TransactionDialog({ open, onOpenChange, transaction, defaultCard
       setInstallments("1");
     } else {
       setType("expense");
-      setDescription("");
+      setDescription(defaultDescription ?? "");
       setAmount("");
       setDate(todayISO());
       setCategoryId(NONE);
@@ -96,7 +102,7 @@ export function TransactionDialog({ open, onOpenChange, transaction, defaultCard
       setRecurrence("none");
       setInstallments("1");
     }
-  }, [open, transaction, defaultCardId]);
+  }, [open, transaction, defaultCardId, defaultDescription]);
 
   const visibleCategories = categories.filter((c) => c.kind === type || c.kind === "both");
   const parts = Math.max(1, Math.min(72, Number.parseInt(installments || "1", 10) || 1));
@@ -111,58 +117,22 @@ export function TransactionDialog({ open, onOpenChange, transaction, defaultCard
     }
     setBusy(true);
     try {
-      const base = {
-        description: description.trim(),
+      const message = await saveTransaction({
+        userId: user.id,
+        editingId: transaction?.id ?? null,
+        description,
         amount: total,
         type,
-        category_id: categoryId === NONE ? null : categoryId,
-        account_id: accountId === NONE ? null : accountId,
-        credit_card_id: cardId === NONE ? null : cardId,
+        categoryId: categoryId === NONE ? null : categoryId,
+        accountId: accountId === NONE ? null : accountId,
+        cardId: cardId === NONE ? null : cardId,
         date,
-        payment_method: method,
+        method,
         notes: notes.trim() || null,
         recurrence,
-      };
-
-      if (transaction) {
-        const { error } = await supabase.from("transactions").update(base).eq("id", transaction.id);
-        if (error) throw new Error(error.message);
-        toast.success("Lançamento atualizado");
-      } else if (parts > 1) {
-        const rows = buildInstallments({
-          userId: user.id,
-          creditCardId: base.credit_card_id,
-          accountId: base.account_id,
-          categoryId: base.category_id,
-          description: base.description,
-          totalAmount: total,
-          firstDate: date,
-          installments: parts,
-          notes: base.notes,
-          paymentMethod: method,
-          type,
-        });
-        const { error } = await supabase.from("transactions").insert(rows);
-        if (error) throw new Error(error.message);
-        toast.success(`Lançamento criado em ${parts} parcelas`);
-      } else if (recurrence !== "none") {
-        const occurrences = recurrence === "yearly" ? 3 : 12;
-        const rows = Array.from({ length: occurrences }, (_, i) => ({
-          ...base,
-          user_id: user.id,
-          date:
-            recurrence === "weekly"
-              ? addDaysISO(date, i * 7)
-              : addMonthsISO(date, recurrence === "yearly" ? i * 12 : i),
-        }));
-        const { error } = await supabase.from("transactions").insert(rows);
-        if (error) throw new Error(error.message);
-        toast.success("Lançamento recorrente criado");
-      } else {
-        const { error } = await supabase.from("transactions").insert({ ...base, user_id: user.id });
-        if (error) throw new Error(error.message);
-        toast.success("Lançamento registrado");
-      }
+        installments: transaction ? 1 : parts,
+      });
+      toast.success(message);
       invalidate();
       onOpenChange(false);
     } catch (error) {
