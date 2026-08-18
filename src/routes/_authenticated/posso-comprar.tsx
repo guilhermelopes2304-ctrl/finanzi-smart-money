@@ -14,6 +14,7 @@ import {
 import { addDaysISO, parseBRL, todayISO } from "@/lib/format";
 import { PageHeader } from "@/components/finanzzi/PageHeader";
 import { MoneyInput } from "@/components/finanzzi/MoneyInput";
+import { CanISpend } from "@/components/finanzzi/CanISpend";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -69,6 +70,10 @@ function CanIBuyPage() {
         title="Posso comprar?"
         subtitle="Simule uma compra com base na sua situação financeira real."
       />
+
+      <div className="mb-4">
+        <CanISpend />
+      </div>
 
       <form onSubmit={analyze} className="surface-card space-y-4 p-5">
         <div className="space-y-1.5">
