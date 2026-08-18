@@ -15,6 +15,7 @@ import {
 import { formatBRL, monthRange } from "@/lib/format";
 import { StatCard } from "@/components/finanzzi/StatCard";
 import { BalanceHero } from "@/components/finanzzi/BalanceHero";
+import { FinancialAssistant } from "@/components/finanzzi/FinancialAssistant";
 import { PeriodSelect } from "@/components/finanzzi/PeriodSelect";
 import { EmptyState } from "@/components/finanzzi/EmptyState";
 import { QuickEntry } from "@/components/finanzzi/QuickEntry";
@@ -92,6 +93,15 @@ function Dashboard() {
           income={totals.income}
           expense={totals.expense}
           greeting="Este é o seu panorama financeiro"
+        />
+      )}
+
+      {!isLoading && (
+        <FinancialAssistant
+          className="mt-4"
+          balance={balance}
+          commitment={commitment}
+          healthTitle={health.title}
         />
       )}
 
