@@ -33,11 +33,15 @@ export function BalanceHero({
     <div className="gradient-hero relative overflow-hidden rounded-3xl p-5 text-white shadow-[var(--shadow-lift)] sm:p-6">
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-16 -right-16 size-56 rounded-full bg-white/10 blur-2xl"
+        className="pointer-events-none absolute -top-16 -right-16 size-56 rounded-full bg-[oklch(0.78_0.14_82_/_0.22)] blur-2xl"
       />
       <div
         aria-hidden
         className="pointer-events-none absolute -bottom-20 -left-10 size-48 rounded-full bg-white/5 blur-2xl"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[oklch(0.78_0.14_82_/_0.6)] to-transparent"
       />
 
       <div className="relative">

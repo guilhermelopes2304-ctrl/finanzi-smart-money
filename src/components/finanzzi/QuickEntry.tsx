@@ -110,7 +110,7 @@ export function QuickEntry() {
   return (
     <div className="surface-card overflow-hidden p-4 sm:p-5">
       <div className="mb-3 flex items-center gap-2">
-        <span className="grid size-8 place-items-center rounded-full bg-primary/10 text-primary">
+        <span className="grid size-8 place-items-center rounded-full bg-gold/25 text-[oklch(0.5_0.13_82)] dark:text-gold">
           <Sparkles className="size-4" />
         </span>
         <div>
