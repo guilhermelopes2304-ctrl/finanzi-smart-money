@@ -1,12 +1,7 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { ArrowDownRight, ArrowUpRight, PiggyBank, Wallet } from "lucide-react";
-import {
-  useAccounts,
-  useCategories,
-  useProfile,
-  useTransactions,
-} from "@/hooks/useFinanceData";
+import { ArrowUpRight, PiggyBank } from "lucide-react";
+import { useAccounts, useCategories, useProfile, useTransactions } from "@/hooks/useFinanceData";
 import {
   availableBalance,
   buildPeriod,
@@ -19,6 +14,7 @@ import {
 } from "@/lib/finance";
 import { formatBRL, monthRange } from "@/lib/format";
 import { StatCard } from "@/components/finanzzi/StatCard";
+import { BalanceHero } from "@/components/finanzzi/BalanceHero";
 import { PeriodSelect } from "@/components/finanzzi/PeriodSelect";
 import { EmptyState } from "@/components/finanzzi/EmptyState";
 import { QuickEntry } from "@/components/finanzzi/QuickEntry";
@@ -76,13 +72,10 @@ function Dashboard() {
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold sm:text-3xl">
-            Olá, {profile?.name?.split(" ")[0] || "tudo bem"}!
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">Veja como está sua vida financeira.</p>
-        </div>
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+        <h1 className="text-lg font-semibold text-muted-foreground sm:text-xl">
+          Olá, {profile?.name?.split(" ")[0] || "tudo bem"} 👋
+        </h1>
         <PeriodSelect
           preset={preset}
           onPresetChange={setPreset}
@@ -91,32 +84,35 @@ function Dashboard() {
         />
       </div>
 
-      <div className="mb-4">
+      {isLoading ? (
+        <Skeleton className="h-48 rounded-3xl" />
+      ) : (
+        <BalanceHero
+          balance={balance}
+          income={totals.income}
+          expense={totals.expense}
+          greeting="Este é o seu panorama financeiro"
+        />
+      )}
+
+      <div className="mt-4">
         <QuickEntry />
       </div>
 
       {isLoading ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {[0, 1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-28 rounded-xl" />
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          {[0, 1].map((i) => (
+            <Skeleton key={i} className="h-24 rounded-2xl" />
           ))}
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard label="Saldo disponível" value={formatBRL(balance)} icon={Wallet} />
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <StatCard
             label="Receitas"
             value={formatBRL(totals.income)}
             icon={ArrowUpRight}
             tone="income"
             hint={variation(totals.income, prev.income)}
-          />
-          <StatCard
-            label="Despesas"
-            value={formatBRL(totals.expense)}
-            icon={ArrowDownRight}
-            tone="expense"
-            hint={variation(totals.expense, prev.expense)}
           />
           <StatCard
             label="Comprometido"
@@ -152,7 +148,10 @@ function Dashboard() {
           {hasData ? (
             <IncomeExpenseChart data={series} />
           ) : (
-            <EmptyState title="Sem dados ainda" description="Registre seu primeiro lançamento para ver este gráfico." />
+            <EmptyState
+              title="Sem dados ainda"
+              description="Registre seu primeiro lançamento para ver este gráfico."
+            />
           )}
         </div>
         <div className="surface-card p-5">
@@ -160,7 +159,10 @@ function Dashboard() {
           {slices.length > 0 ? (
             <CategoryPieChart data={slices} />
           ) : (
-            <EmptyState title="Nenhuma despesa no período" description="Seus gastos aparecerão distribuídos aqui." />
+            <EmptyState
+              title="Nenhuma despesa no período"
+              description="Seus gastos aparecerão distribuídos aqui."
+            />
           )}
         </div>
         <div className="surface-card p-5 lg:col-span-2">
@@ -168,7 +170,10 @@ function Dashboard() {
           {hasData ? (
             <BalanceEvolutionChart data={series} />
           ) : (
-            <EmptyState title="Ainda não há evolução para mostrar" description="Comece registrando receitas e despesas." />
+            <EmptyState
+              title="Ainda não há evolução para mostrar"
+              description="Comece registrando receitas e despesas."
+            />
           )}
         </div>
       </div>

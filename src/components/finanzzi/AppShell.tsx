@@ -33,7 +33,23 @@ const NAV = [
   { to: "/configuracoes", label: "Configurações", icon: Settings },
 ] as const;
 
-const MOBILE_NAV = [NAV[0], NAV[1], NAV[2], NAV[3], NAV[6]];
+const MOBILE_NAV_LEFT = [NAV[0], NAV[1]];
+const MOBILE_NAV_RIGHT = [NAV[3], NAV[6]];
+
+function NavItem({ item, active }: { item: (typeof NAV)[number]; active: boolean }) {
+  return (
+    <Link
+      to={item.to}
+      className={cn(
+        "flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium transition-colors",
+        active ? "text-primary" : "text-muted-foreground",
+      )}
+    >
+      <item.icon className="size-5" />
+      {item.label.replace("Dashboard", "Início")}
+    </Link>
+  );
+}
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -98,9 +114,6 @@ export function AppShell({ children }: { children: ReactNode }) {
         <Logo />
         <div className="flex items-center gap-1">
           <ThemeToggle />
-          <Button size="sm" onClick={() => setOpen(true)}>
-            <Plus className="size-4" /> Novo
-          </Button>
           <Button size="icon" variant="ghost" onClick={signOut} aria-label="Sair">
             <LogOut className="size-4" />
           </Button>
@@ -112,23 +125,25 @@ export function AppShell({ children }: { children: ReactNode }) {
       </main>
 
       <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-background/95 backdrop-blur lg:hidden">
-        <div className="grid grid-cols-5">
-          {MOBILE_NAV.map((item) => {
-            const active = pathname === item.to;
-            return (
-              <Link
-                key={item.to}
-                to={item.to}
-                className={cn(
-                  "flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium transition-colors",
-                  active ? "text-primary" : "text-muted-foreground",
-                )}
-              >
-                <item.icon className="size-5" />
-                {item.label.replace("Dashboard", "Início")}
-              </Link>
-            );
-          })}
+        <div className="relative grid grid-cols-5 items-end">
+          {MOBILE_NAV_LEFT.map((item) => (
+            <NavItem key={item.to} item={item} active={pathname === item.to} />
+          ))}
+
+          <div className="flex justify-center">
+            <button
+              type="button"
+              onClick={() => setOpen(true)}
+              aria-label="Novo lançamento"
+              className="gradient-brand -mt-7 grid size-14 place-items-center rounded-full text-white shadow-[var(--shadow-lift)] transition-transform active:scale-95"
+            >
+              <Plus className="size-6" strokeWidth={2.5} />
+            </button>
+          </div>
+
+          {MOBILE_NAV_RIGHT.map((item) => (
+            <NavItem key={item.to} item={item} active={pathname === item.to} />
+          ))}
         </div>
       </nav>
 
