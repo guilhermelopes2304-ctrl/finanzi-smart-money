@@ -1,0 +1,32 @@
+import type { Transaction } from "@/types/finance";
+
+type Tx = Transaction & { category?: { name?: string | null } | null };
+export type FinancialContext = { transactions: Tx[]; balance: number; monthlyIncome: number; monthLabel?: string };
+export type FinIntent = "balance" | "income" | "expenses" | "spending" | "saving" | "purchase" | "transaction" | "general";
+
+export function detectFinIntent(text: string): FinIntent {
+  const q = text.toLowerCase();
+  if (/\b(saldo|tenho|disponível|disponivel|quanto dinheiro)\b/.test(q)) return "balance";
+  if (/\b(receita|receitas|renda|ganhei|recebi|entrada|entradas)\b/.test(q)) return "income";
+  if (/\b(despesa|despesas|gasto|gastos|gastei|saída|saida|saídas|saidas)\b/.test(q)) return "expenses";
+  if (/\b(economiz|economia|guardar|poupar|cortar|reduzir)\b/.test(q)) return "saving";
+  if (/\b(comprar|compra|gastar|posso gastar|vale a pena|parcelar)\b/.test(q)) return "purchase";
+  if (/\b(regist|anota|lanc|paguei|recebi|gastei)\b/.test(q)) return "transaction";
+  if (/\b(onde gasto|maior gasto|categoria|gastando)\b/.test(q)) return "spending";
+  return "general";
+}
+
+function brl(value: number) { return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }); }
+function topCategory(transactions: Tx[]) { const sums = new Map<string, number>(); for (const t of transactions.filter(t => t.type === "expense")) { const name = t.category?.name || "Outros"; sums.set(name, (sums.get(name) || 0) + Number(t.amount || 0)); } return [...sums.entries()].sort((a,b) => b[1]-a[1])[0]; }
+
+export function buildFinAnswer(question: string, context: FinancialContext): string {
+  const intent = detectFinIntent(question); const expenses = context.transactions.filter(t => t.type === "expense").reduce((s,t)=>s+Number(t.amount||0),0); const income = context.transactions.filter(t => t.type === "income").reduce((s,t)=>s+Number(t.amount||0),0) || context.monthlyIncome; const rate = income > 0 ? Math.round(expenses / income * 100) : 0; const top = topCategory(context.transactions);
+  if (intent === "balance") return `Hoje você tem ${brl(context.balance)} disponíveis. ` + (rate > 80 ? `Como cerca de ${rate}% da sua renda já está comprometida com gastos, eu teria cuidado com novas compras.` : `Pelo que vejo, existe uma margem para organizar o restante do mês.`);
+  if (intent === "income") return `Neste período, suas entradas somam ${brl(income)}. ${context.monthlyIncome > 0 ? `Sua renda mensal informada é ${brl(context.monthlyIncome)}.` : "Se você me informar sua renda mensal, consigo comparar melhor seus gastos com ela."}`;
+  if (intent === "expenses") return `Suas despesas no período somam ${brl(expenses)}. Isso representa aproximadamente ${rate}% da renda considerada pelo Fin.`;
+  if (intent === "spending") return top ? `Sua categoria de maior gasto no período é ${top[0]}, com ${brl(top[1])}. Se quiser economizar, eu começaria olhando essa categoria e procurando gastos recorrentes que possam ser reduzidos.` : `Ainda não tenho lançamentos suficientes para identificar sua principal categoria de gasto.`;
+  if (intent === "saving") return top ? `Eu começaria por ${top[0]}, que representa ${brl(top[1])} dos seus gastos no período. Em vez de cortar tudo, podemos procurar uma redução que você consiga manter todos os meses.` : `Ainda faltam dados para apontar onde você pode economizar. Registre seus gastos por alguns dias e eu encontro os principais pontos.`;
+  if (intent === "purchase") return context.balance <= 0 ? `Eu evitaria essa compra agora porque seu saldo disponível está em ${brl(context.balance)}. Se você me disser o preço e se será à vista ou parcelado, faço uma análise mais precisa.` : `Posso analisar essa compra com você. Seu saldo atual é ${brl(context.balance)} e seus gastos já representam cerca de ${rate}% da renda considerada. Me diga o valor da compra e se pretende parcelar.`;
+  if (intent === "transaction") return `Entendi. Se você quer registrar uma entrada ou saída, me diga o valor e com o que foi, por exemplo: “gastei R$ 80 no mercado”.`;
+  return `Posso conversar sobre sua vida financeira e usar seus dados para ajudar. Hoje vejo ${brl(context.balance)} disponíveis, ${brl(expenses)} em despesas e ${brl(income)} em entradas no período. Se quiser, posso analisar seus gastos, uma compra, economia ou seu saldo.`;
+}
