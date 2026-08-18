@@ -47,8 +47,8 @@ function Dashboard() {
 
   return (
     <div className="relative overflow-hidden rounded-[2rem] bg-[oklch(0.12_0.025_155)] p-4 text-white shadow-[0_24px_80px_oklch(0.12_0.025_155_/_0.22)] sm:p-6 lg:p-8">
-      <div className="pointer-events-none absolute -right-32 -top-32 size-96 rounded-full bg-[oklch(0.55_0.18_150_/_0.18)] blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-40 left-1/3 size-96 rounded-full bg-[oklch(0.7_0.18_90_/_0.08)] blur-3xl" />
+      <div className="pointer-events-none absolute -right-32 -top-32 size-96 rounded-full bg-[oklch(0.55_0.18_150_/_0.18)] blur-2xl sm:blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-40 left-1/3 size-96 rounded-full bg-[oklch(0.7_0.18_90_/_0.08)] blur-2xl sm:blur-3xl" />
       <header className="relative mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-emerald-200"><Sparkles className="size-3.5" /> FINANZZI · inteligência para o seu dinheiro</div>
@@ -61,13 +61,13 @@ function Dashboard() {
       {isLoading ? <Skeleton className="h-64 rounded-[1.75rem] bg-white/10" /> : (
         <section className="relative grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
           <div className="relative overflow-hidden rounded-[1.75rem] border border-emerald-300/15 bg-gradient-to-br from-emerald-500/25 via-emerald-950/70 to-black p-5 shadow-2xl sm:p-7">
-            <div className="pointer-events-none absolute -right-20 -top-20 size-64 rounded-full bg-emerald-400/10 blur-3xl" />
+            <div className="pointer-events-none absolute -right-20 -top-20 size-64 rounded-full bg-emerald-400/10 blur-2xl sm:blur-3xl" />
             <div className="relative flex items-center gap-2 text-sm text-white/60"><WalletCards className="size-4 text-emerald-300" /> Saldo disponível</div>
             <div className="relative mt-2 flex items-end justify-between gap-4"><p className="font-display text-4xl font-bold tracking-tight sm:text-5xl">{formatBRL(balance)}</p><span className="hidden items-center gap-2 rounded-full bg-emerald-400/10 px-3 py-1.5 text-xs font-semibold text-emerald-300 sm:flex"><ArrowUpRight className="size-3.5" /> FINANZZI ativo</span></div>
             <div className="relative mt-7 grid grid-cols-2 gap-3"><Metric label="Receitas" value={formatBRL(totals.income)} icon={ArrowUpRight} /><Metric label="Despesas" value={formatBRL(totals.expense)} icon={ArrowDownRight} expense /></div>
           </div>
           <div className="relative min-h-[260px] overflow-hidden rounded-[1.75rem] border border-emerald-300/15 bg-[#061b13] shadow-2xl">
-            <img src="/fin-assistente.png" alt="Fin, assistente financeiro do FINANZZI" className="absolute inset-0 h-full w-full object-cover object-[50%_30%] opacity-70" />
+            <img src="/fin-assistente.png" alt="Fin, assistente financeiro do FINANZZI" loading="lazy" decoding="async" fetchPriority="low" className="absolute inset-0 h-full w-full object-cover object-[50%_30%] opacity-70" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#04110c] via-[#04110c]/65 to-[#04110c]/10" />
             <div className="relative flex h-full min-h-[260px] flex-col justify-end p-5 sm:p-6">
               <div className="mb-auto inline-flex w-fit items-center gap-2 rounded-full border border-emerald-300/20 bg-black/30 px-3 py-1.5 text-xs font-semibold text-emerald-200 backdrop-blur-md"><span className="size-2 rounded-full bg-emerald-400 shadow-[0_0_14px_#34d399]" /> Fin · seu assistente financeiro</div>
