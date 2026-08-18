@@ -9,20 +9,6 @@
   --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
 }
 
-/*
- * Design system definition.
- *
- * The @theme inline block maps CSS custom properties to Tailwind utility
- * classes (e.g. --color-primary -> bg-primary, text-primary).
- *
- * The :root and .dark blocks define the actual color values using oklch.
- * All colors MUST use oklch format.
- *
- * To add a new semantic color:
- * 1. Add the variable to :root (light value) and .dark (dark value)
- * 2. Register it in @theme inline as --color-<name>: var(--<name>)
- */
-
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -50,7 +36,6 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-ring-offset-background: var(--background);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -61,7 +46,6 @@
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
   --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-success: var(--success);
@@ -164,21 +148,17 @@
 }
 
 @layer base {
-  * {
-    border-color: var(--color-border);
-  }
-
+  * { border-color: var(--color-border); }
+  html { overflow-x: hidden; }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
-
-  h1, h2, h3, .font-display {
-    font-family: var(--font-display);
-    letter-spacing: -0.02em;
-  }
+  button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+  h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0.02em; }
 }
 
 @utility surface-card {
@@ -206,10 +186,26 @@
   50% { transform: translate(-14px, 14px); }
 }
 
-@utility animate-float-slow {
-  animation: float-slow 7s ease-in-out infinite;
+@utility animate-float-slow { animation: float-slow 7s ease-in-out infinite; }
+@utility animate-float-slower { animation: float-slower 9s ease-in-out infinite; }
+
+/* FINANZZI mobile-first layer: large touch targets, no horizontal drift,
+   readable typography and charts that never force the viewport wider. */
+@media (max-width: 640px) {
+  button, [role="button"] { min-height: 44px; }
+  input, select, textarea { min-height: 44px; font-size: 16px; }
+  img { max-width: 100%; }
+  .recharts-responsive-container { max-width: 100%; overflow: hidden; }
+  .recharts-wrapper { max-width: 100%; }
+  [data-radix-popper-content-wrapper] { max-width: calc(100vw - 24px); }
+  .safe-bottom { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
 }
 
-@utility animate-float-slower {
-  animation: float-slower 9s ease-in-out infinite;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
