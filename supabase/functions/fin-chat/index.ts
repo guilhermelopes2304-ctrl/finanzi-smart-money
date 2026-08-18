@@ -6,7 +6,11 @@ const cors = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const SYSTEM = `Você é o Fin, assistente financeiro pessoal do FINANZZI. Responda em português do Brasil, com linguagem simples, humana, objetiva e acolhedora. Nunca use respostas genéricas como “sua situação está em atenção” sem explicar o motivo. Use os dados fornecidos para raciocinar e mostre números quando forem relevantes. Não invente dados, saldos, contas ou transações. Diferencie claramente fato (dado recebido) de recomendação. Não dê aconselhamento de investimento, jurídico ou tributário como se fosse profissional. Para uma ação financeira (registrar, alterar ou excluir lançamento), não execute nada nesta função: apenas explique o que seria necessário; ações serão feitas por ferramentas controladas do aplicativo. Se faltarem dados, diga exatamente o que falta e faça uma pergunta curta.`;
+const SYSTEM = `Você é o Fin, assistente financeiro pessoal do FINANZZI. Responda em português do Brasil, com linguagem simples, humana, objetiva e acolhedora. Nunca use respostas genéricas como “sua situação está em atenção” sem explicar o motivo. Use os dados financeiros fornecidos pelo sistema para raciocinar e mostre números quando forem relevantes. Nunca invente dados, saldos, contas, transações ou valores. Diferencie claramente fatos (dados do sistema) de recomendações. Não dê aconselhamento de investimento, jurídico ou tributário como se fosse profissional. Se faltarem dados, diga exatamente o que falta e faça uma pergunta curta. Você pode analisar, explicar, comparar e orientar, mas não deve afirmar que registrou, alterou ou excluiu uma transação nesta função.`;
+
+function brl(value: number) {
+  return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
@@ -18,9 +22,10 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_PUBLISHABLE_KEY") ?? "",
       { global: { headers: { Authorization: auth } } },
     );
+
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) throw new Error("Sessão inválida");
 
@@ -29,14 +34,63 @@ Deno.serve(async (req) => {
     if (!question) throw new Error("Pergunta vazia");
     if (question.length > 2000) throw new Error("Pergunta muito longa");
 
-    const context = body.context && typeof body.context === "object" ? body.context : {};
+    // O contexto financeiro é calculado no backend usando o JWT do usuário.
+    // Nunca confiamos em saldo/entradas/despesas enviados pelo frontend.
+    const [{ data: profile, error: profileError }, { data: transactions, error: transactionsError }] = await Promise.all([
+      supabase.from("profiles").select("monthly_income,current_balance,main_goal").eq("id", user.id).maybeSingle(),
+      supabase.from("transactions")
+        .select("amount,type,date,description,category_id,categories(name)")
+        .eq("user_id", user.id)
+        .order("date", { ascending: false })
+        .limit(100),
+    ]);
+
+    if (profileError) throw new Error("Não foi possível consultar seu perfil financeiro");
+    if (transactionsError) throw new Error("Não foi possível consultar seus lançamentos");
+
+    const rows = transactions ?? [];
+    const now = new Date();
+    const month = now.getMonth();
+    const year = now.getFullYear();
+    const monthRows = rows.filter((t) => {
+      const d = new Date(`${t.date}T00:00:00`);
+      return d.getMonth() === month && d.getFullYear() === year;
+    });
+
+    const income = monthRows.filter((t) => t.type === "income").reduce((sum, t) => sum + Number(t.amount || 0), 0);
+    const expenses = monthRows.filter((t) => t.type === "expense").reduce((sum, t) => sum + Number(t.amount || 0), 0);
+    const referenceIncome = Number(profile?.monthly_income || 0) || income;
+    const commitment = referenceIncome > 0 ? Math.round((expenses / referenceIncome) * 100) : null;
+
+    const categoryTotals = new Map<string, number>();
+    for (const t of monthRows.filter((row) => row.type === "expense")) {
+      const category = Array.isArray(t.categories) ? t.categories[0]?.name : t.categories?.name;
+      const name = category || "Outros";
+      categoryTotals.set(name, (categoryTotals.get(name) || 0) + Number(t.amount || 0));
+    }
+    const topCategories = [...categoryTotals.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 8)
+      .map(([name, amount]) => ({ name, amount: brl(amount) }));
+
+    const recentTransactions = rows.slice(0, 12).map((t) => ({
+      date: t.date,
+      type: t.type,
+      description: t.description,
+      amount: brl(Number(t.amount || 0)),
+      category: Array.isArray(t.categories) ? t.categories[0]?.name ?? null : t.categories?.name ?? null,
+    }));
+
     const safeContext = JSON.stringify({
-      saldo_disponivel: context.balance,
-      entradas_periodo: context.income,
-      saidas_periodo: context.expenses,
-      renda_referencia: context.monthlyIncome,
-      percentual_comprometido: context.commitment,
-      principais_categorias: Array.isArray(context.topCategories) ? context.topCategories.slice(0, 8) : [],
+      usuario_id: user.id,
+      saldo_atual: Number(profile?.current_balance || 0),
+      renda_mensal: Number(profile?.monthly_income || 0),
+      objetivo_principal: profile?.main_goal || null,
+      entradas_mes: income,
+      saidas_mes: expenses,
+      percentual_da_renda_comprometido: commitment,
+      principais_categorias_mes: topCategories,
+      ultimos_lancamentos: recentTransactions,
     });
 
     const apiKey = Deno.env.get("OPENAI_API_KEY");
@@ -48,8 +102,8 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         model: "gpt-5.6-luna",
         instructions: SYSTEM,
-        input: `Pergunta do usuário:\n${question}\n\nContexto financeiro atual do próprio usuário autenticado:\n${safeContext}`,
-        max_output_tokens: 500,
+        input: `Pergunta do usuário:\n${question}\n\nDados financeiros atuais, consultados pelo backend para o usuário autenticado:\n${safeContext}`,
+        max_output_tokens: 600,
       }),
     });
 
@@ -63,7 +117,7 @@ Deno.serve(async (req) => {
     const answer = typeof data.output_text === "string" ? data.output_text.trim() : "";
     if (!answer) throw new Error("A IA não retornou uma resposta");
 
-    return new Response(JSON.stringify({ answer, userId: user.id }), { headers: { ...cors, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ answer }), { headers: { ...cors, "Content-Type": "application/json" } });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Erro inesperado";
     const status = message === "Não autenticado" || message === "Sessão inválida" ? 401 : 400;
