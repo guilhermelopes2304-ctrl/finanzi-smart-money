@@ -46,6 +46,10 @@
 @utility animate-fin-scale-in { animation: fin-scale-in .34s cubic-bezier(.22,1,.36,1) both; }
 @utility animate-fin-pulse { animation: fin-pulse-soft 2.4s ease-in-out infinite; }
 
+/* Backward-compatible animation aliases used by the refreshed screens. */
+.animate-fade-up { animation: fin-fade-up .42s cubic-bezier(.22,1,.36,1) both; }
+.animate-scale-in { animation: fin-scale-in .34s cubic-bezier(.22,1,.36,1) both; }
+
 /* FINANZZI visual system: clean fintech, premium without visual noise. */
 .surface-card, [class*="rounded-3xl"][class*="border"], [class*="rounded-2xl"][class*="border"] { border-color: var(--color-border); }
 [class*="shadow-xl"], [class*="shadow-2xl"] { box-shadow: var(--shadow-soft); }
@@ -59,7 +63,6 @@
 .dark [class*="bg-emerald-100"], .dark [class*="bg-green-100"] { background-color: color-mix(in oklab, var(--color-primary) 18%, var(--color-card)) !important; }
 .dark [class*="shadow-"] { --tw-shadow-color: color-mix(in oklab, black 30%, transparent); }
 
-/* Mobile-first polish */
 @media (max-width: 640px) {
   body { padding-bottom: env(safe-area-inset-bottom); }
   button, [role="button"] { min-height: 44px; }
@@ -69,10 +72,6 @@
   [data-radix-popper-content-wrapper] { max-width: calc(100vw - 24px); }
   .safe-bottom { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
   [class*="rounded-3xl"], [class*="rounded-2xl"] { max-width: 100%; }
-  [class*="p-8"] { padding: 1.25rem; }
-  [class*="p-6"] { padding: 1rem; }
-  [class*="gap-8"] { gap: 1rem; }
-  [class*="gap-6"] { gap: .875rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
