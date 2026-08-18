@@ -252,6 +252,64 @@ export interface Insight {
   tone: "positive" | "neutral" | "warning";
 }
 
+export interface SpendCapacity {
+  balance: number;
+  upcomingBills: number;
+  upcomingInstallments: number;
+  goalsReserve: number;
+  free: number;
+  daysLeft: number;
+  perDay: number;
+  level: "healthy" | "attention" | "critical";
+}
+
+/**
+ * Read-only "Posso gastar?" capacity: what is genuinely free to spend until the
+ * end of the month, after bills, installments and the monthly goal reserve.
+ */
+export function spendCapacity(args: {
+  accounts: Account[];
+  transactions: Transaction[];
+  bills: Bill[];
+  goals: Goal[];
+}): SpendCapacity {
+  const today = todayISO();
+  const now = parseISODate(today);
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const endOfMonth = toISODate(lastDay);
+  const daysLeft = Math.max(1, lastDay.getDate() - now.getDate() + 1);
+
+  const balance = availableBalance(args.accounts, args.transactions);
+  const upcomingBills = args.bills
+    .filter((b) => billStatus(b) !== "paid" && b.due_date <= endOfMonth)
+    .reduce((sum, b) => sum + Number(b.amount), 0);
+  const upcomingInstallments = args.transactions
+    .filter(
+      (tx) =>
+        tx.type === "expense" &&
+        !!tx.installment_total &&
+        tx.date > today &&
+        tx.date <= endOfMonth,
+    )
+    .reduce((sum, tx) => sum + Number(tx.amount), 0);
+  const goalsReserve = args.goals.reduce((sum, g) => sum + (goalMonthlyTarget(g) ?? 0), 0);
+
+  const free = balance - upcomingBills - upcomingInstallments - goalsReserve;
+  const ratio = balance > 0 ? free / balance : free > 0 ? 1 : 0;
+  const level = free <= 0 ? "critical" : ratio < 0.25 ? "attention" : "healthy";
+
+  return {
+    balance,
+    upcomingBills,
+    upcomingInstallments,
+    goalsReserve,
+    free,
+    daysLeft,
+    perDay: free > 0 ? free / daysLeft : 0,
+    level,
+  };
+}
+
 export function buildInsights(args: {
   transactions: Transaction[];
   categories: Category[];
