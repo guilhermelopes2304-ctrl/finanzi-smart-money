@@ -20,10 +20,12 @@
 
 @layer base {
   * { border-color: var(--color-border); }
-  html { overflow-x: hidden; background: var(--color-background); }
-  body { margin: 0; background-color: var(--color-background); color: var(--color-foreground); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  html { overflow-x: hidden; background: var(--color-background); scroll-behavior: smooth; }
+  body { margin: 0; min-width: 320px; background-color: var(--color-background); color: var(--color-foreground); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; text-rendering: optimizeLegibility; }
   button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+  button, [role="button"] { touch-action: manipulation; }
   h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: -0.02em; }
+  :focus-visible { outline: 3px solid color-mix(in oklab, var(--color-primary) 72%, white); outline-offset: 3px; }
 }
 
 @utility surface-card { background-color: var(--color-card); border: 1px solid var(--color-border); border-radius: var(--radius-xl); box-shadow: var(--shadow-soft); }
@@ -37,7 +39,7 @@
 
 @media (max-width: 640px) {
   button, [role="button"] { min-height: 44px; }
-  input, select, textarea { min-height: 44px; font-size: 16px; }
+  input, select, textarea { min-height: 48px; font-size: 16px; }
   img { max-width: 100%; }
   .recharts-responsive-container, .recharts-wrapper { max-width: 100%; overflow: hidden; }
   [data-radix-popper-content-wrapper] { max-width: calc(100vw - 24px); }
@@ -45,5 +47,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
 }
