@@ -21,6 +21,7 @@ import { formatBRL, monthRange } from "@/lib/format";
 import { StatCard } from "@/components/finanzzi/StatCard";
 import { PeriodSelect } from "@/components/finanzzi/PeriodSelect";
 import { EmptyState } from "@/components/finanzzi/EmptyState";
+import { QuickEntry } from "@/components/finanzzi/QuickEntry";
 import {
   BalanceEvolutionChart,
   CategoryPieChart,
@@ -88,6 +89,10 @@ function Dashboard() {
           custom={custom}
           onCustomChange={setCustom}
         />
+      </div>
+
+      <div className="mb-4">
+        <QuickEntry />
       </div>
 
       {isLoading ? (
