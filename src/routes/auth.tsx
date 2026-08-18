@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { ArrowLeft, ArrowRight, CheckCircle2, Eye, EyeOff, LockKeyhole, ShieldCheck, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -10,221 +11,18 @@ import { Logo } from "@/components/finanzzi/Logo";
 import { ThemeToggle } from "@/components/finanzzi/ThemeToggle";
 
 type Mode = "login" | "signup" | "recover";
-
-export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>): { mode?: Mode } => {
-    const mode = search["mode"];
-    return mode === "signup" || mode === "recover" || mode === "login" ? { mode } : {};
-  },
-  head: () => ({
-    meta: [
-      { title: "Entrar ou criar conta — FINANZZI" },
-      {
-        name: "description",
-        content: "Acesse sua conta FINANZZI e continue organizando sua vida financeira.",
-      },
-      { property: "og:title", content: "Entrar ou criar conta — FINANZZI" },
-      { property: "og:description", content: "Acesse sua conta FINANZZI." },
-    ],
-  }),
-  component: AuthPage,
-});
+export const Route = createFileRoute("/auth")({ validateSearch: (search: Record<string, unknown>): { mode?: Mode } => { const mode = search["mode"]; return mode === "signup" || mode === "recover" || mode === "login" ? { mode } : {}; }, head: () => ({ meta: [{ title: "Entrar — FINANZZI" }, { name: "description", content: "Acesse o FINANZZI e cuide do seu dinheiro com mais tranquilidade." }] }), component: AuthPage });
 
 function AuthPage() {
-  const { mode: initialMode } = Route.useSearch();
-  const [mode, setMode] = useState<Mode>(initialMode ?? "login");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [busy, setBusy] = useState(false);
-  const navigate = useNavigate();
-  const { user, loading } = useAuth();
-
-  useEffect(() => {
-    if (!loading && user) void navigate({ to: "/dashboard" });
-  }, [user, loading, navigate]);
-
-  async function handleSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    setBusy(true);
-    try {
-      if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: { name },
-            emailRedirectTo: `${window.location.origin}/dashboard`,
-          },
-        });
-        if (error) throw error;
-        toast.success("Conta criada! Vamos organizar sua vida financeira.");
-        await navigate({ to: "/dashboard" });
-      } else if (mode === "login") {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        toast.success("Bem-vindo de volta!");
-        await navigate({ to: "/dashboard" });
-      } else {
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/redefinir-senha`,
-        });
-        if (error) throw error;
-        toast.success("Enviamos um link de recuperação para o seu e-mail.");
-        setMode("login");
-      }
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Tente novamente.";
-      toast.error(translate(message));
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <div className="flex justify-end px-4 pt-4">
-        <ThemeToggle />
-      </div>
-      <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-10">
-        <Link to="/" className="mx-auto mb-6">
-          <Logo />
-        </Link>
-        <div className="surface-card p-6 sm:p-8">
-          <h1 className="text-2xl font-semibold">
-            {mode === "signup"
-              ? "Criar sua conta"
-              : mode === "login"
-                ? "Entrar no FINANZZI"
-                : "Recuperar senha"}
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {mode === "signup"
-              ? "Comece gratuitamente a organizar seu dinheiro."
-              : mode === "login"
-                ? "Que bom te ver de novo."
-                : "Informe seu e-mail e enviaremos um link para criar uma nova senha."}
-          </p>
-
-          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-            {mode === "signup" && (
-              <div className="space-y-1.5">
-                <Label htmlFor="name">Nome</Label>
-                <Input
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Como podemos te chamar?"
-                  required
-                />
-              </div>
-            )}
-            <div className="space-y-1.5">
-              <Label htmlFor="email">E-mail</Label>
-              <Input
-                id="email"
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="voce@email.com"
-                required
-              />
-            </div>
-            {mode !== "recover" && (
-              <div className="space-y-1.5">
-                <Label htmlFor="password">Senha</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  autoComplete={mode === "signup" ? "new-password" : "current-password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  minLength={6}
-                  placeholder="Mínimo de 6 caracteres"
-                  required
-                />
-              </div>
-            )}
-            <Button type="submit" className="w-full" disabled={busy}>
-              {busy
-                ? "Aguarde..."
-                : mode === "signup"
-                  ? "Criar conta"
-                  : mode === "login"
-                    ? "Entrar"
-                    : "Enviar link de recuperação"}
-            </Button>
-          </form>
-
-          <div className="mt-5 space-y-2 text-center text-sm">
-            {mode === "login" && (
-              <>
-                <button
-                  type="button"
-                  className="text-muted-foreground underline-offset-4 hover:underline"
-                  onClick={() => setMode("recover")}
-                >
-                  Esqueci minha senha
-                </button>
-                <p className="text-muted-foreground">
-                  Ainda não tem conta?{" "}
-                  <button
-                    type="button"
-                    className="font-medium text-primary underline-offset-4 hover:underline"
-                    onClick={() => setMode("signup")}
-                  >
-                    Criar gratuitamente
-                  </button>
-                </p>
-              </>
-            )}
-            {mode === "signup" && (
-              <p className="text-muted-foreground">
-                Já tem conta?{" "}
-                <button
-                  type="button"
-                  className="font-medium text-primary underline-offset-4 hover:underline"
-                  onClick={() => setMode("login")}
-                >
-                  Entrar
-                </button>
-              </p>
-            )}
-            {mode === "recover" && (
-              <button
-                type="button"
-                className="text-muted-foreground underline-offset-4 hover:underline"
-                onClick={() => setMode("login")}
-              >
-                Voltar para o login
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  const { mode: initialMode } = Route.useSearch(); const [mode, setMode] = useState<Mode>(initialMode ?? "login"); const [name,setName]=useState(""); const [email,setEmail]=useState(""); const [password,setPassword]=useState(""); const [showPassword,setShowPassword]=useState(false); const [busy,setBusy]=useState(false); const navigate=useNavigate(); const {user,loading}=useAuth();
+  useEffect(()=>{if(!loading&&user) void navigate({to:"/dashboard"});},[user,loading,navigate]);
+  useEffect(()=>{if(initialMode) setMode(initialMode);},[initialMode]);
+  async function handleSubmit(event: React.FormEvent){event.preventDefault();setBusy(true);try{if(mode==="signup"){const {error}=await supabase.auth.signUp({email,password,options:{data:{name},emailRedirectTo:`${window.location.origin}/dashboard`}});if(error)throw error;toast.success("Conta criada! Vamos organizar sua vida financeira.");await navigate({to:"/dashboard"});}else if(mode==="login"){const {error}=await supabase.auth.signInWithPassword({email,password});if(error)throw error;toast.success("Bem-vindo de volta!");await navigate({to:"/dashboard"});}else{const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:`${window.location.origin}/redefinir-senha`});if(error)throw error;toast.success("Enviamos um link de recuperação para o seu e-mail.");setMode("login");}}catch(error){toast.error(translate(error instanceof Error?error.message:"Tente novamente."));}finally{setBusy(false);}}
+  const title=mode==="signup"?"Comece a cuidar melhor do seu dinheiro":mode==="login"?"Que bom ter você de volta": "Vamos recuperar seu acesso";
+  const subtitle=mode==="signup"?"Crie sua conta gratuitamente e deixe o Fin ajudar no dia a dia.":mode==="login"?"Entre para continuar de onde parou.":"Digite seu e-mail e enviaremos um link seguro para redefinir sua senha.";
+  return <div className="min-h-screen bg-background lg:grid lg:grid-cols-2">
+    <aside className="relative hidden overflow-hidden bg-primary p-10 text-primary-foreground lg:flex lg:flex-col lg:justify-between"><div className="absolute -right-32 -top-32 size-96 rounded-full bg-primary-foreground/10 blur-3xl"/><div className="relative"><Logo /><div className="mt-28 max-w-md"><span className="inline-flex items-center gap-2 rounded-full bg-primary-foreground/10 px-3 py-1.5 text-xs font-semibold"><Sparkles className="size-3.5"/> Inteligência para o seu dinheiro</span><h2 className="mt-5 font-display text-4xl font-bold leading-tight">Seu dinheiro merece mais clareza.</h2><p className="mt-4 leading-7 text-primary-foreground/75">Organize gastos, contas, cartões e metas. E quando precisar, converse com o Fin.</p><div className="mt-8 space-y-3 text-sm">{["Uma visão simples da sua vida financeira","Fin para ajudar nas decisões do dia a dia","Feito para você usar no celular"].map(t=><div key={t} className="flex items-center gap-2"><CheckCircle2 className="size-4"/><span>{t}</span></div>)}</div></div></div><p className="relative text-xs text-primary-foreground/60">FINANZZI — inteligência para o seu dinheiro.</p></aside>
+    <main className="flex min-h-screen flex-col"><div className="flex items-center justify-between px-4 py-4 sm:px-6"><Link to="/" aria-label="Voltar para o início" className="grid size-11 place-items-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:text-foreground"><ArrowLeft className="size-5"/></Link><ThemeToggle/></div><div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-8 sm:px-6"><Link to="/" className="mx-auto mb-8 lg:hidden"><Logo/></Link><div className="mb-7"><div className="mb-3 inline-flex items-center gap-2 text-xs font-semibold text-primary"><LockKeyhole className="size-4"/> Acesso seguro</div><h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">{title}</h1><p className="mt-2 text-sm leading-6 text-muted-foreground">{subtitle}</p></div><div className="surface-card p-5 sm:p-7"><form onSubmit={handleSubmit} className="space-y-4">{mode==="signup"&&<div className="space-y-2"><Label htmlFor="name">Seu nome</Label><Input id="name" value={name} onChange={e=>setName(e.target.value)} placeholder="Como podemos te chamar?" autoComplete="name" className="h-12 rounded-xl" required/></div>}<div className="space-y-2"><Label htmlFor="email">E-mail</Label><Input id="email" type="email" autoComplete="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="voce@email.com" className="h-12 rounded-xl" required/></div>{mode!=="recover"&&<div className="space-y-2"><div className="flex items-center justify-between"><Label htmlFor="password">Senha</Label>{mode==="login"&&<button type="button" className="text-xs font-semibold text-primary" onClick={()=>setMode("recover")}>Esqueci minha senha</button>}</div><div className="relative"><Input id="password" type={showPassword?"text":"password"} autoComplete={mode==="signup"?"new-password":"current-password"} value={password} onChange={e=>setPassword(e.target.value)} minLength={6} placeholder="Mínimo de 6 caracteres" className="h-12 rounded-xl pr-12" required/><button type="button" aria-label={showPassword?"Ocultar senha":"Mostrar senha"} onClick={()=>setShowPassword(v=>!v)} className="absolute right-1 top-1 grid size-10 place-items-center rounded-lg text-muted-foreground hover:text-foreground">{showPassword?<EyeOff className="size-4"/>:<Eye className="size-4"/>}</button></div></div>}<Button type="submit" className="h-12 w-full rounded-xl text-base" disabled={busy}>{busy?"Aguarde...":mode==="signup"?"Criar minha conta":mode==="login"?"Entrar no FINANZZI":"Enviar link de recuperação"}<ArrowRight className="ml-auto size-4"/></Button></form><div className="mt-5 flex items-center justify-center gap-1 text-sm">{mode==="login"&&<><span className="text-muted-foreground">Ainda não tem conta?</span><button type="button" className="font-semibold text-primary" onClick={()=>setMode("signup")}>Criar gratuitamente</button></>}{mode==="signup"&&<><span className="text-muted-foreground">Já tem conta?</span><button type="button" className="font-semibold text-primary" onClick={()=>setMode("login")}>Entrar</button></>}{mode==="recover"&&<button type="button" className="font-semibold text-primary" onClick={()=>setMode("login")}>Voltar para o login</button>}</div></div><div className="mt-6 flex items-center justify-center gap-2 text-xs text-muted-foreground"><ShieldCheck className="size-4 text-primary"/> Seus dados são tratados com segurança.</div></div></main>
+  </div>;
 }
-
-function translate(message: string): string {
-  const map: Record<string, string> = {
-    "Invalid login credentials": "E-mail ou senha incorretos. Confira e tente de novo.",
-    "User already registered":
-      "Este e-mail já possui uma conta. Que tal entrar em vez de criar outra?",
-    "Password should be at least 6 characters.": "A senha precisa ter pelo menos 6 caracteres.",
-    "Email not confirmed": "Confirme seu e-mail antes de entrar. Verifique sua caixa de entrada.",
-    "Email rate limit exceeded":
-      "Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente novamente.",
-    "Signup requires a valid password": "Digite uma senha válida para continuar.",
-    "Unable to validate email address: invalid format": "Digite um e-mail em um formato válido.",
-    "User not found": "Não encontramos uma conta com este e-mail.",
-    "For security purposes, you can only request this after some time.":
-      "Por segurança, aguarde um instante antes de tentar de novo.",
-    "New password should be different from the old password.":
-      "A nova senha precisa ser diferente da senha atual.",
-    "Token has expired or is invalid": "Este link expirou ou já foi usado. Solicite um novo.",
-    "Failed to fetch": "Sem conexão com a internet no momento. Verifique sua rede e tente de novo.",
-  };
-  return map[message] ?? "Algo deu errado. Tente novamente em instantes.";
-}
+function translate(message:string):string{const map:Record<string,string>={"Invalid login credentials":"E-mail ou senha incorretos. Confira e tente de novo.","User already registered":"Este e-mail já possui uma conta. Que tal entrar em vez de criar outra?","Password should be at least 6 characters.":"A senha precisa ter pelo menos 6 caracteres.","Email not confirmed":"Confirme seu e-mail antes de entrar. Verifique sua caixa de entrada.","Email rate limit exceeded":"Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente novamente.","Signup requires a valid password":"Digite uma senha válida para continuar.","Unable to validate email address: invalid format":"Digite um e-mail em um formato válido.","User not found":"Não encontramos uma conta com este e-mail.","For security purposes, you can only request this after some time.":"Por segurança, aguarde um instante antes de tentar de novo.","New password should be different from the old password.":"A nova senha precisa ser diferente da senha atual.","Token has expired or is invalid":"Este link expirou ou já foi usado. Solicite um novo.","Failed to fetch":"Sem conexão com a internet no momento. Verifique sua rede e tente de novo."};return map[message]??"Algo deu errado. Tente novamente em instantes.";}
