@@ -30,7 +30,7 @@ export function BalanceHero({
   }
 
   return (
-    <div className="gradient-hero relative overflow-hidden rounded-3xl p-5 text-white shadow-[var(--shadow-lift)] sm:p-6">
+    <div className="gradient-hero relative animate-in fade-in zoom-in-95 overflow-hidden rounded-3xl p-5 text-white shadow-[var(--shadow-lift)] duration-500 sm:p-6">
       <div
         aria-hidden
         className="pointer-events-none absolute -top-16 -right-16 size-56 rounded-full bg-[oklch(0.78_0.14_82_/_0.22)] blur-2xl"
@@ -53,7 +53,7 @@ export function BalanceHero({
             type="button"
             onClick={toggle}
             aria-label={hidden ? "Mostrar saldo" : "Esconder saldo"}
-            className="grid size-6 place-items-center rounded-full text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+            className="grid size-6 place-items-center rounded-full text-white/70 transition-all hover:scale-110 hover:bg-white/10 hover:text-white active:scale-90"
           >
             {hidden ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
           </button>

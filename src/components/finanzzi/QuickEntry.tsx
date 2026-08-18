@@ -96,9 +96,9 @@ export function QuickEntry() {
       invalidate();
       setDraft(null);
       setText("");
-    } catch (error) {
+    } catch {
       toast.error("Não foi possível salvar", {
-        description: error instanceof Error ? error.message : undefined,
+        description: "Verifique sua conexão e tente novamente.",
       });
     } finally {
       setBusy(false);

@@ -135,9 +135,9 @@ export function TransactionDialog({
       toast.success(message);
       invalidate();
       onOpenChange(false);
-    } catch (error) {
+    } catch {
       toast.error("Não foi possível salvar", {
-        description: error instanceof Error ? error.message : undefined,
+        description: "Verifique sua conexão e tente novamente.",
       });
     } finally {
       setBusy(false);
@@ -287,7 +287,10 @@ export function TransactionDialog({
                 {parts > 1 && total > 0 && (
                   <p className="text-xs text-muted-foreground">
                     {parts}x de aproximadamente{" "}
-                    {(total / parts).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                    {(total / parts).toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
                   </p>
                 )}
               </div>

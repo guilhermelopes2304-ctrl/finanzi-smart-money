@@ -209,9 +209,22 @@ function AuthPage() {
 
 function translate(message: string): string {
   const map: Record<string, string> = {
-    "Invalid login credentials": "E-mail ou senha incorretos.",
-    "User already registered": "Este e-mail já possui uma conta. Tente entrar.",
+    "Invalid login credentials": "E-mail ou senha incorretos. Confira e tente de novo.",
+    "User already registered":
+      "Este e-mail já possui uma conta. Que tal entrar em vez de criar outra?",
     "Password should be at least 6 characters.": "A senha precisa ter pelo menos 6 caracteres.",
+    "Email not confirmed": "Confirme seu e-mail antes de entrar. Verifique sua caixa de entrada.",
+    "Email rate limit exceeded":
+      "Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente novamente.",
+    "Signup requires a valid password": "Digite uma senha válida para continuar.",
+    "Unable to validate email address: invalid format": "Digite um e-mail em um formato válido.",
+    "User not found": "Não encontramos uma conta com este e-mail.",
+    "For security purposes, you can only request this after some time.":
+      "Por segurança, aguarde um instante antes de tentar de novo.",
+    "New password should be different from the old password.":
+      "A nova senha precisa ser diferente da senha atual.",
+    "Token has expired or is invalid": "Este link expirou ou já foi usado. Solicite um novo.",
+    "Failed to fetch": "Sem conexão com a internet no momento. Verifique sua rede e tente de novo.",
   };
-  return map[message] ?? message;
+  return map[message] ?? "Algo deu errado. Tente novamente em instantes.";
 }
