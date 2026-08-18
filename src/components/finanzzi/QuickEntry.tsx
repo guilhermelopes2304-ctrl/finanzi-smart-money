@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { Check, MessageCircle, Sparkles, X } from "lucide-react";
+import { Check, Mic, Sparkles, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useAccounts, useCategories, useCreditCards, useInvalidateFinance } from "@/hooks/useFinanceData";
 import { parseQuickEntry, type QuickParseResult } from "@/lib/quick-parse";
@@ -67,10 +67,16 @@ export function QuickEntry() {
 
   return (
     <div className="surface-card overflow-hidden p-4 sm:p-5">
-      <div className="mb-3 flex items-center gap-2"><span className="grid size-8 place-items-center rounded-full bg-gold/25 text-[oklch(0.5_0.13_82)] dark:text-gold"><Sparkles className="size-4" /></span><div><h2 className="text-base font-semibold leading-tight">Registrar rapidamente</h2><p className="text-xs text-muted-foreground">Escreva do seu jeito: “gastei 45 no mercado”</p></div></div>
-      <form onSubmit={handleParse} className="flex flex-col gap-2 sm:flex-row">
-        <Input value={text} onChange={(e) => setText(e.target.value)} placeholder="Ex.: gastei 45 no mercado" className="h-12 flex-1 text-base" aria-label="Registro rápido por texto" />
-        <div className="grid grid-cols-[1fr_auto] gap-2 sm:flex sm:shrink-0"><Button type="submit" className="h-12 min-w-28 text-base">Registrar</Button><Button type="button" variant="outline" onClick={openFin} className="h-12 min-w-12 px-3" aria-label="Falar com o Fin"><MessageCircle className="size-5" /><span className="sr-only">Falar com o Fin</span></Button></div>
+      <div className="mb-3 flex items-center gap-2"><span className="grid size-8 place-items-center rounded-full bg-gold/25 text-[oklch(0.5_0.13_82)] dark:text-gold"><Sparkles className="size-4" /></span><div><h2 className="text-base font-semibold leading-tight">Registrar rapidamente</h2><p className="text-xs text-muted-foreground">Digite como você falaria com o Fin</p></div></div>
+      <form onSubmit={handleParse} className="space-y-2">
+        <div className="flex items-center gap-2 rounded-2xl border border-border bg-background p-1.5 shadow-sm focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/10">
+          <Input value={text} onChange={(e) => setText(e.target.value)} placeholder="Ex.: gastei R$ 45 no mercado" className="h-12 min-w-0 flex-1 border-0 bg-transparent px-3 text-base shadow-none focus-visible:ring-0" aria-label="Registro rápido por texto" />
+          <Button type="button" variant="ghost" onClick={openFin} className="size-11 shrink-0 rounded-xl px-0" aria-label="Falar com o Fin"><Mic className="size-5" /><span className="sr-only">Falar com o Fin</span></Button>
+          <Button type="submit" disabled={!text.trim()} className="h-11 shrink-0 rounded-xl px-4">Registrar</Button>
+        </div>
+        <button type="button" onClick={openFin} className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 text-sm font-semibold text-primary transition-colors hover:bg-primary/10 active:scale-[0.99] sm:hidden">
+          <Mic className="size-4" /> Falar com o Fin
+        </button>
       </form>
       {draft && (
         <div className="animate-in fade-in slide-in-from-top-2 mt-4 rounded-xl border border-border bg-muted/40 p-4 duration-200">
