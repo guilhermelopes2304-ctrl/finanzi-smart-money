@@ -93,28 +93,70 @@ Deno.serve(async (req) => {
       ultimos_lancamentos: recentTransactions,
     });
 
-    const apiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!apiKey) throw new Error("OPENAI_API_KEY não configurada no ambiente do FINANZZI");
+    const prompt = `Pergunta do usuário:\n${question}\n\nDados financeiros atuais, consultados pelo backend para o usuário autenticado:\n${safeContext}`;
 
-    const response = await fetch("https://api.openai.com/v1/responses", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify({
-        model: "gpt-5.6-luna",
-        instructions: SYSTEM,
-        input: `Pergunta do usuário:\n${question}\n\nDados financeiros atuais, consultados pelo backend para o usuário autenticado:\n${safeContext}`,
-        max_output_tokens: 600,
-      }),
-    });
+    // As chaves ficam SOMENTE no backend (env da função). Nunca vão para o frontend.
+    const lovableKey = Deno.env.get("LOVABLE_API_KEY");
+    const openaiKey = Deno.env.get("OPENAI_API_KEY");
 
-    if (!response.ok) {
-      const detail = await response.text();
-      console.error("OpenAI error", response.status, detail);
-      throw new Error("Não foi possível consultar a inteligência do Fin agora");
+    async function callGateway(): Promise<string> {
+      if (!lovableKey) throw new Error("sem gateway");
+      const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Lovable-API-Key": lovableKey,
+          "X-Lovable-AIG-SDK": "fetch",
+        },
+        body: JSON.stringify({
+          model: "openai/gpt-5.6-sol",
+          messages: [
+            { role: "system", content: SYSTEM },
+            { role: "user", content: prompt },
+          ],
+        }),
+      });
+      if (!res.ok) {
+        const detail = await res.text();
+        console.error("gateway error", res.status, detail);
+        if (res.status === 402) throw new Error("Os créditos de IA do FINANZZI acabaram. Recarregue para continuar conversando com o Fin.");
+        if (res.status === 429) throw new Error("Muitas perguntas ao mesmo tempo. Tente de novo em alguns segundos.");
+        throw new Error("gateway indisponível");
+      }
+      const data = await res.json();
+      return String(data?.choices?.[0]?.message?.content ?? "").trim();
     }
 
-    const data = await response.json();
-    const answer = typeof data.output_text === "string" ? data.output_text.trim() : "";
+    async function callOpenAI(): Promise<string> {
+      if (!openaiKey) throw new Error("sem openai");
+      const res = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${openaiKey}` },
+        body: JSON.stringify({
+          model: Deno.env.get("OPENAI_MODEL") ?? "gpt-4.1-mini",
+          messages: [
+            { role: "system", content: SYSTEM },
+            { role: "user", content: prompt },
+          ],
+        }),
+      });
+      if (!res.ok) {
+        const detail = await res.text();
+        console.error("OpenAI error", res.status, detail);
+        throw new Error("openai indisponível");
+      }
+      const data = await res.json();
+      return String(data?.choices?.[0]?.message?.content ?? "").trim();
+    }
+
+    let answer = "";
+    try {
+      answer = await callGateway();
+    } catch (gatewayError) {
+      const message = gatewayError instanceof Error ? gatewayError.message : "";
+      if (message.startsWith("Os créditos") || message.startsWith("Muitas perguntas")) throw gatewayError;
+      answer = await callOpenAI();
+    }
     if (!answer) throw new Error("A IA não retornou uma resposta");
 
     return new Response(JSON.stringify({ answer }), { headers: { ...cors, "Content-Type": "application/json" } });
