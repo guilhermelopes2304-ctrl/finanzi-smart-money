@@ -1,7 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const cors = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type", "Access-Control-Allow-Methods": "POST, OPTIONS" };
-const SYSTEM = `Você é o Fin, assistente financeiro pessoal do FINANZZI. Responda em português do Brasil, de forma humana, objetiva e inteligente. Use exclusivamente os dados financeiros fornecidos pelo backend. Nunca invente valores. Quando perguntarem quanto podem gastar, use OBRIGATORIAMENTE o campo disponivel_para_gastar calculado pelo sistema; não recalcule usando apenas saldo, renda ou despesas do mês. Se disponivel_para_gastar for positivo, diga o valor exato e explique brevemente o que foi reservado. Diferencie fatos de recomendações.`;
+const SYSTEM = `Você é o Fin, assistente financeiro pessoal do FINANZZI. Responda em português do Brasil, de forma humana, clara, objetiva e inteligente. Use exclusivamente os dados financeiros fornecidos pelo backend e nunca invente valores. Diferencie fatos, cálculos e recomendações. Quando perguntarem quanto podem gastar, use OBRIGATORIAMENTE o campo disponivel_para_gastar calculado pelo sistema; não recalcule usando apenas saldo, renda ou despesas do mês. Se perguntarem por que podem gastar esse valor, explique com os componentes saldo_contas, contas_a_pagar_restantes, parcelas_restantes_no_mes e reserva_mensal_das_metas. Se o valor disponível for positivo, informe o valor exato. Se for zero, explique quais compromissos consumiram o saldo. Se for uma pergunta conceitual, responda normalmente sem inventar dados pessoais. Se houver dados insuficientes, diga exatamente o que falta. Nunca registre lançamentos nesta função; lançamentos são tratados separadamente pelo aplicativo.`;
 function brl(value: number) { return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }); }
 function isoTodaySP() { return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date()); }
 
@@ -20,7 +20,7 @@ Deno.serve(async (req) => {
     if (question.length > 2000) throw new Error("Pergunta muito longa");
 
     const [profileRes, txRes, accountRes, billRes, goalRes] = await Promise.all([
-      supabase.from("profiles").select("monthly_income,current_balance,main_goal").eq("id", user.id).maybeSingle(),
+      supabase.from("profiles").select("monthly_income,main_goal").eq("id", user.id).maybeSingle(),
       supabase.from("transactions").select("amount,type,date,description,category_id,account_id,credit_card_id,installment_total,categories(name)").eq("user_id", user.id).order("date", { ascending: false }).limit(1000),
       supabase.from("accounts").select("id,initial_balance").eq("user_id", user.id),
       supabase.from("bills").select("amount,due_date,status").eq("user_id", user.id),
@@ -58,7 +58,10 @@ Deno.serve(async (req) => {
       return t.type === "income" ? s + Number(t.amount || 0) : s - Number(t.amount || 0);
     }, 0);
     const balance = opening + settledMovement;
-    const upcomingBills = bills.filter(b => b.status !== "paid" && b.due_date >= today && b.due_date <= monthEnd).reduce((s,b) => s + Number(b.amount || 0), 0);
+
+    // Mantém exatamente a mesma regra da tela: compromissos não pagos até o fim do mês,
+    // incluindo os que já estão atrasados, também continuam comprometendo o dinheiro.
+    const upcomingBills = bills.filter(b => b.status !== "paid" && b.due_date <= monthEnd).reduce((s,b) => s + Number(b.amount || 0), 0);
     const upcomingInstallments = rows.filter(t => t.type === "expense" && t.installment_total && t.installment_total > 1 && t.date > today && t.date <= monthEnd).reduce((s,t) => s + Number(t.amount || 0), 0);
     const goalsReserve = goals.reduce((s,g) => {
       if (!g.deadline) return s;
@@ -80,9 +83,7 @@ Deno.serve(async (req) => {
     const recentTransactions = rows.slice(0,12).map(t => ({ date:t.date, type:t.type, description:t.description, amount:brl(Number(t.amount || 0)), category:Array.isArray(t.categories) ? t.categories[0]?.name ?? null : t.categories?.name ?? null }));
 
     const safeContext = JSON.stringify({
-      usuario_id: user.id,
       saldo_contas: balance,
-      saldo_perfil: Number(profile?.current_balance || 0),
       renda_mensal: Number(profile?.monthly_income || 0),
       objetivo_principal: profile?.main_goal || null,
       entradas_mes: income,
