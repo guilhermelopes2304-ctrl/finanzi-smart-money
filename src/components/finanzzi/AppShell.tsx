@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/finanzzi/Logo";
 import { ThemeToggle } from "@/components/finanzzi/ThemeToggle";
 import { TransactionDialog } from "@/components/finanzzi/TransactionDialog";
-import { FinancialAssistant } from "@/components/finanzzi/FinancialAssistant";
+import { FinancialAssistant } from "@/components/finanzzi/FinancialAssistantV2";
 import { NavigationLoading } from "@/components/finanzzi/NavigationLoading";
 import { cn } from "@/lib/utils";
 
