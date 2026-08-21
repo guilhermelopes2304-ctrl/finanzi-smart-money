@@ -1,7 +1,7 @@
 import { PRO_FEATURE_LABELS, type Plan, type ProFeature } from "@/lib/plan";
 
 export type BillingInterval = "monthly" | "annual";
-export type BillingProvider = "hubla" | "stripe" | "mercadopago" | "manual";
+export type BillingProvider = "hubla" | "stripe" | "mercadopago" | "manual" | "internal_test";
 export type SubscriptionStatus =
   "free" | "trialing" | "active" | "past_due" | "canceled" | "expired" | "checkout_pending";
 

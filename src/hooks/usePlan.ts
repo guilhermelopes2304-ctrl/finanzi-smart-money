@@ -20,6 +20,7 @@ export function usePlan() {
     [entitlementsQuery.data?.plan, profileQuery.data?.plan],
   );
   const isPro = entitlementsQuery.data?.is_pro === true && plan === "pro";
+  const isInternalTest = entitlementsQuery.data?.is_internal_test === true;
 
   return {
     data: profileQuery.data,
@@ -32,6 +33,7 @@ export function usePlan() {
     plan,
     subscription: entitlementsQuery.data,
     isPro,
+    isInternalTest,
     can: (feature: ProFeature) => isPro && canAccess(plan, feature),
   };
 }

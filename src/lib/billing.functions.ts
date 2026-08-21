@@ -9,17 +9,26 @@ export const getBillingSnapshot = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { data, error } = await context.supabase.rpc("get_current_entitlements");
     if (error) throw new Error(`Unable to load billing entitlements: ${error.message}`);
-    return (
-      data?.[0] ?? {
-        plan: "free",
-        status: "free",
-        billing_interval: null,
-        trial_ends_at: null,
-        current_period_ends_at: null,
-        cancel_at_period_end: false,
-        is_pro: false,
-      }
-    );
+    const { data: subscription, error: subscriptionError } = await context.supabase
+      .from("subscriptions")
+      .select("provider")
+      .maybeSingle();
+    if (subscriptionError)
+      throw new Error(`Unable to load billing provider: ${subscriptionError.message}`);
+
+    const snapshot = data?.[0] ?? {
+      plan: "free",
+      status: "free",
+      billing_interval: null,
+      trial_ends_at: null,
+      current_period_ends_at: null,
+      cancel_at_period_end: false,
+      is_pro: false,
+    };
+    return {
+      ...snapshot,
+      is_internal_test: subscription?.provider === "internal_test",
+    };
   });
 
 export const prepareBillingCheckout = createServerFn({ method: "POST" })

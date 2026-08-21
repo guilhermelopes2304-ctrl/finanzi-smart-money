@@ -127,7 +127,7 @@ function NavItem({
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { data: profile, isLoading, isPro } = usePlan();
+  const { data: profile, isLoading, isPro, isInternalTest } = usePlan();
   const navigate = useNavigate();
   const [transactionOpen, setTransactionOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
@@ -165,7 +165,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               to="/configuracoes"
               className="rounded-full bg-muted px-2 py-1 text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground hover:bg-primary/10 hover:text-primary"
             >
-              {isPro ? "Acesso ativo" : "Acesso pago"}
+              {isInternalTest ? "Teste interno" : isPro ? "Acesso ativo" : "Acesso pago"}
             </Link>
           </div>
           <p className="mt-1 text-xs leading-5 text-muted-foreground">
@@ -217,6 +217,12 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </div>
       </header>
+
+      {isInternalTest && (
+        <div className="border-b border-amber-500/25 bg-amber-500/10 px-4 py-2 text-center text-[10px] font-bold uppercase tracking-[0.16em] text-amber-700 dark:text-amber-300 lg:pl-[256px]">
+          Ambiente de teste · acesso interno sem cobrança real
+        </div>
+      )}
 
       <main className="min-w-0 px-3 pb-32 pt-4 sm:px-5 lg:ml-[256px] lg:px-8 lg:pb-10 lg:pt-8">
         <div className="mx-auto min-w-0 max-w-7xl">{children}</div>
