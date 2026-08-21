@@ -1,28 +1,18 @@
+import humanSecretaryAsset from "@/visual-experiments/fin-human-secretary-hidden.svg";
 import { cn } from "@/lib/utils";
 
 export type FinMascotExpression =
   "normal" | "feliz" | "surpreso" | "pensando" | "atento" | "comemorando" | "explicando" | "calmo";
 
-const SOURCES: Record<FinMascotExpression, string> = {
-  normal: "/fin-mascote-reference-indigo.png",
-  feliz: "/fin-mascote-feliz-indigo.png",
-  surpreso: "/fin-mascote-surpreso-indigo.png",
-  pensando: "/fin-mascote-pensando-indigo.png",
-  atento: "/fin-mascote-atento-indigo.png",
-  comemorando: "/fin-mascote-comemorando-indigo.png",
-  explicando: "/fin-mascote-explicando-indigo.png",
-  calmo: "/fin-mascote-calmo-indigo.png",
-};
-
 const LABELS: Record<FinMascotExpression, string> = {
-  normal: "Fin",
-  feliz: "Fin feliz",
-  surpreso: "Fin surpreso",
-  pensando: "Fin pensando",
-  atento: "Fin atento",
-  comemorando: "Fin comemorando",
-  explicando: "Fin explicando",
-  calmo: "Fin calmo",
+  normal: "Assistente financeiro",
+  feliz: "Assistente financeiro confiante",
+  surpreso: "Assistente financeiro atento",
+  pensando: "Assistente financeiro a analisar",
+  atento: "Assistente financeiro atento",
+  comemorando: "Assistente financeiro a celebrar um progresso",
+  explicando: "Assistente financeiro a explicar",
+  calmo: "Assistente financeiro tranquilo",
 };
 
 export function FinMascot({
@@ -36,7 +26,7 @@ export function FinMascot({
 }) {
   return (
     <img
-      src={SOURCES[expression]}
+      src={humanSecretaryAsset}
       alt={alt ?? LABELS[expression]}
       className={cn("select-none object-contain", className)}
       draggable={false}
