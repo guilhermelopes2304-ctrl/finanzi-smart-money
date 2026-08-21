@@ -85,7 +85,7 @@ function Dashboard() {
         {isLoading ? (
           <Skeleton className="h-64 rounded-[1.75rem] bg-muted" />
         ) : (
-          <section className="relative overflow-hidden rounded-[1.75rem] bg-gradient-hero p-5 text-primary-foreground shadow-lift sm:p-8">
+          <section className="relative overflow-hidden rounded-[1.75rem] gradient-hero p-5 text-primary-foreground shadow-lift sm:p-8">
             <div className="pointer-events-none absolute -right-20 -top-20 size-56 rounded-full bg-primary/30 blur-3xl" />
             <div className="pointer-events-none absolute -bottom-24 left-1/3 size-48 rounded-full bg-primary/20 blur-3xl" />
             <div className="relative flex flex-col gap-7 sm:flex-row sm:items-end sm:justify-between">
