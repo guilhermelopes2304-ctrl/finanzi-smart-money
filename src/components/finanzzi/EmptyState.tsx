@@ -22,7 +22,9 @@ export function EmptyState({
         <FinMascot expression="calmo" className="mb-3 h-20 w-20" />
       )}
       <p className="font-semibold text-foreground">{title}</p>
-      {description && <p className="mt-1 max-w-sm text-sm leading-6 text-muted-foreground">{description}</p>}
+      {description && (
+        <p className="mt-1 max-w-sm text-sm leading-6 text-muted-foreground">{description}</p>
+      )}
       {action && <div className="mt-5">{action}</div>}
     </div>
   );

@@ -2,10 +2,10 @@
 
 ## Fotografias reais
 
-| Asset local | Fonte verificada | Licença | Uso no produto |
-|---|---|---|---|
+| Asset local                                            | Fonte verificada                                                      | Licença                                          | Uso no produto                                               |
+| ------------------------------------------------------ | --------------------------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------------ |
 | `public/images/photography/finanzi-phone-payment.webp` | Unsplash, pesquisa de fotografia de pessoa a usar smartphone e cartão | [Unsplash License](https://unsplash.com/license) | Secção editorial da landing sobre decisões financeiras reais |
-| `public/images/photography/finanzi-planning.webp` | Unsplash, pesquisa de fotografia de planeamento com smartphone | [Unsplash License](https://unsplash.com/license) | Secção de insights e planeamento da landing |
+| `public/images/photography/finanzi-planning.webp`      | Unsplash, pesquisa de fotografia de planeamento com smartphone        | [Unsplash License](https://unsplash.com/license) | Secção de insights e planeamento da landing                  |
 
 As imagens foram descarregadas localmente, convertidas para WebP e redimensionadas para reduzir o peso em mobile. A licença oficial do Unsplash indica uso comercial e não comercial gratuito, sem atribuição obrigatória, e restringe a venda das imagens sem modificações significativas e a compilação para replicar um serviço concorrente. As fotografias são utilizadas como elementos integrados da experiência FINANZZI, não como produto isolado.
 

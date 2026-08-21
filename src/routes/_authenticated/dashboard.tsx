@@ -21,7 +21,10 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
       { title: "Início — FINANZZI" },
-      { name: "description", content: "Conte o que aconteceu. O FINANZZI organiza e lembra do resto." },
+      {
+        name: "description",
+        content: "Conte o que aconteceu. O FINANZZI organiza e lembra do resto.",
+      },
     ],
   }),
   component: Dashboard,
@@ -124,7 +127,9 @@ function Dashboard() {
         <section className="mt-8 sm:mt-11">
           <div className="mb-3 flex items-end justify-between gap-3">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-primary">Registrar</p>
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-primary">
+                Registrar
+              </p>
               <h2 className="mt-1 font-display text-[1.85rem] font-semibold tracking-[-0.045em] sm:text-3xl">
                 O que aconteceu?
               </h2>
@@ -141,7 +146,9 @@ function Dashboard() {
         <section className="mt-8 sm:mt-11">
           <div className="mb-4 flex items-end justify-between gap-3">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-primary">Lembrar</p>
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-primary">
+                Lembrar
+              </p>
               <h2 className="mt-1 font-display text-[1.85rem] font-semibold tracking-[-0.045em] sm:text-3xl">
                 Próximos compromissos
               </h2>
@@ -151,27 +158,41 @@ function Dashboard() {
                 </p>
               )}
             </div>
-            <Link to="/contas" className="inline-flex min-h-10 items-center gap-1 rounded-full px-3 text-xs font-bold text-primary transition-colors hover:bg-accent">
+            <Link
+              to="/contas"
+              className="inline-flex min-h-10 items-center gap-1 rounded-full px-3 text-xs font-bold text-primary transition-colors hover:bg-accent"
+            >
               Ver tudo <ArrowRight className="size-3.5" />
             </Link>
           </div>
           {commitments.length === 0 ? (
             <div className="rounded-[1.5rem] border border-dashed border-border bg-card/70">
-              <EmptyState title="Nada vencendo por agora" description="Registre uma conta fixa e o FINANZZI lembra por você." />
+              <EmptyState
+                title="Nada vencendo por agora"
+                description="Registre uma conta fixa e o FINANZZI lembra por você."
+              />
             </div>
           ) : (
             <div className="surface-card overflow-hidden">
               {commitments.map((bill, index) => {
                 const days = daysUntil(bill.due_date);
                 return (
-                  <div key={bill.id} className={`flex items-center gap-3 px-4 py-4 sm:px-5 ${index > 0 ? "border-t border-border" : ""}`}>
+                  <div
+                    key={bill.id}
+                    className={`flex items-center gap-3 px-4 py-4 sm:px-5 ${index > 0 ? "border-t border-border" : ""}`}
+                  >
                     <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-accent text-accent-foreground">
                       <CalendarClock className="size-4" />
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold">{bill.description}</p>
                       <p className="mt-0.5 text-xs text-muted-foreground">
-                        {days <= 0 ? "vence hoje" : days === 1 ? "vence amanhã" : `vence em ${days} dias`} · {formatDateBR(bill.due_date)}
+                        {days <= 0
+                          ? "vence hoje"
+                          : days === 1
+                            ? "vence amanhã"
+                            : `vence em ${days} dias`}{" "}
+                        · {formatDateBR(bill.due_date)}
                       </p>
                     </div>
                     <p className="shrink-0 text-sm font-bold">{formatBRL(Number(bill.amount))}</p>
@@ -185,7 +206,9 @@ function Dashboard() {
         <section className="mt-8 pb-8 sm:mt-11">
           <div className="mb-4 flex items-end justify-between gap-3">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-primary">Orientar</p>
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-primary">
+                Orientar
+              </p>
               <h2 className="mt-1 max-w-xl font-display text-[1.85rem] font-semibold tracking-[-0.045em] sm:text-3xl">
                 Uma coisa que merece a sua atenção
               </h2>
@@ -199,11 +222,16 @@ function Dashboard() {
             </button>
           </div>
           <div className="surface-card flex items-start gap-4 p-5 sm:p-6">
-            <FinMascot expression={insight ? "pensando" : "normal"} className="h-14 w-14 shrink-0" />
+            <FinMascot
+              expression={insight ? "pensando" : "normal"}
+              className="h-14 w-14 shrink-0"
+            />
             {insight ? (
               <div>
                 <p className="text-sm font-semibold">{insight.title}</p>
-                <p className="mt-1 text-sm leading-6 text-muted-foreground">{insight.description}</p>
+                <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                  {insight.description}
+                </p>
               </div>
             ) : (
               <div className="flex items-start gap-3">
