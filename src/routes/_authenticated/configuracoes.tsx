@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { LogOut, Plus, Trash2 } from "lucide-react";
+import { LogOut, Plus, Sparkles, ShieldCheck, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -15,6 +15,9 @@ import { PageHeader } from "@/components/finanzzi/PageHeader";
 import { ConfirmDelete } from "@/components/finanzzi/ConfirmDelete";
 import { MoneyInput } from "@/components/finanzzi/MoneyInput";
 import { Button } from "@/components/ui/button";
+import { ProModal } from "@/components/finanzzi/PlanGate";
+import { usePlan } from "@/hooks/usePlan";
+import { trackProductEvent } from "@/lib/product-analytics";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -44,6 +47,9 @@ function SettingsPage() {
   const [name, setName] = useState("");
   const [income, setIncome] = useState("");
   const [password, setPassword] = useState("");
+  const [proOpen, setProOpen] = useState(false);
+  const { plan, isPro, subscription } = usePlan();
+  const billingStatus = subscription?.status ?? "free";
 
   useEffect(() => {
     if (profile) {
@@ -66,6 +72,53 @@ function SettingsPage() {
   return (
     <div>
       <PageHeader title="Configurações" subtitle="Sua conta e suas preferências." />
+
+      <section className="surface-card relative mb-4 overflow-hidden p-5 sm:p-6">
+        <div className="pointer-events-none absolute -right-10 -top-12 size-40 rounded-full bg-primary/8 blur-3xl" />
+        <div className="relative flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <span className="grid size-10 place-items-center rounded-xl bg-primary/10 text-primary">
+              <Sparkles className="size-5" />
+            </span>
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-primary">
+                Plano atual
+              </p>
+              <h2 className="mt-1 text-lg font-semibold">FINANZZI {isPro ? "Pro" : "Free"}</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {isPro
+                  ? "Você tem acesso às experiências avançadas do Fin."
+                  : "O essencial para organizar o seu dinheiro continua disponível."}
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/45 px-3 py-1.5 text-xs font-semibold">
+              <ShieldCheck className="size-3.5 text-primary" /> plano {plan}
+            </span>
+            <span className="rounded-full border border-border bg-muted/45 px-3 py-1.5 text-xs font-semibold">
+              estado {billingStatus}
+            </span>
+            {!isPro && (
+              <Button
+                type="button"
+                onClick={() => {
+                  trackProductEvent("pro_viewed");
+                  setProOpen(true);
+                }}
+                className="rounded-xl"
+              >
+                Conhecer o FIN Pro
+              </Button>
+            )}
+          </div>
+        </div>
+        <p className="relative mt-4 border-t border-border pt-3 text-[11px] leading-5 text-muted-foreground">
+          O plano é lido do seu perfil protegido. A alteração de plano não está disponível nesta
+          interface e depende de uma operação administrativa segura.
+        </p>
+      </section>
+      <ProModal open={proOpen} onOpenChange={setProOpen} />
 
       <div className="grid gap-4 lg:grid-cols-2">
         <form
@@ -131,7 +184,9 @@ function SettingsPage() {
 
 function CategoriesSection() {
   const { data: categories = [] } = useCategories();
-  const save = useSaveRow<Record<string, unknown>>("categories", { successMessage: "Categoria salva" });
+  const save = useSaveRow<Record<string, unknown>>("categories", {
+    successMessage: "Categoria salva",
+  });
   const remove = useDeleteRow("categories", "Categoria excluída");
   const [name, setName] = useState("");
   const [kind, setKind] = useState("expense");

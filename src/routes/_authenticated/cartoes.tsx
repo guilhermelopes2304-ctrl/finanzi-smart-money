@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Plus, Trash2 } from "lucide-react";
+import { CalendarRange, CreditCard, Plus, Sparkles, Trash2 } from "lucide-react";
 import {
   useCategories,
   useCreateCardPurchase,
@@ -11,6 +11,7 @@ import {
 } from "@/hooks/useFinanceData";
 import { cardInvoice, cardUsedLimit } from "@/lib/finance";
 import { formatBRL, formatDateBR, parseBRL, todayISO } from "@/lib/format";
+import { trackProductEvent } from "@/lib/product-analytics";
 import { PageHeader } from "@/components/finanzzi/PageHeader";
 import { EmptyState } from "@/components/finanzzi/EmptyState";
 import { ConfirmDelete } from "@/components/finanzzi/ConfirmDelete";
@@ -39,7 +40,10 @@ export const Route = createFileRoute("/_authenticated/cartoes")({
   head: () => ({
     meta: [
       { title: "Cartões — FINANZZI" },
-      { name: "description", content: "Acompanhe limite, fatura e compras parceladas dos seus cartões." },
+      {
+        name: "description",
+        content: "Acompanhe limite, fatura e compras parceladas dos seus cartões.",
+      },
       { property: "og:title", content: "Cartões — FINANZZI" },
       { property: "og:description", content: "Limite, fatura e parcelas sempre sob controle." },
     ],
@@ -61,7 +65,13 @@ function CardsPage() {
   const [openPurchase, setOpenPurchase] = useState(false);
   const createPurchase = useCreateCardPurchase(() => setOpenPurchase(false));
 
-  const [card, setCard] = useState({ name: "", bank: "", credit_limit: "", closing_day: "1", due_day: "10" });
+  const [card, setCard] = useState({
+    name: "",
+    bank: "",
+    credit_limit: "",
+    closing_day: "1",
+    due_day: "10",
+  });
   const [purchase, setPurchase] = useState({
     credit_card_id: "",
     description: "",
@@ -83,7 +93,12 @@ function CardsPage() {
           due_day: Number(card.due_day) || 10,
         },
       },
-      { onSuccess: () => setOpenCard(false) },
+      {
+        onSuccess: () => {
+          trackProductEvent("first_card");
+          setOpenCard(false);
+        },
+      },
     );
   }
 
@@ -103,8 +118,8 @@ function CardsPage() {
   return (
     <div>
       <PageHeader
-        title="Meus cartões"
-        subtitle="Limite, fatura e compras parceladas."
+        title="Cartões sob controle"
+        subtitle="Veja o peso das suas decisões de hoje nos próximos meses."
         action={
           <div className="flex gap-2">
             {cards.length > 0 && (
@@ -163,7 +178,9 @@ function CardsPage() {
                           min={1}
                           max={72}
                           value={purchase.installments}
-                          onChange={(e) => setPurchase({ ...purchase, installments: e.target.value })}
+                          onChange={(e) =>
+                            setPurchase({ ...purchase, installments: e.target.value })
+                          }
                         />
                       </div>
                     </div>
@@ -174,7 +191,9 @@ function CardsPage() {
                           id="p-date"
                           type="date"
                           value={purchase.purchase_date}
-                          onChange={(e) => setPurchase({ ...purchase, purchase_date: e.target.value })}
+                          onChange={(e) =>
+                            setPurchase({ ...purchase, purchase_date: e.target.value })
+                          }
                         />
                       </div>
                       <div className="space-y-1.5">
@@ -289,66 +308,119 @@ function CardsPage() {
             const used = cardUsedLimit(c, transactions);
             const limit = Number(c.credit_limit);
             const available = Math.max(0, limit - used);
+            const usedPercent = limit ? Math.min(100, (used / limit) * 100) : 0;
             const invoice = cardInvoice(c, transactions);
-            const purchases = transactions
-              .filter((tx) => tx.credit_card_id === c.id)
-              .slice(0, 5);
+            const purchases = transactions.filter((tx) => tx.credit_card_id === c.id).slice(0, 5);
             return (
-              <div key={c.id} className="surface-card p-5">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="font-medium">{c.name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {c.bank ?? "Cartão de crédito"} · fecha dia {c.closing_day} · vence dia {c.due_day}
-                    </p>
+              <div key={c.id} className="surface-card overflow-hidden p-0">
+                <div
+                  className="relative overflow-hidden p-5 text-white"
+                  style={{
+                    background: `linear-gradient(135deg, ${c.color || "#0d4b32"}, #071a12)`,
+                  }}
+                >
+                  <div className="pointer-events-none absolute -right-10 -top-12 size-40 rounded-full bg-white/10 blur-2xl" />
+                  <div className="relative flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/55">
+                        Cartão FINANZZI
+                      </p>
+                      <p className="mt-4 text-lg font-semibold">{c.name}</p>
+                      <p className="mt-1 text-xs text-white/55">{c.bank ?? "Cartão de crédito"}</p>
+                    </div>
+                    <CreditCard className="size-6 text-white/70" />
                   </div>
-                  <ConfirmDelete
-                    title="Excluir cartão?"
-                    description="As compras e parcelas vinculadas também serão removidas."
-                    onConfirm={() => removeCard.mutate(c.id)}
-                    trigger={
-                      <Button size="icon" variant="ghost" aria-label="Excluir">
-                        <Trash2 className="size-4 text-danger" />
-                      </Button>
-                    }
-                  />
-                </div>
-                <Progress value={limit ? Math.min(100, (used / limit) * 100) : 0} className="mt-4" />
-                <div className="mt-3 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
-                  <div>
-                    <p className="text-xs text-muted-foreground">Limite</p>
-                    <p className="font-medium">{formatBRL(limit)}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Utilizado</p>
-                    <p className="font-medium">{formatBRL(used)}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Disponível</p>
-                    <p className="font-medium">{formatBRL(available)}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Fatura atual</p>
-                    <p className="font-medium">{formatBRL(invoice)}</p>
+                  <div className="relative mt-8 flex items-end justify-between gap-3">
+                    <div>
+                      <p className="text-[10px] text-white/50">Disponível</p>
+                      <p className="mt-1 font-display text-2xl font-semibold">
+                        {formatBRL(available)}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] text-white/50">Próxima fatura</p>
+                      <p className="mt-1 text-sm font-semibold">{formatBRL(invoice)}</p>
+                    </div>
                   </div>
                 </div>
-                <div className="mt-4 space-y-1.5">
-                  <p className="text-xs font-medium text-muted-foreground">Últimas compras</p>
-                  {purchases.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">Nenhuma compra registrada ainda.</p>
-                  ) : (
-                    purchases.map((tx) => (
-                      <div key={tx.id} className="flex justify-between text-sm">
-                        <span className="truncate">
-                          {tx.description}{" "}
-                          <span className="text-xs text-muted-foreground">
-                            {formatDateBR(tx.date)}
+                <div className="p-5">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="font-medium">{c.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {c.bank ?? "Cartão de crédito"} · fecha dia {c.closing_day} · vence dia{" "}
+                        {c.due_day}
+                      </p>
+                    </div>
+                    <ConfirmDelete
+                      title="Excluir cartão?"
+                      description="As compras e parcelas vinculadas também serão removidas."
+                      onConfirm={() => removeCard.mutate(c.id)}
+                      trigger={
+                        <Button size="icon" variant="ghost" aria-label="Excluir">
+                          <Trash2 className="size-4 text-danger" />
+                        </Button>
+                      }
+                    />
+                  </div>
+                  <div className="flex items-center justify-between gap-3 text-xs">
+                    <span className="inline-flex items-center gap-1.5 font-semibold text-primary">
+                      <Sparkles className="size-3.5" /> Peso no seu futuro
+                    </span>
+                    <span className="text-muted-foreground">
+                      {Math.round(usedPercent)}% do limite usado
+                    </span>
+                  </div>
+                  <Progress value={usedPercent} className="mt-3" />
+                  <div className="mt-3 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+                    <div>
+                      <p className="text-xs text-muted-foreground">Limite</p>
+                      <p className="font-medium">{formatBRL(limit)}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Utilizado</p>
+                      <p className="font-medium">{formatBRL(used)}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Disponível</p>
+                      <p className="font-medium">{formatBRL(available)}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Fatura atual</p>
+                      <p className="font-medium">{formatBRL(invoice)}</p>
+                    </div>
+                  </div>
+                  <div className="mt-5 grid grid-cols-2 gap-3 rounded-2xl bg-muted/45 p-3 text-xs">
+                    <div className="flex items-center gap-2">
+                      <CalendarRange className="size-3.5 text-primary" />
+                      <span>
+                        Fecha dia <strong>{c.closing_day}</strong>
+                      </span>
+                    </div>
+                    <div className="text-right">
+                      Vence dia <strong>{c.due_day}</strong>
+                    </div>
+                  </div>
+                  <div className="mt-4 space-y-1.5">
+                    <p className="text-xs font-medium text-muted-foreground">Últimas compras</p>
+                    {purchases.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">
+                        Nenhuma compra registrada ainda.
+                      </p>
+                    ) : (
+                      purchases.map((tx) => (
+                        <div key={tx.id} className="flex justify-between text-sm">
+                          <span className="truncate">
+                            {tx.description}{" "}
+                            <span className="text-xs text-muted-foreground">
+                              {formatDateBR(tx.date)}
+                            </span>
                           </span>
-                        </span>
-                        <span className="font-medium">{formatBRL(Number(tx.amount))}</span>
-                      </div>
-                    ))
-                  )}
+                          <span className="font-medium">{formatBRL(Number(tx.amount))}</span>
+                        </div>
+                      ))
+                    )}
+                  </div>
                 </div>
               </div>
             );

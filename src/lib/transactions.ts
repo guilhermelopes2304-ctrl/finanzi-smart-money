@@ -2,6 +2,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { buildInstallments } from "@/lib/installments";
 import { addDaysISO, addMonthsISO } from "@/lib/format";
 import type { PaymentMethod, Recurrence, TransactionType } from "@/types/finance";
+import { trackProductEvent } from "@/lib/product-analytics";
 
 export interface SaveTransactionInput {
   userId: string;
@@ -60,6 +61,7 @@ export async function saveTransaction(input: SaveTransactionInput): Promise<stri
     });
     const { error } = await supabase.from("transactions").insert(rows);
     if (error) throw new Error(error.message);
+    trackProductEvent("first_transaction");
     return `Lançamento criado em ${parts} parcelas`;
   }
 
@@ -75,12 +77,12 @@ export async function saveTransaction(input: SaveTransactionInput): Promise<stri
     }));
     const { error } = await supabase.from("transactions").insert(rows);
     if (error) throw new Error(error.message);
+    trackProductEvent("first_transaction");
     return "Lançamento recorrente criado";
   }
 
-  const { error } = await supabase
-    .from("transactions")
-    .insert({ ...base, user_id: input.userId });
+  const { error } = await supabase.from("transactions").insert({ ...base, user_id: input.userId });
   if (error) throw new Error(error.message);
+  trackProductEvent("first_transaction");
   return "Lançamento registrado";
 }

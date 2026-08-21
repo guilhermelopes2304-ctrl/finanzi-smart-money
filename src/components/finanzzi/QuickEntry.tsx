@@ -2,7 +2,12 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Check, Mic, Sparkles, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { useAccounts, useCategories, useCreditCards, useInvalidateFinance } from "@/hooks/useFinanceData";
+import {
+  useAccounts,
+  useCategories,
+  useCreditCards,
+  useInvalidateFinance,
+} from "@/hooks/useFinanceData";
 import { parseQuickEntry, type QuickParseResult } from "@/lib/quick-parse";
 import { saveTransaction } from "@/lib/transactions";
 import { formatBRL, parseBRL, todayISO } from "@/lib/format";
@@ -11,16 +16,321 @@ import { TransactionDialog } from "@/components/finanzzi/TransactionDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { trackProductEvent } from "@/lib/product-analytics";
 import type { TransactionType } from "@/types/finance";
+
 const NONE = "__none__";
+const EXAMPLES = ["gastei 42 no mercado", "recebi 3500 salário", "comprei tênis 399"];
+
 export function QuickEntry() {
-  const { user } = useAuth(); const invalidate = useInvalidateFinance(); const { data: categories = [] } = useCategories(); const { data: accounts = [] } = useAccounts(); const { data: cards = [] } = useCreditCards();
-  const [text, setText] = useState(""); const [draft, setDraft] = useState<QuickParseResult | null>(null); const [type, setType] = useState<TransactionType>("expense"); const [amount, setAmount] = useState(""); const [description, setDescription] = useState(""); const [categoryId, setCategoryId] = useState(NONE); const [accountId, setAccountId] = useState(NONE); const [cardId, setCardId] = useState(NONE); const [busy, setBusy] = useState(false); const [manualOpen, setManualOpen] = useState(false); const [manualText, setManualText] = useState("");
-  function openFinVoice() { window.dispatchEvent(new CustomEvent("finanzzi:open-assistant", { detail: { listen: true } })); }
-  function handleParse(event: React.FormEvent) { event.preventDefault(); if (!text.trim()) return; const result = parseQuickEntry(text, categories, cards); if (result.confidence === "low") { setManualText(result.raw); setManualOpen(true); setText(""); toast("Não consegui interpretar — abri o formulário completo."); return; } setDraft(result); setType(result.type); setAmount(result.amount.toFixed(2).replace(".", ",")); setDescription(result.description); setCategoryId(result.categoryId ?? NONE); setCardId(result.cardId ?? NONE); setAccountId(NONE); }
-  async function confirm() { if (!user || !draft) return; const value = parseBRL(amount); if (value <= 0) { toast.error("Informe um valor maior que zero."); return; } setBusy(true); try { await saveTransaction({ userId: user.id, description: description || draft.raw, amount: value, type, categoryId: categoryId === NONE ? null : categoryId, accountId: accountId === NONE ? null : accountId, cardId: cardId === NONE ? null : cardId, date: todayISO(), method: cardId === NONE ? "pix" : "credito", notes: null, recurrence: "none" }); const catName = categories.find((c) => c.id === categoryId)?.name; toast.success(`✅ ${type === "income" ? "Receita" : "Despesa"} de ${formatBRL(value)}${catName ? ` em ${catName}` : ""} registrada`); invalidate(); setDraft(null); setText(""); } catch { toast.error("Não foi possível salvar", { description: "Verifique sua conexão e tente novamente." }); } finally { setBusy(false); } }
+  const { user } = useAuth();
+  const invalidate = useInvalidateFinance();
+  const { data: categories = [] } = useCategories();
+  const { data: accounts = [] } = useAccounts();
+  const { data: cards = [] } = useCreditCards();
+  const [text, setText] = useState("");
+  const [draft, setDraft] = useState<QuickParseResult | null>(null);
+  const [type, setType] = useState<TransactionType>("expense");
+  const [amount, setAmount] = useState("");
+  const [description, setDescription] = useState("");
+  const [categoryId, setCategoryId] = useState(NONE);
+  const [accountId, setAccountId] = useState(NONE);
+  const [cardId, setCardId] = useState(NONE);
+  const [busy, setBusy] = useState(false);
+  const [manualOpen, setManualOpen] = useState(false);
+  const [manualText, setManualText] = useState("");
+
+  function openFinVoice() {
+    window.dispatchEvent(new CustomEvent("finanzzi:open-assistant", { detail: { listen: true } }));
+  }
+
+  function handleParse(event: React.FormEvent) {
+    event.preventDefault();
+    if (!text.trim()) return;
+    trackProductEvent("quick_entry_used");
+    const result = parseQuickEntry(text, categories, cards);
+    if (result.confidence === "low") {
+      setManualText(result.raw);
+      setManualOpen(true);
+      setText("");
+      toast("Abri o formulário completo para você conferir os detalhes.");
+      return;
+    }
+    setDraft(result);
+    setType(result.type);
+    setAmount(result.amount.toFixed(2).replace(".", ","));
+    setDescription(result.description);
+    setCategoryId(result.categoryId ?? NONE);
+    setCardId(result.cardId ?? NONE);
+    setAccountId(NONE);
+  }
+
+  async function confirm() {
+    if (!user || !draft) return;
+    const value = parseBRL(amount);
+    if (value <= 0) {
+      toast.error("Informe um valor maior que zero.");
+      return;
+    }
+    setBusy(true);
+    try {
+      await saveTransaction({
+        userId: user.id,
+        description: description || draft.raw,
+        amount: value,
+        type,
+        categoryId: categoryId === NONE ? null : categoryId,
+        accountId: accountId === NONE ? null : accountId,
+        cardId: cardId === NONE ? null : cardId,
+        date: todayISO(),
+        method: cardId === NONE ? "pix" : "credito",
+        notes: null,
+        recurrence: "none",
+      });
+      const catName = categories.find((c) => c.id === categoryId)?.name;
+      toast.success(
+        `${type === "income" ? "Receita" : "Despesa"} de ${formatBRL(value)} registrada`,
+        { description: catName ? `Categoria: ${catName}` : "Seu saldo já foi atualizado." },
+      );
+      invalidate();
+      setDraft(null);
+      setText("");
+    } catch {
+      toast.error("Não foi possível salvar", {
+        description: "Verifique sua conexão e tente novamente.",
+      });
+    } finally {
+      setBusy(false);
+    }
+  }
+
   const visibleCategories = categories.filter((c) => c.kind === type || c.kind === "both");
-  return <div className="surface-card overflow-hidden p-4 sm:p-5"><div className="mb-3 flex items-center gap-2"><span className="grid size-8 place-items-center rounded-full bg-gold/25 text-[oklch(0.5_0.13_82)] dark:text-gold"><Sparkles className="size-4" /></span><div><h2 className="text-base font-semibold leading-tight">Registrar rapidamente</h2><p className="text-xs text-muted-foreground">Digite como você falaria com o Fin</p></div></div><form onSubmit={handleParse} className="space-y-2"><div className="flex items-center gap-2 rounded-2xl border border-border bg-background p-1.5 shadow-sm focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/10"><Input value={text} onChange={(e) => setText(e.target.value)} placeholder="Ex.: gastei R$ 45 no mercado" className="h-12 min-w-0 flex-1 border-0 bg-transparent px-3 text-base shadow-none focus-visible:ring-0" aria-label="Registro rápido por texto" /><Button type="button" variant="ghost" onClick={openFinVoice} className="size-11 shrink-0 rounded-xl px-0" aria-label="Falar com o Fin"><Mic className="size-5" /></Button><Button type="submit" disabled={!text.trim()} className="h-11 shrink-0 rounded-xl px-4">Registrar</Button></div><button type="button" onClick={openFinVoice} className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 text-sm font-semibold text-primary transition-colors hover:bg-primary/10 active:scale-[0.99] sm:hidden"><Mic className="size-4" /> Falar com o Fin</button></form>{draft && <div className="animate-in fade-in slide-in-from-top-2 mt-4 rounded-xl border border-border bg-muted/40 p-4 duration-200"><div className="mb-3 flex items-center justify-between gap-2"><p className="text-sm font-medium">Confira antes de salvar</p><span className={cn("rounded-full px-2 py-0.5 text-[11px] font-medium", draft.confidence === "high" ? "bg-success/15 text-success" : "bg-warning/15 text-warning")}>{draft.confidence === "high" ? "Confiança alta" : "Confira os campos"}</span></div><div className="mb-3 grid grid-cols-2 gap-2 rounded-lg bg-background p-1">{(["expense", "income"] as TransactionType[]).map((option) => <button key={option} type="button" onClick={() => setType(option)} className={cn("min-h-11 rounded-md text-sm font-medium transition-colors", type === option ? option === "income" ? "bg-success text-success-foreground" : "bg-danger text-danger-foreground" : "text-muted-foreground")}>{option === "income" ? "Receita" : "Despesa"}</button>)}</div><div className="grid gap-3 sm:grid-cols-2"><div className="space-y-1.5"><Label htmlFor="qe-amount">Valor</Label><MoneyInput id="qe-amount" value={amount} onChange={setAmount} /></div><div className="space-y-1.5"><Label htmlFor="qe-desc">Descrição</Label><Input id="qe-desc" value={description} onChange={(e) => setDescription(e.target.value)} /></div><div className="space-y-1.5"><Label>Categoria</Label><Select value={categoryId} onValueChange={setCategoryId}><SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger><SelectContent><SelectItem value={NONE}>Sem categoria</SelectItem>{visibleCategories.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent></Select></div><div className="space-y-1.5"><Label>Conta</Label><Select value={accountId} onValueChange={setAccountId}><SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger><SelectContent><SelectItem value={NONE}>Sem conta</SelectItem>{accounts.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}</SelectContent></Select></div><div className="space-y-1.5 sm:col-span-2"><Label>Cartão</Label><Select value={cardId} onValueChange={setCardId}><SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger><SelectContent><SelectItem value={NONE}>Sem cartão</SelectItem>{cards.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent></Select></div></div><div className="mt-4 flex gap-2"><Button onClick={confirm} disabled={busy} className="h-11 flex-1"><Check className="size-4" /> {busy ? "Salvando..." : "Confirmar"}</Button><Button variant="outline" className="h-11" onClick={() => setDraft(null)} aria-label="Cancelar"><X className="size-4" /></Button></div></div>}<TransactionDialog open={manualOpen} onOpenChange={setManualOpen} defaultDescription={manualText} /></div>;
+  const categoryName = draft?.categoryId
+    ? categories.find((c) => c.id === draft.categoryId)?.name
+    : null;
+  const cardName = draft?.cardId ? cards.find((c) => c.id === draft.cardId)?.name : null;
+
+  return (
+    <div className="surface-card overflow-hidden p-4 sm:p-5">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="flex items-start gap-3">
+          <span className="grid size-10 place-items-center rounded-2xl bg-gold/20 text-amber-600 dark:text-gold">
+            <Sparkles className="size-4" />
+          </span>
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-primary">
+              Atalho FINANZZI
+            </p>
+            <h2 className="mt-1 text-base font-semibold leading-tight sm:text-lg">
+              Lance do seu jeito
+            </h2>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Escreva como falaria com o Fin. Ele entende o contexto.
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={openFinVoice}
+          className="hidden min-h-10 items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-3 text-xs font-bold text-primary transition-colors hover:bg-primary/10 sm:inline-flex"
+        >
+          <Mic className="size-3.5" /> Falar com o Fin
+        </button>
+      </div>
+      <form onSubmit={handleParse} className="mt-4 space-y-2">
+        <div className="flex items-center gap-2 rounded-2xl border border-border bg-background p-1.5 shadow-sm transition-all focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/10">
+          <Input
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Ex.: gastei R$ 45 no mercado"
+            className="h-12 min-w-0 flex-1 border-0 bg-transparent px-3 text-base shadow-none focus-visible:ring-0"
+            aria-label="Registro rápido por texto"
+          />
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={openFinVoice}
+            className="size-11 shrink-0 rounded-xl px-0"
+            aria-label="Falar com o Fin"
+          >
+            <Mic className="size-5" />
+          </Button>
+          <Button type="submit" disabled={!text.trim()} className="h-11 shrink-0 rounded-xl px-4">
+            Interpretar
+          </Button>
+        </div>
+        <div className="flex flex-wrap items-center gap-2 px-1">
+          <span className="text-[11px] font-semibold text-muted-foreground">Experimente:</span>
+          {EXAMPLES.map((example) => (
+            <button
+              key={example}
+              type="button"
+              onClick={() => setText(example)}
+              className="rounded-full bg-muted px-2.5 py-1.5 text-[11px] text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary"
+            >
+              {example}
+            </button>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={openFinVoice}
+          className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 text-sm font-semibold text-primary transition-colors hover:bg-primary/10 active:scale-[0.99] sm:hidden"
+        >
+          <Mic className="size-4" /> Falar com o Fin
+        </button>
+      </form>
+      {draft && (
+        <div className="mt-5 rounded-[1.5rem] border border-primary/20 bg-primary/[0.035] p-4 animate-fin-fade-up sm:p-5">
+          <div className="mb-4 flex items-start justify-between gap-3">
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-primary">
+                Entendi assim
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Confira antes de confirmar o lançamento.
+              </p>
+            </div>
+            <span
+              className={cn(
+                "rounded-full px-2.5 py-1 text-[11px] font-semibold",
+                draft.confidence === "high"
+                  ? "bg-success/15 text-success"
+                  : "bg-warning/15 text-warning",
+              )}
+            >
+              {draft.confidence === "high" ? "Leitura segura" : "Confira os campos"}
+            </span>
+          </div>
+          <div className="mb-4 grid gap-3 rounded-2xl bg-card p-4 sm:grid-cols-[auto_1fr] sm:items-center">
+            <div
+              className={cn(
+                "grid size-14 place-items-center rounded-2xl text-lg font-bold",
+                type === "income" ? "bg-success/15 text-success" : "bg-danger/10 text-danger",
+              )}
+            >
+              {type === "income" ? "+" : "−"}
+            </div>
+            <div>
+              <p className="font-display text-2xl font-semibold tracking-tight">
+                {formatBRL(parseBRL(amount) || draft.amount)}
+              </p>
+              <p className="mt-1 text-sm font-medium">{description || draft.description}</p>
+              <div className="mt-2 flex flex-wrap gap-2 text-xs text-muted-foreground">
+                <span>{categoryName ?? "Sem categoria"}</span>
+                {cardName && <span>· {cardName}</span>}
+              </div>
+            </div>
+          </div>
+          <div className="mb-4 grid grid-cols-2 gap-2 rounded-xl bg-background p-1">
+            {(["expense", "income"] as TransactionType[]).map((option) => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => setType(option)}
+                className={cn(
+                  "min-h-11 rounded-lg text-sm font-semibold transition-colors",
+                  type === option
+                    ? option === "income"
+                      ? "bg-success text-success-foreground"
+                      : "bg-danger text-danger-foreground"
+                    : "text-muted-foreground hover:bg-muted",
+                )}
+              >
+                {option === "income" ? "Receita" : "Despesa"}
+              </button>
+            ))}
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="qe-amount">Valor</Label>
+              <MoneyInput id="qe-amount" value={amount} onChange={setAmount} />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="qe-desc">Descrição</Label>
+              <Input
+                id="qe-desc"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Categoria</Label>
+              <Select value={categoryId} onValueChange={setCategoryId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={NONE}>Sem categoria</SelectItem>
+                  {visibleCategories.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label>Conta</Label>
+              <Select value={accountId} onValueChange={setAccountId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={NONE}>Sem conta</SelectItem>
+                  {accounts.map((a) => (
+                    <SelectItem key={a.id} value={a.id}>
+                      {a.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5 sm:col-span-2">
+              <Label>Cartão</Label>
+              <Select value={cardId} onValueChange={setCardId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={NONE}>Sem cartão</SelectItem>
+                  {cards.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="mt-5 flex gap-2">
+            <Button onClick={confirm} disabled={busy} className="h-11 flex-1">
+              <Check className="size-4" /> {busy ? "Salvando..." : "Confirmar lançamento"}
+            </Button>
+            <Button
+              variant="outline"
+              className="h-11"
+              onClick={() => setDraft(null)}
+              aria-label="Cancelar"
+            >
+              <X className="size-4" />
+            </Button>
+          </div>
+        </div>
+      )}
+      <TransactionDialog
+        open={manualOpen}
+        onOpenChange={setManualOpen}
+        defaultDescription={manualText}
+      />
+    </div>
+  );
 }

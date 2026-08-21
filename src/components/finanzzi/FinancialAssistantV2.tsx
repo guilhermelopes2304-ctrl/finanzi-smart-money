@@ -1,20 +1,33 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Loader2, Mic, MicOff, Send, Sparkles, X } from "lucide-react";
-import { useAccounts, useCategories, useCreditCards, useInvalidateFinance, useProfile } from "@/hooks/useFinanceData";
+import {
+  useAccounts,
+  useCategories,
+  useCreditCards,
+  useInvalidateFinance,
+  useProfile,
+} from "@/hooks/useFinanceData";
 import { useAuth } from "@/hooks/useAuth";
 import { formatBRL, todayISO } from "@/lib/format";
 import { saveTransaction } from "@/lib/transactions";
 import { parseQuickEntry, type QuickParseResult } from "@/lib/quick-parse";
 import { askFinAI } from "@/lib/fin-ai";
 import { cn } from "@/lib/utils";
+import { trackProductEvent } from "@/lib/product-analytics";
 
 type Message = { from: "fin" | "user"; text: string };
+type RecognitionResult = {
+  isFinal?: boolean;
+  [index: number]: { transcript?: string } | undefined;
+};
+type RecognitionEvent = { resultIndex?: number; results: ArrayLike<RecognitionResult> };
+type RecognitionErrorEvent = { error?: string };
 type Recognition = {
   lang: string;
   continuous: boolean;
   interimResults: boolean;
-  onresult: ((event: any) => void) | null;
-  onerror: ((event?: any) => void) | null;
+  onresult: ((event: RecognitionEvent) => void) | null;
+  onerror: ((event?: RecognitionErrorEvent) => void) | null;
   onend: (() => void) | null;
   start: () => void;
   stop: () => void;
@@ -27,9 +40,11 @@ declare global {
 }
 
 /** Palavras que indicam claramente a intenção de registrar um lançamento. */
-const ACTION_RE = /\b(gastei|paguei|comprei|torrei|recebi|ganhei|entrou|caiu|vendi|registra|registrar|registre|anota|anotar|lan[cç]a|lan[cç]ar)\b/i;
+const ACTION_RE =
+  /\b(gastei|paguei|comprei|torrei|recebi|ganhei|entrou|caiu|vendi|registra|registrar|registre|anota|anotar|lan[cç]a|lan[cç]ar)\b/i;
 /** Perguntas nunca viram lançamento, mesmo com valor no texto. */
-const QUESTION_RE = /(\?|\b(posso|quanto|qual|quais|como|onde|por que|porque|devo|vale a pena|consigo)\b)/i;
+const QUESTION_RE =
+  /(\?|\b(posso|quanto|qual|quais|como|onde|por que|porque|devo|vale a pena|consigo)\b)/i;
 
 export function FinancialAssistant({ className }: { className?: string }) {
   const { user } = useAuth();
@@ -67,7 +82,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
         amount: draft.amount,
         type: draft.type,
         categoryId: draft.categoryId,
-        accountId: draft.cardId ? null : accounts[0]?.id ?? null,
+        accountId: draft.cardId ? null : (accounts[0]?.id ?? null),
         cardId: draft.cardId,
         date: todayISO(),
         method: draft.cardId ? "credito" : "pix",
@@ -82,7 +97,10 @@ export function FinancialAssistant({ className }: { className?: string }) {
         text: `Registrei uma ${label} de ${formatBRL(draft.amount)}${category ? ` em ${category}` : draft.description ? ` em ${draft.description}` : ""}. Seu painel já foi atualizado.`,
       });
     } catch {
-      push({ from: "fin", text: "Entendi o lançamento, mas não consegui salvar agora. Tente novamente em alguns segundos." });
+      push({
+        from: "fin",
+        text: "Entendi o lançamento, mas não consegui salvar agora. Tente novamente em alguns segundos.",
+      });
     } finally {
       setBusy(false);
       setPending(null);
@@ -90,6 +108,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
   }
 
   async function handle(text: string) {
+    trackProductEvent("fin_used");
     push({ from: "user", text });
     setPending(null);
 
@@ -105,7 +124,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
         setPending(draft);
         push({
           from: "fin",
-          text: `Só confirmando: ${draft.type === "income" ? "entrada" : "saída"} de ${formatBRL(draft.amount)}${category ? ` em ${category}` : ` em ${draft.description || "sem categoria"}`}. Posso registrar?`,
+          text: `Entendi uma ${draft.type === "income" ? "entrada" : "saída"} de ${formatBRL(draft.amount)}${category ? ` em ${category}` : ` em ${draft.description || "sem categoria"}`}. Confira os detalhes e confirme quando estiver pronto.`,
         });
         return;
       }
@@ -116,7 +135,10 @@ export function FinancialAssistant({ className }: { className?: string }) {
       const answer = await askFinAI(text);
       push({ from: "fin", text: answer });
     } catch (error) {
-      push({ from: "fin", text: error instanceof Error ? error.message : "Não consegui responder agora." });
+      push({
+        from: "fin",
+        text: error instanceof Error ? error.message : "Não consegui responder agora.",
+      });
     } finally {
       setBusy(false);
     }
@@ -138,14 +160,17 @@ export function FinancialAssistant({ className }: { className?: string }) {
   function listen() {
     const Ctor = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!Ctor) {
-      push({ from: "fin", text: "Seu navegador não oferece reconhecimento de voz. Use o Chrome ou o Edge e permita o microfone." });
+      push({
+        from: "fin",
+        text: "Seu navegador não oferece reconhecimento de voz. Use o Chrome ou o Edge e permita o microfone.",
+      });
       return;
     }
     const recognition = new Ctor();
     recognition.lang = "pt-BR";
     recognition.continuous = false;
     recognition.interimResults = true;
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event: RecognitionEvent) => {
       let finalText = "";
       let interim = "";
       for (let i = event.resultIndex ?? 0; i < event.results.length; i += 1) {
@@ -162,10 +187,13 @@ export function FinancialAssistant({ className }: { className?: string }) {
         setInput(interim.trim());
       }
     };
-    recognition.onerror = (event: any) => {
+    recognition.onerror = (event?: RecognitionErrorEvent) => {
       setListening(false);
       if (event?.error === "not-allowed" || event?.error === "service-not-allowed") {
-        push({ from: "fin", text: "Permita o acesso ao microfone nas configurações do navegador para falar comigo." });
+        push({
+          from: "fin",
+          text: "Permita o acesso ao microfone nas configurações do navegador para falar comigo.",
+        });
       }
     };
     recognition.onend = () => setListening(false);
@@ -178,6 +206,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
     }
   }
 
+  // `listen` intentionally stays bound to the browser event handler for the lifetime of this widget.
   useEffect(() => {
     const handler = (event: Event) => {
       const detail = (event as CustomEvent<{ listen?: boolean }>).detail;
@@ -186,6 +215,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
     };
     window.addEventListener("finanzzi:open-assistant", handler);
     return () => window.removeEventListener("finanzzi:open-assistant", handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -193,7 +223,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
       setMessages([
         {
           from: "fin",
-          text: `Olá${profile?.name ? `, ${profile.name.split(" ")[0]}` : ""}! Eu sou o Fin. Posso analisar seus dados reais e também registrar lançamentos — é só falar ou escrever, por exemplo: “gastei 45 reais no mercado” ou “quanto gastei este mês?”.`,
+          text: `Olá${profile?.name ? `, ${profile.name.split(" ")[0]}` : ""}. Eu sou o Fin. Posso analisar seu momento, explicar o que está acontecendo e registrar lançamentos — escreva ou fale comigo como falaria com alguém de confiança.`,
         },
       ]);
     }
@@ -210,7 +240,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
         onClick={() => setOpen(true)}
         aria-label="Abrir Fin"
         className={cn(
-          "fixed bottom-24 right-4 z-40 grid size-14 place-items-center overflow-hidden rounded-full border-2 border-primary/20 bg-[#062117] shadow-2xl transition-transform hover:scale-105 active:scale-95",
+          "fixed bottom-24 right-4 z-40 grid size-16 place-items-center overflow-hidden rounded-[1.35rem] border-2 border-emerald-300/25 bg-[#062117] shadow-[0_18px_45px_rgba(0,0,0,.24)] transition-transform hover:-translate-y-1 hover:scale-105 active:scale-95",
           className,
         )}
       >
@@ -222,11 +252,11 @@ export function FinancialAssistant({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "fixed bottom-24 right-3 z-50 w-[calc(100vw-1.5rem)] max-w-[400px] overflow-hidden rounded-3xl border border-primary/20 bg-[#071a12] text-white shadow-2xl sm:right-4",
+        "fixed bottom-24 right-3 z-50 w-[calc(100vw-1.5rem)] max-w-[430px] overflow-hidden rounded-[1.75rem] border border-emerald-300/20 bg-[#071a12] text-white shadow-[0_24px_80px_rgba(0,0,0,.32)] sm:right-4",
         className,
       )}
     >
-      <div className="flex items-center justify-between border-b border-white/10 bg-primary/10 p-4">
+      <div className="flex items-center justify-between border-b border-white/10 bg-gradient-to-r from-emerald-300/10 to-transparent p-4 sm:p-5">
         <div className="flex items-center gap-3">
           <div className="size-10 overflow-hidden rounded-xl">
             <img src="/fin-assistente.png" alt="Fin" className="h-full w-full object-cover" />
@@ -235,21 +265,28 @@ export function FinancialAssistant({ className }: { className?: string }) {
             <div className="flex items-center gap-1 text-sm font-bold">
               <Sparkles className="size-3.5 text-emerald-300" /> Fin
             </div>
-            <p className="text-xs text-white/50">Assistente financeiro</p>
+            <p className="text-xs text-white/50">Copiloto financeiro · online</p>
           </div>
         </div>
-        <button type="button" onClick={() => setOpen(false)} className="rounded-full p-2 text-white/50 hover:bg-white/10" aria-label="Fechar">
+        <button
+          type="button"
+          onClick={() => setOpen(false)}
+          className="rounded-full p-2 text-white/50 hover:bg-white/10"
+          aria-label="Fechar"
+        >
           <X className="size-4" />
         </button>
       </div>
 
-      <div ref={scrollRef} className="max-h-[55vh] space-y-3 overflow-y-auto p-4">
+      <div ref={scrollRef} className="max-h-[55vh] space-y-3 overflow-y-auto p-4 sm:p-5">
         {messages.map((message, index) => (
           <div
             key={`${message.from}-${index}`}
             className={cn(
-              "max-w-[90%] whitespace-pre-wrap rounded-2xl px-3 py-2 text-sm leading-5",
-              message.from === "user" ? "ml-auto bg-emerald-400 font-medium text-[#032013]" : "bg-white/[0.07] text-white/85",
+              "max-w-[92%] whitespace-pre-wrap rounded-2xl px-3.5 py-3 text-sm leading-5 shadow-sm",
+              message.from === "user"
+                ? "ml-auto bg-emerald-400 font-medium text-[#032013]"
+                : "bg-white/[0.07] text-white/85",
             )}
           >
             {message.text}
@@ -288,7 +325,10 @@ export function FinancialAssistant({ className }: { className?: string }) {
           <button
             type="button"
             onClick={() => (listening ? stopListening() : listen())}
-            className={cn("grid size-10 shrink-0 place-items-center rounded-xl", listening ? "bg-red-400" : "bg-emerald-400 text-[#032013]")}
+            className={cn(
+              "grid size-10 shrink-0 place-items-center rounded-xl",
+              listening ? "bg-red-400" : "bg-emerald-400 text-[#032013]",
+            )}
             aria-label={listening ? "Parar de ouvir" : "Falar com o Fin"}
           >
             {listening ? <MicOff className="size-4 text-white" /> : <Mic className="size-4" />}
@@ -300,7 +340,9 @@ export function FinancialAssistant({ className }: { className?: string }) {
               if (e.key === "Enter") send();
             }}
             disabled={busy}
-            placeholder={listening ? "Estou ouvindo..." : busy ? "Pensando..." : "Converse com o Fin..."}
+            placeholder={
+              listening ? "Estou ouvindo..." : busy ? "Pensando..." : "Converse com o Fin..."
+            }
             className="min-w-0 flex-1 bg-transparent px-3 text-sm outline-none placeholder:text-white/30"
             aria-label="Mensagem para o Fin"
           />
@@ -314,7 +356,9 @@ export function FinancialAssistant({ className }: { className?: string }) {
             <Send className="size-4" />
           </button>
         </div>
-        <p className="mt-2 px-1 text-[10px] text-white/35">O Fin consulta seus dados no servidor com sua conta autenticada.</p>
+        <p className="mt-2 px-1 text-[10px] leading-4 text-white/35">
+          O Fin usa apenas os dados da sua conta autenticada. Você decide o que registrar.
+        </p>
       </div>
     </div>
   );

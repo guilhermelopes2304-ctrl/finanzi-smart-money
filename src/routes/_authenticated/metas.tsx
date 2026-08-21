@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Plus, Trash2 } from "lucide-react";
+import { CalendarDays, Check, Plus, Sparkles, Target, Trash2 } from "lucide-react";
 import { useDeleteRow, useGoals, useSaveRow } from "@/hooks/useFinanceData";
 import { goalMonthlyTarget } from "@/lib/finance";
 import { formatBRL, formatDateBR, parseBRL } from "@/lib/format";
+import { trackProductEvent } from "@/lib/product-analytics";
 import { PageHeader } from "@/components/finanzzi/PageHeader";
 import { EmptyState } from "@/components/finanzzi/EmptyState";
 import { ConfirmDelete } from "@/components/finanzzi/ConfirmDelete";
@@ -26,7 +27,10 @@ export const Route = createFileRoute("/_authenticated/metas")({
   head: () => ({
     meta: [
       { title: "Metas — FINANZZI" },
-      { name: "description", content: "Planeje viagens, reservas e conquistas com metas financeiras." },
+      {
+        name: "description",
+        content: "Planeje viagens, reservas e conquistas com metas financeiras.",
+      },
       { property: "og:title", content: "Metas — FINANZZI" },
       { property: "og:description", content: "Acompanhe o progresso das suas metas financeiras." },
     ],
@@ -59,15 +63,20 @@ function GoalsPage() {
           description: form.description || null,
         },
       },
-      { onSuccess: () => setOpen(false) },
+      {
+        onSuccess: () => {
+          trackProductEvent("first_goal");
+          setOpen(false);
+        },
+      },
     );
   }
 
   return (
     <div>
       <PageHeader
-        title="Metas"
-        subtitle="Planeje seus objetivos e acompanhe o progresso."
+        title="Metas que fazem sentido"
+        subtitle="Transforme planos em um ritmo que você consegue acompanhar."
         action={
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
@@ -150,10 +159,16 @@ function GoalsPage() {
             const pct = target > 0 ? Math.min(100, Math.round((current / target) * 100)) : 0;
             const monthly = goalMonthlyTarget(goal);
             return (
-              <div key={goal.id} className="surface-card p-5">
+              <div key={goal.id} className="surface-card relative overflow-hidden p-5">
+                <div className="pointer-events-none absolute -right-10 -top-10 size-32 rounded-full bg-primary/8 blur-3xl" />
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <p className="font-medium">{goal.name}</p>
+                    <div className="flex items-center gap-2">
+                      <span className="grid size-9 place-items-center rounded-xl bg-primary/10 text-primary">
+                        <Target className="size-4" />
+                      </span>
+                      <p className="font-display text-lg font-semibold">{goal.name}</p>
+                    </div>
                     {goal.description && (
                       <p className="text-xs text-muted-foreground">{goal.description}</p>
                     )}
@@ -183,7 +198,16 @@ function GoalsPage() {
                     />
                   </div>
                 </div>
-                <Progress value={pct} className="mt-4" />
+                <div className="mt-5 flex items-center justify-between gap-3 text-xs">
+                  <span className="inline-flex items-center gap-1.5 font-semibold text-primary">
+                    <Sparkles className="size-3.5" />{" "}
+                    {pct >= 100 ? "Meta alcançada" : `${pct}% do caminho`}
+                  </span>
+                  <span className="text-muted-foreground">
+                    {formatBRL(Math.max(0, target - current))} restantes
+                  </span>
+                </div>
+                <Progress value={pct} className="mt-3" />
                 <div className="mt-3 grid grid-cols-2 gap-2 text-sm sm:grid-cols-4">
                   <div>
                     <p className="text-xs text-muted-foreground">Atual</p>
@@ -198,8 +222,12 @@ function GoalsPage() {
                     <p className="font-medium">{pct}%</p>
                   </div>
                   <div>
-                    <p className="text-xs text-muted-foreground">Prazo</p>
-                    <p className="font-medium">{goal.deadline ? formatDateBR(goal.deadline) : "—"}</p>
+                    <p className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <CalendarDays className="size-3" /> Prazo
+                    </p>
+                    <p className="font-medium">
+                      {goal.deadline ? formatDateBR(goal.deadline) : "—"}
+                    </p>
                   </div>
                 </div>
                 {monthly !== null && monthly > 0 && (
@@ -209,8 +237,8 @@ function GoalsPage() {
                   </p>
                 )}
                 {pct >= 100 && (
-                  <p className="mt-3 text-sm font-medium text-success">
-                    Parabéns! Você alcançou essa meta.
+                  <p className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-success">
+                    <Check className="size-4" /> Você alcançou essa meta.
                   </p>
                 )}
               </div>

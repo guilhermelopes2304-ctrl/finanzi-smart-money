@@ -1,8 +1,23 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { BarChart3, Brain, CalendarClock, CreditCard, Home, LogOut, MessageCircle, MoreHorizontal, Plus, Settings, ShoppingBag, Target, Wallet, X } from "lucide-react";
+import {
+  BarChart3,
+  Brain,
+  CalendarClock,
+  CreditCard,
+  Home,
+  LogOut,
+  MessageCircle,
+  MoreHorizontal,
+  Plus,
+  Settings,
+  ShoppingBag,
+  Target,
+  Wallet,
+  X,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useProfile } from "@/hooks/useFinanceData";
+import { usePlan } from "@/hooks/usePlan";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/finanzzi/Logo";
 import { ThemeToggle } from "@/components/finanzzi/ThemeToggle";
@@ -12,25 +27,302 @@ import { NavigationLoading } from "@/components/finanzzi/NavigationLoading";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { to: "/dashboard", label: "Dashboard", icon: Home }, { to: "/lancamentos", label: "Lançamentos", icon: Wallet }, { to: "/contas", label: "Contas", icon: CalendarClock }, { to: "/cartoes", label: "Cartões", icon: CreditCard }, { to: "/metas", label: "Metas", icon: Target }, { to: "/relatorios", label: "Relatórios", icon: BarChart3 }, { to: "/inteligencia", label: "Inteligência", icon: Brain }, { to: "/posso-comprar", label: "Posso comprar?", icon: ShoppingBag }, { to: "/configuracoes", label: "Configurações", icon: Settings },
+  { to: "/dashboard", label: "Início", icon: Home },
+  { to: "/lancamentos", label: "Lançamentos", icon: Wallet },
+  { to: "/contas", label: "Contas", icon: CalendarClock },
+  { to: "/cartoes", label: "Cartões", icon: CreditCard },
+  { to: "/metas", label: "Metas", icon: Target },
+  { to: "/relatorios", label: "Relatórios", icon: BarChart3 },
+  { to: "/inteligencia", label: "Fin", icon: Brain },
+  { to: "/posso-comprar", label: "Posso gastar", icon: ShoppingBag },
+  { to: "/configuracoes", label: "Configurações", icon: Settings },
 ] as const;
-function openAssistant() { window.dispatchEvent(new CustomEvent("finanzzi:open-assistant")); }
-function beginNavigation() { window.dispatchEvent(new CustomEvent("finanzzi:navigation-start")); }
-function initials(name?: string | null) { if (!name) return "F"; return name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase(); }
-function NavItem({ item, active, onNavigate }: { item: (typeof NAV)[number]; active: boolean; onNavigate?: () => void }) { return <Link to={item.to} onClick={() => { beginNavigation(); onNavigate?.(); }} className={cn("group flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-2xl px-1 py-2 text-[10px] font-semibold transition-all duration-200 active:scale-[0.96]", active ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted/70 hover:text-foreground")}><span className={cn("grid size-9 place-items-center rounded-xl transition-all", active ? "bg-primary text-primary-foreground shadow-sm" : "group-hover:bg-background")}><item.icon className="size-[18px]" strokeWidth={active ? 2.3 : 1.9} /></span><span className="max-w-[78px] truncate">{item.label === "Dashboard" ? "Início" : item.label}</span></Link>; }
+
+const NAV_GROUPS = [
+  { title: "Visão geral", items: [NAV[0]] },
+  { title: "Dinheiro", items: [NAV[1], NAV[2], NAV[3], NAV[7]] },
+  { title: "Planejamento", items: [NAV[4], NAV[5]] },
+  { title: "Inteligência", items: [NAV[6]] },
+  { title: "Sistema", items: [NAV[8]] },
+] as const;
+
+function openAssistant() {
+  window.dispatchEvent(new CustomEvent("finanzzi:open-assistant"));
+}
+function beginNavigation() {
+  window.dispatchEvent(new CustomEvent("finanzzi:navigation-start"));
+}
+function initials(name?: string | null) {
+  if (!name) return "F";
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
+}
+
+function NavItem({
+  item,
+  active,
+  onNavigate,
+  mobile = false,
+}: {
+  item: (typeof NAV)[number];
+  active: boolean;
+  onNavigate?: () => void;
+  mobile?: boolean;
+}) {
+  if (mobile) {
+    return (
+      <Link
+        to={item.to}
+        onClick={() => {
+          beginNavigation();
+          onNavigate?.();
+        }}
+        className={cn(
+          "group flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-2xl px-1 py-2 text-[10px] font-semibold transition-all duration-200 active:scale-[0.96]",
+          active
+            ? "bg-primary/10 text-primary"
+            : "text-muted-foreground hover:bg-muted/70 hover:text-foreground",
+        )}
+      >
+        <span
+          className={cn(
+            "grid size-9 place-items-center rounded-xl transition-all",
+            active ? "bg-primary text-primary-foreground shadow-sm" : "group-hover:bg-background",
+          )}
+        >
+          <item.icon className="size-[18px]" strokeWidth={active ? 2.3 : 1.9} />
+        </span>
+        <span className="max-w-[78px] truncate">{item.label}</span>
+      </Link>
+    );
+  }
+  return (
+    <Link
+      to={item.to}
+      onClick={beginNavigation}
+      className={cn(
+        "group flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
+        active
+          ? "bg-primary/10 text-primary shadow-sm"
+          : "text-muted-foreground hover:bg-muted/70 hover:text-foreground",
+      )}
+    >
+      <span
+        className={cn(
+          "grid size-8 place-items-center rounded-lg",
+          active ? "bg-primary text-primary-foreground" : "bg-muted/60 group-hover:bg-background",
+        )}
+      >
+        <item.icon className="size-4" strokeWidth={active ? 2.2 : 1.9} />
+      </span>
+      {item.label}
+    </Link>
+  );
+}
+
 export function AppShell({ children }: { children: ReactNode }) {
-  const pathname = useRouterState({ select: (s) => s.location.pathname }); const { data: profile, isLoading } = useProfile(); const navigate = useNavigate(); const [transactionOpen, setTransactionOpen] = useState(false); const [moreOpen, setMoreOpen] = useState(false);
-  useEffect(() => { window.dispatchEvent(new CustomEvent("finanzzi:navigation-end")); }, [pathname]);
-  useEffect(() => { if (!isLoading && profile && !profile.onboarded && pathname !== "/boas-vindas") void navigate({ to: "/boas-vindas" }); }, [profile, isLoading, pathname, navigate]);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { data: profile, isLoading, isPro } = usePlan();
+  const navigate = useNavigate();
+  const [transactionOpen, setTransactionOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("finanzzi:navigation-end"));
+  }, [pathname]);
+  useEffect(() => {
+    if (!isLoading && profile && !profile.onboarded && pathname !== "/boas-vindas")
+      void navigate({ to: "/boas-vindas" });
+  }, [profile, isLoading, pathname, navigate]);
   useEffect(() => setMoreOpen(false), [pathname]);
-  async function signOut() { await supabase.auth.signOut(); await navigate({ to: "/" }); }
+
+  async function signOut() {
+    await supabase.auth.signOut();
+    await navigate({ to: "/" });
+  }
+
   if (pathname === "/boas-vindas") return <>{children}</>;
-  return <div className="min-h-screen bg-background text-foreground transition-colors duration-300"><NavigationLoading />
-    <aside className="fixed inset-y-0 left-0 z-30 hidden w-[248px] flex-col border-r border-border/70 bg-card/95 backdrop-blur-xl lg:flex"><div className="flex h-[76px] items-center justify-between border-b border-border/70 px-5"><Logo /><ThemeToggle /></div><nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4"><p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground/70">Seu dinheiro</p>{NAV.map((item) => { const active = pathname === item.to; return <Link key={item.to} to={item.to} onClick={beginNavigation} className={cn("group flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200", active ? "bg-primary/10 text-primary shadow-sm" : "text-muted-foreground hover:bg-muted/70 hover:text-foreground")}><span className={cn("grid size-8 place-items-center rounded-lg", active ? "bg-primary text-primary-foreground" : "bg-muted/60 group-hover:bg-background")}><item.icon className="size-4" strokeWidth={active ? 2.2 : 1.9} /></span>{item.label}</Link>; })}</nav><div className="space-y-2 border-t border-border/70 p-4"><Button className="h-11 w-full rounded-xl shadow-sm transition-transform active:scale-[0.98]" onClick={() => setTransactionOpen(true)}><Plus className="size-4" /> Novo lançamento</Button><button onClick={signOut} className="flex min-h-10 w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"><LogOut className="size-4" /> Sair</button></div></aside>
-    <header className="sticky top-0 z-20 border-b border-border/60 bg-background/80 px-4 py-2.5 backdrop-blur-xl lg:hidden"><div className="flex min-h-11 items-center justify-between gap-3"><Logo /><div className="flex items-center gap-2"><ThemeToggle /><Link to="/configuracoes" aria-label="Abrir configurações" className="grid size-10 place-items-center rounded-full border border-border/70 bg-card text-xs font-bold text-primary shadow-sm transition-all active:scale-95">{initials(profile?.name)}</Link></div></div></header>
-    <main className="min-w-0 px-3 pt-4 pb-32 sm:px-5 lg:ml-[248px] lg:px-8 lg:pt-8 lg:pb-10"><div className="mx-auto min-w-0 max-w-6xl">{children}</div></main>
-    <nav className="fixed inset-x-2 bottom-2 z-30 rounded-[1.4rem] border border-border/70 bg-card/90 pb-[env(safe-area-inset-bottom)] shadow-[0_10px_35px_rgba(0,0,0,0.12)] backdrop-blur-2xl lg:hidden"><div className="grid grid-cols-5 items-end px-1.5 py-1"><NavItem item={NAV[0]} active={pathname === NAV[0].to} /><NavItem item={NAV[1]} active={pathname === NAV[1].to} /><div className="flex min-h-14 justify-center"><button type="button" onClick={() => setTransactionOpen(true)} aria-label="Novo lançamento" className="-mt-7 grid size-[54px] place-items-center rounded-full border-[5px] border-background bg-primary text-primary-foreground shadow-lg transition-all duration-200 active:scale-90"><Plus className="size-6" strokeWidth={2.5} /></button></div><button type="button" onClick={openAssistant} className="group flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[10px] font-semibold text-muted-foreground transition-all active:scale-[0.96] active:text-primary"><span className="grid size-9 place-items-center rounded-xl group-hover:bg-muted/70"><MessageCircle className="size-[18px]" /></span><span>Fin</span></button><button type="button" onClick={() => setMoreOpen(true)} className={cn("group flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[10px] font-semibold transition-all active:scale-[0.96]", moreOpen ? "text-primary" : "text-muted-foreground")}><span className="grid size-9 place-items-center rounded-xl group-hover:bg-muted/70"><MoreHorizontal className="size-[18px]" /></span><span>Mais</span></button></div></nav>
-    {moreOpen && <div className="fixed inset-0 z-40 lg:hidden"><button type="button" aria-label="Fechar menu" className="absolute inset-0 bg-black/35 backdrop-blur-[3px]" onClick={() => setMoreOpen(false)} /><section className="absolute inset-x-0 bottom-0 rounded-t-[2rem] border-t border-border bg-card p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-2xl animate-fin-fade-up"><div className="mx-auto mb-5 h-1 w-10 rounded-full bg-muted-foreground/25" /><div className="mb-5 flex items-center justify-between"><div><p className="text-[10px] font-bold uppercase tracking-[0.16em] text-primary">FINANZZI</p><h2 className="mt-1 text-xl font-semibold">Mais opções</h2></div><button type="button" onClick={() => setMoreOpen(false)} className="grid size-11 place-items-center rounded-full text-muted-foreground hover:bg-muted" aria-label="Fechar"><X className="size-5" /></button></div><div className="grid grid-cols-3 gap-2">{NAV.slice(2).map((item) => <Link key={item.to} to={item.to} onClick={() => { beginNavigation(); setMoreOpen(false); }} className={cn("flex min-h-[88px] flex-col items-center justify-center gap-2 rounded-2xl border border-border bg-background px-2 text-center text-xs font-semibold transition-all active:scale-95", pathname === item.to ? "border-primary bg-primary/10 text-primary" : "text-foreground hover:bg-muted")}><span className="grid size-9 place-items-center rounded-xl bg-muted/70"><item.icon className="size-5" /></span>{item.label}</Link>)}</div><button type="button" onClick={signOut} className="mt-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border border-border py-3 text-sm font-semibold text-muted-foreground hover:bg-muted hover:text-foreground"><LogOut className="size-4" /> Encerrar sessão</button></section></div>}
-    <TransactionDialog open={transactionOpen} onOpenChange={setTransactionOpen} /><FinancialAssistant />
-  </div>;
+
+  return (
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
+      <NavigationLoading />
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-[256px] flex-col border-r border-border/70 bg-card/95 backdrop-blur-xl lg:flex">
+        <div className="flex h-[78px] items-center justify-between border-b border-border/70 px-5">
+          <Logo />
+          <ThemeToggle />
+        </div>
+        <div className="border-b border-border/70 px-5 py-4">
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary">
+              Seu dinheiro
+            </p>
+            <Link
+              to="/configuracoes"
+              className="rounded-full bg-muted px-2 py-1 text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground hover:bg-primary/10 hover:text-primary"
+            >
+              {isPro ? "Pro" : "Free"}
+            </Link>
+          </div>
+          <p className="mt-1 text-xs leading-5 text-muted-foreground">
+            Minha situação. Minha próxima decisão.
+          </p>
+        </div>
+        <nav className="flex-1 space-y-5 overflow-y-auto px-3 py-5">
+          {NAV_GROUPS.map((group) => (
+            <div key={group.title}>
+              <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground/65">
+                {group.title}
+              </p>
+              <div className="space-y-1">
+                {group.items.map((item) => (
+                  <NavItem key={item.to} item={item} active={pathname === item.to} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </nav>
+        <div className="space-y-2 border-t border-border/70 p-4">
+          <Button
+            className="h-11 w-full rounded-xl shadow-sm transition-transform active:scale-[0.98]"
+            onClick={() => setTransactionOpen(true)}
+          >
+            <Plus className="size-4" /> Lançar agora
+          </Button>
+          <button
+            onClick={signOut}
+            className="flex min-h-10 w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            <LogOut className="size-4" /> Sair
+          </button>
+        </div>
+      </aside>
+
+      <header className="sticky top-0 z-20 border-b border-border/60 bg-background/80 px-4 py-2.5 backdrop-blur-xl lg:hidden">
+        <div className="flex min-h-11 items-center justify-between gap-3">
+          <Logo />
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Link
+              to="/configuracoes"
+              aria-label="Abrir configurações"
+              className="grid size-10 place-items-center rounded-full border border-border/70 bg-card text-xs font-bold text-primary shadow-sm transition-all active:scale-95"
+            >
+              {initials(profile?.name)}
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      <main className="min-w-0 px-3 pb-32 pt-4 sm:px-5 lg:ml-[256px] lg:px-8 lg:pb-10 lg:pt-8">
+        <div className="mx-auto min-w-0 max-w-7xl">{children}</div>
+      </main>
+
+      <nav className="fixed inset-x-2 bottom-2 z-30 rounded-[1.4rem] border border-border/70 bg-card/90 pb-[env(safe-area-inset-bottom)] shadow-[0_10px_35px_rgba(0,0,0,0.12)] backdrop-blur-2xl lg:hidden">
+        <div className="grid grid-cols-5 items-end px-1.5 py-1">
+          <NavItem item={NAV[0]} active={pathname === NAV[0].to} mobile />
+          <NavItem item={NAV[1]} active={pathname === NAV[1].to} mobile />
+          <div className="flex min-h-14 justify-center">
+            <button
+              type="button"
+              onClick={() => setTransactionOpen(true)}
+              aria-label="Lançar agora"
+              className="-mt-7 grid size-[56px] place-items-center rounded-full border-[5px] border-background bg-primary text-primary-foreground shadow-lg transition-all duration-200 active:scale-90"
+            >
+              <Plus className="size-6" strokeWidth={2.5} />
+            </button>
+          </div>
+          <button
+            type="button"
+            onClick={openAssistant}
+            className="group flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[10px] font-semibold text-muted-foreground transition-all active:scale-[0.96] active:text-primary"
+          >
+            <span className="grid size-9 place-items-center rounded-xl group-hover:bg-muted/70">
+              <MessageCircle className="size-[18px]" />
+            </span>
+            <span>Fin</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setMoreOpen(true)}
+            className={cn(
+              "group flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[10px] font-semibold transition-all active:scale-[0.96]",
+              moreOpen ? "text-primary" : "text-muted-foreground",
+            )}
+          >
+            <span className="grid size-9 place-items-center rounded-xl group-hover:bg-muted/70">
+              <MoreHorizontal className="size-[18px]" />
+            </span>
+            <span>Mais</span>
+          </button>
+        </div>
+      </nav>
+
+      {moreOpen && (
+        <div className="fixed inset-0 z-40 lg:hidden">
+          <button
+            type="button"
+            aria-label="Fechar menu"
+            className="absolute inset-0 bg-black/35 backdrop-blur-[3px]"
+            onClick={() => setMoreOpen(false)}
+          />
+          <section className="absolute inset-x-0 bottom-0 rounded-t-[2rem] border-t border-border bg-card p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-2xl animate-fin-fade-up">
+            <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-muted-foreground/25" />
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-primary">
+                  FINANZZI
+                </p>
+                <h2 className="mt-1 text-xl font-semibold">Mais opções</h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setMoreOpen(false)}
+                className="grid size-11 place-items-center rounded-full text-muted-foreground hover:bg-muted"
+                aria-label="Fechar"
+              >
+                <X className="size-5" />
+              </button>
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              {NAV.slice(2).map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => {
+                    beginNavigation();
+                    setMoreOpen(false);
+                  }}
+                  className={cn(
+                    "flex min-h-[88px] flex-col items-center justify-center gap-2 rounded-2xl border border-border bg-background px-2 text-center text-xs font-semibold transition-all active:scale-95",
+                    pathname === item.to
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "text-foreground hover:bg-muted",
+                  )}
+                >
+                  <span className="grid size-9 place-items-center rounded-xl bg-muted/70">
+                    <item.icon className="size-5" />
+                  </span>
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={signOut}
+              className="mt-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border border-border py-3 text-sm font-semibold text-muted-foreground hover:bg-muted hover:text-foreground"
+            >
+              <LogOut className="size-4" /> Encerrar sessão
+            </button>
+          </section>
+        </div>
+      )}
+      <TransactionDialog open={transactionOpen} onOpenChange={setTransactionOpen} />
+      <FinancialAssistant />
+    </div>
+  );
 }

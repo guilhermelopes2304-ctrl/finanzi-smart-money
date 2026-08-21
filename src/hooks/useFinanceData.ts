@@ -156,7 +156,6 @@ export function useUpdateProfile(successMessage = "Perfil atualizado") {
 
 /** Creates a card purchase and all of its installment transactions. */
 export function useCreateCardPurchase(onDone?: () => void) {
-  const { user } = useAuth();
   const invalidate = useInvalidateFinance();
   return useMutation({
     mutationFn: async (input: {
@@ -168,36 +167,18 @@ export function useCreateCardPurchase(onDone?: () => void) {
       installments: number;
       notes?: string | null;
     }) => {
-      const { data, error } = await supabase
-        .from("credit_card_purchases")
-        .insert({
-          user_id: user!.id,
-          credit_card_id: input.credit_card_id,
-          category_id: input.category_id,
-          description: input.description,
-          total_amount: input.total_amount,
-          purchase_date: input.purchase_date,
-          installments: input.installments,
-        })
-        .select("id")
-        .single();
-      if (error) throw new Error(error.message);
-      const purchaseId = (data as { id: string }).id;
-      const { buildInstallments } = await import("@/lib/installments");
-      const rows = buildInstallments({
-        userId: user!.id,
-        purchaseId,
-        creditCardId: input.credit_card_id,
-        categoryId: input.category_id,
-        description: input.description,
-        totalAmount: input.total_amount,
-        firstDate: input.purchase_date,
-        installments: input.installments,
-        notes: input.notes ?? null,
+      const { data, error } = await supabase.rpc("create_card_purchase_with_installments", {
+        p_credit_card_id: input.credit_card_id,
+        p_category_id: input.category_id,
+        p_description: input.description,
+        p_total_amount: input.total_amount,
+        p_purchase_date: input.purchase_date,
+        p_installments: input.installments,
+        p_notes: input.notes ?? null,
       });
-      const { error: txError } = await supabase.from("transactions").insert(rows);
-      if (txError) throw new Error(txError.message);
-      return purchaseId;
+      if (error) throw new Error(error.message);
+      if (!data) throw new Error("A compra não foi criada");
+      return data;
     },
     onSuccess: () => {
       invalidate();

@@ -1,9 +1,10 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Wallet } from "lucide-react";
 import { useAccounts, useBills, useGoals, useTransactions } from "@/hooks/useFinanceData";
 import { spendCapacity } from "@/lib/finance";
 import { formatBRL } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { trackProductEvent } from "@/lib/product-analytics";
 
 /** Read-only calculator: how much is safe to spend until the end of the month. */
 export function CanISpend() {
@@ -16,6 +17,10 @@ export function CanISpend() {
     () => spendCapacity({ accounts, transactions, bills, goals }),
     [accounts, transactions, bills, goals],
   );
+
+  useEffect(() => {
+    trackProductEvent("spend_capacity_viewed");
+  }, []);
 
   const rows = [
     { label: "Saldo disponível", value: capacity.balance, sign: "" },
