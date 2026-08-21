@@ -206,7 +206,7 @@ function Landing() {
                   <div className="mt-7 grid grid-cols-3 gap-2">
                     <PreviewMetric label="Entradas" value="R$ 6.200" />
                     <PreviewMetric label="Saídas" value="R$ 1.617" />
-                    <PreviewMetric label="Fin Score" value="78 / 100" />
+                    <PreviewMetric label="Hoje" value="R$ 327" />
                   </div>
                 </div>
                 <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_auto]">

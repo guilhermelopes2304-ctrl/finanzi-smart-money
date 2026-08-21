@@ -14,6 +14,7 @@ import { formatBRL, formatDateBR, monthRange } from "@/lib/format";
 import { PageHeader } from "@/components/finanzzi/PageHeader";
 import { PeriodSelect } from "@/components/finanzzi/PeriodSelect";
 import { EmptyState } from "@/components/finanzzi/EmptyState";
+import { ViralMomentCard } from "@/components/finanzzi/ViralMomentCard";
 import { PlanGate } from "@/components/finanzzi/PlanGate";
 import {
   BalanceEvolutionChart,
@@ -127,6 +128,18 @@ function ReportsPage() {
           <p className="text-xs text-muted-foreground">Antes: {formatBRL(prev.balance)}</p>
         </div>
       </div>
+
+      {slices[0] && (
+        <ViralMomentCard
+          className="mt-4"
+          eyebrow="Gastos por categoria"
+          title="Descobri para onde meu dinheiro vai."
+          value={`${Math.round(slices[0].share)}%`}
+          detail={`${slices[0].name} representa ${formatBRL(slices[0].value)} das despesas no período`}
+          shareText={`Descobri para onde meu dinheiro vai: ${slices[0].name} representa ${Math.round(slices[0].share)}% dos meus gastos no período. Organizei essa descoberta com o FINANZZI.`}
+          event="category_moment_shared"
+        />
+      )}
 
       <PlanGate feature="advanced_reports" className="mt-4">
         <div className="grid gap-4 lg:grid-cols-2">

@@ -8,7 +8,9 @@ import {
   useCreditCards,
   useInvalidateFinance,
 } from "@/hooks/useFinanceData";
-import { parseQuickEntry, type QuickParseResult } from "@/lib/quick-parse";
+import { interpretFinanceMessage } from "@/lib/channel-engine";
+import type { QuickParseResult } from "@/lib/quick-parse";
+import { saveRecurringBill } from "@/lib/bills";
 import { saveTransaction } from "@/lib/transactions";
 import { formatBRL, parseBRL, todayISO } from "@/lib/format";
 import { MoneyInput } from "@/components/finanzzi/MoneyInput";
@@ -29,6 +31,10 @@ import type { TransactionType } from "@/types/finance";
 
 const NONE = "__none__";
 const EXAMPLES = ["gastei 42 no mercado", "recebi 3500 salário", "comprei tênis 399"];
+
+export function recurrenceLabel(value: QuickParseResult["recurrence"]) {
+  return value === "monthly" ? "todo mês" : value === "yearly" ? "todo ano" : "toda semana";
+}
 
 export function QuickEntry() {
   const { user } = useAuth();
@@ -56,7 +62,13 @@ export function QuickEntry() {
     event.preventDefault();
     if (!text.trim()) return;
     trackProductEvent("quick_entry_used");
-    const result = parseQuickEntry(text, categories, cards);
+    const result = interpretFinanceMessage({
+      channel: "app",
+      text,
+      categories,
+      accounts,
+      cards,
+    }).draft;
     if (result.confidence === "low") {
       setManualText(result.raw);
       setManualOpen(true);
@@ -70,7 +82,7 @@ export function QuickEntry() {
     setDescription(result.description);
     setCategoryId(result.categoryId ?? NONE);
     setCardId(result.cardId ?? NONE);
-    setAccountId(NONE);
+    setAccountId(result.accountId ?? NONE);
   }
 
   async function confirm() {
@@ -82,23 +94,48 @@ export function QuickEntry() {
     }
     setBusy(true);
     try {
-      await saveTransaction({
-        userId: user.id,
-        description: description || draft.raw,
-        amount: value,
-        type,
-        categoryId: categoryId === NONE ? null : categoryId,
-        accountId: accountId === NONE ? null : accountId,
-        cardId: cardId === NONE ? null : cardId,
-        date: todayISO(),
-        method: cardId === NONE ? "pix" : "credito",
-        notes: null,
-        recurrence: "none",
-      });
+      const category = categoryId === NONE ? null : categoryId;
+      const account = accountId === NONE ? null : accountId;
+      if (draft.recurrence !== "none") {
+        await saveRecurringBill({
+          userId: user.id,
+          description: description || draft.raw,
+          amount: value,
+          categoryId: category,
+          accountId: account,
+          recurrence: draft.recurrence,
+          dueDay: draft.dueDay,
+          notes: null,
+        });
+      } else {
+        await saveTransaction({
+          userId: user.id,
+          description: description || draft.raw,
+          amount: value,
+          type,
+          categoryId: category,
+          accountId: account,
+          cardId: cardId === NONE ? null : cardId,
+          date: todayISO(),
+          method: cardId === NONE ? "pix" : "credito",
+          notes: null,
+          recurrence: "none",
+          ...(draft.installments ? { installments: draft.installments } : {}),
+        });
+      }
       const catName = categories.find((c) => c.id === categoryId)?.name;
       toast.success(
-        `${type === "income" ? "Receita" : "Despesa"} de ${formatBRL(value)} registrada`,
-        { description: catName ? `Categoria: ${catName}` : "Seu saldo já foi atualizado." },
+        draft.recurrence !== "none"
+          ? `${description || draft.raw} organizada como conta recorrente`
+          : `${type === "income" ? "Receita" : "Despesa"} de ${formatBRL(value)} registrada`,
+        {
+          description:
+            draft.recurrence !== "none"
+              ? "O FINANZZI vai lembrar do próximo vencimento."
+              : catName
+                ? `Categoria: ${catName}`
+                : "Seu saldo já foi atualizado.",
+        },
       );
       invalidate();
       setDraft(null);
@@ -227,6 +264,8 @@ export function QuickEntry() {
               <div className="mt-2 flex flex-wrap gap-2 text-xs text-muted-foreground">
                 <span>{categoryName ?? "Sem categoria"}</span>
                 {cardName && <span>· {cardName}</span>}
+                {draft.installments && <span>· {draft.installments}x</span>}
+                {draft.recurrence !== "none" && <span>· {recurrenceLabel(draft.recurrence)}</span>}
               </div>
             </div>
           </div>

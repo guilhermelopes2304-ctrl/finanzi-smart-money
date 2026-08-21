@@ -1,4 +1,4 @@
-import type { Category, CreditCard, TransactionType } from "@/types/finance";
+import type { Account, Category, CreditCard, Recurrence, TransactionType } from "@/types/finance";
 
 export type Confidence = "high" | "medium" | "low";
 
@@ -7,19 +7,42 @@ export interface QuickParseResult {
   amount: number;
   description: string;
   categoryId: string | null;
+  accountId: string | null;
   cardId: string | null;
+  recurrence: Recurrence;
+  dueDay: number | null;
+  installments: number | null;
   confidence: Confidence;
   raw: string;
 }
 
 export const EXPENSE_KEYWORDS = [
-  "gastei", "gasto", "gastos", "paguei", "pagar", "pago", "comprei", "compra",
-  "saiu", "torrei", "debitou", "despesa",
+  "gastei",
+  "gasto",
+  "gastos",
+  "paguei",
+  "pagar",
+  "pago",
+  "comprei",
+  "compra",
+  "saiu",
+  "torrei",
+  "debitou",
+  "despesa",
 ];
 
 export const INCOME_KEYWORDS = [
-  "recebi", "receber", "ganhei", "entrou", "caiu", "salario", "salário",
-  "renda", "receita", "pix recebido", "vendi",
+  "recebi",
+  "receber",
+  "ganhei",
+  "entrou",
+  "caiu",
+  "salario",
+  "salário",
+  "renda",
+  "receita",
+  "pix recebido",
+  "vendi",
 ];
 
 /** Simple synonym dictionary: term -> default FINANZZI category names. */
@@ -88,6 +111,39 @@ function extractAmount(text: string): number | null {
   return Number.isFinite(n) && n > 0 ? n : null;
 }
 
+function detectRecurrence(
+  text: string,
+  explicitAction = false,
+): { recurrence: Recurrence; dueDay: number | null } {
+  const normalized = normalize(text);
+  const day = normalized.match(/(?:todo|cada)\s+dia\s+(\d{1,2})/);
+  const dueDay = day ? Math.min(31, Math.max(1, Number(day[1]))) : null;
+  if (/(?:todo|cada)\s+(?:mes|m[eê]s)|mensal(?:mente)?|por\s+m[eê]s/.test(normalized)) {
+    return { recurrence: "monthly", dueDay };
+  }
+  if (/(?:todo|cada)\s+(?:ano|ano)|anual(?:mente)?|por\s+ano/.test(normalized)) {
+    return { recurrence: "yearly", dueDay };
+  }
+  if (/(?:todo|cada)\s+semana|semanal(?:mente)?/.test(normalized)) {
+    return { recurrence: "weekly", dueDay };
+  }
+  if (
+    !explicitAction &&
+    /\b(netflix|spotify|prime|icloud|streaming|academia|internet|celular|telefone|aluguel|condominio|condomínio|luz|energia)\b/.test(
+      normalized,
+    )
+  ) {
+    return { recurrence: "monthly", dueDay };
+  }
+  return { recurrence: "none", dueDay };
+}
+
+function extractInstallments(text: string): number | null {
+  const match = normalize(text).match(/(?:em|por|x\s*de?)\s*(\d{1,2})\s*x|\b(\d{1,2})\s*x\b/);
+  const value = Number(match?.[1] ?? match?.[2] ?? 0);
+  return value >= 2 ? Math.min(72, value) : null;
+}
+
 function detectType(words: string[]): TransactionType | null {
   for (const w of words) {
     if (INCOME_KEYWORDS.includes(w)) return "income";
@@ -96,7 +152,11 @@ function detectType(words: string[]): TransactionType | null {
   return null;
 }
 
-function matchCategory(words: string[], categories: Category[], type: TransactionType): string | null {
+function matchCategory(
+  words: string[],
+  categories: Category[],
+  type: TransactionType,
+): string | null {
   const pool = categories.filter((c) => c.kind === type || c.kind === "both");
   // Direct match against user's own category names.
   for (const word of words) {
@@ -117,13 +177,27 @@ function matchCategory(words: string[], categories: Category[], type: Transactio
   return null;
 }
 
+function matchAccount(text: string, words: string[], accounts: Account[]): string | null {
+  for (const account of accounts) {
+    const name = normalize(account.name);
+    const bank = account.bank ? normalize(account.bank) : "";
+    if (name && text.includes(name)) return account.id;
+    if (bank && text.includes(bank)) return account.id;
+    if (words.some((w) => w.length > 3 && (name.includes(w) || (bank && bank.includes(w))))) {
+      return account.id;
+    }
+  }
+  return null;
+}
+
 function matchCard(text: string, words: string[], cards: CreditCard[]): string | null {
   for (const card of cards) {
     const name = normalize(card.name);
     const bank = card.bank ? normalize(card.bank) : "";
     if (name && text.includes(name)) return card.id;
     if (bank && text.includes(bank)) return card.id;
-    if (words.some((w) => w.length > 3 && (name.includes(w) || (bank && bank.includes(w))))) return card.id;
+    if (words.some((w) => w.length > 3 && (name.includes(w) || (bank && bank.includes(w)))))
+      return card.id;
   }
   return null;
 }
@@ -131,8 +205,30 @@ function matchCard(text: string, words: string[], cards: CreditCard[]): string |
 const STOP_WORDS = new Set([
   ...EXPENSE_KEYWORDS,
   ...INCOME_KEYWORDS,
-  "de", "do", "da", "no", "na", "em", "com", "para", "pra", "o", "a", "os", "as",
-  "um", "uma", "reais", "real", "r$", "meu", "minha", "hoje", "ontem", "cartao", "cartão",
+  "de",
+  "do",
+  "da",
+  "no",
+  "na",
+  "em",
+  "com",
+  "para",
+  "pra",
+  "o",
+  "a",
+  "os",
+  "as",
+  "um",
+  "uma",
+  "reais",
+  "real",
+  "r$",
+  "meu",
+  "minha",
+  "hoje",
+  "ontem",
+  "cartao",
+  "cartão",
 ]);
 
 function buildDescription(raw: string): string {
@@ -154,6 +250,7 @@ export function parseQuickEntry(
   raw: string,
   categories: Category[],
   cards: CreditCard[],
+  accounts: Account[] = [],
 ): QuickParseResult {
   const text = normalize(raw);
   const words = text.split(/[^a-z0-9]+/).filter(Boolean);
@@ -161,7 +258,10 @@ export function parseQuickEntry(
   const detected = detectType(words);
   const type: TransactionType = detected ?? "expense";
   const categoryId = amount ? matchCategory(words, categories, type) : null;
+  const accountId = matchAccount(text, words, accounts);
   const cardId = matchCard(text, words, cards);
+  const { recurrence, dueDay } = detectRecurrence(raw, Boolean(detected));
+  const installments = extractInstallments(raw);
 
   let confidence: Confidence;
   if (!amount || raw.trim().length < 4) confidence = "low";
@@ -174,7 +274,11 @@ export function parseQuickEntry(
     amount: amount ?? 0,
     description: buildDescription(raw),
     categoryId,
+    accountId,
     cardId,
+    recurrence,
+    dueDay,
+    installments,
     confidence,
     raw: raw.trim(),
   };

@@ -1,0 +1,107 @@
+import type { Account, Category, CreditCard } from "@/types/finance";
+import { todayISO } from "@/lib/format";
+import { parseQuickEntry, type QuickParseResult } from "@/lib/quick-parse";
+import type { SaveTransactionInput } from "@/lib/transactions";
+
+/** Canais de interação que podem consumir o mesmo motor financeiro. */
+export type FinanceChannel = "app" | "voice" | "whatsapp" | "api";
+
+/** Intenções de alto nível; novas intenções entram aqui, não num adaptador de canal. */
+export type FinanceChannelIntent =
+  | "record_transaction"
+  | "query_fin"
+  | "create_recurring_bill"
+  | "list_upcoming_bills"
+  | "list_subscriptions"
+  | "check_purchase"
+  | "list_cards"
+  | "list_installments"
+  | "unknown";
+
+export interface FinanceChannelContext {
+  categories: Category[];
+  accounts: Account[];
+  cards: CreditCard[];
+}
+
+export interface FinanceChannelInput extends FinanceChannelContext {
+  channel: FinanceChannel;
+  text: string;
+}
+
+export interface FinanceChannelInterpretation {
+  channel: FinanceChannel;
+  intent: FinanceChannelIntent;
+  text: string;
+  /** O draft existe também em mensagens ambíguas para permitir confirmação pelo canal. */
+  draft: QuickParseResult;
+}
+
+export interface BuildTransactionOptions {
+  fallbackAccountId?: string | null;
+  date?: string;
+  notes?: string | null;
+}
+
+const ACTION_RE =
+  /\b(gastei|paguei|comprei|torrei|recebi|ganhei|entrou|caiu|vendi|registra|registrar|registre|anota|anotar|lan[cç]a|lan[cç]ar)\b/i;
+const QUESTION_RE =
+  /(\?|\b(posso|quanto|qual|quais|como|onde|por que|porque|devo|vale a pena|consigo)\b)/i;
+
+/**
+ * Converte texto de qualquer canal numa interpretação única.
+ * Transportes como WhatsApp devem apenas preencher FinanceChannelInput.
+ */
+export function interpretFinanceMessage(input: FinanceChannelInput): FinanceChannelInterpretation {
+  const text = input.text.trim();
+  const draft = parseQuickEntry(text, input.categories, input.cards, input.accounts);
+  const isQuestion = QUESTION_RE.test(text);
+  const isAction = ACTION_RE.test(text) && !isQuestion;
+  const isRecurring =
+    draft.type === "expense" && draft.amount > 0 && draft.recurrence !== "none" && !isQuestion;
+
+  return {
+    channel: input.channel,
+    intent: isRecurring ? "create_recurring_bill" : isAction ? "record_transaction" : "query_fin",
+    text,
+    draft,
+  };
+}
+
+/**
+ * Normaliza o resultado do parser para o contrato de persistência.
+ * A autenticação e o userId continuam a ser responsabilidade do adaptador confiável.
+ */
+export function buildTransactionInput(
+  interpretation: FinanceChannelInterpretation,
+  options: BuildTransactionOptions = {},
+): Omit<SaveTransactionInput, "userId"> | null {
+  if (interpretation.intent !== "record_transaction" || interpretation.draft.amount <= 0) {
+    return null;
+  }
+
+  const { draft } = interpretation;
+  const channelLabel = interpretation.channel === "whatsapp" ? "WhatsApp" : "Fin";
+
+  return {
+    description: draft.description || draft.raw,
+    amount: draft.amount,
+    type: draft.type,
+    categoryId: draft.categoryId,
+    accountId: draft.accountId ?? options.fallbackAccountId ?? null,
+    cardId: draft.cardId,
+    date: options.date ?? todayISO(),
+    method: draft.cardId ? "credito" : "pix",
+    notes: options.notes ?? `Registrado pelo ${channelLabel}`,
+    recurrence: draft.recurrence,
+    ...(draft.installments ? { installments: draft.installments } : {}),
+  };
+}
+
+/** Contrato neutro para respostas que cada canal poderá renderizar de forma própria. */
+export type FinanceChannelResponse =
+  | { kind: "confirmation"; draft: QuickParseResult }
+  | { kind: "transaction_recorded"; text: string }
+  | { kind: "fin_answer"; text: string }
+  | { kind: "clarification"; text: string }
+  | { kind: "error"; text: string };

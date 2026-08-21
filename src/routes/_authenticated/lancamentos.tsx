@@ -1,15 +1,12 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Pencil, Plus, Search, Trash2 } from "lucide-react";
-import {
-  useCategories,
-  useDeleteRow,
-  useTransactions,
-} from "@/hooks/useFinanceData";
-import { formatBRL, formatDateBR } from "@/lib/format";
+import { useCategories, useDeleteRow, useTransactions } from "@/hooks/useFinanceData";
+import { formatBRL, formatDateBR, todayISO } from "@/lib/format";
 import { PAYMENT_METHODS, type Transaction } from "@/types/finance";
 import { PageHeader } from "@/components/finanzzi/PageHeader";
 import { EmptyState } from "@/components/finanzzi/EmptyState";
+import { ViralMomentCard } from "@/components/finanzzi/ViralMomentCard";
 import { ConfirmDelete } from "@/components/finanzzi/ConfirmDelete";
 import { TransactionDialog } from "@/components/finanzzi/TransactionDialog";
 import { Button } from "@/components/ui/button";
@@ -28,7 +25,10 @@ export const Route = createFileRoute("/_authenticated/lancamentos")({
   head: () => ({
     meta: [
       { title: "Lançamentos — FINANZZI" },
-      { name: "description", content: "Registre, edite e acompanhe todas as suas receitas e despesas." },
+      {
+        name: "description",
+        content: "Registre, edite e acompanhe todas as suas receitas e despesas.",
+      },
       { property: "og:title", content: "Lançamentos — FINANZZI" },
       { property: "og:description", content: "Todas as suas receitas e despesas em um só lugar." },
     ],
@@ -47,10 +47,18 @@ function TransactionsPage() {
   const [editing, setEditing] = useState<Transaction | null>(null);
   const [open, setOpen] = useState(false);
 
-  const categoryName = useMemo(
-    () => new Map(categories.map((c) => [c.id, c.name])),
-    [categories],
-  );
+  const categoryName = useMemo(() => new Map(categories.map((c) => [c.id, c.name])), [categories]);
+
+  const installmentSummary = useMemo(() => {
+    const future = transactions.filter(
+      (tx) =>
+        tx.type === "expense" && tx.date > todayISO() && Number(tx.installment_total ?? 0) > 1,
+    );
+    return {
+      amount: future.reduce((sum, tx) => sum + Number(tx.amount), 0),
+      count: future.length,
+    };
+  }, [transactions]);
 
   const rows = useMemo(() => {
     const filtered = transactions.filter((tx) => {
@@ -91,6 +99,18 @@ function TransactionsPage() {
           </Button>
         }
       />
+
+      {installmentSummary.amount > 0 && (
+        <ViralMomentCard
+          className="mb-4"
+          eyebrow="Parcelas futuras"
+          title="Descobri quanto minhas parcelas vão consumir."
+          value={formatBRL(installmentSummary.amount)}
+          detail={`${installmentSummary.count} parcela(s) já comprometem os próximos meses`}
+          shareText={`Descobri que minhas parcelas futuras vão consumir ${formatBRL(installmentSummary.amount)}. São ${installmentSummary.count} parcelas organizadas pelo FINANZZI.`}
+          event="installment_moment_shared"
+        />
+      )}
 
       <div className="surface-card mb-4 flex flex-wrap gap-3 p-4">
         <div className="relative min-w-[200px] flex-1">
@@ -169,7 +189,8 @@ function TransactionsPage() {
               <div className="min-w-0 flex-1">
                 <p className="truncate font-medium">{tx.description}</p>
                 <p className="mt-0.5 text-xs text-muted-foreground">
-                  {formatDateBR(tx.date)} · {categoryName.get(tx.category_id ?? "") ?? "Sem categoria"} ·{" "}
+                  {formatDateBR(tx.date)} ·{" "}
+                  {categoryName.get(tx.category_id ?? "") ?? "Sem categoria"} ·{" "}
                   {PAYMENT_METHODS.find((m) => m.value === tx.payment_method)?.label}
                   {tx.installment_total
                     ? ` · Parcela ${tx.installment_number} de ${tx.installment_total}`

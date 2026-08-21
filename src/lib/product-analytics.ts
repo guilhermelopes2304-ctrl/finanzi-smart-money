@@ -8,7 +8,10 @@ export type ProductEvent =
   | "spend_capacity_viewed"
   | "insight_viewed"
   | "pro_viewed"
-  | "score_shared";
+  | "subscription_moment_shared"
+  | "installment_moment_shared"
+  | "category_moment_shared"
+  | "commitment_reminder_viewed";
 
 const STORAGE_KEY = "finanzzi-product-events";
 

@@ -7,7 +7,6 @@ export type Plan = (typeof PLAN_VALUES)[keyof typeof PLAN_VALUES];
 
 export type ProFeature =
   | "fin_advanced"
-  | "fin_score_full"
   | "financial_forecast"
   | "advanced_insights"
   | "card_analysis"
@@ -15,7 +14,8 @@ export type ProFeature =
   | "advanced_reports"
   | "voice_entry"
   | "smart_limits"
-  | "advanced_history";
+  | "advanced_history"
+  | "subscription_analysis";
 
 export const PRO_FEATURE_LABELS: Record<
   ProFeature,
@@ -25,11 +25,6 @@ export const PRO_FEATURE_LABELS: Record<
     title: "FIN avançado",
     benefit: "Converse com o Fin sobre cenários e decisões mais complexas.",
     example: "“Como fico daqui a seis meses se reduzir delivery?”",
-  },
-  fin_score_full: {
-    title: "FIN Score completo",
-    benefit: "Entenda os fatores que movem sua pontuação e como evoluir.",
-    example: "Veja o que aumentou ou reduziu seu score este mês.",
   },
   financial_forecast: {
     title: "Previsões financeiras",
@@ -70,6 +65,11 @@ export const PRO_FEATURE_LABELS: Record<
     title: "Histórico avançado",
     benefit: "Explore a sua evolução financeira por mais tempo.",
     example: "Observe padrões que aparecem ao longo do ano.",
+  },
+  subscription_analysis: {
+    title: "Análise de assinaturas",
+    benefit: "Descubra quanto paga por mês e por ano para manter assinaturas.",
+    example: "Veja quais serviços mais pesam no seu mês.",
   },
 };
 

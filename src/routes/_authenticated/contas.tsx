@@ -10,11 +10,13 @@ import {
   useTransactions,
 } from "@/hooks/useFinanceData";
 import { accountBalance, billStatus } from "@/lib/finance";
+import { classifyBill, subscriptionTotals } from "@/lib/commitments";
 import { addDaysISO, formatBRL, formatDateBR, parseBRL, todayISO } from "@/lib/format";
 import { ACCOUNT_TYPES, RECURRENCES, type Bill, type Recurrence } from "@/types/finance";
 import { PageHeader } from "@/components/finanzzi/PageHeader";
 import { EmptyState } from "@/components/finanzzi/EmptyState";
 import { ConfirmDelete } from "@/components/finanzzi/ConfirmDelete";
+import { ViralMomentCard } from "@/components/finanzzi/ViralMomentCard";
 import { MoneyInput } from "@/components/finanzzi/MoneyInput";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,7 +43,10 @@ export const Route = createFileRoute("/_authenticated/contas")({
   head: () => ({
     meta: [
       { title: "Contas — FINANZZI" },
-      { name: "description", content: "Controle contas a pagar, vencimentos e suas contas bancárias." },
+      {
+        name: "description",
+        content: "Controle contas a pagar, vencimentos e suas contas bancárias.",
+      },
       { property: "og:title", content: "Contas — FINANZZI" },
       { property: "og:description", content: "Nunca perca de vista seus próximos vencimentos." },
     ],
@@ -77,7 +82,9 @@ function BillsTab() {
   const { data: accounts = [] } = useAccounts();
   const save = useSaveRow<Record<string, unknown>>("bills", { successMessage: "Conta salva" });
   const remove = useDeleteRow("bills", "Conta excluída");
-  const [filter, setFilter] = useState<"all" | "pending" | "paid" | "late">("all");
+  const [filter, setFilter] = useState<"upcoming" | "recurring" | "subscription" | "paid" | "late">(
+    "upcoming",
+  );
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
     description: "",
@@ -90,15 +97,30 @@ function BillsTab() {
   });
 
   const rows = useMemo(
-    () => bills.filter((b) => (filter === "all" ? true : billStatus(b) === filter)),
-    [bills, filter],
+    () =>
+      bills.filter((bill) => {
+        const kind = classifyBill(bill, categories);
+        if (filter === "upcoming") return bill.status !== "paid" && bill.due_date >= todayISO();
+        if (filter === "recurring") return kind === "recurring";
+        if (filter === "subscription") return kind === "subscription";
+        if (filter === "paid") return billStatus(bill) === "paid";
+        return billStatus(bill) === "late";
+      }),
+    [bills, categories, filter],
   );
   const next7 = bills.filter(
-    (b) => billStatus(b) !== "paid" && b.due_date >= todayISO() && b.due_date <= addDaysISO(todayISO(), 7),
+    (b) =>
+      billStatus(b) !== "paid" &&
+      b.due_date >= todayISO() &&
+      b.due_date <= addDaysISO(todayISO(), 7),
   );
   const next30 = bills.filter(
-    (b) => billStatus(b) !== "paid" && b.due_date >= todayISO() && b.due_date <= addDaysISO(todayISO(), 30),
+    (b) =>
+      billStatus(b) !== "paid" &&
+      b.due_date >= todayISO() &&
+      b.due_date <= addDaysISO(todayISO(), 30),
   );
+  const subscriptions = subscriptionTotals(bills, categories);
 
   function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -130,25 +152,44 @@ function BillsTab() {
 
   return (
     <div>
-      <div className="mb-4 grid gap-4 sm:grid-cols-2">
+      <div className="mb-4 grid gap-3 sm:grid-cols-3">
         <div className="surface-card p-4">
           <p className="text-sm text-muted-foreground">Próximos 7 dias</p>
           <p className="font-display text-xl font-semibold">
             {formatBRL(next7.reduce((s, b) => s + Number(b.amount), 0))}
           </p>
-          <p className="text-xs text-muted-foreground">{next7.length} conta(s) a vencer</p>
+          <p className="text-xs text-muted-foreground">{next7.length} compromisso(s)</p>
         </div>
         <div className="surface-card p-4">
           <p className="text-sm text-muted-foreground">Próximos 30 dias</p>
           <p className="font-display text-xl font-semibold">
             {formatBRL(next30.reduce((s, b) => s + Number(b.amount), 0))}
           </p>
-          <p className="text-xs text-muted-foreground">{next30.length} conta(s) a vencer</p>
+          <p className="text-xs text-muted-foreground">{next30.length} compromisso(s)</p>
+        </div>
+        <div className="surface-card p-4">
+          <p className="text-sm text-muted-foreground">Assinaturas por mês</p>
+          <p className="font-display text-xl font-semibold">{formatBRL(subscriptions.monthly)}</p>
+          <p className="text-xs text-muted-foreground">
+            {subscriptions.subscriptions.length} assinatura(s)
+          </p>
         </div>
       </div>
 
+      {subscriptions.subscriptions.length > 0 && (
+        <ViralMomentCard
+          className="mb-4"
+          eyebrow="Assinaturas"
+          title="Descobri quanto pago sem perceber."
+          value={formatBRL(subscriptions.monthly)}
+          detail={`por mês em serviços recorrentes · ${formatBRL(subscriptions.yearly)} por ano`}
+          shareText={`Descobri que pago ${formatBRL(subscriptions.monthly)} por mês em assinaturas. Isso dá ${formatBRL(subscriptions.yearly)} por ano. Descobri isso no FINANZZI.`}
+          event="subscription_moment_shared"
+        />
+      )}
+
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        {(["all", "pending", "paid", "late"] as const).map((f) => (
+        {(["upcoming", "recurring", "subscription", "paid", "late"] as const).map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}
@@ -159,7 +200,15 @@ function BillsTab() {
                 : "border-border text-muted-foreground",
             )}
           >
-            {{ all: "Todas", pending: "Pendentes", paid: "Pagas", late: "Atrasadas" }[f]}
+            {
+              {
+                upcoming: "Próximas",
+                recurring: "Recorrentes",
+                subscription: "Assinaturas",
+                paid: "Pagas",
+                late: "Vencidas",
+              }[f]
+            }
           </button>
         ))}
         <Dialog open={open} onOpenChange={setOpen}>
@@ -272,8 +321,8 @@ function BillsTab() {
 
       {rows.length === 0 ? (
         <EmptyState
-          title="Nenhuma conta por aqui."
-          description="Cadastre suas contas para acompanhar os vencimentos."
+          title="Nada nesta seção."
+          description="Registre uma conta fixa pelo botão acima e o FINANZZI organiza os próximos compromissos."
         />
       ) : (
         <div className="space-y-2">

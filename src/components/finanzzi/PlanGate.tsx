@@ -168,7 +168,7 @@ function BillingOffer({ onClose }: { onClose: () => void }) {
           emphasized
           items={[
             "FIN avançado",
-            "FIN Score completo",
+            "Análise de assinaturas",
             "Previsões e projeções",
             "Insights personalizados",
             "Voz e limites inteligentes",

@@ -8,9 +8,14 @@ import {
   useProfile,
 } from "@/hooks/useFinanceData";
 import { useAuth } from "@/hooks/useAuth";
-import { formatBRL, todayISO } from "@/lib/format";
+import { formatBRL } from "@/lib/format";
+import {
+  buildTransactionInput,
+  interpretFinanceMessage,
+  type FinanceChannelInterpretation,
+} from "@/lib/channel-engine";
+import { saveRecurringBill } from "@/lib/bills";
 import { saveTransaction } from "@/lib/transactions";
-import { parseQuickEntry, type QuickParseResult } from "@/lib/quick-parse";
 import { askFinAI } from "@/lib/fin-ai";
 import { cn } from "@/lib/utils";
 import { trackProductEvent } from "@/lib/product-analytics";
@@ -40,12 +45,6 @@ declare global {
 }
 
 /** Palavras que indicam claramente a intenção de registrar um lançamento. */
-const ACTION_RE =
-  /\b(gastei|paguei|comprei|torrei|recebi|ganhei|entrou|caiu|vendi|registra|registrar|registre|anota|anotar|lan[cç]a|lan[cç]ar)\b/i;
-/** Perguntas nunca viram lançamento, mesmo com valor no texto. */
-const QUESTION_RE =
-  /(\?|\b(posso|quanto|qual|quais|como|onde|por que|porque|devo|vale a pena|consigo)\b)/i;
-
 export function FinancialAssistant({ className }: { className?: string }) {
   const { user } = useAuth();
   const { data: profile } = useProfile();
@@ -59,7 +58,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
   const [listening, setListening] = useState(false);
   const [busy, setBusy] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [pending, setPending] = useState<QuickParseResult | null>(null);
+  const [pending, setPending] = useState<FinanceChannelInterpretation | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const recognitionRef = useRef<Recognition | null>(null);
 
@@ -72,23 +71,48 @@ export function FinancialAssistant({ className }: { className?: string }) {
     setMessages((current) => [...current, message]);
   }
 
-  async function commit(draft: QuickParseResult) {
-    if (!user) return;
+  async function commitRecurring(interpretation: FinanceChannelInterpretation) {
+    if (!user || interpretation.intent !== "create_recurring_bill") return;
+    const { draft } = interpretation;
     setBusy(true);
     try {
-      await saveTransaction({
+      await saveRecurringBill({
         userId: user.id,
         description: draft.description || draft.raw,
         amount: draft.amount,
-        type: draft.type,
         categoryId: draft.categoryId,
-        accountId: draft.cardId ? null : (accounts[0]?.id ?? null),
-        cardId: draft.cardId,
-        date: todayISO(),
-        method: draft.cardId ? "credito" : "pix",
-        notes: "Registrado pelo Fin",
-        recurrence: "none",
+        accountId: draft.accountId ?? accounts[0]?.id ?? null,
+        recurrence: draft.recurrence,
+        dueDay: draft.dueDay,
+        notes: "Criado pelo Fin",
       });
+      invalidate();
+      push({
+        from: "fin",
+        text: `Organizei ${draft.description || draft.raw} como um compromisso recorrente de ${formatBRL(draft.amount)}. Vou lembrar você do próximo vencimento.`,
+      });
+    } catch {
+      push({
+        from: "fin",
+        text: "Entendi a conta recorrente, mas não consegui salvar agora. Tente novamente.",
+      });
+    } finally {
+      setBusy(false);
+      setPending(null);
+    }
+  }
+
+  async function commit(interpretation: FinanceChannelInterpretation) {
+    if (!user) return;
+    const transaction = buildTransactionInput(interpretation, {
+      fallbackAccountId: accounts[0]?.id ?? null,
+      notes: "Registrado pelo Fin",
+    });
+    if (!transaction) return;
+    const { draft } = interpretation;
+    setBusy(true);
+    try {
+      await saveTransaction({ userId: user.id, ...transaction });
       invalidate();
       const label = draft.type === "income" ? "entrada" : "saída";
       const category = categoryName(draft.categoryId);
@@ -112,16 +136,28 @@ export function FinancialAssistant({ className }: { className?: string }) {
     push({ from: "user", text });
     setPending(null);
 
-    const isAction = ACTION_RE.test(text) && !QUESTION_RE.test(text);
-    if (isAction && user) {
-      const draft = parseQuickEntry(text, categories, cards);
+    const interpretation = interpretFinanceMessage({
+      channel: "app",
+      text,
+      categories,
+      accounts,
+      cards,
+    });
+    const { draft } = interpretation;
+    if (
+      (interpretation.intent === "record_transaction" ||
+        interpretation.intent === "create_recurring_bill") &&
+      user
+    ) {
       if (draft.amount > 0 && draft.confidence !== "low") {
         if (draft.confidence === "high") {
-          await commit(draft);
+          await (interpretation.intent === "create_recurring_bill"
+            ? commitRecurring(interpretation)
+            : commit(interpretation));
           return;
         }
         const category = categoryName(draft.categoryId);
-        setPending(draft);
+        setPending(interpretation);
         push({
           from: "fin",
           text: `Entendi uma ${draft.type === "income" ? "entrada" : "saída"} de ${formatBRL(draft.amount)}${category ? ` em ${category}` : ` em ${draft.description || "sem categoria"}`}. Confira os detalhes e confirme quando estiver pronto.`,
@@ -301,7 +337,11 @@ export function FinancialAssistant({ className }: { className?: string }) {
           <div className="flex gap-2">
             <button
               type="button"
-              onClick={() => void commit(pending)}
+              onClick={() =>
+                void (pending.intent === "create_recurring_bill"
+                  ? commitRecurring(pending)
+                  : commit(pending))
+              }
               className="min-h-10 flex-1 rounded-xl bg-emerald-400 px-3 text-sm font-semibold text-[#032013]"
             >
               Confirmar
