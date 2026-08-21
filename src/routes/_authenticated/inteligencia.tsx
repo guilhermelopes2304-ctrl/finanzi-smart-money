@@ -10,7 +10,6 @@ import { EmptyState } from "@/components/finanzzi/EmptyState";
 import { cn } from "@/lib/utils";
 import { PlanGate } from "@/components/finanzzi/PlanGate";
 import { trackProductEvent } from "@/lib/product-analytics";
-import { FinMascot } from "@/components/finanzzi/FinMascot";
 import { ViralMomentCard } from "@/components/finanzzi/ViralMomentCard";
 
 export const Route = createFileRoute("/_authenticated/inteligencia")({
@@ -73,11 +72,13 @@ function IntelligencePage() {
     <div>
       <PageHeader title="Fin" subtitle="Seu dinheiro explicado de um jeito que dá para decidir." />
       <section className="mb-5 flex items-center gap-4 rounded-[1.7rem] border border-primary/15 bg-primary/[0.045] p-4 sm:p-5">
-        <FinMascot expression="pensando" className="h-16 w-16 shrink-0" />
+        <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-fin-brand-soft text-[10px] font-black uppercase tracking-[0.16em] text-fin-brand-hover">
+          FIN
+        </span>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold">Quer entender uma coisa específica?</p>
           <p className="mt-1 text-sm leading-5 text-muted-foreground">
-            Pergunte ao Fin usando os dados que você já registrou.
+            O FIN pode explicar o que seus próprios dados estão mostrando.
           </p>
         </div>
         <button

@@ -203,7 +203,7 @@ function CategoriesSection() {
           e.preventDefault();
           if (!name.trim()) return;
           save.mutate(
-            { values: { name: name.trim(), kind, color: "#5B5CE2", is_default: false } },
+            { values: { name: name.trim(), kind, color: "#19C96B", is_default: false } },
             { onSuccess: () => setName("") },
           );
         }}

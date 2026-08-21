@@ -45,27 +45,27 @@ export function PlanGate({
 export function ProUpsell({ feature, onOpen }: { feature: ProFeature; onOpen?: () => void }) {
   const copy = PRO_FEATURE_LABELS[feature];
   return (
-    <div className="relative overflow-hidden rounded-[1.5rem] border border-primary/20 bg-[#151827] p-5 text-white shadow-soft sm:p-6">
-      <div className="pointer-events-none absolute -right-12 -top-12 size-40 rounded-full bg-[#5B5CE2]/15 blur-3xl" />
+    <div className="relative overflow-hidden rounded-[1.5rem] border border-primary/20 bg-[#111827] p-5 text-white shadow-soft sm:p-6">
+      <div className="pointer-events-none absolute -right-12 -top-12 size-40 rounded-full bg-[#19C96B]/15 blur-3xl" />
       <div className="relative flex items-start gap-3">
-        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#5B5CE2] text-[#151827]">
+        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#19C96B] text-[#111827]">
           <LockKeyhole className="size-4" />
         </span>
         <div className="min-w-0">
-          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B5CE2]">
+          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#19C96B]">
             Acesso completo
           </p>
           <h3 className="mt-1 text-lg font-semibold">{copy.title}</h3>
           <p className="mt-2 text-sm leading-6 text-[#F4F5F8]/65">{copy.benefit}</p>
         </div>
       </div>
-      <div className="relative mt-5 rounded-2xl border border-[#3F4658]/10 bg-white/[0.06] p-3 text-sm text-[#F4F5F8]/75">
-        <span className="text-[#5B5CE2]">Exemplo:</span> {copy.example}
+      <div className="relative mt-5 rounded-2xl border border-[#556070]/10 bg-white/[0.06] p-3 text-sm text-[#F4F5F8]/75">
+        <span className="text-[#19C96B]">Exemplo:</span> {copy.example}
       </div>
       <Button
         type="button"
         onClick={onOpen}
-        className="relative mt-5 h-11 rounded-xl bg-[#5B5CE2] px-4 font-bold text-[#151827] hover:bg-[#5B5CE2]"
+        className="relative mt-5 h-11 rounded-xl bg-[#19C96B] px-4 font-bold text-[#111827] hover:bg-[#19C96B]"
       >
         Ver oferta <ArrowRight className="ml-auto size-4" />
       </Button>
@@ -87,10 +87,10 @@ export function ProModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[92vh] overflow-y-auto rounded-[1.75rem] p-0 sm:max-w-3xl">
         <div className="overflow-hidden rounded-[1.75rem]">
-          <div className="relative bg-[#151827] p-6 text-white sm:p-8">
-            <div className="pointer-events-none absolute -right-16 -top-16 size-56 rounded-full bg-[#5B5CE2]/15 blur-3xl" />
+          <div className="relative bg-[#111827] p-6 text-white sm:p-8">
+            <div className="pointer-events-none absolute -right-16 -top-16 size-56 rounded-full bg-[#19C96B]/15 blur-3xl" />
             <DialogHeader className="relative">
-              <div className="mb-3 inline-flex w-fit items-center gap-2 rounded-full border border-[#3F4658]/20 bg-[#5B5CE2]/10 px-3 py-1.5 text-xs font-bold text-[#5B5CE2]">
+              <div className="mb-3 inline-flex w-fit items-center gap-2 rounded-full border border-[#556070]/20 bg-[#19C96B]/10 px-3 py-1.5 text-xs font-bold text-[#19C96B]">
                 <Sparkles className="size-3.5" /> Acesso completo FINANZZI
               </div>
               <DialogTitle className="font-display text-3xl font-semibold text-white">

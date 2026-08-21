@@ -73,43 +73,43 @@
 :root {
   --radius: 1.1rem;
 
-  /* FINANZZI brand tokens — índigo is identity; semantic colors are state-only. */
-  --fin-brand: #5b5ce2;
-  --fin-brand-hover: #4546c8;
-  --fin-brand-soft: #eef0ff;
-  --fin-canvas: #fcfbf7;
+  /* FINANZZI brand tokens — green is identity; coral is reserved for alerts. */
+  --fin-brand: #19c96b;
+  --fin-brand-hover: #0f9f52;
+  --fin-brand-soft: #eaf9f0;
+  --fin-canvas: #fcfcf8;
   --fin-surface: #ffffff;
-  --fin-surface-muted: #f4f5f8;
-  --fin-ink: #151827;
-  --fin-copy: #3f4658;
-  --fin-muted: #667085;
-  --fin-line: #e4e7ef;
-  --fin-success: #16a34a;
-  --fin-success-soft: #dcfce7;
+  --fin-surface-muted: #f4f6f5;
+  --fin-ink: #111827;
+  --fin-copy: #556070;
+  --fin-muted: #556070;
+  --fin-line: #e1e7e3;
+  --fin-success: #19c96b;
+  --fin-success-soft: #eaf9f0;
   --fin-success-foreground: #ffffff;
   --fin-warning: #f59e0b;
   --fin-warning-soft: #fef3c7;
-  --fin-warning-foreground: #151827;
+  --fin-warning-foreground: #111827;
   --fin-danger: #ff6b6b;
   --fin-danger-soft: #fff1f2;
-  --fin-danger-foreground: #151827;
+  --fin-danger-foreground: #111827;
 
-  --background: #fcfbf7;
-  --foreground: #151827;
-  --card: #fcfbf7;
-  --card-foreground: #151827;
-  --popover: #fcfbf7;
-  --popover-foreground: #151827;
-  --primary: #5b5ce2;
-  --primary-foreground: #fcfbf7;
-  --secondary: #eef0ff;
-  --secondary-foreground: #151827;
-  --muted: #f4f5f8;
-  --muted-foreground: #3f4658;
-  --accent: #eef0ff;
-  --accent-foreground: #151827;
+  --background: #fcfcf8;
+  --foreground: #111827;
+  --card: #ffffff;
+  --card-foreground: #111827;
+  --popover: #ffffff;
+  --popover-foreground: #111827;
+  --primary: #19c96b;
+  --primary-foreground: #111827;
+  --secondary: #f4f6f5;
+  --secondary-foreground: #111827;
+  --muted: #f4f6f5;
+  --muted-foreground: #556070;
+  --accent: #eaf9f0;
+  --accent-foreground: #0f9f52;
   --destructive: #ff6b6b;
-  --destructive-foreground: #151827;
+  --destructive-foreground: #111827;
   --success: var(--fin-success);
   --success-foreground: var(--fin-success-foreground);
   --warning: var(--fin-warning);
@@ -118,61 +118,61 @@
   --danger-foreground: var(--fin-danger-foreground);
   --gold: var(--fin-warning);
   --gold-foreground: var(--fin-warning-foreground);
-  --border: #e4e7ef;
-  --input: #e4e7ef;
-  --ring: #5b5ce2;
-  --chart-1: #5b5ce2;
-  --chart-2: #4546c8;
-  --chart-3: #eef0ff;
+  --border: #e1e7e3;
+  --input: #e1e7e3;
+  --ring: #19c96b;
+  --chart-1: #19c96b;
+  --chart-2: #0f9f52;
+  --chart-3: #eaf9f0;
   --chart-4: #ff6b6b;
-  --chart-5: #667085;
-  --sidebar: #fcfbf7;
-  --sidebar-foreground: #151827;
-  --sidebar-primary: #5b5ce2;
-  --sidebar-primary-foreground: #fcfbf7;
-  --sidebar-accent: #eef0ff;
-  --sidebar-accent-foreground: #151827;
-  --sidebar-border: #e4e7ef;
-  --sidebar-ring: #5b5ce2;
+  --chart-5: #556070;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #111827;
+  --sidebar-primary: #19c96b;
+  --sidebar-primary-foreground: #111827;
+  --sidebar-accent: #eaf9f0;
+  --sidebar-accent-foreground: #111827;
+  --sidebar-border: #e1e7e3;
+  --sidebar-ring: #19c96b;
 }
 
 .dark {
-  --fin-brand: #5b5ce2;
-  --fin-brand-hover: #4546c8;
-  --fin-brand-soft: #3f4658;
-  --fin-canvas: #151827;
-  --fin-surface: #3f4658;
-  --fin-surface-muted: #202536;
-  --fin-ink: #fcfbf7;
-  --fin-copy: #f4f5f8;
-  --fin-muted: #a8b0c0;
-  --fin-line: #667085;
-  --fin-success: #34d399;
-  --fin-success-soft: #064e3b;
-  --fin-success-foreground: #f0fdf4;
-  --fin-warning: #fbbf24;
+  --fin-brand: #19c96b;
+  --fin-brand-hover: #0f9f52;
+  --fin-brand-soft: #eaf9f0;
+  --fin-canvas: #111827;
+  --fin-surface: #556070;
+  --fin-surface-muted: #111827;
+  --fin-ink: #ffffff;
+  --fin-copy: #f4f6f5;
+  --fin-muted: #e1e7e3;
+  --fin-line: #556070;
+  --fin-success: #19c96b;
+  --fin-success-soft: #0f9f52;
+  --fin-success-foreground: #ffffff;
+  --fin-warning: #f59e0b;
   --fin-warning-soft: #78350f;
-  --fin-warning-foreground: #151827;
+  --fin-warning-foreground: #ffffff;
   --fin-danger: #ff6b6b;
   --fin-danger-soft: #5b2430;
-  --fin-danger-foreground: #151827;
+  --fin-danger-foreground: #ffffff;
 
-  --background: #151827;
-  --foreground: #fcfbf7;
-  --card: #3f4658;
-  --card-foreground: #fcfbf7;
-  --popover: #3f4658;
-  --popover-foreground: #fcfbf7;
-  --primary: #5b5ce2;
-  --primary-foreground: #fcfbf7;
-  --secondary: #4546c8;
-  --secondary-foreground: #fcfbf7;
-  --muted: #3f4658;
-  --muted-foreground: #f4f5f8;
-  --accent: #eef0ff;
-  --accent-foreground: #151827;
+  --background: #111827;
+  --foreground: #ffffff;
+  --card: #556070;
+  --card-foreground: #ffffff;
+  --popover: #556070;
+  --popover-foreground: #ffffff;
+  --primary: #19c96b;
+  --primary-foreground: #111827;
+  --secondary: #0f9f52;
+  --secondary-foreground: #ffffff;
+  --muted: #556070;
+  --muted-foreground: #e1e7e3;
+  --accent: #0f9f52;
+  --accent-foreground: #ffffff;
   --destructive: #ff6b6b;
-  --destructive-foreground: #151827;
+  --destructive-foreground: #ffffff;
   --success: var(--fin-success);
   --success-foreground: var(--fin-success-foreground);
   --warning: var(--fin-warning);
@@ -180,23 +180,23 @@
   --danger: var(--fin-danger);
   --danger-foreground: var(--fin-danger-foreground);
   --gold: var(--fin-warning);
-  --gold-foreground: var(--fin-warning-foreground);
-  --border: #667085;
-  --input: #3f4658;
-  --ring: #5b5ce2;
-  --chart-1: #5b5ce2;
-  --chart-2: #4546c8;
-  --chart-3: #eef0ff;
+  --gold-foreground: #ffffff;
+  --border: #556070;
+  --input: #556070;
+  --ring: #19c96b;
+  --chart-1: #19c96b;
+  --chart-2: #0f9f52;
+  --chart-3: #eaf9f0;
   --chart-4: #ff6b6b;
-  --chart-5: #667085;
-  --sidebar: #151827;
-  --sidebar-foreground: #fcfbf7;
-  --sidebar-primary: #5b5ce2;
-  --sidebar-primary-foreground: #fcfbf7;
-  --sidebar-accent: #3f4658;
-  --sidebar-accent-foreground: #fcfbf7;
-  --sidebar-border: #667085;
-  --sidebar-ring: #5b5ce2;
+  --chart-5: #e1e7e3;
+  --sidebar: #111827;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #19c96b;
+  --sidebar-primary-foreground: #111827;
+  --sidebar-accent: #556070;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #556070;
+  --sidebar-ring: #19c96b;
 }
 
 @layer base {
@@ -244,11 +244,12 @@
     letter-spacing: -0.025em;
   }
   :focus-visible {
-    outline: 3px solid #5b5ce2;
+    outline: 3px solid #19c96b;
     outline-offset: 3px;
   }
   ::selection {
-    background: #5b5ce2;
+    background: #eaf9f0;
+    color: #111827;
   }
 }
 
@@ -259,10 +260,10 @@
   box-shadow: var(--shadow-soft);
 }
 @utility gradient-brand {
-  background-image: linear-gradient(135deg, #151827 0%, #4546c8 68%, #5b5ce2 130%);
+  background-image: linear-gradient(135deg, #111827 0%, #0f9f52 68%, #19c96b 130%);
 }
 @utility gradient-hero {
-  background-image: linear-gradient(135deg, #151827 0%, #4546c8 100%);
+  background-image: linear-gradient(135deg, #111827 0%, #0f9f52 100%);
 }
 
 @keyframes float-slow {

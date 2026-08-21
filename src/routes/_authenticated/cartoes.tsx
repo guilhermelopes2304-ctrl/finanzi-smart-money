@@ -316,10 +316,10 @@ function CardsPage() {
                 <div
                   className="relative overflow-hidden p-5 text-white"
                   style={{
-                    background: `linear-gradient(135deg, ${c.color || "#3F4658"}, #151827)`,
+                    background: `linear-gradient(135deg, ${c.color || "#556070"}, #111827)`,
                   }}
                 >
-                  <div className="pointer-events-none absolute -right-10 -top-12 size-40 rounded-full bg-[#3F4658]/10 blur-2xl" />
+                  <div className="pointer-events-none absolute -right-10 -top-12 size-40 rounded-full bg-[#556070]/10 blur-2xl" />
                   <div className="relative flex items-start justify-between gap-4">
                     <div>
                       <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#F4F5F8]/55">

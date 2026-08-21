@@ -42,10 +42,10 @@ const NAV = [
 
 const NAV_GROUPS = [
   { title: "Visão geral", items: [NAV[0]] },
-  { title: "Dinheiro", items: [NAV[1], NAV[2], NAV[3], NAV[7]] },
+  { title: "Dinheiro", items: [NAV[1], NAV[2], NAV[3]] },
   { title: "Planejamento", items: [NAV[4], NAV[5]] },
   { title: "Inteligência", items: [NAV[6]] },
-  { title: "Sistema", items: [NAV[8]] },
+  { title: "Mais", items: [NAV[7], NAV[8]] },
 ] as const;
 
 function openAssistant() {

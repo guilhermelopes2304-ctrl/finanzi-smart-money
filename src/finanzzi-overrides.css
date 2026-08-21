@@ -1,175 +1,97 @@
-/* FINANZZI visual system: consumer fintech, high contrast, TikTok-friendly. */
+/* FINANZZI compatibility layer — canonical green identity only. */
 :root {
-  /* Legacy aliases now resolve to the canonical FINANZZI design tokens. */
-  --fin-blue: var(--fin-brand);
-  --fin-blue-strong: var(--fin-brand-hover);
-  --fin-blue-soft: var(--fin-brand-soft);
   --fin-soft: var(--fin-surface-muted);
   --fin-coral: var(--fin-danger);
 }
 
-/* Global action language: one recognizable blue across login + app. */
 body [class~="bg-primary"] {
-  background-color: var(--fin-blue) !important;
+  background-color: var(--fin-brand) !important;
 }
 body [class~="text-primary"] {
-  color: var(--fin-blue-strong) !important;
+  color: var(--fin-brand-hover) !important;
 }
-body [class~="bg-primary/10"],
-body [class~="bg-primary/5"] {
-  background-color: var(--fin-blue-soft) !important;
+body [class~="bg-primary\/10"],
+body [class~="bg-primary\/5"] {
+  background-color: var(--fin-brand-soft) !important;
 }
-body [class~="border-primary/20"],
-body [class~="border-primary/50"] {
-  border-color: #d0d2fa !important;
-}
-body [class~="text-[#39FF14]"] {
-  color: var(--fin-blue) !important;
-}
-body [class~="bg-[#39FF14]"] {
-  background-color: var(--fin-blue) !important;
-}
-body [class~="bg-[#39FF14]/10"] {
-  background-color: rgb(91 92 226 / 0.1) !important;
-}
-body [class~="bg-[#0A0F1D]"] {
-  background-color: var(--fin-ink) !important;
-}
-body [class~="text-[#94A3B8]"] {
-  color: var(--fin-muted) !important;
+body [class~="border-primary\/20"],
+body [class~="border-primary\/50"] {
+  border-color: var(--fin-line) !important;
 }
 
 :focus-visible {
-  outline: 3px solid var(--fin-blue) !important;
+  outline: 3px solid var(--fin-brand) !important;
   outline-offset: 3px;
 }
 ::selection {
-  background: #dde0ff !important;
+  background: var(--fin-brand-soft) !important;
   color: var(--fin-ink) !important;
 }
 
-/* Authenticated application: apply compatibility rules only inside AppShell. */
+/* Authenticated application: use the canonical sidebar tokens in both themes. */
 [data-fin-app-shell] aside {
-  color: #2d3446;
+  color: var(--sidebar-foreground);
 }
 [data-fin-app-shell] aside .text-muted-foreground {
-  color: #4f5a70 !important;
+  color: var(--sidebar-foreground) !important;
+  opacity: 0.76;
 }
 [data-fin-app-shell] aside .text-primary {
-  color: var(--fin-blue-strong) !important;
+  color: var(--sidebar-primary) !important;
+}
+[data-fin-app-shell] aside .text-primary-foreground {
+  color: var(--sidebar-primary-foreground) !important;
 }
 [data-fin-app-shell] aside .bg-primary {
-  background-color: var(--fin-ink) !important;
+  background-color: var(--sidebar-primary) !important;
+}
+.dark [data-fin-app-shell] aside .text-primary {
+  color: var(--sidebar-primary) !important;
+}
+.dark [data-fin-app-shell] aside .text-muted-foreground {
+  opacity: 0.84;
 }
 
 [data-fin-app-shell] aside ~ main .text-primary {
-  color: var(--fin-blue-strong) !important;
+  color: var(--fin-brand-hover) !important;
 }
 [data-fin-app-shell] aside ~ main .bg-primary {
-  background-color: var(--fin-blue) !important;
+  background-color: var(--fin-brand) !important;
 }
 [data-fin-app-shell] aside ~ main .text-primary-foreground {
-  color: #ffffff !important;
+  color: var(--primary-foreground) !important;
 }
 [data-fin-app-shell] aside ~ main .bg-accent {
-  background-color: var(--fin-blue-soft) !important;
+  background-color: var(--fin-brand-soft) !important;
   color: var(--fin-ink) !important;
 }
 [data-fin-app-shell] aside ~ main .text-accent-foreground {
-  color: var(--fin-ink) !important;
+  color: var(--fin-brand-hover) !important;
 }
 [data-fin-app-shell] aside ~ main .text-muted-foreground {
   color: var(--fin-muted) !important;
 }
 [data-fin-app-shell] aside ~ main .bg-muted {
-  background-color: var(--fin-soft) !important;
+  background-color: var(--fin-surface-muted) !important;
 }
 [data-fin-app-shell] aside ~ main .border-border {
   border-color: var(--fin-line) !important;
 }
 [data-fin-app-shell] aside ~ main .surface-card {
   border-color: var(--fin-line) !important;
-  box-shadow: 0 12px 32px rgb(20 28 48 / 0.06) !important;
+  box-shadow: 0 8px 24px rgb(17 24 39 / 0.06) !important;
 }
 
-/* Commercial landing: warm editorial base + blue action palette. */
-body [class~="bg-[#F6F5EF]"] {
-  background-color: #fcfbf7 !important;
-}
-body [class~="text-[#161815]"] {
-  color: var(--fin-ink) !important;
-}
-body [class~="bg-[#161815]"] {
-  background-color: var(--fin-ink) !important;
-}
-body [class~="bg-[#B8EE63]"] {
-  background-color: var(--fin-blue) !important;
-}
-body [class~="bg-[#EAF5DA]"] {
-  background-color: var(--fin-blue-soft) !important;
-}
-body [class~="bg-[#E9F6D7]"] {
-  background-color: var(--fin-blue-soft) !important;
-}
-body [class~="bg-[#F1F3ED]"] {
-  background-color: var(--fin-soft) !important;
-}
-body [class~="text-[#4E6B30]"],
-body [class~="text-[#55713A]"] {
-  color: #ffffff !important;
-}
-body [class~="text-[#557234]"],
-body [class~="text-[#5C7D37]"],
-body [class~="text-[#6C824F]"],
-body [class~="text-[#5F7E41]"],
-body [class~="text-[#69824D]"] {
-  color: var(--fin-blue-strong) !important;
-}
-body [class~="text-[#53684A]"] {
-  color: #4b55b0 !important;
-}
-body [class~="text-[#8A9385]"],
-body [class~="text-[#7C8776]"],
-body [class~="text-[#7A8276]"] {
-  color: var(--fin-muted) !important;
-}
-body [class~="text-[#5E665B]"],
-body [class~="text-[#636B60]"],
-body [class~="text-[#697164]"],
-body [class~="text-[#4F574B]"] {
-  color: var(--fin-copy) !important;
-}
-body [class~="text-[#2F352D]"],
-body [class~="text-[#20241F]"],
-body [class~="text-[#1B211A]"] {
-  color: var(--fin-ink) !important;
-}
-body [class~="border-[#D8DCCF]"],
-body [class~="border-[#D9DDCF]"],
-body [class~="border-[#DDE1D5]"],
-body [class~="border-[#E7EAE3]"],
-body [class~="border-[#DCE1D6]"] {
-  border-color: var(--fin-line) !important;
-}
-body [class~="bg-white"] {
-  background-color: #ffffff !important;
-}
-body [class~="bg-white/75"] {
-  background-color: rgb(255 255 255 / 0.86) !important;
-}
-
-/* Phone mockup: make the product demonstration feel like a real consumer app. */
+/* Phone mockups keep a quiet consumer-app frame, not an AI glow. */
 [class~="max-w-[470px]"] {
   position: relative;
   width: min(100%, 360px) !important;
   max-width: 360px !important;
   padding: 10px !important;
-  border: 10px solid #20243a !important;
+  border: 10px solid var(--fin-ink) !important;
   border-radius: 42px !important;
-  background: #20243a !important;
-  box-shadow:
-    0 30px 70px rgb(21 24 39 / 0.16),
-    0 8px 18px rgb(21 24 39 / 0.12) !important;
+  background: var(--fin-ink) !important;
+  box-shadow: 0 22px 48px rgb(17 24 39 / 0.14) !important;
 }
 [class~="max-w-[470px]"]::before {
   content: "";
@@ -181,13 +103,13 @@ body [class~="bg-white/75"] {
   height: 18px;
   transform: translateX(-50%);
   border-radius: 999px;
-  background: #20243a !important;
+  background: var(--fin-ink) !important;
 }
 [class~="max-w-[470px]"] > div {
   overflow: hidden !important;
   border: 0 !important;
   border-radius: 31px !important;
-  background: var(--fin-blue-soft) !important;
+  background: var(--fin-brand-soft) !important;
   padding: 8px !important;
   box-shadow: none !important;
 }
@@ -217,28 +139,16 @@ body [class~="bg-white/75"] {
   }
 }
 
-/* Dark mode: keep the same brand, simply invert surfaces for readability. */
 .dark [data-fin-app-shell] aside ~ main .bg-muted {
-  background-color: #202536 !important;
+  background-color: #111827 !important;
 }
 .dark [data-fin-app-shell] aside ~ main .text-muted-foreground {
-  color: #a8b0c0 !important;
+  color: #e1e7e3 !important;
 }
 .dark [data-fin-app-shell] aside ~ main .border-border {
-  border-color: #2c3244 !important;
+  border-color: #556070 !important;
 }
 .dark [data-fin-app-shell] aside ~ main .surface-card {
-  border-color: #2c3244 !important;
-  box-shadow: 0 12px 32px rgb(0 0 0 / 0.2) !important;
-}
-
-/* The login screen uses blue instead of the old neon-green highlights. */
-body [class~="border-[#1E293B]/10"] {
-  border-color: rgb(255 255 255 / 0.1) !important;
-}
-body [class~="bg-[#1E293B]/10"] {
-  background-color: rgb(91 92 226 / 0.12) !important;
-}
-body [class~="bg-[#39FF14]/10"] {
-  background-color: rgb(91 92 226 / 0.1) !important;
+  border-color: #556070 !important;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.16) !important;
 }

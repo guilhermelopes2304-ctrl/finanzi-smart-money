@@ -197,7 +197,7 @@ export function QuickEntry() {
     <div className="surface-card overflow-hidden p-4 sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex items-start gap-3">
-          <span className="grid size-10 place-items-center rounded-2xl bg-[#5B5CE2]/15 text-[#5B5CE2]">
+          <span className="grid size-10 place-items-center rounded-2xl bg-[#19C96B]/15 text-[#19C96B]">
             <Sparkles className="size-4" />
           </span>
           <div>
