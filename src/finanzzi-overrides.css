@@ -28,9 +28,15 @@ body [class~="border-primary\/50"] {
   color: var(--fin-ink) !important;
 }
 
-/* Authenticated application: use the canonical sidebar tokens in both themes. */
+/* Authenticated application: canonical light consumer-app shell. */
+[data-fin-app-shell] {
+  color: var(--fin-ink);
+  background: var(--fin-canvas);
+}
 [data-fin-app-shell] aside {
   color: var(--sidebar-foreground);
+  background: var(--sidebar);
+  border-color: var(--sidebar-border);
 }
 [data-fin-app-shell] aside .text-muted-foreground {
   color: var(--sidebar-foreground) !important;
@@ -45,13 +51,10 @@ body [class~="border-primary\/50"] {
 [data-fin-app-shell] aside .bg-primary {
   background-color: var(--sidebar-primary) !important;
 }
-.dark [data-fin-app-shell] aside .text-primary {
-  color: var(--sidebar-primary) !important;
+[data-fin-app-shell] aside ~ main {
+  background: var(--fin-canvas);
+  color: var(--fin-ink);
 }
-.dark [data-fin-app-shell] aside .text-muted-foreground {
-  opacity: 0.84;
-}
-
 [data-fin-app-shell] aside ~ main .text-primary {
   color: var(--fin-brand-hover) !important;
 }
@@ -79,7 +82,7 @@ body [class~="border-primary\/50"] {
 }
 [data-fin-app-shell] aside ~ main .surface-card {
   border-color: var(--fin-line) !important;
-  box-shadow: 0 8px 24px rgb(17 24 39 / 0.06) !important;
+  box-shadow: 0 1px 3px rgb(17 24 39 / 0.06) !important;
 }
 
 /* Phone mockups keep a quiet consumer-app frame, not an AI glow. */
@@ -137,18 +140,4 @@ body [class~="border-primary\/50"] {
   [class~="max-w-[470px]"] > div > div {
     border-radius: 21px !important;
   }
-}
-
-.dark [data-fin-app-shell] aside ~ main .bg-muted {
-  background-color: #111827 !important;
-}
-.dark [data-fin-app-shell] aside ~ main .text-muted-foreground {
-  color: #e1e7e3 !important;
-}
-.dark [data-fin-app-shell] aside ~ main .border-border {
-  border-color: #556070 !important;
-}
-.dark [data-fin-app-shell] aside ~ main .surface-card {
-  border-color: #556070 !important;
-  box-shadow: 0 8px 24px rgb(0 0 0 / 0.16) !important;
 }
