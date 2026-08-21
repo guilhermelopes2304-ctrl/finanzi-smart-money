@@ -23,9 +23,12 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_authenticated/posso-comprar")({
   head: () => ({
     meta: [
-      { title: "Posso comprar? — FINANZZI" },
-      { name: "description", content: "Descubra se uma compra cabe no seu orçamento com base nos seus dados." },
-      { property: "og:title", content: "Posso comprar? — FINANZZI" },
+      { title: "Quanto posso gastar? — FINANZZI" },
+      {
+        name: "description",
+        content: "Entenda se uma compra cabe na sua margem antes de decidir.",
+      },
+      { property: "og:title", content: "Quanto posso gastar? — FINANZZI" },
       { property: "og:description", content: "Simule uma compra antes de decidir." },
     ],
   }),
@@ -48,7 +51,10 @@ function CanIBuyPage() {
     const totals = totalsFor(transactions, period);
     const upcoming = bills
       .filter(
-        (b) => billStatus(b) !== "paid" && b.due_date >= todayISO() && b.due_date <= addDaysISO(todayISO(), 30),
+        (b) =>
+          billStatus(b) !== "paid" &&
+          b.due_date >= todayISO() &&
+          b.due_date <= addDaysISO(todayISO(), 30),
       )
       .reduce((s, b) => s + Number(b.amount), 0);
     setResult(
@@ -67,8 +73,8 @@ function CanIBuyPage() {
   return (
     <div>
       <PageHeader
-        title="Posso comprar?"
-        subtitle="Simule uma compra com base na sua situação financeira real."
+        title="Quanto posso gastar?"
+        subtitle="Pergunte antes de gastar. O FINANZZI cruza sua margem com os compromissos que já conhece."
       />
 
       <div className="mb-4">
@@ -104,7 +110,7 @@ function CanIBuyPage() {
           </div>
         </div>
         <Button type="submit">
-          <ShoppingBag className="size-4" /> Analisar compra
+          <ShoppingBag className="size-4" /> Ver se cabe
         </Button>
       </form>
 

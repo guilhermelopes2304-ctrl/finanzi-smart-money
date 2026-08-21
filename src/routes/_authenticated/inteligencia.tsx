@@ -1,27 +1,26 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { MessageCircle } from "lucide-react";
+import { ArrowRight, MessageCircle, Sparkles } from "lucide-react";
 import { useBills, useCategories, useProfile, useTransactions } from "@/hooks/useFinanceData";
 import { buildInsights, buildPeriod, expensesByCategory, type PeriodPreset } from "@/lib/finance";
 import { formatBRL, monthRange } from "@/lib/format";
 import { PageHeader } from "@/components/finanzzi/PageHeader";
 import { PeriodSelect } from "@/components/finanzzi/PeriodSelect";
 import { EmptyState } from "@/components/finanzzi/EmptyState";
-import { cn } from "@/lib/utils";
 import { PlanGate } from "@/components/finanzzi/PlanGate";
+import { cn } from "@/lib/utils";
 import { trackProductEvent } from "@/lib/product-analytics";
-import { ViralMomentCard } from "@/components/finanzzi/ViralMomentCard";
 
 export const Route = createFileRoute("/_authenticated/inteligencia")({
   head: () => ({
     meta: [
-      { title: "Inteligência Finanzzi — FINANZZI" },
+      { title: "FIN — FINANZZI" },
       {
         name: "description",
-        content: "Diagnóstico e orientações educativas baseadas nos seus próprios dados.",
+        content: "Insights do FIN baseados nos seus próprios dados financeiros.",
       },
-      { property: "og:title", content: "Inteligência Finanzzi" },
-      { property: "og:description", content: "Análises automáticas dos seus dados financeiros." },
+      { property: "og:title", content: "FIN — FINANZZI" },
+      { property: "og:description", content: "O que seus dados estão tentando te contar." },
     ],
   }),
   component: IntelligencePage,
@@ -56,13 +55,10 @@ function IntelligencePage() {
   if (transactions.length === 0) {
     return (
       <div>
-        <PageHeader
-          title="Fin"
-          subtitle="Seu dinheiro explicado de um jeito que dá para decidir."
-        />
+        <PageHeader title="FIN" subtitle="O que seus dados estão tentando te contar." />
         <EmptyState
-          title="Ainda não temos dados suficientes."
-          description="Registre alguns lançamentos e voltaremos com um diagnóstico completo."
+          title="O FIN ainda está conhecendo seu jeito."
+          description="Registre alguns lançamentos e ele encontra um padrão útil para você."
         />
       </div>
     );
@@ -70,26 +66,34 @@ function IntelligencePage() {
 
   return (
     <div>
-      <PageHeader title="Fin" subtitle="Seu dinheiro explicado de um jeito que dá para decidir." />
-      <section className="mb-5 flex items-center gap-4 rounded-[1.7rem] border border-primary/15 bg-primary/[0.045] p-4 sm:p-5">
-        <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-fin-brand-soft text-[10px] font-black uppercase tracking-[0.16em] text-fin-brand-hover">
-          FIN
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold">Quer entender uma coisa específica?</p>
-          <p className="mt-1 text-sm leading-5 text-muted-foreground">
-            O FIN pode explicar o que seus próprios dados estão mostrando.
-          </p>
+      <PageHeader title="FIN" subtitle="O que seus dados estão tentando te contar." />
+
+      <section className="mb-5 rounded-2xl border border-fin-line bg-fin-brand-soft p-4 sm:p-5">
+        <div className="flex items-start gap-3">
+          <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary text-[10px] font-black uppercase tracking-[0.16em] text-primary-foreground">
+            FIN
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">
+              O FIN percebeu
+            </p>
+            <h2 className="mt-1 text-lg font-semibold">Uma coisa importante sobre este período.</h2>
+            <p className="mt-1 text-sm leading-6 text-fin-copy">
+              Insights curtos para ajudar você a entender e decidir, sem precisar estudar finanças.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent("finanzzi:open-assistant"))}
+            className="inline-flex min-h-10 shrink-0 items-center gap-2 rounded-xl border border-fin-line bg-white px-3 text-xs font-bold text-fin-brand-hover transition-colors hover:bg-fin-brand-soft"
+          >
+            <MessageCircle className="size-3.5" />{" "}
+            <span className="hidden sm:inline">Perguntar</span>
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={() => window.dispatchEvent(new CustomEvent("finanzzi:open-assistant"))}
-          className="inline-flex min-h-10 shrink-0 items-center gap-2 rounded-xl bg-primary px-3 text-xs font-bold text-primary-foreground transition-transform hover:-translate-y-0.5 active:scale-95"
-        >
-          <MessageCircle className="size-3.5" /> <span className="hidden sm:inline">Conversar</span>
-        </button>
       </section>
-      <div className="mb-4">
+
+      <div className="mb-5">
         <PeriodSelect
           preset={preset}
           onPresetChange={setPreset}
@@ -98,98 +102,103 @@ function IntelligencePage() {
         />
       </div>
 
-      <ViralMomentCard
-        className="mb-4"
-        eyebrow="O Fin analisou meu mês"
-        title="Descobri coisas que eu não estava vendo."
-        value={`${Math.max(1, insights.diagnosis.length)} descobertas`}
-        detail={
-          insights.opportunities[0]?.title ??
-          "Uma leitura simples dos seus movimentos, compromissos e próximos passos."
-        }
-        shareText="Perguntei ao Fin sobre meu mês e descobri coisas que eu não estava vendo. O FINANZZI organizou meus dados sem expor informações pessoais."
-        event="fin_month_moment_shared"
-      />
+      <section aria-labelledby="fin-feed-title">
+        <div className="mb-3 flex items-end justify-between gap-3">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">
+              Seu feed de clareza
+            </p>
+            <h2 id="fin-feed-title" className="mt-1 text-2xl font-semibold tracking-[-0.03em]">
+              O FIN encontrou isto.
+            </h2>
+          </div>
+          <Sparkles className="size-5 text-fin-brand-hover" />
+        </div>
 
-      <div className="surface-card p-5">
-        <h2 className="text-base font-semibold">Diagnóstico financeiro</h2>
-        <ul className="mt-3 space-y-1.5 text-sm text-muted-foreground">
-          {insights.diagnosis.map((line) => (
-            <li key={line} className="flex gap-2">
-              <span className="text-primary">•</span>
-              <span>{line}</span>
-            </li>
+        <div className="space-y-3">
+          {insights.opportunities.slice(0, 3).map((insight) => (
+            <article key={insight.title} className="surface-card p-4 sm:p-5">
+              <div className="flex items-start gap-3">
+                <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-xl bg-fin-brand-soft text-fin-brand-hover">
+                  <Sparkles className="size-4" />
+                </span>
+                <div>
+                  <p
+                    className={cn(
+                      "text-sm font-semibold",
+                      insight.tone === "positive"
+                        ? "text-fin-success"
+                        : insight.tone === "warning"
+                          ? "text-fin-warning"
+                          : "text-foreground",
+                    )}
+                  >
+                    {insight.title}
+                  </p>
+                  <p className="mt-1 text-sm leading-6 text-fin-copy">{insight.description}</p>
+                </div>
+              </div>
+            </article>
           ))}
-        </ul>
-      </div>
 
-      <div className="mt-4 grid gap-4 lg:grid-cols-2">
-        <div className="surface-card p-5">
-          <h2 className="text-base font-semibold">Principais gastos</h2>
-          <div className="mt-3 space-y-2">
-            {slices.slice(0, 5).map((s) => (
-              <div key={s.id} className="flex items-center justify-between text-sm">
-                <span className="flex items-center gap-2">
-                  <span className="size-2.5 rounded-full" style={{ backgroundColor: s.color }} />
-                  {s.name}
-                </span>
-                <span className="font-medium">
-                  {formatBRL(s.value)} · {Math.round(s.share)}%
-                </span>
-              </div>
-            ))}
-          </div>
+          {insights.diagnosis.slice(0, 3).map((line) => (
+            <article key={line} className="rounded-2xl border border-fin-line bg-card p-4 sm:p-5">
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">
+                O FIN entende
+              </p>
+              <p className="mt-2 text-sm leading-6 text-foreground">{line}</p>
+            </article>
+          ))}
         </div>
+      </section>
 
-        <div className="surface-card p-5">
-          <h2 className="text-base font-semibold">Oportunidades</h2>
-          <div className="mt-3 space-y-3">
-            {insights.opportunities.map((o) => (
-              <div key={o.title}>
-                <p
-                  className={cn(
-                    "text-sm font-medium",
-                    o.tone === "positive"
-                      ? "text-success"
-                      : o.tone === "warning"
-                        ? "text-warning"
-                        : "",
-                  )}
-                >
-                  {o.title}
-                </p>
-                <p className="text-sm text-muted-foreground">{o.description}</p>
-              </div>
-            ))}
+      {slices[0] && (
+        <section className="mt-6 rounded-2xl border border-fin-line bg-card p-4 sm:p-5">
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">
+            Uma descoberta do período
+          </p>
+          <div className="mt-2 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2 className="text-xl font-semibold">
+                {slices[0].name} representa {Math.round(slices[0].share)}% dos seus gastos.
+              </h2>
+              <p className="mt-1 text-sm text-fin-copy">
+                Foram {formatBRL(slices[0].value)} no período.
+              </p>
+            </div>
+            <ArrowRight className="size-5 text-fin-brand-hover" />
           </div>
-        </div>
-      </div>
+        </section>
+      )}
 
-      <PlanGate feature="advanced_insights" className="mt-4">
-        <div className="surface-card p-5">
+      <PlanGate feature="advanced_insights" className="mt-6">
+        <section className="surface-card p-4 sm:p-5">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-primary">
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">
                 Acesso completo
               </p>
-              <h2 className="mt-1 text-base font-semibold">Próximas ações avançadas</h2>
+              <h2 className="mt-1 text-lg font-semibold">O FIN pode continuar te orientando.</h2>
             </div>
-            <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-primary">
+            <span className="rounded-full bg-fin-brand-soft px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-fin-brand-hover">
               Ativo
             </span>
           </div>
-          <div className="mt-3 grid gap-3 sm:grid-cols-3">
-            {insights.actions.map((a) => (
-              <div key={a.title} className="rounded-2xl border border-border p-4">
-                <p className="text-sm font-medium">{a.title}</p>
-                <p className="mt-1 text-sm text-muted-foreground">{a.description}</p>
+          <div className="mt-4 space-y-3">
+            {insights.actions.slice(0, 3).map((action) => (
+              <div
+                key={action.title}
+                className="border-t border-border pt-3 first:border-t-0 first:pt-0"
+              >
+                <p className="text-sm font-semibold">{action.title}</p>
+                <p className="mt-1 text-sm leading-6 text-fin-copy">{action.description}</p>
               </div>
             ))}
           </div>
-        </div>
+        </section>
       </PlanGate>
 
-      <p className="mt-4 text-xs text-muted-foreground">
+      <p className="mt-4 text-xs text-fin-copy">
         As orientações do FINANZZI são educativas e baseadas apenas nos dados que você registrou.
       </p>
     </div>

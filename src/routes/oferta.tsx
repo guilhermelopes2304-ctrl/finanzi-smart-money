@@ -14,7 +14,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { BillingOffer } from "@/components/finanzzi/PlanGate";
 import { Logo } from "@/components/finanzzi/Logo";
-import { ThemeToggle } from "@/components/finanzzi/ThemeToggle";
 import { useAuth } from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/oferta")({
@@ -108,13 +107,12 @@ function OfferPage() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
-      <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur-2xl">
+      <header className="sticky top-0 z-40 border-b border-border/60 bg-background">
         <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-4 sm:px-6">
           <Link to="/" aria-label="Voltar para o início">
             <Logo />
           </Link>
           <div className="flex items-center gap-2">
-            <ThemeToggle />
             {user ? (
               <Button asChild variant="ghost" className="hidden rounded-full sm:inline-flex">
                 <Link to="/dashboard">Meu FINANZZI</Link>
@@ -140,24 +138,21 @@ function OfferPage() {
           </div>
         )}
         {reason === "billing_unavailable" && (
-          <div className="border-b border-[#556070] bg-[#556070] px-4 py-3 text-center text-sm font-medium text-[#F4F5F8]">
+          <div className="border-b border-fin-danger/25 bg-fin-danger-soft px-4 py-3 text-center text-sm font-medium text-fin-ink">
             Não conseguimos validar o billing agora. Nenhum dado financeiro foi aberto.
           </div>
         )}
 
-        <section className="relative isolate overflow-hidden bg-[#111827] text-white">
-          <div className="fin-grid pointer-events-none absolute inset-0 opacity-60" />
-          <div className="pointer-events-none absolute -left-32 top-10 size-96 rounded-full bg-[#19C96B]/12 blur-3xl" />
-          <div className="pointer-events-none absolute -right-24 top-20 size-[28rem] rounded-full bg-primary/25 blur-3xl" />
+        <section className="relative isolate overflow-hidden bg-[#EAF9F0] text-[#111827]">
           <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 sm:py-24 lg:grid-cols-[.86fr_1.14fr] lg:py-28">
             <div className="text-center lg:text-left">
-              <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-[#556070]/15 bg-white/[0.07] px-3.5 py-2 text-xs font-semibold text-[#19C96B] lg:mx-0">
+              <div className="mx-auto inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-2 text-xs font-semibold text-[#0F9F52] shadow-sm lg:mx-0">
                 <Sparkles className="size-3.5" /> Acesso completo ao FINANZZI
               </div>
               <h1 className="mt-7 max-w-2xl font-display text-4xl font-semibold leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
                 Controle seu dinheiro sem complicar.
               </h1>
-              <p className="mx-auto mt-6 max-w-xl text-base leading-7 text-[#F4F5F8]/65 sm:text-lg lg:mx-0">
+              <p className="mx-auto mt-6 max-w-xl text-base leading-7 text-[#556070] sm:text-lg lg:mx-0">
                 Registre seus gastos por texto ou voz. O FINANZZI organiza tudo, lembra das suas
                 contas e ajuda você a entender o que fazer a seguir.
               </p>
@@ -175,12 +170,12 @@ function OfferPage() {
                   asChild
                   size="lg"
                   variant="outline"
-                  className="h-13 rounded-full border-[#556070]/15 bg-white/[0.06] px-8 text-base text-white hover:bg-white/[0.12] hover:text-white"
+                  className="h-13 rounded-full border-[#E1E7E3] bg-white px-8 text-base text-[#111827] hover:bg-[#F4F6F5]"
                 >
                   <a href="#como-funciona">Ver como funciona</a>
                 </Button>
               </div>
-              <div className="mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-[#F4F5F8]/55 lg:justify-start">
+              <div className="mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-[#556070] lg:justify-start">
                 <span className="inline-flex items-center gap-1.5">
                   <Check className="size-4 text-[#19C96B]" /> Texto e voz
                 </span>
@@ -194,9 +189,8 @@ function OfferPage() {
             </div>
 
             <div className="relative mx-auto w-full max-w-xl">
-              <div className="absolute -inset-7 rounded-[3rem] bg-[#19C96B]/10 blur-3xl" />
-              <div className="relative rounded-[2.25rem] border border-[#556070]/10 bg-white/[0.07] p-3 shadow-2xl backdrop-blur-xl">
-                <div className="overflow-hidden rounded-[1.8rem] bg-[#556070] p-5 sm:p-7">
+              <div className="relative rounded-[2.25rem] border border-[#E1E7E3] bg-white p-3 shadow-[0_18px_55px_rgba(21,24,39,.08)]">
+                <div className="overflow-hidden rounded-[1.8rem] bg-[#F4F6F5] p-5 text-[#111827] sm:p-7">
                   <div className="flex items-center justify-between gap-4">
                     <div>
                       <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#19C96B]/70">
@@ -214,13 +208,13 @@ function OfferPage() {
                     <div className="ml-auto max-w-[82%] rounded-2xl rounded-br-md bg-[#19C96B] px-4 py-3 text-sm font-semibold text-[#111827]">
                       gastei 45 no mercado
                     </div>
-                    <div className="max-w-[88%] rounded-2xl rounded-bl-md border border-[#556070]/10 bg-white/[0.07] px-4 py-3 text-sm text-[#F4F5F8]/80">
+                    <div className="max-w-[88%] rounded-2xl rounded-bl-md border border-[#E1E7E3] bg-white px-4 py-3 text-sm text-[#111827]">
                       Registrado ✓
                       <br />
                       <span className="text-[#19C96B]">Alimentação · R$ 45,00</span>
                     </div>
-                    <div className="max-w-[88%] rounded-2xl rounded-bl-md border border-[#556070]/15 bg-[#19C96B]/10 px-4 py-3 text-sm text-[#F4F5F8]/80">
-                      Você ainda pode gastar <strong className="text-[#19C96B]">R$ 327 hoje</strong>
+                    <div className="max-w-[88%] rounded-2xl rounded-bl-md border border-[#E1E7E3] bg-[#EAF9F0] px-4 py-3 text-sm text-[#111827]">
+                      Você ainda pode gastar <strong className="text-[#0F9F52]">R$ 327 hoje</strong>
                       .
                     </div>
                   </div>
@@ -233,10 +227,10 @@ function OfferPage() {
                   ].map(([title, text]) => (
                     <div
                       key={title}
-                      className="rounded-2xl border border-[#556070]/10 bg-white/[0.04] p-3 text-center"
+                      className="rounded-2xl border border-[#E1E7E3] bg-[#F4F6F5] p-3 text-center"
                     >
-                      <p className="text-xs font-semibold text-[#19C96B]">{title}</p>
-                      <p className="mt-1 text-[11px] text-[#F4F5F8]/50">{text}</p>
+                      <p className="text-xs font-semibold text-[#0F9F52]">{title}</p>
+                      <p className="mt-1 text-[11px] text-[#556070]">{text}</p>
                     </div>
                   ))}
                 </div>
@@ -362,7 +356,7 @@ function OfferPage() {
           </div>
         </section>
 
-        <section id="oferta" className="bg-[#111827] text-white">
+        <section id="oferta" className="bg-[#EAF9F0] text-[#111827]">
           <div className="mx-auto max-w-5xl px-4 py-20 sm:px-6 lg:py-28">
             <div className="mx-auto max-w-2xl text-center">
               <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#19C96B]">
@@ -371,7 +365,7 @@ function OfferPage() {
               <h2 className="mt-4 font-display text-3xl font-semibold leading-tight sm:text-5xl">
                 Pague uma vez por mês. Tenha clareza todos os dias.
               </h2>
-              <p className="mt-5 text-base leading-7 text-[#F4F5F8]/65">
+              <p className="mt-5 text-base leading-7 text-[#556070]">
                 Escolha o mensal ou economize no anual. O acesso só é ativado depois da confirmação
                 do pagamento pelo provedor.
               </p>

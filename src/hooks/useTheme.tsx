@@ -9,38 +9,38 @@ interface ThemeState {
   toggleTheme: () => void;
 }
 
+const LIGHT_THEME: Theme = "light";
+
 const ThemeContext = createContext<ThemeState>({
-  theme: "dark",
+  theme: LIGHT_THEME,
   setTheme: () => {},
   toggleTheme: () => {},
 });
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("dark");
+  const [theme, setThemeState] = useState<Theme>(LIGHT_THEME);
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
-    const initial: Theme = stored ?? "dark";
-    setThemeState(initial);
+    // A direção visual atual é clara em toda a experiência principal.
+    localStorage.setItem(STORAGE_KEY, LIGHT_THEME);
+    setThemeState(LIGHT_THEME);
   }, []);
 
   useEffect(() => {
     const root = document.documentElement;
-    root.classList.toggle("dark", theme === "dark");
-    root.style.colorScheme = theme;
+    root.classList.remove("dark");
+    root.style.colorScheme = "light";
   }, [theme]);
 
-  const setTheme = useCallback((t: Theme) => {
-    localStorage.setItem(STORAGE_KEY, t);
-    setThemeState(t);
+  const setTheme = useCallback((_next: Theme) => {
+    localStorage.setItem(STORAGE_KEY, LIGHT_THEME);
+    setThemeState(LIGHT_THEME);
   }, []);
 
   const toggleTheme = useCallback(() => {
-    setThemeState((prev) => {
-      const next = prev === "dark" ? "light" : "dark";
-      localStorage.setItem(STORAGE_KEY, next);
-      return next;
-    });
+    // Mantém a assinatura pública do contexto sem criar uma segunda identidade visual.
+    localStorage.setItem(STORAGE_KEY, LIGHT_THEME);
+    setThemeState(LIGHT_THEME);
   }, []);
 
   return (

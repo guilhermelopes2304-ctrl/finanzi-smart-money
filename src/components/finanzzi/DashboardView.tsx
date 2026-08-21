@@ -96,10 +96,10 @@ export function DashboardView({
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">
-                    Sua margem hoje
+                    Decisão do dia
                   </p>
                   <h2 id="capacity-title" className="mt-1 text-base font-semibold">
-                    Quanto posso gastar?
+                    Quanto posso gastar hoje?
                   </h2>
                 </div>
                 <Link

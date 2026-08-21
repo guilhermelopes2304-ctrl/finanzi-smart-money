@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Camera, Check, Mic, Send, Sparkles, X } from "lucide-react";
+import { Check, Mic, Send, Sparkles, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import {
   useAccounts,
@@ -67,13 +67,13 @@ function QuickEntryPreview({ data }: { data: QuickEntryPreviewData }) {
           </span>
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-primary">
-              Atalho FINANZZI
+              Registro rápido
             </p>
             <h2 className="mt-1 text-base font-semibold leading-tight sm:text-lg">
-              Lance do seu jeito
+              Fale ou escreva. Eu organizo.
             </h2>
             <p className="mt-1 text-xs text-muted-foreground">
-              Escreva como falaria com o Fin. Ele entende o contexto.
+              Mercado 82, Uber 27 ou Netflix 39,90 todo mês. É só falar.
             </p>
           </div>
         </div>
@@ -106,10 +106,10 @@ function QuickEntryPreview({ data }: { data: QuickEntryPreviewData }) {
             type="button"
             disabled
             className="h-11 shrink-0 rounded-xl px-4"
-            aria-label="Interpretar lançamento"
+            aria-label="Registrar lançamento"
           >
             <Send className="size-4 sm:hidden" />
-            <span className="hidden sm:inline">Interpretar</span>
+            <span className="hidden sm:inline">Registrar</span>
           </Button>
         </div>
         <div className="flex flex-wrap items-center gap-2 px-1">
@@ -123,20 +123,13 @@ function QuickEntryPreview({ data }: { data: QuickEntryPreviewData }) {
             </span>
           ))}
         </div>
-        <div className="grid grid-cols-2 gap-2 sm:hidden">
+        <div className="sm:hidden">
           <button
             type="button"
             disabled
-            className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 text-sm font-semibold text-primary opacity-70"
+            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 text-sm font-semibold text-primary opacity-70"
           >
             <Mic className="size-4" /> Falar
-          </button>
-          <button
-            type="button"
-            disabled
-            className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border bg-muted/40 px-4 text-sm font-semibold text-foreground opacity-70"
-          >
-            <Camera className="size-4" /> Foto
           </button>
         </div>
       </div>
@@ -146,7 +139,7 @@ function QuickEntryPreview({ data }: { data: QuickEntryPreviewData }) {
             Entendi assim
           </p>
           <p className="mt-1 text-sm text-muted-foreground">
-            Exemplo fictício para revisão visual.
+            Assim o FINANZZI entendeu o que aconteceu.
           </p>
           <div className="mt-4 grid gap-3 rounded-2xl bg-card p-4 sm:grid-cols-[auto_1fr] sm:items-center">
             <div className="grid size-14 place-items-center rounded-2xl bg-primary/10 text-lg font-bold">
@@ -199,12 +192,6 @@ function QuickEntryLive() {
     }, 3200);
     return () => window.clearInterval(timer);
   }, []);
-
-  function handlePhoto() {
-    toast("Leitura de foto ainda não está ligada a um OCR real.", {
-      description: "Nada foi registado. Você pode escrever o que aconteceu para o Fin interpretar.",
-    });
-  }
 
   function openFinVoice() {
     window.dispatchEvent(new CustomEvent("finanzzi:open-assistant", { detail: { listen: true } }));
@@ -333,13 +320,13 @@ function QuickEntryLive() {
           </span>
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-primary">
-              Atalho FINANZZI
+              Registro rápido
             </p>
             <h2 className="mt-1 text-base font-semibold leading-tight sm:text-lg">
-              Lance do seu jeito
+              Fale ou escreva. Eu organizo.
             </h2>
             <p className="mt-1 text-xs text-muted-foreground">
-              Escreva como falaria com o Fin. Ele entende o contexto.
+              Mercado 82, Uber 27 ou Netflix 39,90 todo mês. É só falar.
             </p>
           </div>
         </div>
@@ -373,10 +360,10 @@ function QuickEntryLive() {
             type="submit"
             disabled={!text.trim()}
             className="h-11 shrink-0 rounded-xl px-4"
-            aria-label="Interpretar lançamento"
+            aria-label="Registrar lançamento"
           >
             <Send className="size-4 sm:hidden" />
-            <span className="hidden sm:inline">Interpretar</span>
+            <span className="hidden sm:inline">Registrar</span>
           </Button>
         </div>
         <div className="flex flex-wrap items-center gap-2 px-1">
@@ -392,20 +379,13 @@ function QuickEntryLive() {
             </button>
           ))}
         </div>
-        <div className="grid grid-cols-2 gap-2 sm:hidden">
+        <div className="sm:hidden">
           <button
             type="button"
             onClick={openFinVoice}
-            className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 text-sm font-semibold text-primary transition-colors hover:bg-primary/10 active:scale-[0.99]"
+            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 text-sm font-semibold text-primary transition-colors hover:bg-primary/10 active:scale-[0.99]"
           >
             <Mic className="size-4" /> Falar
-          </button>
-          <button
-            type="button"
-            onClick={handlePhoto}
-            className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border bg-muted/40 px-4 text-sm font-semibold text-foreground transition-colors hover:bg-muted active:scale-[0.99]"
-          >
-            <Camera className="size-4" /> Foto
           </button>
         </div>
       </form>
@@ -419,7 +399,7 @@ function QuickEntryLive() {
               <p className="mt-1 text-sm text-muted-foreground">
                 {paidBillId
                   ? "Vou atualizar o compromisso, sem criar outro lançamento."
-                  : "Confira antes de confirmar o lançamento."}
+                  : "Confira e registre quando estiver tudo certo."}
               </p>
             </div>
             <span
@@ -551,7 +531,7 @@ function QuickEntryLive() {
           <div className="mt-5 flex gap-2">
             <Button onClick={confirm} disabled={busy} className="h-11 flex-1">
               <Check className="size-4" />{" "}
-              {busy ? "Salvando..." : paidBillId ? "Marcar como paga" : "Confirmar lançamento"}
+              {busy ? "Salvando..." : paidBillId ? "Marcar como paga" : "Registrar"}
             </Button>
             <Button
               variant="outline"

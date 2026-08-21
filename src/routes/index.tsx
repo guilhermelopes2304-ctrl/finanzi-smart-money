@@ -29,23 +29,28 @@ const examples = [
 ];
 
 const demoSteps = [
-  { example: "mercado 82", result: "Registrado", detail: "Mercado · R$ 82,00" },
+  { example: "mercado 82", result: "Registrado.", detail: "Mercado · R$ 82,00" },
   {
-    example: "Netflix 39,90 todo mês",
-    result: "Assinatura criada",
-    detail: "Netflix · R$ 39,90/mês",
+    example: "posso gastar 200?",
+    result: "Pode.",
+    detail: "Mas sua margem fica em R$ 127.",
+  },
+  {
+    example: "quanto gasto com streaming?",
+    result: "R$ 327,40/mês",
+    detail: "R$ 3.928,80/ano · Eu não fazia ideia.",
+  },
+  {
+    example: "netflix 39,90 todo mês",
+    result: "Assinatura criada.",
+    detail: "Vence amanhã.",
   },
   {
     example: "o que vence essa semana?",
-    result: "4 contas · R$ 1.445",
-    detail: "Próximos compromissos",
+    result: "4 compromissos",
+    detail: "R$ 1.445 nos próximos 7 dias.",
   },
-  {
-    example: "posso gastar 200?",
-    result: "Pode gastar com contexto",
-    detail: "Sua margem fica em R$ 127",
-  },
-  { example: "recebi 2500", result: "Receita registrada", detail: "Receita · R$ 2.500,00" },
+  { example: "uber 27", result: "Registrado.", detail: "Uber · R$ 27,00" },
 ];
 
 function Landing() {
@@ -68,7 +73,7 @@ function Landing() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#FCFCF8] text-[#111827] selection:bg-[#19C96B] selection:text-[#111827]">
-      <header className="sticky top-0 z-40 border-b border-[#111827]/8 bg-[#FCFCF8]/92 backdrop-blur-md">
+      <header className="sticky top-0 z-40 border-b border-[#111827]/8 bg-[#FCFCF8]">
         <div className="mx-auto flex h-[68px] max-w-6xl items-center justify-between px-4 sm:px-6">
           <Link to="/" aria-label="FINANZZI — início">
             <Logo />
@@ -220,7 +225,7 @@ function Landing() {
                 loading="eager"
                 className="aspect-[1.35] w-full object-cover"
               />
-              <div className="absolute inset-x-4 bottom-4 rounded-2xl border border-white/30 bg-[#111827]/82 px-4 py-3 text-white backdrop-blur-md">
+              <div className="absolute inset-x-4 bottom-4 rounded-2xl border border-white/30 bg-[#111827]/82 px-4 py-3 text-white">
                 <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#EAF9F0]">
                   Vida real, decisões reais
                 </p>
@@ -263,7 +268,7 @@ function Landing() {
                 Fale uma frase. O FINANZZI entende, você confirma e pronto.
               </p>
             </div>
-            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {demoSteps.map(({ example, result, detail }, index) => (
                 <article
                   key={example}
@@ -291,7 +296,7 @@ function Landing() {
           </div>
         </section>
 
-        <section id="contas" className="bg-[#111827] px-4 py-20 text-white sm:px-6 sm:py-28">
+        <section id="contas" className="bg-[#F4F6F5] px-4 py-20 text-[#111827] sm:px-6 sm:py-28">
           <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
             <div>
               <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#19C96B]">
@@ -300,7 +305,7 @@ function Landing() {
               <h2 className="mt-4 font-display text-5xl font-semibold leading-[.95] tracking-[-0.06em] sm:text-7xl">
                 Ele também lembra do que você esqueceria.
               </h2>
-              <p className="mt-6 max-w-md text-lg leading-8 text-white/65">
+              <p className="mt-6 max-w-md text-lg leading-8 text-[#556070]">
                 Netflix, Spotify, internet, aluguel, energia, academia e parcelas. Cadastre uma vez
                 e deixe o FINANZZI lembrar do próximo vencimento.
               </p>
@@ -357,7 +362,7 @@ function Landing() {
                 href={checkout("annual")}
                 className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#19C96B] px-6 py-3.5 text-sm font-bold text-[#111827] transition-transform hover:-translate-y-0.5"
               >
-                QUERO TER ISSO <ArrowRight className="size-4" />
+                QUERO O FINANZZI <ArrowRight className="size-4" />
               </a>
             </div>
             <div className="grid gap-4">
@@ -370,7 +375,7 @@ function Landing() {
                   loading="lazy"
                   className="h-52 w-full object-cover sm:h-64"
                 />
-                <figcaption className="absolute inset-x-4 bottom-4 rounded-xl bg-[#111827]/82 px-3 py-2 text-xs font-semibold text-[#FCFCF8] backdrop-blur-md">
+                <figcaption className="absolute inset-x-4 bottom-4 rounded-xl bg-[#111827]/82 px-3 py-2 text-xs font-semibold text-[#FCFCF8]">
                   Pequenas decisões ficam mais leves quando você tem contexto.
                 </figcaption>
               </figure>
@@ -453,14 +458,14 @@ function Landing() {
         </section>
 
         <section className="px-4 pb-20 sm:px-6 sm:pb-28">
-          <div className="mx-auto max-w-6xl overflow-hidden rounded-[2.2rem] bg-[#111827] px-6 py-12 text-center text-white sm:px-12 sm:py-16">
+          <div className="mx-auto max-w-6xl overflow-hidden rounded-[2.2rem] border border-[#E1E7E3] bg-[#EAF9F0] px-6 py-12 text-center text-[#111827] sm:px-12 sm:py-16">
             <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#19C96B]">
               FINANZZI
             </p>
             <h2 className="mx-auto mt-4 max-w-3xl font-display text-5xl font-semibold leading-[.94] tracking-[-0.06em] sm:text-7xl">
               Você não precisa virar especialista em finanças. Só precisa começar.
             </h2>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/65">
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-[#556070]">
               Registre do seu jeito. O FINANZZI organiza o resto.
             </p>
             <a
@@ -487,19 +492,19 @@ function PricingCard({
 }) {
   return (
     <article
-      className={`rounded-[2rem] border p-6 sm:p-8 ${featured ? "border-[#111827] bg-[#111827] text-white shadow-[0_24px_60px_rgba(20,24,18,0.15)]" : "border-[#E1E7E3] bg-white text-[#111827]"}`}
+      className={`rounded-[2rem] border p-6 sm:p-8 ${featured ? "border-[#19C96B] bg-[#EAF9F0] text-[#111827] shadow-[0_18px_50px_rgba(15,159,82,0.12)]" : "border-[#E1E7E3] bg-white text-[#111827]"}`}
     >
       <div className="flex items-start justify-between gap-4">
         <div>
           <p
-            className={`text-xs font-bold uppercase tracking-[0.15em] ${featured ? "text-[#19C96B]" : "text-[#556070]"}`}
+            className={`text-xs font-bold uppercase tracking-[0.15em] ${featured ? "text-[#0F9F52]" : "text-[#556070]"}`}
           >
             {plan.name}
           </p>
           <p className="mt-3 font-display text-4xl font-semibold tracking-[-0.05em]">
             {plan.priceLabel}
           </p>
-          <p className={`mt-1 text-sm ${featured ? "text-white/60" : "text-[#556070]"}`}>
+          <p className={`mt-1 text-sm ${featured ? "text-[#556070]" : "text-[#556070]"}`}>
             {plan.monthlyEquivalentLabel}
           </p>
         </div>
@@ -509,17 +514,20 @@ function PricingCard({
           </span>
         )}
       </div>
-      <p className={`mt-4 text-sm font-semibold ${featured ? "text-white/70" : "text-[#556070]"}`}>
+      <p className={`mt-4 text-sm font-semibold ${featured ? "text-[#556070]" : "text-[#556070]"}`}>
         {plan.savingsLabel}
       </p>
-      <div className={`my-7 border-t ${featured ? "border-white/10" : "border-[#E1E7E3]"}`} />
-      <ul className={`space-y-3 text-sm ${featured ? "text-white/80" : "text-[#556070]"}`}>
+      <div className={`my-7 border-t ${featured ? "border-[#E1E7E3]" : "border-[#E1E7E3]"}`} />
+      <ul className={`space-y-3 text-sm ${featured ? "text-[#556070]" : "text-[#556070]"}`}>
         {[
           "Registro por texto e voz",
           "Organização automática",
-          "Contas e assinaturas",
-          "Lembretes e compromissos",
+          "Compromissos",
+          "Assinaturas",
+          "Lembretes",
           "Parcelas",
+          "Cartões",
+          "Objetivos",
           "FIN para orientar suas decisões",
           "Direcionamentos práticos",
         ].map((item) => (
