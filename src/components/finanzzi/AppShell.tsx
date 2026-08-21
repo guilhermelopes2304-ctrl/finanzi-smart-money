@@ -88,7 +88,7 @@ function NavItem({
           onNavigate?.();
         }}
         className={cn(
-          "group flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-2xl px-1 py-2 text-[10px] font-semibold transition-colors active:scale-[0.97]",
+          "group flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-2xl px-1 py-2 text-[10px] font-semibold transition-colors touch-manipulation active:scale-[0.97]",
           active
             ? "bg-fin-brand-soft text-fin-brand-hover"
             : "text-muted-foreground hover:bg-muted hover:text-foreground",
@@ -177,7 +177,7 @@ function MoreMenu({
                 onClose?.();
               }}
               className={cn(
-                "flex min-h-[88px] flex-col items-center justify-center gap-2 rounded-2xl border border-border bg-background px-2 text-center text-xs font-semibold transition-colors active:scale-[0.97]",
+                "flex min-h-[88px] flex-col items-center justify-center gap-2 rounded-2xl border border-border bg-background px-2 text-center text-xs font-semibold transition-colors touch-manipulation active:scale-[0.97]",
                 activePathname === item.to
                   ? "border-primary bg-fin-brand-soft text-fin-brand-hover"
                   : "text-foreground hover:bg-muted",
@@ -433,7 +433,7 @@ export function AppShell({
               if (!visualReview) openAssistant();
             }}
             className={cn(
-              "group flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[10px] font-semibold transition-colors active:scale-[0.97]",
+              "group flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[10px] font-semibold transition-colors touch-manipulation active:scale-[0.97]",
               activePathname === "/inteligencia"
                 ? "bg-fin-brand-soft text-fin-brand-hover"
                 : "text-muted-foreground hover:bg-muted hover:text-foreground",
@@ -450,7 +450,7 @@ export function AppShell({
               if (!visualReview) setMoreOpen(true);
             }}
             className={cn(
-              "group flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[10px] font-semibold transition-colors active:scale-[0.97]",
+              "group flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[10px] font-semibold transition-colors touch-manipulation active:scale-[0.97]",
               moreOpen || moreActive
                 ? "bg-fin-brand-soft text-fin-brand-hover"
                 : "text-muted-foreground hover:bg-muted hover:text-foreground",
