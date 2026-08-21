@@ -1,16 +1,4 @@
-/* FINANZZI visual refinements: consumer-product palette + high contrast. */
-
-/*
-  Brand direction:
-  - Electric blue: trust, action and energy.
-  - Warm coral: small moments of personality.
-  - Warm white: editorial, human background.
-  - Ink: strong readability.
-
-  The palette intentionally avoids TikTok's own brand colors and keeps
-  contrast/legibility ahead of decoration.
-*/
-
+/* FINANZZI visual system: consumer fintech, high contrast, TikTok-friendly. */
 :root {
   --fin-blue: #5B5CE2;
   --fin-blue-strong: #4546C8;
@@ -21,133 +9,77 @@
   --fin-line: #E4E7EF;
   --fin-soft: #F4F5F8;
   --fin-coral: #FF6B6B;
-  --fin-coral-soft: #FFF0EE;
 }
 
-/* Internal app: calmer consumer palette, applied to the authenticated area only. */
-aside ~ main {
-  --fin-ink: #151827;
-  --fin-copy: #3F4658;
-  --fin-muted: #667085;
-  --fin-line: #E4E7EF;
-  --fin-soft: #F4F5F8;
-  --fin-soft-green: #EEF0FF;
-  --fin-green: #5B5CE2;
-  --fin-green-strong: #4546C8;
-}
+/* Global action language: one recognizable blue across login + app. */
+body [class~="bg-primary"] { background-color: var(--fin-blue) !important; }
+body [class~="text-primary"] { color: var(--fin-blue-strong) !important; }
+body [class~="bg-primary/10"],
+body [class~="bg-primary/5"] { background-color: var(--fin-blue-soft) !important; }
+body [class~="border-primary/20"],
+body [class~="border-primary/50"] { border-color: #D0D2FA !important; }
+body [class~="text-[#39FF14]"] { color: var(--fin-blue) !important; }
+body [class~="bg-[#39FF14]"] { background-color: var(--fin-blue) !important; }
+body [class~="bg-[#39FF14]/10"] { background-color: rgb(91 92 226 / 0.10) !important; }
+body [class~="bg-[#0A0F1D]"] { background-color: var(--fin-ink) !important; }
+body [class~="text-[#94A3B8]"] { color: var(--fin-muted) !important; }
 
-aside ~ main .text-primary,
-aside ~ main .hover\\:text-primary:hover {
-  color: var(--fin-green-strong) !important;
-}
+:focus-visible { outline: 3px solid var(--fin-blue) !important; outline-offset: 3px; }
+::selection { background: #DDE0FF !important; color: var(--fin-ink) !important; }
 
-aside ~ main .bg-primary {
-  background-color: var(--fin-ink) !important;
-}
-
-aside ~ main .text-primary-foreground {
-  color: #FFFFFF !important;
-}
-
-aside ~ main .bg-accent {
-  background-color: var(--fin-blue-soft) !important;
-  color: var(--fin-ink) !important;
-}
-
-aside ~ main .text-accent-foreground {
-  color: var(--fin-ink) !important;
-}
-
-aside ~ main .bg-primary\\/10,
-aside ~ main .bg-primary\\/5 {
-  background-color: var(--fin-blue-soft) !important;
-}
-
-aside ~ main .border-primary\\/20,
-aside ~ main .border-primary\\/50 {
-  border-color: #D0D2FA !important;
-}
-
-aside ~ main .text-muted-foreground,
-aside ~ main .text-muted-foreground\\/65 {
-  color: var(--fin-muted) !important;
-}
-
-aside ~ main .bg-muted,
-aside ~ main .bg-muted\\/60,
-aside ~ main .bg-muted\\/70,
-aside ~ main .bg-muted\\/40 {
-  background-color: var(--fin-soft) !important;
-}
-
-aside ~ main .border-border,
-aside ~ main .border-border\\/60,
-aside ~ main .border-border\\/70 {
-  border-color: var(--fin-line) !important;
-}
-
-aside ~ main .surface-card {
-  border-color: var(--fin-line) !important;
-  box-shadow: 0 12px 32px rgb(20 28 48 / 0.06) !important;
-}
-
-/* Make the authenticated navigation readable instead of washed-out gray. */
+/* Authenticated application: calm, readable consumer palette. */
 aside {
   color: #2D3446;
 }
+aside .text-muted-foreground { color: #4F5A70 !important; }
+aside .text-primary { color: var(--fin-blue-strong) !important; }
+aside .bg-primary { background-color: var(--fin-ink) !important; }
 
-aside .text-muted-foreground {
-  color: #4F5A70 !important;
-}
+aside ~ main .text-primary { color: var(--fin-blue-strong) !important; }
+aside ~ main .bg-primary { background-color: var(--fin-blue) !important; }
+aside ~ main .text-primary-foreground { color: #FFFFFF !important; }
+aside ~ main .bg-accent { background-color: var(--fin-blue-soft) !important; color: var(--fin-ink) !important; }
+aside ~ main .text-accent-foreground { color: var(--fin-ink) !important; }
+aside ~ main .text-muted-foreground { color: var(--fin-muted) !important; }
+aside ~ main .bg-muted { background-color: var(--fin-soft) !important; }
+aside ~ main .border-border { border-color: var(--fin-line) !important; }
+aside ~ main .surface-card { border-color: var(--fin-line) !important; box-shadow: 0 12px 32px rgb(20 28 48 / 0.06) !important; }
 
-aside .text-primary {
-  color: #4546C8 !important;
-}
-
-aside .bg-primary {
-  background-color: #151827 !important;
-}
-
-/* Commercial landing: recolor the existing visual language without changing its copy/layout. */
+/* Commercial landing: warm editorial base + blue action palette. */
 body [class~="bg-[#F6F5EF]"] { background-color: #FCFBF7 !important; }
-body [class~="text-[#161815]"] { color: #151827 !important; }
-body [class~="bg-[#161815]"] { background-color: #151827 !important; }
-body [class~="bg-[#B8EE63]"] { background-color: #5B5CE2 !important; }
-body [class~="text-[#4E6B30]"] { color: #FFFFFF !important; }
-body [class~="text-[#557234]"] { color: #4546C8 !important; }
-body [class~="bg-[#EAF5DA]"] { background-color: #EEF0FF !important; }
-body [class~="text-[#5C7D37]"] { color: #4546C8 !important; }
-body [class~="text-[#6C824F]"] { color: #4546C8 !important; }
-body [class~="text-[#5F7E41]"] { color: #4546C8 !important; }
-body [class~="text-[#69824D]"] { color: #4546C8 !important; }
+body [class~="text-[#161815]"] { color: var(--fin-ink) !important; }
+body [class~="bg-[#161815]"] { background-color: var(--fin-ink) !important; }
+body [class~="bg-[#B8EE63]"] { background-color: var(--fin-blue) !important; }
+body [class~="bg-[#EAF5DA]"] { background-color: var(--fin-blue-soft) !important; }
+body [class~="bg-[#E9F6D7]"] { background-color: var(--fin-blue-soft) !important; }
+body [class~="bg-[#F1F3ED]"] { background-color: var(--fin-soft) !important; }
+body [class~="text-[#4E6B30]"],
 body [class~="text-[#55713A]"] { color: #FFFFFF !important; }
+body [class~="text-[#557234]"],
+body [class~="text-[#5C7D37]"],
+body [class~="text-[#6C824F]"],
+body [class~="text-[#5F7E41]"],
+body [class~="text-[#69824D]"] { color: var(--fin-blue-strong) !important; }
 body [class~="text-[#53684A]"] { color: #4B55B0 !important; }
-body [class~="bg-[#E9F6D7]"] { background-color: #EEF0FF !important; }
-body [class~="bg-[#F1F3ED]"] { background-color: #F4F5F8 !important; }
-body [class~="text-[#8A9385]"] { color: #7B8497 !important; }
-body [class~="text-[#7C8776]"] { color: #667085 !important; }
-body [class~="text-[#7A8276]"] { color: #667085 !important; }
-body [class~="text-[#5E665B]"] { color: #4F5668 !important; }
-body [class~="text-[#636B60]"] { color: #4F5668 !important; }
-body [class~="text-[#697164]"] { color: #5E6678 !important; }
-body [class~="text-[#4F574B]"] { color: #3F4658 !important; }
-body [class~="text-[#2F352D]"] { color: #151827 !important; }
-body [class~="text-[#20241F]"] { color: #151827 !important; }
-body [class~="text-[#1B211A]"] { color: #151827 !important; }
-body [class~="border-[#D8DCCF]"] { border-color: #D9DDEA !important; }
-body [class~="border-[#D9DDCF]"] { border-color: #D9DDEA !important; }
-body [class~="border-[#DDE1D5]"] { border-color: #E4E7EF !important; }
-body [class~="border-[#E7EAE3]"] { border-color: #E8EBF1 !important; }
-body [class~="border-[#DCE1D6]"] { border-color: #E1E4EC !important; }
+body [class~="text-[#8A9385]"],
+body [class~="text-[#7C8776]"],
+body [class~="text-[#7A8276]"] { color: var(--fin-muted) !important; }
+body [class~="text-[#5E665B]"],
+body [class~="text-[#636B60]"],
+body [class~="text-[#697164]"],
+body [class~="text-[#4F574B]"] { color: var(--fin-copy) !important; }
+body [class~="text-[#2F352D]"],
+body [class~="text-[#20241F]"],
+body [class~="text-[#1B211A]"] { color: var(--fin-ink) !important; }
+body [class~="border-[#D8DCCF]"],
+body [class~="border-[#D9DDCF]"],
+body [class~="border-[#DDE1D5]"],
+body [class~="border-[#E7EAE3]"],
+body [class~="border-[#DCE1D6]"] { border-color: var(--fin-line) !important; }
 body [class~="bg-white"] { background-color: #FFFFFF !important; }
 body [class~="bg-white/75"] { background-color: rgb(255 255 255 / 0.86) !important; }
 
-/* Small coral accents: use sparingly so the page feels social, not noisy. */
-body [class~="max-w-[470px]"] .bg-\\[\\#B8EE63\\]:last-child {
-  background-color: #FF6B6B !important;
-}
-
-/* Hero phone frame stays dark so the product demo reads like a real device. */
+/* Phone mockup: make the product demonstration feel like a real consumer app. */
 [class~="max-w-[470px]"] {
   position: relative;
   width: min(100%, 360px) !important;
@@ -156,11 +88,8 @@ body [class~="max-w-[470px]"] .bg-\\[\\#B8EE63\\]:last-child {
   border: 10px solid #20243A !important;
   border-radius: 42px !important;
   background: #20243A !important;
-  box-shadow:
-    0 30px 70px rgb(21 24 39 / 0.16),
-    0 8px 18px rgb(21 24 39 / 0.12) !important;
+  box-shadow: 0 30px 70px rgb(21 24 39 / 0.16), 0 8px 18px rgb(21 24 39 / 0.12) !important;
 }
-
 [class~="max-w-[470px]"]::before {
   content: "";
   position: absolute;
@@ -173,123 +102,30 @@ body [class~="max-w-[470px]"] .bg-\\[\\#B8EE63\\]:last-child {
   border-radius: 999px;
   background: #20243A !important;
 }
-
 [class~="max-w-[470px]"] > div {
   overflow: hidden !important;
   border: 0 !important;
   border-radius: 31px !important;
-  background: #EEF0FF !important;
+  background: var(--fin-blue-soft) !important;
   padding: 8px !important;
   box-shadow: none !important;
 }
-
-[class~="max-w-[470px]"] > div > div {
-  border-radius: 24px !important;
-}
+[class~="max-w-[470px]"] > div > div { border-radius: 24px !important; }
 
 @media (max-width: 640px) {
-  [class~="max-w-[470px]"] {
-    width: min(100%, 320px) !important;
-    max-width: 320px !important;
-    border-width: 8px !important;
-    border-radius: 36px !important;
-    padding: 7px !important;
-  }
-
-  [class~="max-w-[470px]"]::before {
-    top: 8px;
-    width: 72px;
-    height: 15px;
-  }
-
-  [class~="max-w-[470px]"] > div {
-    border-radius: 28px !important;
-    padding: 6px !important;
-  }
-
-  [class~="max-w-[470px]"] > div > div {
-    border-radius: 21px !important;
-  }
+  [class~="max-w-[470px]"] { width: min(100%, 320px) !important; max-width: 320px !important; border-width: 8px !important; border-radius: 36px !important; padding: 7px !important; }
+  [class~="max-w-[470px]"]::before { top: 8px; width: 72px; height: 15px; }
+  [class~="max-w-[470px]"] > div { border-radius: 28px !important; padding: 6px !important; }
+  [class~="max-w-[470px]"] > div > div { border-radius: 21px !important; }
 }
 
-/* Dark mode remains calm and readable; no neon green. */
-.dark aside ~ main {
-  --fin-ink: #F8FAFC;
-  --fin-copy: #D4DAE7;
-  --fin-muted: #A8B0C0;
-  --fin-line: #2C3244;
-  --fin-soft: #202536;
-  --fin-soft-green: #272B55;
-  --fin-green: #8B8CF5;
-  --fin-green-strong: #A3A4FF;
-}
+/* Dark mode: keep the same brand, simply invert surfaces for readability. */
+.dark aside ~ main .bg-muted { background-color: #202536 !important; }
+.dark aside ~ main .text-muted-foreground { color: #A8B0C0 !important; }
+.dark aside ~ main .border-border { border-color: #2C3244 !important; }
+.dark aside ~ main .surface-card { border-color: #2C3244 !important; box-shadow: 0 12px 32px rgb(0 0 0 / 0.20) !important; }
 
-.dark aside ~ main .bg-muted,
-.dark aside ~ main .bg-muted\\/60,
-.dark aside ~ main .bg-muted\\/70,
-.dark aside ~ main .bg-muted\\/40 {
-  background-color: var(--fin-soft) !important;
-}
-
-.dark aside ~ main .text-muted-foreground,
-.dark aside ~ main .text-muted-foreground\\/65 {
-  color: var(--fin-muted) !important;
-}
-
-.dark aside ~ main .border-border,
-.dark aside ~ main .border-border\\/60,
-.dark aside ~ main .border-border\\/70 {
-  border-color: var(--fin-line) !important;
-}
-
-/* Global brand tokens: one FINANZZI language across login + app. */
-body .bg-primary,
-body [class~="bg-primary"] {
-  background-color: var(--fin-blue) !important;
-}
-body .text-primary,
-body [class~="text-primary"] {
-  color: var(--fin-blue-strong) !important;
-}
-body [class~="bg-primary/10"],
-body [class~="bg-primary/5"] {
-  background-color: var(--fin-blue-soft) !important;
-}
-body [class~="border-primary/20"],
-body [class~="border-primary/50"] {
-  border-color: #D0D2FA !important;
-}
-body [class~="text-[#39FF14]"] {
-  color: var(--fin-blue) !important;
-}
-body [class~="bg-[#39FF14]"] {
-  background-color: var(--fin-blue) !important;
-}
-body [class~="bg-[#39FF14]/10"] {
-  background-color: color-mix(in srgb, var(--fin-blue) 10%, transparent) !important;
-}
-body [class~="bg-[#0A0F1D]"] {
-  background-color: var(--fin-ink) !important;
-}
-body [class~="text-[#94A3B8]"] {
-  color: var(--fin-muted) !important;
-}
-
-:focus-visible {
-  outline-color: var(--fin-blue) !important;
-}
-
-::selection {
-  background: #DDE0FF !important;
-  color: var(--fin-ink) !important;
-}
-
-/* Login: turn the visual into a product preview rather than a generic AI panel. */
-@media (min-width: 1024px) {
-  body:has(main) .bg-\\[\\#0A0F1D\\] {
-    background: linear-gradient(160deg, #151827 0%, #20243A 100%) !important;
-  }
-}
-body [class~="bg-[#39FF14]/10"] {
-  background-color: rgb(91 92 226 / 0.10) !important;
-}
+/* The login screen uses blue instead of the old neon-green highlights. */
+body [class~="border-[#1E293B]/10"] { border-color: rgb(255 255 255 / 0.10) !important; }
+body [class~="bg-[#1E293B]/10"] { background-color: rgb(91 92 226 / 0.12) !important; }
+body [class~="bg-[#39FF14]/10"] { background-color: rgb(91 92 226 / 0.10) !important; }
