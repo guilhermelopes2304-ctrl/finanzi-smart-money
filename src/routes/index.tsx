@@ -1,521 +1,741 @@
+import type { ReactNode } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { ArrowRight, Check, ChevronDown, Mic, Play, ShieldCheck, Sparkles } from "lucide-react";
-import { Logo } from "@/components/finanzzi/Logo";
-import { BILLING_PLANS, getHublaCheckoutUrl } from "@/lib/billing";
+import {
+  ArrowRight,
+  Bell,
+  Camera,
+  Check,
+  ChevronDown,
+  Mic,
+  MessageCircle,
+  PlayCircle,
+  Star,
+} from "lucide-react";
+import { FinMascot } from "@/components/finanzzi/FinMascot";
+import { PhoneChat, type ChatMessage } from "@/components/finanzzi/PhoneDemo";
+import { Reveal } from "@/components/finanzzi/Reveal";
+import { getHublaCheckoutUrl } from "@/lib/billing";
 import { trackProductEvent } from "@/lib/product-analytics";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "FINANZZI — Seu dinheiro sem complicação" },
+      { title: "FINANZZI — Você fala. O FINANZZI organiza." },
       {
         name: "description",
         content:
-          "Registre seus gastos do seu jeito. O FINANZZI organiza, lembra e mostra o que merece sua atenção.",
+          "Registre gastos, contas e assinaturas só conversando. O FINANZZI entende, organiza e lembra por você.",
       },
     ],
   }),
   component: Landing,
 });
 
-const examples = [
-  { text: "mercado 82", label: "Mercado · Alimentação", value: "R$ 82,00" },
-  { text: "uber 27", label: "Transporte · Uber", value: "R$ 27,00" },
-  { text: "Netflix 39,90 todo mês", label: "Assinatura · recorrente", value: "R$ 39,90" },
-  { text: "recebi 2.500", label: "Entrada · Salário", value: "+ R$ 2.500" },
-  { text: "tênis 399 em 4x", label: "Parcelado · 4x R$ 99,75", value: "R$ 399,00" },
+function checkoutHref() {
+  return getHublaCheckoutUrl("pro_annual") ?? "/oferta#oferta";
+}
+
+/* ================================================================== */
+/* Small building blocks                                              */
+/* ================================================================== */
+
+function Wordmark({ className }: { className?: string }) {
+  return (
+    <span className={`flex items-center gap-2 ${className ?? ""}`}>
+      <span className="grid size-9 place-items-center overflow-hidden rounded-2xl bg-[#EEF0FF]">
+        <FinMascot expression="normal" className="h-8 w-8" alt="" />
+      </span>
+      <span className="font-display text-xl font-bold tracking-[-0.04em] text-[#151827]">
+        FINANZZI
+      </span>
+    </span>
+  );
+}
+
+function BuyButton({
+  children,
+  className = "",
+  size = "lg",
+}: {
+  children: ReactNode;
+  className?: string;
+  size?: "lg" | "md";
+}) {
+  const sizing = size === "lg" ? "min-h-[54px] px-8 text-[15px]" : "min-h-[44px] px-5 text-sm";
+  return (
+    <a
+      href={checkoutHref()}
+      onClick={() => trackProductEvent("checkout_started")}
+      className={`inline-flex items-center justify-center gap-2 rounded-full bg-[#5B5CE2] font-bold text-white shadow-[0_16px_40px_-12px_rgba(91,92,226,0.7)] transition-transform duration-200 hover:-translate-y-0.5 hover:bg-[#4546C8] ${sizing} ${className}`}
+    >
+      {children}
+    </a>
+  );
+}
+
+function Eyebrow({ children }: { children: ReactNode }) {
+  return (
+    <span className="inline-flex items-center gap-2 rounded-full bg-[#EEF0FF] px-3.5 py-1.5 text-[12px] font-bold uppercase tracking-[0.14em] text-[#4546C8]">
+      {children}
+    </span>
+  );
+}
+
+/* ================================================================== */
+/* Nav                                                                */
+/* ================================================================== */
+
+function Nav() {
+  return (
+    <header className="sticky top-0 z-50 border-b border-[#EDEEF4] bg-[#FCFBF7]/85 backdrop-blur-md">
+      <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6">
+        <Link to="/" aria-label="FINANZZI — início">
+          <Wordmark />
+        </Link>
+        <nav className="flex items-center gap-1 sm:gap-3">
+          <Link
+            to="/auth"
+            search={{ mode: "login" }}
+            className="rounded-full px-4 py-2 text-sm font-semibold text-[#3F4658] transition-colors hover:text-[#151827]"
+          >
+            Entrar
+          </Link>
+          <BuyButton size="md">Quero o FINANZZI</BuyButton>
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+/* ================================================================== */
+/* Hero                                                               */
+/* ================================================================== */
+
+const HERO_MESSAGES: ChatMessage[] = [
+  { from: "user", text: "gastei 45 no mercado" },
+  { from: "fin", confirm: "Registrado", text: "Mercado", emphasis: "R$ 45" },
+  { from: "user", text: "quanto posso gastar hoje?" },
+  {
+    from: "fin",
+    text: "Você tem",
+    emphasis: "R$ 327",
+    meta: "disponíveis pra hoje, já contando o que vence.",
+  },
 ];
 
-function Landing() {
-  const [exampleIndex, setExampleIndex] = useState(0);
-  const annual = BILLING_PLANS.pro_annual;
-  const monthly = BILLING_PLANS.pro_monthly;
-  const annualCheckout = getHublaCheckoutUrl("pro_annual");
-  const monthlyCheckout = getHublaCheckoutUrl("pro_monthly");
-  const active = examples[exampleIndex];
-
-  function checkout(plan: "annual" | "monthly") {
-    trackProductEvent("checkout_started");
-    return plan === "annual"
-      ? annualCheckout ?? "/oferta#oferta"
-      : monthlyCheckout ?? "/oferta#oferta";
-  }
-
-  function nextExample() {
-    setExampleIndex((value) => (value + 1) % examples.length);
-  }
-
+function Hero() {
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#F7F8FC] text-[#151827]">
-      <header className="sticky top-0 z-40 border-b border-[#E4E7EF] bg-[#F7F8FC]/85 backdrop-blur-md">
-        <div className="mx-auto flex h-[68px] max-w-6xl items-center justify-between px-4 sm:px-6">
-          <Link to="/" aria-label="FINANZZI — início">
-            <Logo />
-          </Link>
-          <nav className="hidden items-center gap-7 text-sm font-semibold text-[#3F4658] lg:flex">
-            <a href="#como-funciona" className="transition-colors hover:text-[#151827]">
-              Como funciona
-            </a>
-            <a href="#contas" className="transition-colors hover:text-[#151827]">
-              Contas
-            </a>
-            <a href="#oferta" className="transition-colors hover:text-[#151827]">
-              Oferta
-            </a>
-          </nav>
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Link
-              to="/auth"
-              search={{ mode: "login" }}
-              className="hidden rounded-full px-3 py-2 text-sm font-bold text-[#3F4658] hover:text-[#151827] sm:inline-flex"
-            >
-              Entrar
-            </Link>
-            <a
-              href={checkout("annual")}
-              className="inline-flex items-center gap-1.5 rounded-full bg-[#5B5CE2] px-4 py-2.5 text-xs font-bold text-white shadow-[0_8px_20px_rgba(91,92,226,0.35)] transition-transform hover:-translate-y-0.5 sm:px-5 sm:text-sm"
-            >
-              QUERO O FINANZZI <ArrowRight className="size-3.5" />
-            </a>
-          </div>
+    <section className="relative overflow-hidden">
+      <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-4 pb-8 pt-10 sm:px-6 lg:grid-cols-[1.05fr_.95fr] lg:gap-8 lg:pb-16 lg:pt-16">
+        <div className="text-center lg:text-left">
+          <Reveal>
+            <Eyebrow>
+              <MessageCircle className="size-3.5" /> Você fala. Ele organiza.
+            </Eyebrow>
+          </Reveal>
+          <Reveal delay={80}>
+            <h1 className="mt-5 text-balance font-display text-[2.85rem] font-extrabold leading-[0.98] tracking-[-0.045em] text-[#151827] sm:text-6xl lg:text-[4.4rem]">
+              Seu dinheiro não precisa dar trabalho.
+            </h1>
+          </Reveal>
+          <Reveal delay={160}>
+            <p className="mx-auto mt-5 max-w-md text-pretty text-lg leading-relaxed text-[#3F4658] lg:mx-0">
+              Registre gastos, contas e assinaturas só conversando. Nada de planilha, nada de
+              formulário.
+            </p>
+          </Reveal>
+          <Reveal delay={240}>
+            <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row lg:items-start">
+              <BuyButton className="w-full sm:w-auto">
+                QUERO O FINANZZI <ArrowRight className="size-4" />
+              </BuyButton>
+              <Link
+                to="/auth"
+                search={{ mode: "login" }}
+                className="inline-flex min-h-[54px] w-full items-center justify-center gap-2 rounded-full bg-white px-8 text-[15px] font-bold text-[#151827] ring-1 ring-[#E4E7EF] transition-transform duration-200 hover:-translate-y-0.5 hover:ring-[#5B5CE2] sm:w-auto"
+              >
+                Já tenho conta
+              </Link>
+            </div>
+          </Reveal>
+          <Reveal delay={320}>
+            <div className="mt-7 flex items-center justify-center gap-4 text-sm text-[#667085] lg:justify-start">
+              <span className="inline-flex items-center gap-1.5">
+                <MessageCircle className="size-4 text-[#5B5CE2]" /> Texto
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Mic className="size-4 text-[#5B5CE2]" /> Voz
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Camera className="size-4 text-[#5B5CE2]" /> Foto
+              </span>
+            </div>
+          </Reveal>
         </div>
-      </header>
 
-      <main>
-        {/* HERO */}
-        <section className="relative px-4 pb-16 pt-10 sm:px-6 sm:pb-24 sm:pt-16">
-          <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-16">
-            <div className="animate-fade-up">
-              <div className="inline-flex items-center gap-2 rounded-full bg-[#EEF0FF] px-3.5 py-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#4546C8]">
-                <Sparkles className="size-3.5" /> sem planilha, sem formulário
-              </div>
-              <h1 className="mt-6 max-w-xl font-display text-[3.4rem] font-semibold leading-[.92] tracking-[-0.05em] sm:text-7xl lg:text-[5.4rem]">
-                Seu dinheiro não precisa dar trabalho.
-              </h1>
-              <p className="mt-6 max-w-lg text-lg leading-8 text-[#3F4658] sm:text-xl">
-                Você fala o que aconteceu. O FINANZZI organiza, lembra das suas contas e te mostra o
-                que merece atenção.
-              </p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <a
-                  href={checkout("annual")}
-                  className="inline-flex h-14 items-center justify-center gap-2 rounded-full bg-[#5B5CE2] px-7 text-sm font-bold text-white shadow-[0_12px_28px_rgba(91,92,226,0.35)] transition-transform hover:-translate-y-0.5 sm:text-base"
-                >
-                  QUERO O FINANZZI <ArrowRight className="size-4" />
-                </a>
-                <a
-                  href="#demo"
-                  className="inline-flex h-14 items-center justify-center gap-2 rounded-full border border-[#D7D9F5] bg-white px-7 text-sm font-bold text-[#2D2E82] transition-colors hover:bg-[#EEF0FF] sm:text-base"
-                >
-                  <Play className="size-4 fill-current" /> VER NA PRÁTICA
-                </a>
-              </div>
-              <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold text-[#667085]">
-                <span>✓ acesso completo após pagamento</span>
-                <span>✓ feito para celular</span>
-                <span>✓ sem banco conectado</span>
-              </div>
-            </div>
+        <Reveal delay={200} className="relative">
+          <div className="pointer-events-none absolute -inset-6 -z-10 rounded-[3rem] bg-[#EEF0FF]" />
+          <PhoneChat messages={HERO_MESSAGES} inputPlaceholder="Conte o que aconteceu" />
+        </Reveal>
+      </div>
+    </section>
+  );
+}
 
-            <div className="relative mx-auto w-full max-w-[360px] animate-scale-in lg:justify-self-end">
-              {/* Soft brand backdrop */}
-              <div className="absolute -inset-6 -z-10 rounded-[3rem] bg-gradient-to-br from-[#EEF0FF] to-transparent" />
-              <PhoneDemo active={active} onNext={nextExample} />
-              {/* FIN peeking beside the phone */}
-              <img
-                src="/fin-hero.png"
-                alt="FIN, o assistente do FINANZZI, acenando"
-                className="animate-float-slow absolute -bottom-6 -left-10 w-28 drop-shadow-[0_12px_20px_rgba(91,92,226,0.25)] sm:-left-16 sm:w-36"
-                draggable={false}
-              />
-            </div>
+/* ================================================================== */
+/* Problem                                                            */
+/* ================================================================== */
+
+function Problem() {
+  const subs = ["Netflix", "Spotify", "Internet", "Academia", "Energia", "Aluguel"];
+  return (
+    <section className="bg-[#151827] py-20 text-white sm:py-28">
+      <div className="mx-auto w-full max-w-4xl px-4 text-center sm:px-6">
+        <Reveal>
+          <h2 className="text-balance font-display text-4xl font-extrabold leading-[1.02] tracking-[-0.04em] sm:text-6xl">
+            Você lembra de todas as contas que paga?
+          </h2>
+        </Reveal>
+        <Reveal delay={120}>
+          <div className="mt-10 flex flex-wrap justify-center gap-2.5">
+            {subs.map((sub) => (
+              <span
+                key={sub}
+                className="rounded-full border border-white/12 bg-white/[0.06] px-5 py-2.5 text-base font-semibold text-white/80"
+              >
+                {sub}
+              </span>
+            ))}
           </div>
-        </section>
+        </Reveal>
+        <Reveal delay={220}>
+          <p className="mt-10 font-display text-3xl font-bold tracking-[-0.03em] text-white/55 sm:text-4xl">
+            Provavelmente não.
+          </p>
+        </Reveal>
+        <Reveal delay={300}>
+          <p className="mt-3 font-display text-3xl font-bold tracking-[-0.03em] sm:text-4xl">
+            É por isso que existe o FINANZZI.
+          </p>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
 
-        {/* THREE-BEAT STRIP */}
-        <section className="border-y border-[#E4E7EF] bg-white px-4 py-6 sm:px-6">
-          <div className="mx-auto grid max-w-6xl gap-4 text-sm font-semibold text-[#3F4658] sm:grid-cols-3 sm:gap-0">
-            <div className="sm:border-r sm:border-[#E4E7EF] sm:px-6 first:sm:pl-0">
-              Você fala do seu jeito.
-            </div>
-            <div className="sm:border-r sm:border-[#E4E7EF] sm:px-6">
-              O FINANZZI organiza sozinho.
-            </div>
-            <div className="sm:pl-6">E lembra do que você não pode esquecer.</div>
-          </div>
-        </section>
+/* ================================================================== */
+/* Demonstrations ("olha como é fácil")                               */
+/* ================================================================== */
 
-        {/* HOW IT WORKS */}
-        <section id="demo" className="px-4 py-20 sm:px-6 sm:py-28">
-          <div className="mx-auto max-w-6xl" id="como-funciona">
-            <div className="max-w-2xl">
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#5B5CE2]">
-                Como funciona
-              </p>
-              <h2 className="mt-4 font-display text-5xl font-semibold leading-[.95] tracking-[-0.05em] sm:text-7xl">
-                Você não preenche. Você conta.
-              </h2>
-              <p className="mt-5 max-w-xl text-lg leading-8 text-[#3F4658]">
-                Um gasto, uma conta, uma assinatura ou uma dúvida. Escreva como você falaria. O resto
-                fica por conta do FINANZZI.
-              </p>
-            </div>
-            <div className="mt-12 grid gap-4 md:grid-cols-3">
-              {[
-                ["Registre", "“uber 27”", "O FINANZZI entende o que aconteceu."],
-                ["Organize", "“Netflix 39,90 todo mês”", "Ele entende que é recorrente e lembra depois."],
-                ["Oriente", "“posso gastar 200?”", "Ele olha seus compromissos e responde com contexto."],
-              ].map(([title, example, description], index) => (
-                <article
-                  key={title}
-                  className="group rounded-[1.8rem] border border-[#E4E7EF] bg-white p-6 shadow-[0_14px_36px_rgba(21,24,39,0.05)] transition-transform hover:-translate-y-1"
+type Demo = {
+  scene: string;
+  detail: string;
+  messages: ChatMessage[];
+  placeholder?: string;
+};
+
+const DEMOS: Demo[] = [
+  {
+    scene: "Registrei sem preencher formulário.",
+    detail: "Escreveu, mandou, pronto. O FINANZZI entende e organiza sozinho.",
+    placeholder: "uber 27",
+    messages: [
+      { from: "user", text: "uber 27" },
+      { from: "fin", confirm: "Registrado", text: "Transporte", emphasis: "R$ 27" },
+    ],
+  },
+  {
+    scene: "Perguntei quanto eu gasto com streaming.",
+    detail: "Ele soma tudo por você e ainda mostra o tamanho do estrago no ano.",
+    placeholder: "quanto gasto com streaming?",
+    messages: [
+      { from: "user", text: "quanto gasto com streaming?" },
+      { from: "fin", text: "Streaming", emphasis: "R$ 327,40/mês" },
+      { from: "fin", text: "No ano isso dá", emphasis: "R$ 3.928,80", reaction: "😳" },
+    ],
+  },
+  {
+    scene: "Perguntei o que vence essa semana.",
+    detail: "Sem susto no fim do mês. Você sabe o que vem antes de vir.",
+    placeholder: "o que vence essa semana?",
+    messages: [
+      { from: "user", text: "o que vence essa semana?" },
+      { from: "fin", text: "Essa semana", emphasis: "4 contas", meta: "somando R$ 1.445" },
+    ],
+  },
+  {
+    scene: "Perguntei se podia comprar.",
+    detail: "Antes de gastar, você pergunta. O FINANZZI responde na hora.",
+    placeholder: "posso gastar 200 hoje?",
+    messages: [
+      { from: "user", text: "posso gastar 200 hoje?" },
+      { from: "fin", text: "Pode. Sobram", emphasis: "R$ 127", meta: "mesmo depois dessa compra." },
+    ],
+  },
+];
+
+function Demonstrations() {
+  return (
+    <section className="py-20 sm:py-28">
+      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+        <div className="mx-auto max-w-2xl text-center">
+          <Reveal>
+            <Eyebrow>Olha como é fácil</Eyebrow>
+          </Reveal>
+          <Reveal delay={80}>
+            <h2 className="mt-5 text-balance font-display text-4xl font-extrabold leading-[1.02] tracking-[-0.04em] text-[#151827] sm:text-5xl">
+              Você conversa. Ele resolve.
+            </h2>
+          </Reveal>
+        </div>
+
+        <div className="mt-16 flex flex-col gap-20 sm:gap-28">
+          {DEMOS.map((demo, index) => {
+            const reversed = index % 2 === 1;
+            return (
+              <div key={demo.scene} className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+                <Reveal className={reversed ? "lg:order-2" : ""}>
+                  <div className="mx-auto max-w-md text-center lg:mx-0 lg:text-left">
+                    <span className="font-display text-6xl font-black text-[#EEF0FF] sm:text-7xl">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <h3 className="mt-2 text-balance font-display text-3xl font-bold leading-[1.05] tracking-[-0.035em] text-[#151827] sm:text-4xl">
+                      {demo.scene}
+                    </h3>
+                    <p className="mt-4 text-lg leading-relaxed text-[#3F4658]">{demo.detail}</p>
+                  </div>
+                </Reveal>
+                <Reveal delay={120} className={reversed ? "lg:order-1" : ""}>
+                  <PhoneChat
+                    messages={demo.messages}
+                    inputPlaceholder={demo.placeholder ?? "Mensagem"}
+                    className="max-w-[280px]"
+                  />
+                </Reveal>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ================================================================== */
+/* Commitments                                                        */
+/* ================================================================== */
+
+const COMMIT_MESSAGES: ChatMessage[] = [
+  { from: "user", text: "quero lembrar do aluguel todo dia 5" },
+  {
+    from: "fin",
+    confirm: "Combinado",
+    text: "Aluguel",
+    emphasis: "R$ 1.200",
+    meta: "todo dia 5 · eu te aviso antes.",
+  },
+  { from: "fin", text: "Psiu, o aluguel vence amanhã." },
+];
+
+function Commitments() {
+  const items = [
+    { name: "Netflix", value: "R$ 39,90", when: "vence em 6 dias" },
+    { name: "Spotify", value: "R$ 21,90", when: "vence em 9 dias" },
+    { name: "Internet", value: "R$ 99,90", when: "vence em 12 dias" },
+    { name: "Energia", value: "R$ 184,30", when: "vence em 15 dias" },
+    { name: "Academia", value: "R$ 89,90", when: "vence em 20 dias" },
+  ];
+  return (
+    <section className="bg-[#EEF0FF] py-20 sm:py-28">
+      <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16">
+        <Reveal>
+          <div className="mx-auto max-w-md text-center lg:mx-0 lg:text-left">
+            <Eyebrow>
+              <Bell className="size-3.5" /> Ele lembra por você
+            </Eyebrow>
+            <h2 className="mt-5 text-balance font-display text-4xl font-extrabold leading-[1.02] tracking-[-0.04em] text-[#151827] sm:text-5xl">
+              Não serve só pra anotar gasto.
+            </h2>
+            <p className="mt-4 text-lg leading-relaxed text-[#3F4658]">
+              Contas, assinaturas, parcelas e a fatura. Você fala uma vez e o FINANZZI passa a
+              lembrar por você — sempre antes de vencer.
+            </p>
+            <div className="mt-8 overflow-hidden rounded-3xl border border-white bg-white/70 shadow-[0_20px_50px_-24px_rgba(21,24,39,0.25)]">
+              {items.map((item, index) => (
+                <div
+                  key={item.name}
+                  className={`flex items-center gap-3 px-5 py-4 ${index > 0 ? "border-t border-[#EDEEF4]" : ""}`}
                 >
-                  <span className="grid size-9 place-items-center rounded-full bg-[#EEF0FF] text-sm font-black text-[#4546C8]">
-                    {index + 1}
+                  <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[#EEF0FF] text-[#4546C8]">
+                    <Bell className="size-4" />
                   </span>
-                  <p className="mt-6 text-xs font-bold uppercase tracking-[0.16em] text-[#5B5CE2]">
-                    {title}
-                  </p>
-                  <p className="mt-3 font-display text-2xl font-semibold tracking-[-0.03em]">
-                    {example}
-                  </p>
-                  <p className="mt-3 text-sm leading-6 text-[#667085]">{description}</p>
-                </article>
+                  <div className="min-w-0 flex-1 text-left">
+                    <p className="text-sm font-bold text-[#151827]">{item.name}</p>
+                    <p className="text-xs text-[#667085]">{item.when}</p>
+                  </div>
+                  <p className="shrink-0 text-sm font-bold text-[#151827]">{item.value}</p>
+                </div>
               ))}
             </div>
           </div>
-        </section>
+        </Reveal>
+        <Reveal delay={140}>
+          <PhoneChat messages={COMMIT_MESSAGES} inputPlaceholder="quero lembrar de..." />
+        </Reveal>
+      </div>
+    </section>
+  );
+}
 
-        {/* CONTAS — dark ink section */}
-        <section id="contas" className="bg-[#151827] px-4 py-20 text-white sm:px-6 sm:py-28">
-          <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#9B9CF5]">
-                Contas e assinaturas
-              </p>
-              <h2 className="mt-4 font-display text-5xl font-semibold leading-[.95] tracking-[-0.05em] sm:text-7xl">
-                O pequeno também pesa.
-              </h2>
-              <p className="mt-6 max-w-md text-lg leading-8 text-white/65">
-                Aluguel, luz, internet, Netflix, Spotify, academia, parcelas. Cadastre uma vez e
-                deixe o FINANZZI lembrar por você.
-              </p>
-            </div>
-            <div className="rounded-[2rem] bg-white p-6 text-[#151827] sm:p-8">
-              <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#667085]">
-                Próximos compromissos
-              </p>
-              <div className="mt-6 divide-y divide-[#E4E7EF]">
-                {["Aluguel · R$ 1.200", "Energia · R$ 184", "Netflix · R$ 39,90", "Internet · R$ 99,90"].map(
-                  (item, index) => (
-                    <div key={item} className="flex items-center justify-between py-4">
-                      <span className="text-sm font-semibold">{item}</span>
-                      <span className="rounded-full bg-[#F4F5F8] px-3 py-1 text-[10px] font-bold text-[#667085]">
-                        {index + 2} dias
-                      </span>
+/* ================================================================== */
+/* Meet FIN                                                           */
+/* ================================================================== */
+
+function MeetFin() {
+  const moments: { expression: Parameters<typeof FinMascot>[0]["expression"]; line: string }[] = [
+    { expression: "feliz", line: "Boa. Já organizei." },
+    { expression: "atento", line: "Isso vence amanhã." },
+    { expression: "pensando", line: "Você ainda usa a Netflix?" },
+    { expression: "comemorando", line: "Tá avançando, hein." },
+  ];
+  return (
+    <section className="py-20 sm:py-28">
+      <div className="mx-auto w-full max-w-5xl px-4 text-center sm:px-6">
+        <Reveal>
+          <FinMascot expression="explicando" className="mx-auto h-28 w-28 sm:h-32 sm:w-32" />
+        </Reveal>
+        <Reveal delay={80}>
+          <h2 className="mt-6 text-balance font-display text-4xl font-extrabold leading-[1.02] tracking-[-0.04em] text-[#151827] sm:text-5xl">
+            Esse é o FIN.
+          </h2>
+        </Reveal>
+        <Reveal delay={140}>
+          <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-[#3F4658]">
+            Ele não é um robô nem uma planilha falante. É aquele amigo esperto que entende de
+            dinheiro e fala a sua língua — sem julgamento, sempre na hora certa.
+          </p>
+        </Reveal>
+        <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {moments.map((moment, index) => (
+            <Reveal key={moment.line} delay={index * 90}>
+              <div className="flex h-full flex-col items-center gap-4 rounded-3xl bg-[#F4F5F8] p-6">
+                <FinMascot expression={moment.expression} className="h-20 w-20" />
+                <p className="font-display text-lg font-bold leading-snug text-[#151827]">
+                  {`“${moment.line}”`}
+                </p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ================================================================== */
+/* How it works                                                       */
+/* ================================================================== */
+
+function HowItWorks() {
+  const steps = [
+    {
+      icon: <MessageCircle className="size-6" />,
+      title: "Você fala",
+      text: "“gastei 45 no mercado”, um áudio ou a foto do comprovante. Do jeito que for mais fácil.",
+    },
+    {
+      icon: <Check className="size-6" strokeWidth={3} />,
+      title: "Ele organiza",
+      text: "O FINANZZI entende, categoriza e guarda tudo — sem você abrir planilha nenhuma.",
+    },
+    {
+      icon: <Bell className="size-6" />,
+      title: "Você entende",
+      text: "Quanto pode gastar, o que vence e pra onde o dinheiro foi. Sempre claro.",
+    },
+  ];
+  return (
+    <section className="bg-[#151827] py-20 text-white sm:py-28">
+      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6">
+        <div className="mx-auto max-w-2xl text-center">
+          <Reveal>
+            <h2 className="text-balance font-display text-4xl font-extrabold leading-[1.02] tracking-[-0.04em] sm:text-5xl">
+              Simples assim.
+            </h2>
+          </Reveal>
+        </div>
+        <div className="mt-14 grid gap-6 md:grid-cols-3">
+          {steps.map((step, index) => (
+            <Reveal key={step.title} delay={index * 110}>
+              <div className="flex h-full flex-col gap-4 rounded-3xl border border-white/10 bg-white/[0.04] p-7">
+                <span className="grid size-12 place-items-center rounded-2xl bg-[#5B5CE2] text-white">
+                  {step.icon}
+                </span>
+                <h3 className="font-display text-2xl font-bold tracking-[-0.03em]">{step.title}</h3>
+                <p className="leading-relaxed text-white/65">{step.text}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ================================================================== */
+/* Social proof (placeholders for real content)                       */
+/* ================================================================== */
+
+function SocialProof() {
+  return (
+    <section className="py-20 sm:py-28">
+      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+        <div className="mx-auto max-w-2xl text-center">
+          <Reveal>
+            <Eyebrow>
+              <Star className="size-3.5" /> Prova real
+            </Eyebrow>
+          </Reveal>
+          <Reveal delay={80}>
+            <h2 className="mt-5 text-balance font-display text-4xl font-extrabold leading-[1.02] tracking-[-0.04em] text-[#151827] sm:text-5xl">
+              Quem usa, mostra.
+            </h2>
+          </Reveal>
+          <Reveal delay={140}>
+            <p className="mt-4 text-lg leading-relaxed text-[#667085]">
+              Espaço reservado para vídeos, prints e comentários reais de quem organizou a vida
+              financeira com o FINANZZI.
+            </p>
+          </Reveal>
+        </div>
+
+        <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {[0, 1].map((slot) => (
+            <Reveal key={`video-${slot}`} delay={slot * 90}>
+              <div className="flex aspect-[9/13] flex-col items-center justify-center gap-3 rounded-3xl border-2 border-dashed border-[#D9DCEA] bg-[#F4F5F8] text-center">
+                <PlayCircle className="size-10 text-[#B7BAD0]" />
+                <p className="px-6 text-sm font-semibold text-[#8A90A6]">Espaço para vídeo / TikTok</p>
+              </div>
+            </Reveal>
+          ))}
+          <div className="flex flex-col gap-5">
+            {[0, 1, 2].map((slot) => (
+              <Reveal key={`comment-${slot}`} delay={slot * 90}>
+                <div className="rounded-3xl border-2 border-dashed border-[#D9DCEA] bg-[#F4F5F8] p-5">
+                  <div className="flex items-center gap-3">
+                    <span className="size-10 rounded-full bg-[#E4E7EF]" />
+                    <div className="flex-1 space-y-1.5">
+                      <span className="block h-2.5 w-24 rounded-full bg-[#E4E7EF]" />
+                      <span className="block h-2 w-16 rounded-full bg-[#E9EBF3]" />
                     </div>
-                  ),
-                )}
-              </div>
-              <div className="mt-5 rounded-2xl bg-[#5B5CE2] p-4 text-white">
-                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/70">
-                  olha isso
-                </p>
-                <p className="mt-1 font-display text-3xl font-semibold tracking-[-0.04em]">
-                  R$ 1.523,80
-                </p>
-                <p className="mt-1 text-sm font-medium text-white/80">em compromissos próximos.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* INSIGHT — FIN explains */}
-        <section className="px-4 py-20 sm:px-6 sm:py-28">
-          <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1.05fr_.95fr] lg:items-center">
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#5B5CE2]">
-                Uma descoberta por vez
-              </p>
-              <h2 className="mt-4 font-display text-5xl font-semibold leading-[.95] tracking-[-0.05em] sm:text-6xl">
-                O FINANZZI não só registra. Ele te conta o que isso significa.
-              </h2>
-              <p className="mt-6 max-w-xl text-lg leading-8 text-[#3F4658]">
-                “Você gastou mais com delivery.” “Essa parcela pesa R$ 99,75 nos próximos meses.”
-                “Você tem quatro contas nesta semana.”
-              </p>
-              <a
-                href={checkout("annual")}
-                className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#5B5CE2] px-6 py-3.5 text-sm font-bold text-white shadow-[0_10px_24px_rgba(91,92,226,0.3)] transition-transform hover:-translate-y-0.5"
-              >
-                QUERO TER ISSO <ArrowRight className="size-4" />
-              </a>
-            </div>
-            <div className="relative">
-              <img
-                src="/fin-explaining.png"
-                alt="FIN explicando um insight financeiro"
-                className="animate-float-slower mx-auto mb-6 w-32 sm:w-40"
-                draggable={false}
-              />
-              <div className="grid gap-4">
-                {[
-                  "Descobri quanto gasto em assinaturas.",
-                  "Perguntei se podia comprar.",
-                  "O FINANZZI lembrou das minhas contas.",
-                ].map((text) => (
-                  <div
-                    key={text}
-                    className="rounded-[1.6rem] border border-[#E4E7EF] bg-white p-5 shadow-[0_12px_34px_rgba(21,24,39,0.05)]"
-                  >
-                    <div className="flex items-start gap-3">
-                      <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#EEF0FF] text-[#4546C8]">
-                        <Check className="size-4" />
-                      </span>
-                      <p className="text-lg font-semibold leading-7">{text}</p>
+                    <div className="flex gap-0.5 text-[#CBD0E0]">
+                      {[0, 1, 2, 3, 4].map((star) => (
+                        <Star key={star} className="size-3.5 fill-current" />
+                      ))}
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
+                  <div className="mt-4 space-y-2">
+                    <span className="block h-2.5 w-full rounded-full bg-[#E9EBF3]" />
+                    <span className="block h-2.5 w-4/5 rounded-full bg-[#E9EBF3]" />
+                  </div>
+                  <p className="mt-3 text-xs font-semibold text-[#8A90A6]">
+                    Espaço para comentário real
+                  </p>
+                </div>
+              </Reveal>
+            ))}
           </div>
-        </section>
+        </div>
+      </div>
+    </section>
+  );
+}
 
-        {/* PRICING */}
-        <section id="oferta" className="bg-[#EEF0FF] px-4 py-20 sm:px-6 sm:py-28">
-          <div className="mx-auto max-w-6xl">
-            <div className="max-w-2xl">
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#4546C8]">
-                Acesso completo
-              </p>
-              <h2 className="mt-4 font-display text-5xl font-semibold leading-[.95] tracking-[-0.05em] sm:text-7xl">
-                Pare de tentar lembrar de tudo.
-              </h2>
-              <p className="mt-5 text-lg leading-8 text-[#3F4658]">
-                Registre. Organize. Lembre. Entenda. E deixe o FINANZZI fazer a parte chata.
-              </p>
-            </div>
-            <div className="mt-10 grid gap-4 lg:grid-cols-2">
-              <PricingCard plan={monthly} checkoutHref={checkout("monthly")} />
-              <PricingCard plan={annual} checkoutHref={checkout("annual")} featured />
-            </div>
-            <div className="mt-7 flex flex-wrap items-center gap-5 text-xs font-semibold text-[#667085]">
-              <span className="inline-flex items-center gap-2">
-                <ShieldCheck className="size-4" /> pagamento processado pelo checkout
-              </span>
-              <span>acesso liberado após confirmação</span>
-              <span>cancelamento conforme o plano</span>
-            </div>
-          </div>
-        </section>
+/* ================================================================== */
+/* Offer                                                              */
+/* ================================================================== */
 
-        {/* FAQ */}
-        <section className="px-4 py-20 sm:px-6 sm:py-24">
-          <div className="mx-auto max-w-3xl text-center">
-            <img
-              src="/fin-thinking.png"
-              alt="FIN pensativo"
-              className="mx-auto mb-6 w-24"
-              draggable={false}
-            />
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#5B5CE2]">FAQ</p>
-            <h2 className="mt-4 font-display text-4xl font-semibold tracking-[-0.04em] sm:text-6xl">
-              Ainda está pensando?
+function Offer() {
+  const features = [
+    "Registre seus gastos por texto, voz ou foto",
+    "Organização automática por categorias",
+    "Lembretes de tudo que vence",
+    "Contas, assinaturas e parcelas no controle",
+    "Sua fatura sempre à vista",
+    "FIN pra tirar dúvidas na hora",
+    "Direcionamentos do que merece atenção",
+  ];
+  return (
+    <section id="oferta" className="py-20 sm:py-28">
+      <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
+        <Reveal>
+          <div className="relative overflow-hidden rounded-[2.5rem] bg-[#5B5CE2] p-8 text-white shadow-[0_40px_90px_-40px_rgba(91,92,226,0.9)] sm:p-12">
+            <div className="pointer-events-none absolute -right-8 -top-8 opacity-90">
+              <FinMascot expression="comemorando" className="h-40 w-40" />
+            </div>
+            <p className="text-sm font-bold uppercase tracking-[0.16em] text-white/70">FINANZZI</p>
+            <h2 className="mt-2 font-display text-4xl font-extrabold tracking-[-0.04em] sm:text-5xl">
+              Acesso completo.
             </h2>
-            <div className="mt-8 divide-y divide-[#E4E7EF] rounded-[1.7rem] border border-[#E4E7EF] bg-white px-5 text-left">
-              <Faq title="Preciso preencher tudo manualmente?">
-                Não. O FINANZZI foi pensado para entender frases simples como “uber 27”, “mercado 82”
-                ou “Netflix 39,90 todo mês”.
-              </Faq>
-              <Faq title="O FINANZZI lembra minhas contas?">
-                Sim. Você pode cadastrar contas fixas, assinaturas, parcelas e outros compromissos
-                para acompanhar os próximos vencimentos.
-              </Faq>
-              <Faq title="Ele acessa minha conta bancária?">
-                Não. O FINANZZI não precisa da sua senha bancária para registrar e organizar o que
-                você informa.
-              </Faq>
-              <Faq title="Quando recebo acesso?">
-                O acesso completo é liberado depois da confirmação do pagamento.
-              </Faq>
-              <Faq title="Posso usar pelo celular?">
-                Sim. A experiência foi pensada primeiro para telas pequenas e também funciona no
-                desktop.
-              </Faq>
-            </div>
-          </div>
-        </section>
-
-        {/* FINAL CTA */}
-        <section className="px-4 pb-20 sm:px-6 sm:pb-28">
-          <div className="mx-auto max-w-6xl overflow-hidden rounded-[2.2rem] bg-[#151827] px-6 py-12 text-center text-white sm:px-12 sm:py-16">
-            <img src="/fin-hero.png" alt="FIN acenando" className="mx-auto mb-4 w-24" draggable={false} />
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#9B9CF5]">FINANZZI</p>
-            <h2 className="mx-auto mt-4 max-w-3xl font-display text-5xl font-semibold leading-[.94] tracking-[-0.05em] sm:text-7xl">
-              Você não precisa virar especialista em finanças. Só precisa começar.
-            </h2>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/65">
-              Registre do seu jeito. O FINANZZI organiza o resto.
+            <p className="mt-3 max-w-md text-lg leading-relaxed text-white/80">
+              Tudo que você precisa pra parar de correr atrás do dinheiro — e deixar ele organizado
+              por você.
             </p>
-            <a
-              href={checkout("annual")}
-              className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#5B5CE2] px-7 py-4 text-sm font-bold text-white shadow-[0_12px_28px_rgba(91,92,226,0.45)] transition-transform hover:-translate-y-0.5 sm:text-base"
-            >
+            <ul className="mt-8 grid gap-3 sm:grid-cols-2">
+              {features.map((feature) => (
+                <li key={feature} className="flex items-start gap-2.5 text-[15px] font-medium">
+                  <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-white/20">
+                    <Check className="size-3" strokeWidth={3} />
+                  </span>
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-10">
+              <a
+                href={checkoutHref()}
+                onClick={() => trackProductEvent("checkout_started")}
+                className="inline-flex min-h-[54px] w-full items-center justify-center gap-2 rounded-full bg-white px-8 text-base font-bold text-[#4546C8] transition-transform hover:-translate-y-0.5 sm:w-auto"
+              >
+                QUERO O FINANZZI <ArrowRight className="size-4" />
+              </a>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ================================================================== */
+/* FAQ                                                                */
+/* ================================================================== */
+
+function Faq() {
+  const faqs = [
+    {
+      q: "Preciso preencher planilha ou formulário?",
+      a: "Não. Você só conta o que aconteceu — por texto, áudio ou foto — e o FINANZZI organiza o resto sozinho.",
+    },
+    {
+      q: "Funciona pra contas e assinaturas?",
+      a: "Sim. Fale uma vez, tipo “lembrar do aluguel todo dia 5”, e ele passa a te avisar sempre antes de vencer.",
+    },
+    {
+      q: "O FIN entende gíria e mensagem curta?",
+      a: "Entende. “uber 27” ou “mercado 82” já é suficiente pra ele registrar certinho.",
+    },
+    {
+      q: "Meus dados ficam seguros?",
+      a: "Sim. Seus dados são tratados com segurança e usados só pra organizar a sua vida financeira.",
+    },
+  ];
+  return (
+    <section className="bg-[#F4F5F8] py-20 sm:py-28">
+      <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
+        <div className="text-center">
+          <Reveal>
+            <h2 className="text-balance font-display text-4xl font-extrabold leading-[1.02] tracking-[-0.04em] text-[#151827] sm:text-5xl">
+              Perguntas rápidas.
+            </h2>
+          </Reveal>
+        </div>
+        <div className="mt-12 flex flex-col gap-3">
+          {faqs.map((faq, index) => (
+            <Reveal key={faq.q} delay={index * 70}>
+              <details className="group rounded-2xl border border-[#E4E7EF] bg-white px-5 py-4 [&_summary::-webkit-details-marker]:hidden">
+                <summary className="flex cursor-pointer items-center justify-between gap-4 text-left font-display text-lg font-bold text-[#151827]">
+                  {faq.q}
+                  <ChevronDown className="size-5 shrink-0 text-[#5B5CE2] transition-transform group-open:rotate-180" />
+                </summary>
+                <p className="mt-3 leading-relaxed text-[#3F4658]">{faq.a}</p>
+              </details>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ================================================================== */
+/* Final CTA                                                          */
+/* ================================================================== */
+
+function FinalCta() {
+  return (
+    <section className="py-20 sm:py-28">
+      <div className="mx-auto w-full max-w-4xl px-4 text-center sm:px-6">
+        <Reveal>
+          <FinMascot expression="feliz" className="mx-auto h-24 w-24" />
+        </Reveal>
+        <Reveal delay={80}>
+          <h2 className="mt-6 text-balance font-display text-4xl font-extrabold leading-[1.0] tracking-[-0.045em] text-[#151827] sm:text-6xl">
+            Bora deixar o dinheiro organizado?
+          </h2>
+        </Reveal>
+        <Reveal delay={160}>
+          <p className="mx-auto mt-4 max-w-md text-lg leading-relaxed text-[#3F4658]">
+            Você fala. O FINANZZI cuida do resto.
+          </p>
+        </Reveal>
+        <Reveal delay={240}>
+          <div className="mt-8 flex justify-center">
+            <BuyButton className="w-full sm:w-auto">
               QUERO O FINANZZI <ArrowRight className="size-4" />
-            </a>
+            </BuyButton>
           </div>
-        </section>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ================================================================== */
+/* Footer                                                             */
+/* ================================================================== */
+
+function Footer() {
+  return (
+    <footer className="border-t border-[#EDEEF4] bg-[#FCFBF7] py-10">
+      <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-4 px-4 sm:flex-row sm:px-6">
+        <Wordmark />
+        <p className="text-sm text-[#667085]">
+          © {new Date().getFullYear()} FINANZZI. Você fala, ele organiza.
+        </p>
+        <Link
+          to="/auth"
+          search={{ mode: "login" }}
+          className="text-sm font-semibold text-[#4546C8] hover:underline"
+        >
+          Entrar
+        </Link>
+      </div>
+    </footer>
+  );
+}
+
+/* ================================================================== */
+/* Page                                                               */
+/* ================================================================== */
+
+function Landing() {
+  return (
+    <div className="min-h-screen overflow-x-hidden bg-[#FCFBF7] font-sans text-[#151827] antialiased">
+      <Nav />
+      <main>
+        <Hero />
+        <Problem />
+        <Demonstrations />
+        <Commitments />
+        <MeetFin />
+        <HowItWorks />
+        <SocialProof />
+        <Offer />
+        <Faq />
+        <FinalCta />
       </main>
+      <Footer />
     </div>
-  );
-}
-
-function PhoneDemo({
-  active,
-  onNext,
-}: {
-  active: (typeof examples)[number];
-  onNext: () => void;
-}) {
-  return (
-    <div className="relative mx-auto w-full max-w-[320px] rounded-[2.6rem] border-[10px] border-[#20243A] bg-[#20243A] p-2.5 shadow-[0_30px_70px_rgba(21,24,39,0.22)]">
-      <span className="absolute left-1/2 top-2.5 z-10 h-4 w-20 -translate-x-1/2 rounded-full bg-[#20243A]" />
-      <div className="overflow-hidden rounded-[2rem] bg-[#EEF0FF] p-3">
-        <div className="rounded-[1.6rem] bg-white p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#667085]">
-                Você fala
-              </p>
-              <p className="mt-1 text-sm font-semibold text-[#151827]">como falaria com alguém.</p>
-            </div>
-            <span className="grid size-9 place-items-center rounded-full bg-[#5B5CE2] text-white">
-              <Mic className="size-4" />
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={onNext}
-            aria-label="Ver o próximo exemplo"
-            className="mt-4 w-full rounded-[1.2rem] bg-[#151827] px-4 py-4 text-left text-sm font-semibold text-white"
-          >
-            “{active.text}”
-          </button>
-          <div className="mt-4 rounded-[1.2rem] border border-[#E4E7EF] bg-[#F7F8FC] p-4">
-            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#667085]">
-              Entendi assim
-            </p>
-            <div className="mt-3 flex items-end justify-between gap-4">
-              <div>
-                <p className="fin-number font-display text-3xl font-semibold text-[#151827]">
-                  {active.value}
-                </p>
-                <p className="mt-1 text-xs font-medium text-[#667085]">{active.label}</p>
-              </div>
-              <span className="rounded-full bg-[#EEF0FF] px-2.5 py-1 text-[10px] font-bold text-[#4546C8]">
-                registrado
-              </span>
-            </div>
-          </div>
-          <div className="mt-4 rounded-[1.2rem] bg-[#5B5CE2] p-4 text-white">
-            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/70">
-              e depois...
-            </p>
-            <p className="mt-1 font-display text-xl font-semibold leading-tight">
-              Você ainda pode gastar R$ 327 hoje.
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center justify-between px-2 pb-1 pt-3 text-[10px] font-bold uppercase tracking-[0.14em] text-[#667085]">
-          <span>Registrar</span>
-          <span>Organizar</span>
-          <span>Orientar</span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function PricingCard({
-  plan,
-  checkoutHref,
-  featured = false,
-}: {
-  plan: (typeof BILLING_PLANS)[keyof typeof BILLING_PLANS];
-  checkoutHref: string;
-  featured?: boolean;
-}) {
-  return (
-    <article
-      className={`rounded-[2rem] border p-6 sm:p-8 ${
-        featured
-          ? "border-[#151827] bg-[#151827] text-white shadow-[0_24px_60px_rgba(21,24,39,0.2)]"
-          : "border-[#DADCF5] bg-white text-[#151827]"
-      }`}
-    >
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p
-            className={`text-xs font-bold uppercase tracking-[0.15em] ${
-              featured ? "text-[#9B9CF5]" : "text-[#667085]"
-            }`}
-          >
-            {plan.name}
-          </p>
-          <p className="mt-3 font-display text-4xl font-semibold tracking-[-0.04em]">
-            {plan.priceLabel}
-          </p>
-          <p className={`mt-1 text-sm ${featured ? "text-white/60" : "text-[#667085]"}`}>
-            {plan.monthlyEquivalentLabel}
-          </p>
-        </div>
-        {featured && (
-          <span className="rounded-full bg-[#5B5CE2] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.12em] text-white">
-            mais vantajoso
-          </span>
-        )}
-      </div>
-      <p className={`mt-4 text-sm font-semibold ${featured ? "text-white/70" : "text-[#3F4658]"}`}>
-        {plan.savingsLabel}
-      </p>
-      <div className={`my-7 border-t ${featured ? "border-white/10" : "border-[#E4E7EF]"}`} />
-      <ul className={`space-y-3 text-sm ${featured ? "text-white/80" : "text-[#3F4658]"}`}>
-        {[
-          "Registro por texto e voz",
-          "Organização automática",
-          "Contas e assinaturas",
-          "Lembretes e compromissos",
-          "FIN para orientar suas decisões",
-        ].map((item) => (
-          <li key={item} className="flex items-start gap-2">
-            <Check
-              className={`mt-0.5 size-4 shrink-0 ${featured ? "text-[#9B9CF5]" : "text-[#5B5CE2]"}`}
-            />
-            {item}
-          </li>
-        ))}
-      </ul>
-      <a
-        href={checkoutHref}
-        className={`mt-8 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full text-sm font-bold transition-transform hover:-translate-y-0.5 ${
-          featured ? "bg-[#5B5CE2] text-white" : "bg-[#151827] text-white"
-        }`}
-      >
-        ASSINAR AGORA <ArrowRight className="size-4" />
-      </a>
-    </article>
-  );
-}
-
-function Faq({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <details className="group py-5">
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold">
-        {title}
-        <ChevronDown className="size-4 shrink-0 transition-transform group-open:rotate-180" />
-      </summary>
-      <p className="mt-3 max-w-2xl pr-8 text-sm leading-6 text-[#667085]">{children}</p>
-    </details>
   );
 }
