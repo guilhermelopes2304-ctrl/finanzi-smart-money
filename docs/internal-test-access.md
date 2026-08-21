@@ -20,3 +20,7 @@ Qualquer outro utilizador autenticado sem uma assinatura ativa confirmada contin
 ## Revogação
 
 Para revogar o teste, um administrador deve alterar a assinatura do utilizador no backend para `plan = 'free'`, `status = 'free'` e `provider = NULL`. Não se deve fazer essa alteração pelo browser, pela chave publicável ou por parâmetros da URL.
+
+## Diagnóstico pendente
+
+Após o deployment `71f4e7c` estar Ready, a sessão persistente usada no navegador ainda foi redirecionada para `/oferta?reason=billing_unavailable` ao abrir `/dashboard`. O modo de teste não deve ser declarado concluído até identificar se a sessão não corresponde ao e-mail autorizado ou se a consulta server-side de billing está a falhar.

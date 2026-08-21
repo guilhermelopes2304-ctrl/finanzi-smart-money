@@ -13,8 +13,9 @@ export const getBillingSnapshot = createServerFn({ method: "GET" })
       .from("subscriptions")
       .select("provider")
       .maybeSingle();
-    if (subscriptionError)
-      throw new Error(`Unable to load billing provider: ${subscriptionError.message}`);
+    if (subscriptionError) {
+      console.warn("[Billing] Não foi possível identificar o provider interno", subscriptionError.message);
+    }
 
     const snapshot = data?.[0] ?? {
       plan: "free",
