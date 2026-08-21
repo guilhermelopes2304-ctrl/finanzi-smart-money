@@ -87,8 +87,8 @@ function TransactionsPage() {
   return (
     <div>
       <PageHeader
-        title="Movimentos"
-        subtitle="A memória simples do que aconteceu com o seu dinheiro."
+        title="Lançar"
+        subtitle="Registre do seu jeito. O FINANZZI organiza o resto."
         action={
           <Button
             onClick={() => {
@@ -114,7 +114,9 @@ function TransactionsPage() {
       )}
 
       <div className="mb-4 flex items-center justify-between gap-3">
-        <p className="text-sm text-muted-foreground">{rows.length} movimento(s) encontrado(s).</p>
+        <p className="text-sm text-muted-foreground">
+          {rows.length} lançamento(s) no seu histórico.
+        </p>
         <button
           type="button"
           onClick={() => setFiltersOpen((value) => !value)}
@@ -184,8 +186,8 @@ function TransactionsPage() {
         </div>
       ) : rows.length === 0 ? (
         <EmptyState
-          title="Você ainda não possui lançamentos."
-          description="Adicione seu primeiro lançamento para começar a entender seu dinheiro."
+          title="Comece pelo que aconteceu hoje."
+          description="Escreva algo como mercado 82 ou recebi 2.500 e deixe o FINANZZI organizar."
           action={
             <Button
               onClick={() => {
@@ -218,7 +220,7 @@ function TransactionsPage() {
               <span
                 className={cn(
                   "font-display font-semibold",
-                  tx.type === "income" ? "text-success" : "text-primary",
+                  tx.type === "income" ? "text-fin-success" : "text-foreground",
                 )}
               >
                 {tx.type === "income" ? "+" : "-"} {formatBRL(Number(tx.amount))}

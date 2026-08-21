@@ -16,7 +16,6 @@ import { ACCOUNT_TYPES, RECURRENCES, type Bill, type Recurrence } from "@/types/
 import { PageHeader } from "@/components/finanzzi/PageHeader";
 import { EmptyState } from "@/components/finanzzi/EmptyState";
 import { ConfirmDelete } from "@/components/finanzzi/ConfirmDelete";
-import { ViralMomentCard } from "@/components/finanzzi/ViralMomentCard";
 import { MoneyInput } from "@/components/finanzzi/MoneyInput";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -117,12 +116,6 @@ function BillsTab() {
       b.due_date >= todayISO() &&
       b.due_date <= addDaysISO(todayISO(), 7),
   );
-  const next30 = bills.filter(
-    (b) =>
-      billStatus(b) !== "paid" &&
-      b.due_date >= todayISO() &&
-      b.due_date <= addDaysISO(todayISO(), 30),
-  );
   const subscriptions = subscriptionTotals(bills, categories);
 
   function submit(event: React.FormEvent) {
@@ -155,8 +148,8 @@ function BillsTab() {
 
   return (
     <div>
-      <section className="mb-5 rounded-[1.7rem] bg-primary p-5 text-primary-foreground shadow-lift sm:p-7">
-        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary-foreground/60">
+      <section className="mb-6 rounded-[1.7rem] border border-fin-line bg-fin-brand-soft p-5 text-foreground sm:p-7">
+        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-fin-brand-hover">
           Próximos 7 dias
         </p>
         <div className="mt-3 flex flex-wrap items-end justify-between gap-5">
@@ -164,62 +157,75 @@ function BillsTab() {
             <p className="font-display text-4xl font-semibold tracking-[-0.05em] sm:text-6xl">
               {formatBRL(next7.reduce((s, b) => s + Number(b.amount), 0))}
             </p>
-            <p className="mt-2 text-sm text-primary-foreground/65">
-              {next7.length === 1 ? "1 compromisso" : `${next7.length} compromissos`} nesta semana.
-            </p>
+            <p className="mt-2 text-sm text-fin-copy">em compromissos próximos.</p>
           </div>
-          <div className="grid grid-cols-2 gap-2 text-xs font-semibold sm:min-w-[250px]">
-            <div className="rounded-2xl bg-primary-foreground/10 p-3">
-              <p className="text-primary-foreground/55">30 dias</p>
-              <p className="mt-1 text-base text-primary-foreground">
-                {formatBRL(next30.reduce((s, b) => s + Number(b.amount), 0))}
-              </p>
-            </div>
-            <div className="rounded-2xl bg-primary-foreground/10 p-3">
-              <p className="text-primary-foreground/55">Assinaturas/mês</p>
-              <p className="mt-1 text-base text-primary-foreground">
-                {formatBRL(subscriptions.monthly)}
-              </p>
-            </div>
-          </div>
+          <p className="max-w-[15rem] text-sm leading-6 text-fin-copy">
+            O que chegar nos próximos dias, organizado sem tabela pesada.
+          </p>
         </div>
       </section>
 
       {subscriptions.subscriptions.length > 0 && (
-        <ViralMomentCard
-          className="mb-4"
-          eyebrow="Assinaturas"
-          title="Descobri quanto pago sem perceber."
-          value={formatBRL(subscriptions.monthly)}
-          detail={`por mês em serviços recorrentes · ${formatBRL(subscriptions.yearly)} por ano`}
-          shareText={`Descobri que pago ${formatBRL(subscriptions.monthly)} por mês em assinaturas. Isso dá ${formatBRL(subscriptions.yearly)} por ano. Descobri isso no FINANZZI.`}
-          event="subscription_moment_shared"
-        />
+        <section className="mb-6 rounded-2xl border border-fin-line bg-card p-4 shadow-soft sm:p-5">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">
+                Assinaturas
+              </p>
+              <h2 className="mt-1 text-xl font-semibold">O que se repete no seu mês.</h2>
+            </div>
+            <p className="text-right text-sm text-fin-copy">
+              {formatBRL(subscriptions.monthly)}/mês
+              <br />
+              <span className="text-xs">{formatBRL(subscriptions.yearly)}/ano</span>
+            </p>
+          </div>
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            {subscriptions.subscriptions.slice(0, 4).map((bill) => (
+              <div
+                key={bill.id}
+                className="flex items-center justify-between rounded-xl bg-fin-surface-muted px-3 py-3"
+              >
+                <span className="truncate text-sm font-semibold">{bill.description}</span>
+                <span className="shrink-0 text-sm font-bold">
+                  {formatBRL(Number(bill.amount))}/{bill.recurrence === "yearly" ? "ano" : "mês"}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
       )}
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        {(["upcoming", "recurring", "subscription", "paid", "late"] as const).map((f) => (
-          <button
-            key={f}
-            onClick={() => setFilter(f)}
-            className={cn(
-              "rounded-full border px-3 py-1.5 text-sm transition-colors",
-              filter === f
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border text-muted-foreground",
-            )}
-          >
-            {
-              {
-                upcoming: "Próximas",
-                recurring: "Recorrentes",
-                subscription: "Assinaturas",
-                paid: "Pagas",
-                late: "Vencidas",
-              }[f]
-            }
-          </button>
-        ))}
+        <details className="group">
+          <summary className="cursor-pointer list-none rounded-full border border-border bg-card px-3 py-1.5 text-sm font-semibold text-muted-foreground hover:bg-muted">
+            Ver outros compromissos
+          </summary>
+          <div className="mt-2 flex flex-wrap gap-2 rounded-2xl border border-border bg-card p-2 shadow-soft">
+            {(["upcoming", "recurring", "subscription", "paid", "late"] as const).map((f) => (
+              <button
+                key={f}
+                onClick={() => setFilter(f)}
+                className={cn(
+                  "rounded-full border px-3 py-1.5 text-sm transition-colors",
+                  filter === f
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border text-muted-foreground hover:bg-muted",
+                )}
+              >
+                {
+                  {
+                    upcoming: "Próximas",
+                    recurring: "Recorrentes",
+                    subscription: "Assinaturas",
+                    paid: "Pagas",
+                    late: "Vencidas",
+                  }[f]
+                }
+              </button>
+            ))}
+          </div>
+        </details>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button className="ml-auto">

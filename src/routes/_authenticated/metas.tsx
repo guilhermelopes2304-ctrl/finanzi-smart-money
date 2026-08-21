@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { CalendarDays, Check, Plus, Sparkles, Target, Trash2 } from "lucide-react";
+import { CalendarDays, Check, Plus, Target, Trash2 } from "lucide-react";
 import { useDeleteRow, useGoals, useSaveRow } from "@/hooks/useFinanceData";
 import { goalMonthlyTarget } from "@/lib/finance";
 import { formatBRL, formatDateBR, parseBRL } from "@/lib/format";
@@ -159,21 +159,20 @@ function GoalsPage() {
             const pct = target > 0 ? Math.min(100, Math.round((current / target) * 100)) : 0;
             const monthly = goalMonthlyTarget(goal);
             return (
-              <div key={goal.id} className="surface-card relative overflow-hidden p-5">
-                <div className="pointer-events-none absolute -right-10 -top-10 size-32 rounded-full bg-primary/8 blur-3xl" />
-                <div className="flex items-start justify-between gap-2">
-                  <div>
+              <div key={goal.id} className="surface-card p-5">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="grid size-9 place-items-center rounded-xl bg-primary/10 text-primary">
+                      <span className="grid size-9 place-items-center rounded-xl bg-fin-brand-soft text-fin-brand-hover">
                         <Target className="size-4" />
                       </span>
-                      <p className="font-display text-lg font-semibold">{goal.name}</p>
+                      <p className="truncate font-display text-lg font-semibold">{goal.name}</p>
                     </div>
                     {goal.description && (
-                      <p className="text-xs text-muted-foreground">{goal.description}</p>
+                      <p className="mt-2 text-xs text-fin-copy">{goal.description}</p>
                     )}
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex shrink-0 items-center gap-1">
                     <Button
                       size="sm"
                       variant="outline"
@@ -198,47 +197,35 @@ function GoalsPage() {
                     />
                   </div>
                 </div>
-                <div className="mt-5 flex items-center justify-between gap-3 text-xs">
-                  <span className="inline-flex items-center gap-1.5 font-semibold text-primary">
-                    <Sparkles className="size-3.5" />{" "}
-                    {pct >= 100 ? "Objetivo alcançado" : `${pct}% do caminho`}
-                  </span>
-                  <span className="text-muted-foreground">
-                    {formatBRL(Math.max(0, target - current))} restantes
-                  </span>
+                <div className="mt-6 flex items-end justify-between gap-3">
+                  <div>
+                    <p className="text-xs text-fin-copy">Quanto você já tem</p>
+                    <p className="mt-1 font-display text-3xl font-semibold">{formatBRL(current)}</p>
+                  </div>
+                  <p className="text-right text-sm text-fin-copy">
+                    de <strong className="text-foreground">{formatBRL(target)}</strong>
+                    <br />
+                    {pct}%
+                  </p>
                 </div>
-                <Progress value={pct} className="mt-3" />
-                <div className="mt-3 grid grid-cols-2 gap-2 text-sm sm:grid-cols-4">
-                  <div>
-                    <p className="text-xs text-muted-foreground">Atual</p>
-                    <p className="font-medium">{formatBRL(current)}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Restante</p>
-                    <p className="font-medium">{formatBRL(Math.max(0, target - current))}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Progresso</p>
-                    <p className="font-medium">{pct}%</p>
-                  </div>
-                  <div>
-                    <p className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <CalendarDays className="size-3" /> Prazo
-                    </p>
-                    <p className="font-medium">
-                      {goal.deadline ? formatDateBR(goal.deadline) : "—"}
-                    </p>
-                  </div>
+                <Progress value={pct} className="mt-4" />
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-fin-copy">
+                  <span>{formatBRL(Math.max(0, target - current))} restantes</span>
+                  {goal.deadline && (
+                    <span className="inline-flex items-center gap-1">
+                      <CalendarDays className="size-3" /> até {formatDateBR(goal.deadline)}
+                    </span>
+                  )}
                 </div>
                 {monthly !== null && monthly > 0 && (
-                  <p className="mt-3 text-sm text-muted-foreground">
-                    Guarde cerca de <strong>{formatBRL(monthly)}</strong> por mês para alcançar essa
-                    meta no prazo.
+                  <p className="mt-4 text-sm text-fin-copy">
+                    Cerca de <strong className="text-foreground">{formatBRL(monthly)}</strong> por
+                    mês até o prazo.
                   </p>
                 )}
                 {pct >= 100 && (
-                  <p className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-success">
-                    <Check className="size-4" /> Você alcançou esse objetivo.
+                  <p className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-success">
+                    <Check className="size-4" /> Objetivo alcançado.
                   </p>
                 )}
               </div>

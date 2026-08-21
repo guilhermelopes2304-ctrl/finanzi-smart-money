@@ -33,7 +33,6 @@ import { saveTransaction } from "@/lib/transactions";
 import { askFinAI } from "@/lib/fin-ai";
 import { cn } from "@/lib/utils";
 import { trackProductEvent } from "@/lib/product-analytics";
-import { FinMascot } from "@/components/finanzzi/FinMascot";
 
 type Message = { from: "fin" | "user"; text: string };
 type RecognitionResult = {
@@ -396,37 +395,23 @@ export function FinancialAssistant({ className }: { className?: string }) {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, busy]);
 
-  if (!open)
-    return (
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        aria-label="Abrir Fin"
-        className={cn(
-          "fixed bottom-24 right-4 z-40 grid size-16 place-items-center overflow-hidden rounded-[1.35rem] border-2 border-[#3F4658]/25 bg-[#151827] shadow-[0_18px_45px_rgba(0,0,0,.24)] transition-transform hover:-translate-y-1 hover:scale-105 active:scale-95",
-          className,
-        )}
-      >
-        <FinMascot expression="normal" className="h-full w-full" />
-        <span className="absolute bottom-0 right-0 size-3 rounded-full border-2 border-[#151827] bg-[#5B5CE2]" />
-      </button>
-    );
+  if (!open) return null;
 
   return (
     <div
       className={cn(
-        "fixed bottom-24 right-3 z-50 w-[calc(100vw-1.5rem)] max-w-[430px] overflow-hidden rounded-[1.75rem] border border-[#3F4658]/20 bg-[#151827] text-white shadow-[0_24px_80px_rgba(0,0,0,.32)] sm:right-4",
+        "fixed bottom-24 right-3 z-50 w-[calc(100vw-1.5rem)] max-w-[430px] overflow-hidden rounded-[1.75rem] border border-[#556070]/20 bg-[#111827] text-white shadow-[0_24px_80px_rgba(0,0,0,.32)] sm:right-4",
         className,
       )}
     >
-      <div className="flex items-center justify-between border-b border-[#3F4658]/10 bg-gradient-to-r from-[#5B5CE2]/10 to-transparent p-4 sm:p-5">
+      <div className="flex items-center justify-between border-b border-[#556070]/10 bg-gradient-to-r from-[#19C96B]/10 to-transparent p-4 sm:p-5">
         <div className="flex items-center gap-3">
-          <div className="grid size-10 place-items-center overflow-hidden rounded-xl bg-[#5B5CE2]/10">
-            <FinMascot expression={busy ? "pensando" : "normal"} className="h-full w-full" />
+          <div className="grid size-10 place-items-center rounded-xl bg-[#19C96B]/10 text-[10px] font-black uppercase tracking-[0.14em] text-[#19C96B]">
+            FIN
           </div>
           <div>
             <div className="flex items-center gap-1 text-sm font-bold">
-              <Sparkles className="size-3.5 text-[#5B5CE2]" /> Fin
+              <Sparkles className="size-3.5 text-[#19C96B]" /> Fin
             </div>
             <p className="text-xs text-[#F4F5F8]/50">Copiloto financeiro · online</p>
           </div>
@@ -434,7 +419,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
         <button
           type="button"
           onClick={() => setOpen(false)}
-          className="rounded-full p-2 text-[#F4F5F8]/50 hover:bg-[#3F4658]/10"
+          className="rounded-full p-2 text-[#F4F5F8]/50 hover:bg-[#556070]/10"
           aria-label="Fechar"
         >
           <X className="size-4" />
@@ -448,7 +433,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
             className={cn(
               "max-w-[92%] whitespace-pre-wrap rounded-2xl px-3.5 py-3 text-sm leading-5 shadow-sm",
               message.from === "user"
-                ? "ml-auto bg-[#5B5CE2] font-medium text-[#151827]"
+                ? "ml-auto bg-[#19C96B] font-medium text-[#111827]"
                 : "bg-white/[0.07] text-[#F4F5F8]/85",
             )}
           >
@@ -466,7 +451,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
                 key={suggestion}
                 type="button"
                 onClick={() => send(suggestion)}
-                className="rounded-full border border-[#3F4658]/15 bg-white/[0.05] px-3 py-2 text-left text-xs text-[#F4F5F8]/70 transition-colors hover:bg-[#5B5CE2]/15 hover:text-white"
+                className="rounded-full border border-[#556070]/15 bg-white/[0.05] px-3 py-2 text-left text-xs text-[#F4F5F8]/70 transition-colors hover:bg-[#19C96B]/15 hover:text-white"
               >
                 {suggestion}
               </button>
@@ -487,7 +472,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
                   ? commitRecurring(pending)
                   : commit(pending))
               }
-              className="min-h-10 flex-1 rounded-xl bg-[#5B5CE2] px-3 text-sm font-semibold text-[#151827]"
+              className="min-h-10 flex-1 rounded-xl bg-[#19C96B] px-3 text-sm font-semibold text-[#111827]"
             >
               Confirmar
             </button>
@@ -497,7 +482,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
                 setPending(null);
                 push({ from: "fin", text: "Tudo bem, não registrei nada." });
               }}
-              className="min-h-10 rounded-xl border border-[#3F4658]/15 px-3 text-sm text-[#F4F5F8]/70"
+              className="min-h-10 rounded-xl border border-[#556070]/15 px-3 text-sm text-[#F4F5F8]/70"
             >
               Cancelar
             </button>
@@ -505,14 +490,14 @@ export function FinancialAssistant({ className }: { className?: string }) {
         )}
       </div>
 
-      <div className="border-t border-[#3F4658]/10 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-        <div className="flex gap-2 rounded-2xl border border-[#3F4658]/10 bg-white/[0.04] p-1">
+      <div className="border-t border-[#556070]/10 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+        <div className="flex gap-2 rounded-2xl border border-[#556070]/10 bg-white/[0.04] p-1">
           <button
             type="button"
             onClick={() => (listening ? stopListening() : listen())}
             className={cn(
               "grid size-10 shrink-0 place-items-center rounded-xl",
-              listening ? "bg-[#3F4658] text-[#FCFBF7]" : "bg-[#5B5CE2] text-[#151827]",
+              listening ? "bg-[#556070] text-[#FCFCF8]" : "bg-[#19C96B] text-[#111827]",
             )}
             aria-label={listening ? "Parar de ouvir" : "Falar com o Fin"}
           >
@@ -535,7 +520,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
             type="button"
             onClick={() => send()}
             disabled={busy}
-            className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#5B5CE2] text-[#151827] disabled:opacity-50"
+            className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#19C96B] text-[#111827] disabled:opacity-50"
             aria-label="Enviar"
           >
             <Send className="size-4" />

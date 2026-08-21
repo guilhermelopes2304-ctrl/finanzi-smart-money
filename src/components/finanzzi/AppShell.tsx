@@ -18,35 +18,36 @@ import {
   Wallet,
   X,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlan } from "@/hooks/usePlan";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/finanzzi/Logo";
-import { ThemeToggle } from "@/components/finanzzi/ThemeToggle";
 import { TransactionDialog } from "@/components/finanzzi/TransactionDialog";
 import { FinancialAssistant } from "@/components/finanzzi/FinancialAssistantV2";
 import { NavigationLoading } from "@/components/finanzzi/NavigationLoading";
 import { cn } from "@/lib/utils";
 
-const NAV = [
+export type NavItemDefinition = {
+  to: string;
+  label: string;
+  icon: LucideIcon;
+};
+
+const NAV: readonly NavItemDefinition[] = [
   { to: "/dashboard", label: "Início", icon: Home },
   { to: "/lancamentos", label: "Lançar", icon: Wallet },
   { to: "/contas", label: "Compromissos", icon: CalendarClock },
   { to: "/cartoes", label: "Cartões", icon: CreditCard },
   { to: "/metas", label: "Objetivos", icon: Target },
+  { to: "/inteligencia", label: "FIN", icon: Brain },
+];
+
+const MORE_NAV: readonly NavItemDefinition[] = [
   { to: "/relatorios", label: "Finanças", icon: BarChart3 },
-  { to: "/inteligencia", label: "Fin", icon: Brain },
   { to: "/posso-comprar", label: "Posso gastar", icon: ShoppingBag },
   { to: "/configuracoes", label: "Configurações", icon: Settings },
-] as const;
-
-const NAV_GROUPS = [
-  { title: "Visão geral", items: [NAV[0]] },
-  { title: "Dinheiro", items: [NAV[1], NAV[2], NAV[3], NAV[7]] },
-  { title: "Planejamento", items: [NAV[4], NAV[5]] },
-  { title: "Inteligência", items: [NAV[6]] },
-  { title: "Sistema", items: [NAV[8]] },
-] as const;
+];
 
 function openAssistant() {
   window.dispatchEvent(new CustomEvent("finanzzi:open-assistant"));
@@ -68,15 +69,15 @@ function initials(name?: string | null) {
 function NavItem({
   item,
   active,
-  onNavigate,
   mobile = false,
   collapsed = false,
+  onNavigate,
 }: {
-  item: (typeof NAV)[number];
+  item: NavItemDefinition;
   active: boolean;
-  onNavigate?: () => void;
   mobile?: boolean;
   collapsed?: boolean;
+  onNavigate?: () => void;
 }) {
   if (mobile) {
     return (
@@ -87,15 +88,15 @@ function NavItem({
           onNavigate?.();
         }}
         className={cn(
-          "group flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-2xl px-1 py-2 text-[10px] font-semibold transition-all duration-200 active:scale-[0.96]",
+          "group flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-2xl px-1 py-2 text-[10px] font-semibold transition-colors active:scale-[0.97]",
           active
-            ? "bg-primary/10 text-primary"
-            : "text-muted-foreground hover:bg-muted/70 hover:text-foreground",
+            ? "bg-fin-brand-soft text-fin-brand-hover"
+            : "text-muted-foreground hover:bg-muted hover:text-foreground",
         )}
       >
         <span
           className={cn(
-            "grid size-9 place-items-center rounded-xl transition-all",
+            "grid size-9 place-items-center rounded-xl transition-colors",
             active ? "bg-primary text-primary-foreground shadow-sm" : "group-hover:bg-background",
           )}
         >
@@ -109,14 +110,17 @@ function NavItem({
   return (
     <Link
       to={item.to}
-      onClick={beginNavigation}
+      onClick={() => {
+        beginNavigation();
+        onNavigate?.();
+      }}
       title={collapsed ? item.label : undefined}
       className={cn(
-        "group flex min-h-11 items-center rounded-xl py-2.5 text-sm font-semibold transition-all duration-200",
+        "group flex min-h-11 items-center rounded-xl py-2.5 text-sm font-semibold transition-colors",
         collapsed ? "justify-center px-2" : "gap-3 px-3",
         active
-          ? "bg-primary/10 text-primary"
-          : "text-muted-foreground hover:bg-muted/70 hover:text-foreground",
+          ? "bg-fin-brand-soft text-fin-brand-hover"
+          : "text-muted-foreground hover:bg-muted hover:text-foreground",
       )}
     >
       <span
@@ -124,7 +128,7 @@ function NavItem({
           "grid size-8 shrink-0 place-items-center rounded-lg",
           active
             ? "bg-primary text-primary-foreground"
-            : "bg-muted/60 text-muted-foreground group-hover:bg-background group-hover:text-foreground",
+            : "bg-muted text-muted-foreground group-hover:bg-background group-hover:text-foreground",
         )}
       >
         <item.icon className="size-4" strokeWidth={active ? 2.2 : 1.9} />
@@ -134,13 +138,103 @@ function NavItem({
   );
 }
 
-export function AppShell({ children }: { children: ReactNode }) {
+function MoreMenu({
+  activePathname,
+  mobile = false,
+  onClose,
+}: {
+  activePathname: string;
+  mobile?: boolean;
+  onClose?: () => void;
+}) {
+  if (mobile) {
+    return (
+      <section className="absolute inset-x-0 bottom-0 rounded-t-[2rem] border-t border-border bg-card p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-2xl animate-fin-fade-up">
+        <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-muted-foreground/25" />
+        <div className="mb-5 flex items-center justify-between">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">
+              FINANZZI
+            </p>
+            <h2 className="mt-1 text-xl font-semibold">Mais opções</h2>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="grid size-11 place-items-center rounded-full text-muted-foreground hover:bg-muted"
+            aria-label="Fechar"
+          >
+            <X className="size-5" />
+          </button>
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          {MORE_NAV.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              onClick={() => {
+                beginNavigation();
+                onClose?.();
+              }}
+              className={cn(
+                "flex min-h-[88px] flex-col items-center justify-center gap-2 rounded-2xl border border-border bg-background px-2 text-center text-xs font-semibold transition-colors active:scale-[0.97]",
+                activePathname === item.to
+                  ? "border-primary bg-fin-brand-soft text-fin-brand-hover"
+                  : "text-foreground hover:bg-muted",
+              )}
+            >
+              <span className="grid size-9 place-items-center rounded-xl bg-muted">
+                <item.icon className="size-5" />
+              </span>
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <div className="absolute inset-x-3 bottom-24 z-10 rounded-2xl border border-border bg-card p-2 shadow-soft">
+      {MORE_NAV.map((item) => (
+        <Link
+          key={item.to}
+          to={item.to}
+          onClick={() => {
+            beginNavigation();
+            onClose?.();
+          }}
+          className={cn(
+            "flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold transition-colors",
+            activePathname === item.to
+              ? "bg-fin-brand-soft text-fin-brand-hover"
+              : "text-muted-foreground hover:bg-muted hover:text-foreground",
+          )}
+        >
+          <item.icon className="size-4" />
+          {item.label}
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+export function AppShell({
+  children,
+  visualReview = false,
+}: {
+  children: ReactNode;
+  visualReview?: boolean;
+}) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const activePathname =
+    visualReview && pathname === "/visual-review/dashboard" ? "/dashboard" : pathname;
   const { data: profile, isLoading, isPro, isInternalTest } = usePlan();
   const navigate = useNavigate();
   const [transactionOpen, setTransactionOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const moreActive = MORE_NAV.some((item) => item.to === activePathname);
 
   useEffect(() => {
     window.dispatchEvent(new CustomEvent("finanzzi:navigation-end"));
@@ -162,52 +256,48 @@ export function AppShell({ children }: { children: ReactNode }) {
   const desktopBannerPadding = sidebarCollapsed ? "lg:pl-[88px]" : "lg:pl-[256px]";
 
   return (
-    <div
-      data-fin-app-shell
-      className="min-h-screen bg-background text-foreground transition-colors duration-300"
-    >
+    <div data-fin-app-shell className="min-h-screen bg-background text-foreground">
       <NavigationLoading />
       <aside
         className={cn(
           "fixed inset-y-0 left-0 z-30 hidden flex-col border-r border-border bg-card lg:flex",
-          "transition-[width] duration-300 ease-out",
+          "transition-[width] duration-200 ease-out",
           sidebarCollapsed ? "w-[88px]" : "w-[256px]",
         )}
       >
         <div
           className={cn(
             "flex h-[78px] items-center border-b border-border",
-            sidebarCollapsed ? "justify-center px-3" : "justify-between px-5",
+            sidebarCollapsed ? "justify-center px-3" : "px-5",
           )}
         >
           <Link to="/dashboard" aria-label="FINANZZI">
             {sidebarCollapsed ? (
-              <span className="grid size-10 place-items-center rounded-xl bg-foreground text-background font-display text-sm font-bold shadow-sm">
+              <span className="grid size-10 place-items-center rounded-xl bg-primary text-primary-foreground font-display text-sm font-bold shadow-sm">
                 F
               </span>
             ) : (
               <Logo />
             )}
           </Link>
-          {!sidebarCollapsed && <ThemeToggle />}
         </div>
 
         <div className={cn("border-b border-border", sidebarCollapsed ? "px-3 py-4" : "px-5 py-4")}>
           {sidebarCollapsed ? (
             <div className="flex justify-center">
-              <span className="grid size-9 place-items-center rounded-full bg-primary/10 text-[10px] font-black uppercase tracking-[0.08em] text-primary">
+              <span className="grid size-9 place-items-center rounded-full bg-fin-brand-soft text-[10px] font-black uppercase tracking-[0.08em] text-fin-brand-hover">
                 {isInternalTest ? "T" : isPro ? "P" : "F"}
               </span>
             </div>
           ) : (
             <>
               <div className="flex items-center justify-between gap-2">
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary">
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-fin-brand-hover">
                   Seu dinheiro
                 </p>
                 <Link
                   to="/configuracoes"
-                  className="rounded-full bg-muted px-2 py-1 text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground hover:bg-primary/10 hover:text-primary"
+                  className="rounded-full bg-fin-brand-soft px-2 py-1 text-[9px] font-bold uppercase tracking-[0.12em] text-fin-brand-hover hover:bg-primary hover:text-primary-foreground"
                 >
                   {isInternalTest ? "Teste interno" : isPro ? "Acesso ativo" : "Acesso pago"}
                 </Link>
@@ -219,26 +309,45 @@ export function AppShell({ children }: { children: ReactNode }) {
           )}
         </div>
 
-        <nav className="flex-1 space-y-5 overflow-y-auto px-3 py-5">
-          {NAV_GROUPS.map((group) => (
-            <div key={group.title}>
-              {!sidebarCollapsed && (
-                <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
-                  {group.title}
-                </p>
+        <nav className="relative flex-1 overflow-y-auto px-3 py-5">
+          <div className="space-y-1">
+            {NAV.map((item) => (
+              <NavItem
+                key={item.to}
+                item={item}
+                active={activePathname === item.to}
+                collapsed={sidebarCollapsed}
+              />
+            ))}
+            <button
+              type="button"
+              onClick={() => setMoreOpen((value) => !value)}
+              title={sidebarCollapsed ? "Mais" : undefined}
+              aria-expanded={moreOpen}
+              className={cn(
+                "group flex min-h-11 w-full items-center rounded-xl py-2.5 text-sm font-semibold transition-colors",
+                sidebarCollapsed ? "justify-center px-2" : "gap-3 px-3",
+                moreActive || moreOpen
+                  ? "bg-fin-brand-soft text-fin-brand-hover"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
               )}
-              <div className="space-y-1">
-                {group.items.map((item) => (
-                  <NavItem
-                    key={item.to}
-                    item={item}
-                    active={pathname === item.to}
-                    collapsed={sidebarCollapsed}
-                  />
-                ))}
-              </div>
-            </div>
-          ))}
+            >
+              <span
+                className={cn(
+                  "grid size-8 shrink-0 place-items-center rounded-lg",
+                  moreActive || moreOpen
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground group-hover:bg-background group-hover:text-foreground",
+                )}
+              >
+                <MoreHorizontal className="size-4" />
+              </span>
+              {!sidebarCollapsed && <span>Mais</span>}
+            </button>
+          </div>
+          {moreOpen && (
+            <MoreMenu activePathname={activePathname} onClose={() => setMoreOpen(false)} />
+          )}
         </nav>
 
         <div className="space-y-2 border-t border-border p-4">
@@ -247,7 +356,9 @@ export function AppShell({ children }: { children: ReactNode }) {
               "h-11 rounded-xl shadow-sm transition-transform active:scale-[0.98]",
               sidebarCollapsed ? "w-11 justify-center px-0" : "w-full",
             )}
-            onClick={() => setTransactionOpen(true)}
+            onClick={() => {
+              if (!visualReview) setTransactionOpen(true);
+            }}
             title={sidebarCollapsed ? "Lançar agora" : undefined}
           >
             <Plus className="size-4" />
@@ -278,26 +389,23 @@ export function AppShell({ children }: { children: ReactNode }) {
         </button>
       </aside>
 
-      <header className="sticky top-0 z-20 border-b border-border bg-background/90 px-4 py-2.5 backdrop-blur-xl lg:hidden">
+      <header className="sticky top-0 z-20 border-b border-border bg-background px-4 py-2.5 lg:hidden">
         <div className="flex min-h-11 items-center justify-between gap-3">
           <Logo />
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <Link
-              to="/configuracoes"
-              aria-label="Abrir configurações"
-              className="grid size-10 place-items-center rounded-full border border-border bg-card text-xs font-bold text-primary shadow-sm transition-all active:scale-95"
-            >
-              {initials(profile?.name)}
-            </Link>
-          </div>
+          <Link
+            to="/configuracoes"
+            aria-label="Abrir configurações"
+            className="grid size-10 place-items-center rounded-full border border-border bg-card text-xs font-bold text-fin-brand-hover shadow-sm transition-transform active:scale-95"
+          >
+            {initials(profile?.name)}
+          </Link>
         </div>
       </header>
 
       {isInternalTest && (
         <div
           className={cn(
-            "border-b border-foreground/10 bg-foreground px-4 py-2 text-center text-[10px] font-bold uppercase tracking-[0.16em] text-primary",
+            "border-b border-border bg-fin-brand-soft px-4 py-2 text-center text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover",
             desktopBannerPadding,
           )}
         >
@@ -314,30 +422,42 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="mx-auto min-w-0 max-w-7xl">{children}</div>
       </main>
 
-      <nav className="fixed inset-x-2 bottom-2 z-30 rounded-[1.4rem] border border-border bg-card/95 pb-[env(safe-area-inset-bottom)] shadow-[0_10px_35px_rgba(0,0,0,0.08)] lg:hidden">
+      <nav className="fixed inset-x-2 bottom-2 z-30 rounded-[1.4rem] border border-border bg-card pb-[env(safe-area-inset-bottom)] shadow-soft lg:hidden">
         <div className="grid grid-cols-5 items-end px-1.5 py-1">
-          <NavItem item={NAV[0]} active={pathname === NAV[0].to} mobile />
-          <NavItem item={NAV[1]} active={pathname === NAV[1].to} mobile />
-          <NavItem item={NAV[2]} active={pathname === NAV[2].to} mobile />
+          <NavItem item={NAV[0]!} active={activePathname === NAV[0]!.to} mobile />
+          <NavItem item={NAV[1]!} active={activePathname === NAV[1]!.to} mobile />
+          <NavItem item={NAV[2]!} active={activePathname === NAV[2]!.to} mobile />
           <button
             type="button"
-            onClick={openAssistant}
-            className="group flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[10px] font-semibold text-muted-foreground transition-all active:scale-[0.96] active:text-primary"
+            onClick={() => {
+              if (!visualReview) openAssistant();
+            }}
+            className={cn(
+              "group flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[10px] font-semibold transition-colors active:scale-[0.97]",
+              activePathname === "/inteligencia"
+                ? "bg-fin-brand-soft text-fin-brand-hover"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground",
+            )}
           >
-            <span className="grid size-9 place-items-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground">
+            <span className="grid size-9 place-items-center rounded-xl bg-fin-brand-soft text-fin-brand-hover group-hover:bg-primary group-hover:text-primary-foreground">
               <MessageCircle className="size-[18px]" />
             </span>
-            <span>Fin</span>
+            <span>FIN</span>
           </button>
           <button
             type="button"
-            onClick={() => setMoreOpen(true)}
+            onClick={() => {
+              if (!visualReview) setMoreOpen(true);
+            }}
             className={cn(
-              "group flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[10px] font-semibold transition-all active:scale-[0.96]",
-              moreOpen ? "text-primary" : "text-muted-foreground",
+              "group flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[10px] font-semibold transition-colors active:scale-[0.97]",
+              moreOpen || moreActive
+                ? "bg-fin-brand-soft text-fin-brand-hover"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground",
             )}
+            aria-expanded={moreOpen}
           >
-            <span className="grid size-9 place-items-center rounded-xl group-hover:bg-muted/70">
+            <span className="grid size-9 place-items-center rounded-xl group-hover:bg-muted">
               <MoreHorizontal className="size-[18px]" />
             </span>
             <span>Mais</span>
@@ -350,62 +470,16 @@ export function AppShell({ children }: { children: ReactNode }) {
           <button
             type="button"
             aria-label="Fechar menu"
-            className="absolute inset-0 bg-black/35 backdrop-blur-[3px]"
+            className="absolute inset-0 bg-[#111827]/25"
             onClick={() => setMoreOpen(false)}
           />
-          <section className="absolute inset-x-0 bottom-0 rounded-t-[2rem] border-t border-border bg-card p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-2xl animate-fin-fade-up">
-            <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-muted-foreground/25" />
-            <div className="mb-5 flex items-center justify-between">
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-primary">
-                  FINANZZI
-                </p>
-                <h2 className="mt-1 text-xl font-semibold">Mais opções</h2>
-              </div>
-              <button
-                type="button"
-                onClick={() => setMoreOpen(false)}
-                className="grid size-11 place-items-center rounded-full text-muted-foreground hover:bg-muted"
-                aria-label="Fechar"
-              >
-                <X className="size-5" />
-              </button>
-            </div>
-            <div className="grid grid-cols-3 gap-2">
-              {NAV.slice(3).map((item) => (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  onClick={() => {
-                    beginNavigation();
-                    setMoreOpen(false);
-                  }}
-                  className={cn(
-                    "flex min-h-[88px] flex-col items-center justify-center gap-2 rounded-2xl border border-border bg-background px-2 text-center text-xs font-semibold transition-all active:scale-95",
-                    pathname === item.to
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "text-foreground hover:bg-muted",
-                  )}
-                >
-                  <span className="grid size-9 place-items-center rounded-xl bg-muted/70">
-                    <item.icon className="size-5" />
-                  </span>
-                  {item.label}
-                </Link>
-              ))}
-            </div>
-            <button
-              type="button"
-              onClick={signOut}
-              className="mt-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border border-border py-3 text-sm font-semibold text-muted-foreground hover:bg-muted hover:text-foreground"
-            >
-              <LogOut className="size-4" /> Encerrar sessão
-            </button>
-          </section>
+          <MoreMenu activePathname={activePathname} mobile onClose={() => setMoreOpen(false)} />
         </div>
       )}
 
-      <TransactionDialog open={transactionOpen} onOpenChange={setTransactionOpen} />
+      {!visualReview && (
+        <TransactionDialog open={transactionOpen} onOpenChange={setTransactionOpen} />
+      )}
       <FinancialAssistant />
     </div>
   );

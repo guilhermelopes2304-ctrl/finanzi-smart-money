@@ -1,6 +1,4 @@
 import type { ReactNode } from "react";
-import { FinMascot } from "@/components/finanzzi/FinMascot";
-
 export function EmptyState({
   icon,
   title,
@@ -19,7 +17,9 @@ export function EmptyState({
           {icon}
         </div>
       ) : (
-        <FinMascot expression="calmo" className="mb-3 h-20 w-20" />
+        <span className="mb-3 grid size-14 place-items-center rounded-2xl bg-fin-brand-soft text-[10px] font-black uppercase tracking-[0.16em] text-fin-brand-hover">
+          FIN
+        </span>
       )}
       <p className="font-semibold text-foreground">{title}</p>
       {description && (

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { CalendarRange, CreditCard, Plus, Sparkles, Trash2 } from "lucide-react";
+import { CalendarRange, CreditCard, Plus, Trash2 } from "lucide-react";
 import {
   useCategories,
   useCreateCardPurchase,
@@ -312,46 +312,31 @@ function CardsPage() {
             const invoice = cardInvoice(c, transactions);
             const purchases = transactions.filter((tx) => tx.credit_card_id === c.id).slice(0, 5);
             return (
-              <div key={c.id} className="surface-card overflow-hidden p-0">
-                <div
-                  className="relative overflow-hidden p-5 text-white"
-                  style={{
-                    background: `linear-gradient(135deg, ${c.color || "#3F4658"}, #151827)`,
-                  }}
-                >
-                  <div className="pointer-events-none absolute -right-10 -top-12 size-40 rounded-full bg-[#3F4658]/10 blur-2xl" />
-                  <div className="relative flex items-start justify-between gap-4">
+              <div key={c.id} className="surface-card overflow-hidden">
+                <div className="bg-fin-brand-soft p-5">
+                  <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#F4F5F8]/55">
-                        Cartão FINANZZI
+                      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-fin-brand-hover">
+                        Fatura atual
                       </p>
-                      <p className="mt-4 text-lg font-semibold">{c.name}</p>
-                      <p className="mt-1 text-xs text-[#F4F5F8]/55">
-                        {c.bank ?? "Cartão de crédito"}
-                      </p>
+                      <p className="mt-3 text-lg font-semibold">{c.name}</p>
+                      <p className="mt-1 text-xs text-fin-copy">{c.bank ?? "Cartão de crédito"}</p>
                     </div>
-                    <CreditCard className="size-6 text-[#F4F5F8]/70" />
+                    <CreditCard className="size-6 text-fin-brand-hover" />
                   </div>
-                  <div className="relative mt-8 flex items-end justify-between gap-3">
-                    <div>
-                      <p className="text-[10px] text-[#F4F5F8]/50">Disponível</p>
-                      <p className="mt-1 font-display text-2xl font-semibold">
-                        {formatBRL(available)}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-[10px] text-[#F4F5F8]/50">Próxima fatura</p>
-                      <p className="mt-1 text-sm font-semibold">{formatBRL(invoice)}</p>
-                    </div>
-                  </div>
+                  <p className="mt-7 font-display text-3xl font-semibold tracking-[-0.05em]">
+                    {formatBRL(invoice)}
+                  </p>
+                  <p className="mt-2 text-xs text-fin-copy">
+                    Vence dia {c.due_day} · fecha dia {c.closing_day}
+                  </p>
                 </div>
                 <div className="p-5">
-                  <div className="flex items-start justify-between">
+                  <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="font-medium">{c.name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {c.bank ?? "Cartão de crédito"} · fecha dia {c.closing_day} · vence dia{" "}
-                        {c.due_day}
+                      <p className="text-xs text-fin-copy">Disponível</p>
+                      <p className="mt-1 font-display text-2xl font-semibold">
+                        {formatBRL(available)}
                       </p>
                     </div>
                     <ConfirmDelete
@@ -365,64 +350,67 @@ function CardsPage() {
                       }
                     />
                   </div>
-                  <div className="flex items-center justify-between gap-3 text-xs">
-                    <span className="inline-flex items-center gap-1.5 font-semibold text-primary">
-                      <Sparkles className="size-3.5" /> Peso no seu futuro
-                    </span>
-                    <span className="text-muted-foreground">
-                      {Math.round(usedPercent)}% do limite usado
+                  <div className="mt-5 flex items-center justify-between gap-3 text-xs">
+                    <span className="font-semibold text-fin-copy">Limite usado</span>
+                    <span className="font-bold text-fin-brand-hover">
+                      {Math.round(usedPercent)}%
                     </span>
                   </div>
                   <Progress value={usedPercent} className="mt-3" />
-                  <div className="mt-3 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
-                    <div>
-                      <p className="text-xs text-muted-foreground">Limite</p>
-                      <p className="font-medium">{formatBRL(limit)}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">Utilizado</p>
-                      <p className="font-medium">{formatBRL(used)}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">Disponível</p>
-                      <p className="font-medium">{formatBRL(available)}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">Fatura atual</p>
-                      <p className="font-medium">{formatBRL(invoice)}</p>
-                    </div>
-                  </div>
-                  <div className="mt-5 grid grid-cols-2 gap-3 rounded-2xl bg-muted/45 p-3 text-xs">
-                    <div className="flex items-center gap-2">
-                      <CalendarRange className="size-3.5 text-primary" />
-                      <span>
-                        Fecha dia <strong>{c.closing_day}</strong>
-                      </span>
-                    </div>
-                    <div className="text-right">
-                      Vence dia <strong>{c.due_day}</strong>
-                    </div>
-                  </div>
-                  <div className="mt-4 space-y-1.5">
-                    <p className="text-xs font-medium text-muted-foreground">Últimas compras</p>
-                    {purchases.length === 0 ? (
-                      <p className="text-sm text-muted-foreground">
-                        Nenhuma compra registrada ainda.
-                      </p>
-                    ) : (
-                      purchases.map((tx) => (
-                        <div key={tx.id} className="flex justify-between text-sm">
-                          <span className="truncate">
-                            {tx.description}{" "}
-                            <span className="text-xs text-muted-foreground">
-                              {formatDateBR(tx.date)}
-                            </span>
-                          </span>
-                          <span className="font-medium">{formatBRL(Number(tx.amount))}</span>
+                  <details className="mt-5 border-t border-border pt-4">
+                    <summary className="cursor-pointer list-none text-sm font-semibold text-fin-brand-hover">
+                      Ver mais
+                    </summary>
+                    <div className="mt-4 space-y-4">
+                      <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+                        <div>
+                          <p className="text-xs text-fin-copy">Limite</p>
+                          <p className="font-medium">{formatBRL(limit)}</p>
                         </div>
-                      ))
-                    )}
-                  </div>
+                        <div>
+                          <p className="text-xs text-fin-copy">Utilizado</p>
+                          <p className="font-medium">{formatBRL(used)}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-fin-copy">Disponível</p>
+                          <p className="font-medium">{formatBRL(available)}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-fin-copy">Fatura atual</p>
+                          <p className="font-medium">{formatBRL(invoice)}</p>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3 rounded-2xl bg-fin-surface-muted p-3 text-xs">
+                        <div className="flex items-center gap-2">
+                          <CalendarRange className="size-3.5 text-fin-brand-hover" />
+                          <span>
+                            Fecha dia <strong>{c.closing_day}</strong>
+                          </span>
+                        </div>
+                        <div className="text-right">
+                          Vence dia <strong>{c.due_day}</strong>
+                        </div>
+                      </div>
+                      <div className="space-y-1.5">
+                        <p className="text-xs font-medium text-fin-copy">Últimas compras</p>
+                        {purchases.length === 0 ? (
+                          <p className="text-sm text-fin-copy">Nenhuma compra registrada ainda.</p>
+                        ) : (
+                          purchases.map((tx) => (
+                            <div key={tx.id} className="flex justify-between text-sm">
+                              <span className="truncate">
+                                {tx.description}{" "}
+                                <span className="text-xs text-fin-copy">
+                                  {formatDateBR(tx.date)}
+                                </span>
+                              </span>
+                              <span className="font-medium">{formatBRL(Number(tx.amount))}</span>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  </details>
                 </div>
               </div>
             );
