@@ -85,39 +85,72 @@ body [class~="border-primary\/50"] {
   box-shadow: 0 1px 3px rgb(17 24 39 / 0.06) !important;
 }
 
-/* Phone mockups keep a quiet consumer-app frame, not an AI glow. */
+/* Hero device: real-device visual language using the actual FINANZZI UI as the screen. */
 [class~="max-w-[470px]"] {
   position: relative;
   width: min(100%, 360px) !important;
   max-width: 360px !important;
-  padding: 10px !important;
-  border: 10px solid var(--fin-ink) !important;
+  padding: 9px !important;
+  border: 9px solid #080a0b !important;
   border-radius: 42px !important;
-  background: var(--fin-ink) !important;
-  box-shadow: 0 22px 48px rgb(17 24 39 / 0.14) !important;
+  background: #080a0b !important;
+  box-shadow: 0 30px 70px rgb(17 24 39 / 0.18), 0 8px 20px rgb(17 24 39 / 0.10) !important;
 }
 [class~="max-w-[470px]"]::before {
   content: "";
   position: absolute;
-  z-index: 4;
-  top: 10px;
+  z-index: 6;
+  top: 9px;
   left: 50%;
-  width: 84px;
-  height: 18px;
+  width: 88px;
+  height: 19px;
   transform: translateX(-50%);
   border-radius: 999px;
-  background: var(--fin-ink) !important;
+  background: #080a0b !important;
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.08) inset !important;
+}
+[class~="max-w-[470px]"]::after {
+  content: "";
+  position: absolute;
+  z-index: 5;
+  top: 76px;
+  right: -12px;
+  width: 3px;
+  height: 64px;
+  border-radius: 0 3px 3px 0;
+  background: #080a0b !important;
+  box-shadow: 0 76px 0 #080a0b !important;
 }
 [class~="max-w-[470px]"] > div {
   overflow: hidden !important;
+  position: relative;
   border: 0 !important;
-  border-radius: 31px !important;
-  background: var(--fin-brand-soft) !important;
+  border-radius: 32px !important;
+  background: var(--fin-canvas) !important;
   padding: 8px !important;
   box-shadow: none !important;
 }
+[class~="max-w-[470px]"] > div::before {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 34px;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.10), transparent) !important;
+}
 [class~="max-w-[470px]"] > div > div {
-  border-radius: 24px !important;
+  border-radius: 25px !important;
+}
+
+/* Keep the demonstration itself readable: the device frame is the hero, not decoration around it. */
+[class~="max-w-[470px]"] .shadow-\[0_24px_70px_rgba\(33\,38\,29\,0\.12\)\] {
+  box-shadow: none !important;
+}
+[class~="max-w-[470px]"] .rounded-\[2\.4rem\] {
+  border-color: transparent !important;
 }
 
 @media (max-width: 640px) {
@@ -125,19 +158,25 @@ body [class~="border-primary\/50"] {
     width: min(100%, 320px) !important;
     max-width: 320px !important;
     border-width: 8px !important;
-    border-radius: 36px !important;
+    border-radius: 37px !important;
     padding: 7px !important;
   }
   [class~="max-w-[470px]"]::before {
     top: 8px;
-    width: 72px;
-    height: 15px;
+    width: 74px;
+    height: 16px;
+  }
+  [class~="max-w-[470px]"]::after {
+    top: 64px;
+    right: -11px;
+    height: 52px;
+    box-shadow: 0 64px 0 #080a0b !important;
   }
   [class~="max-w-[470px]"] > div {
-    border-radius: 28px !important;
+    border-radius: 29px !important;
     padding: 6px !important;
   }
   [class~="max-w-[470px]"] > div > div {
-    border-radius: 21px !important;
+    border-radius: 22px !important;
   }
 }
