@@ -21,6 +21,10 @@ Qualquer outro utilizador autenticado sem uma assinatura ativa confirmada contin
 
 Para revogar o teste, um administrador deve alterar a assinatura do utilizador no backend para `plan = 'free'`, `status = 'free'` e `provider = NULL`. Não se deve fazer essa alteração pelo browser, pela chave publicável ou por parâmetros da URL.
 
-## Diagnóstico pendente
+## Diagnóstico resolvido
 
-Após o deployment `71f4e7c` estar Ready, a sessão persistente usada no navegador ainda foi redirecionada para `/oferta?reason=billing_unavailable` ao abrir `/dashboard`. O modo de teste não deve ser declarado concluído até identificar se a sessão não corresponde ao e-mail autorizado ou se a consulta server-side de billing está a falhar.
+Após o deployment `71f4e7c` estar Ready, a sessão persistente usada no navegador ainda foi redirecionada para `/oferta?reason=billing_unavailable`. A causa foi o middleware server-side procurar apenas `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY`, embora a Vercel tivesse as variáveis públicas válidas `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY`. O commit `01b946f` passou a aceitar esses nomes como fallback, sem adicionar secrets, alterar RLS ou alterar migrations.
+
+## Validação em produção após `01b946f`
+
+A versão publicada em `https://finanzzi.vercel.app/dashboard` entrou no dashboard autenticado da conta autorizada. Foram confirmados visualmente: faixa superior **AMBIENTE DE TESTE · ACESSO INTERNO SEM COBRANÇA REAL**, indicador lateral **TESTE INTERNO**, navegação autenticada, margem real exibida como **R$ 3,64** e conteúdo da Home simplificada. A rota deixou de redirecionar para `billing_unavailable` depois da correção do middleware.
