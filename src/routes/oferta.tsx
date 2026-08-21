@@ -140,24 +140,24 @@ function OfferPage() {
           </div>
         )}
         {reason === "billing_unavailable" && (
-          <div className="border-b border-[#1E293B] bg-[#1E293B] px-4 py-3 text-center text-sm font-medium text-[#94A3B8]">
+          <div className="border-b border-[#3F4658] bg-[#3F4658] px-4 py-3 text-center text-sm font-medium text-[#F4F5F8]">
             Não conseguimos validar o billing agora. Nenhum dado financeiro foi aberto.
           </div>
         )}
 
-        <section className="relative isolate overflow-hidden bg-[#0A0F1D] text-white">
+        <section className="relative isolate overflow-hidden bg-[#151827] text-white">
           <div className="fin-grid pointer-events-none absolute inset-0 opacity-60" />
-          <div className="pointer-events-none absolute -left-32 top-10 size-96 rounded-full bg-[#39FF14]/12 blur-3xl" />
+          <div className="pointer-events-none absolute -left-32 top-10 size-96 rounded-full bg-[#5B5CE2]/12 blur-3xl" />
           <div className="pointer-events-none absolute -right-24 top-20 size-[28rem] rounded-full bg-primary/25 blur-3xl" />
           <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 sm:py-24 lg:grid-cols-[.86fr_1.14fr] lg:py-28">
             <div className="text-center lg:text-left">
-              <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-[#1E293B]/15 bg-white/[0.07] px-3.5 py-2 text-xs font-semibold text-[#39FF14] lg:mx-0">
+              <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-[#3F4658]/15 bg-white/[0.07] px-3.5 py-2 text-xs font-semibold text-[#5B5CE2] lg:mx-0">
                 <Sparkles className="size-3.5" /> Acesso completo ao FINANZZI
               </div>
               <h1 className="mt-7 max-w-2xl font-display text-4xl font-semibold leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
                 Controle seu dinheiro sem complicar.
               </h1>
-              <p className="mx-auto mt-6 max-w-xl text-base leading-7 text-[#94A3B8]/65 sm:text-lg lg:mx-0">
+              <p className="mx-auto mt-6 max-w-xl text-base leading-7 text-[#F4F5F8]/65 sm:text-lg lg:mx-0">
                 Registre seus gastos por texto ou voz. O FINANZZI organiza tudo, lembra das suas
                 contas e ajuda você a entender o que fazer a seguir.
               </p>
@@ -165,7 +165,7 @@ function OfferPage() {
                 <Button
                   asChild
                   size="lg"
-                  className="h-13 rounded-full bg-[#39FF14] px-8 text-base text-[#0A0F1D] shadow-[0_12px_40px_rgba(57,255,20,.18)] hover:bg-[#39FF14]"
+                  className="h-13 rounded-full bg-[#5B5CE2] px-8 text-base text-[#151827] shadow-[0_12px_40px_rgba(91,92,226,.18)] hover:bg-[#5B5CE2]"
                 >
                   <a href="#oferta">
                     Assinar FINANZZI <ArrowRight className="ml-1 size-4" />
@@ -175,52 +175,52 @@ function OfferPage() {
                   asChild
                   size="lg"
                   variant="outline"
-                  className="h-13 rounded-full border-[#1E293B]/15 bg-white/[0.06] px-8 text-base text-white hover:bg-white/[0.12] hover:text-white"
+                  className="h-13 rounded-full border-[#3F4658]/15 bg-white/[0.06] px-8 text-base text-white hover:bg-white/[0.12] hover:text-white"
                 >
                   <a href="#como-funciona">Ver como funciona</a>
                 </Button>
               </div>
-              <div className="mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-[#94A3B8]/55 lg:justify-start">
+              <div className="mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-[#F4F5F8]/55 lg:justify-start">
                 <span className="inline-flex items-center gap-1.5">
-                  <Check className="size-4 text-[#39FF14]" /> Texto e voz
+                  <Check className="size-4 text-[#5B5CE2]" /> Texto e voz
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <ShieldCheck className="size-4 text-[#39FF14]" /> Dados protegidos
+                  <ShieldCheck className="size-4 text-[#5B5CE2]" /> Dados protegidos
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <Mic className="size-4 text-[#39FF14]" /> Feito para o celular
+                  <Mic className="size-4 text-[#5B5CE2]" /> Feito para o celular
                 </span>
               </div>
             </div>
 
             <div className="relative mx-auto w-full max-w-xl">
-              <div className="absolute -inset-7 rounded-[3rem] bg-[#39FF14]/10 blur-3xl" />
-              <div className="relative rounded-[2.25rem] border border-[#1E293B]/10 bg-white/[0.07] p-3 shadow-2xl backdrop-blur-xl">
-                <div className="overflow-hidden rounded-[1.8rem] bg-[#1E293B] p-5 sm:p-7">
+              <div className="absolute -inset-7 rounded-[3rem] bg-[#5B5CE2]/10 blur-3xl" />
+              <div className="relative rounded-[2.25rem] border border-[#3F4658]/10 bg-white/[0.07] p-3 shadow-2xl backdrop-blur-xl">
+                <div className="overflow-hidden rounded-[1.8rem] bg-[#3F4658] p-5 sm:p-7">
                   <div className="flex items-center justify-between gap-4">
                     <div>
-                      <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#39FF14]/70">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#5B5CE2]/70">
                         Demonstração simulada
                       </p>
                       <p className="mt-1 text-sm font-semibold">
                         Falar dos seus gastos ficou fácil.
                       </p>
                     </div>
-                    <span className="grid size-10 place-items-center rounded-xl bg-[#39FF14] text-[#0A0F1D]">
+                    <span className="grid size-10 place-items-center rounded-xl bg-[#5B5CE2] text-[#151827]">
                       <MessageCircle className="size-5" />
                     </span>
                   </div>
                   <div className="mt-8 space-y-3">
-                    <div className="ml-auto max-w-[82%] rounded-2xl rounded-br-md bg-[#39FF14] px-4 py-3 text-sm font-semibold text-[#0A0F1D]">
+                    <div className="ml-auto max-w-[82%] rounded-2xl rounded-br-md bg-[#5B5CE2] px-4 py-3 text-sm font-semibold text-[#151827]">
                       gastei 45 no mercado
                     </div>
-                    <div className="max-w-[88%] rounded-2xl rounded-bl-md border border-[#1E293B]/10 bg-white/[0.07] px-4 py-3 text-sm text-[#94A3B8]/80">
+                    <div className="max-w-[88%] rounded-2xl rounded-bl-md border border-[#3F4658]/10 bg-white/[0.07] px-4 py-3 text-sm text-[#F4F5F8]/80">
                       Registrado ✓
                       <br />
-                      <span className="text-[#39FF14]">Alimentação · R$ 45,00</span>
+                      <span className="text-[#5B5CE2]">Alimentação · R$ 45,00</span>
                     </div>
-                    <div className="max-w-[88%] rounded-2xl rounded-bl-md border border-[#1E293B]/15 bg-[#39FF14]/10 px-4 py-3 text-sm text-[#94A3B8]/80">
-                      Você ainda pode gastar <strong className="text-[#39FF14]">R$ 327 hoje</strong>
+                    <div className="max-w-[88%] rounded-2xl rounded-bl-md border border-[#3F4658]/15 bg-[#5B5CE2]/10 px-4 py-3 text-sm text-[#F4F5F8]/80">
+                      Você ainda pode gastar <strong className="text-[#5B5CE2]">R$ 327 hoje</strong>
                       .
                     </div>
                   </div>
@@ -233,10 +233,10 @@ function OfferPage() {
                   ].map(([title, text]) => (
                     <div
                       key={title}
-                      className="rounded-2xl border border-[#1E293B]/10 bg-white/[0.04] p-3 text-center"
+                      className="rounded-2xl border border-[#3F4658]/10 bg-white/[0.04] p-3 text-center"
                     >
-                      <p className="text-xs font-semibold text-[#39FF14]">{title}</p>
-                      <p className="mt-1 text-[11px] text-[#94A3B8]/50">{text}</p>
+                      <p className="text-xs font-semibold text-[#5B5CE2]">{title}</p>
+                      <p className="mt-1 text-[11px] text-[#F4F5F8]/50">{text}</p>
                     </div>
                   ))}
                 </div>
@@ -362,16 +362,16 @@ function OfferPage() {
           </div>
         </section>
 
-        <section id="oferta" className="bg-[#0A0F1D] text-white">
+        <section id="oferta" className="bg-[#151827] text-white">
           <div className="mx-auto max-w-5xl px-4 py-20 sm:px-6 lg:py-28">
             <div className="mx-auto max-w-2xl text-center">
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#39FF14]">
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#5B5CE2]">
                 Oferta FINANZZI
               </p>
               <h2 className="mt-4 font-display text-3xl font-semibold leading-tight sm:text-5xl">
                 Pague uma vez por mês. Tenha clareza todos os dias.
               </h2>
-              <p className="mt-5 text-base leading-7 text-[#94A3B8]/65">
+              <p className="mt-5 text-base leading-7 text-[#F4F5F8]/65">
                 Escolha o mensal ou economize no anual. O acesso só é ativado depois da confirmação
                 do pagamento pelo provedor.
               </p>

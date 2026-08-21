@@ -16,6 +16,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { FinMascot } from "@/components/finanzzi/FinMascot";
 import { Logo } from "@/components/finanzzi/Logo";
 import { ThemeToggle } from "@/components/finanzzi/ThemeToggle";
 
@@ -42,7 +43,6 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const { mode: initialMode, returnTo } = Route.useSearch();
   const [mode, setMode] = useState<Mode>(initialMode ?? "login");
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -53,6 +53,7 @@ function AuthPage() {
   useEffect(() => {
     if (!loading && user) void navigate({ to: "/dashboard" });
   }, [user, loading, navigate]);
+
   useEffect(() => {
     if (initialMode) setMode(initialMode);
   }, [initialMode]);
@@ -81,45 +82,44 @@ function AuthPage() {
     }
   }
 
-  const title = mode === "login" ? "Que bom ter você de volta" : "Vamos recuperar seu acesso";
-  const subtitle =
-    mode === "login"
-      ? "Entre para acessar o FINANZZI completo após a aprovação da sua assinatura."
-      : "Digite seu e-mail e enviaremos um link seguro para redefinir sua senha.";
+  const isLogin = mode === "login";
+  const title = isLogin ? "Que bom ter você de volta" : "Vamos recuperar seu acesso";
+  const subtitle = isLogin
+    ? "Entre para continuar acompanhando o que importa no seu dinheiro."
+    : "Digite seu e-mail e enviaremos um link seguro para redefinir sua senha.";
 
   return (
-    <div className="min-h-screen overflow-hidden bg-background lg:grid lg:grid-cols-[1.05fr_.95fr]">
-      <aside className="relative hidden overflow-hidden bg-[#0A0F1D] text-white lg:flex lg:flex-col lg:justify-between">
-        <div className="fin-grid pointer-events-none absolute inset-0 opacity-50" />
-        <div className="absolute -left-24 -top-24 size-96 rounded-full bg-[#39FF14]/10 blur-3xl animate-float-slower" />
-        <div className="absolute -bottom-28 right-0 size-96 rounded-full bg-primary/25 blur-3xl animate-float-slow" />
+    <div className="min-h-screen overflow-hidden bg-[#FCFBF7] text-[#151827] dark:bg-[#151827] dark:text-[#FCFBF7] lg:grid lg:grid-cols-[1.02fr_.98fr]">
+      <aside className="relative hidden overflow-hidden bg-[#151827] text-[#FCFBF7] lg:flex lg:flex-col lg:justify-between">
+        <div className="pointer-events-none absolute inset-0 opacity-70 fin-grid" />
+        <div className="pointer-events-none absolute -right-24 top-20 size-80 rounded-full bg-[#5B5CE2]/25 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-32 -left-24 size-96 rounded-full bg-[#4546C8]/35 blur-3xl" />
         <div className="relative p-10 xl:p-14">
-          <Link to="/" className="animate-fin-fade-up">
-            <Logo />
+          <Link to="/" className="inline-flex animate-fin-fade-up">
+            <Logo className="text-[#FCFBF7]" />
           </Link>
-          <div className="mt-28 max-w-lg animate-fin-fade-up" style={{ animationDelay: "100ms" }}>
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#1E293B]/10 bg-white/[0.07] px-3.5 py-2 text-xs font-semibold text-[#39FF14] backdrop-blur">
-              <Sparkles className="size-3.5" /> Inteligência para o seu dinheiro
+          <div className="mt-24 max-w-xl animate-fin-fade-up" style={{ animationDelay: "100ms" }}>
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#667085]/70 bg-[#3F4658]/60 px-3.5 py-2 text-xs font-semibold text-[#EEF0FF]">
+              <Sparkles className="size-3.5 text-[#5B5CE2]" /> Seu dinheiro, do jeito que você fala.
             </span>
-            <h2 className="mt-6 max-w-md font-display text-4xl font-semibold leading-tight xl:text-5xl">
-              O seu dinheiro merece uma conversa melhor.
+            <h2 className="mt-6 max-w-lg font-display text-5xl font-semibold leading-[1.02] tracking-[-0.055em] xl:text-6xl">
+              Registre. Entenda. Decida melhor.
             </h2>
-            <p className="mt-5 max-w-md leading-7 text-[#94A3B8]/65">
-              O FINANZZI organiza o que aconteceu, explica o que importa e ajuda você a decidir o
-              que vem depois.
+            <p className="mt-5 max-w-md text-base leading-7 text-[#F4F5F8]">
+              O FINANZZI organiza o que aconteceu e mostra a próxima decisão com mais clareza.
             </p>
-            <div className="mt-9 space-y-3 text-sm text-[#94A3B8]/75">
+            <div className="mt-9 space-y-3 text-sm text-[#F4F5F8]">
               {[
                 "Uma visão simples da sua vida financeira",
-                "Fin para ajudar nas decisões do dia a dia",
-                "Experiência pensada para celular e desktop",
+                "Fin para decisões do dia a dia",
+                "Feito para celular e desktop",
               ].map((text, index) => (
                 <div
                   key={text}
-                  className="flex items-center gap-2 animate-fin-fade-up"
+                  className="flex items-center gap-2.5 animate-fin-fade-up"
                   style={{ animationDelay: `${180 + index * 70}ms` }}
                 >
-                  <span className="grid size-6 place-items-center rounded-full bg-[#1E293B]/10 text-[#39FF14]">
+                  <span className="grid size-6 place-items-center rounded-full bg-[#5B5CE2] text-[#FCFBF7]">
                     <CheckCircle2 className="size-4" />
                   </span>
                   <span>{text}</span>
@@ -128,29 +128,35 @@ function AuthPage() {
             </div>
           </div>
         </div>
-        <div className="relative p-10 xl:p-14">
-          <div className="rounded-3xl border border-[#1E293B]/10 bg-white/[0.06] p-5 backdrop-blur-xl animate-fin-scale-in">
-            <p className="text-xs text-[#94A3B8]/45">Seu próximo passo</p>
-            <p className="mt-1 font-display text-lg font-semibold">
-              Ver seu dinheiro com mais clareza.
-            </p>
-            <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#1E293B]/10">
-              <div className="h-full w-3/4 rounded-full bg-[#39FF14] animate-fin-pulse" />
+        <div className="relative px-10 pb-10 xl:px-14 xl:pb-14">
+          <div className="rounded-[1.75rem] border border-[#667085]/70 bg-[#3F4658]/75 p-5 shadow-lift animate-fin-scale-in">
+            <div className="flex items-center gap-4">
+              <FinMascot expression="explicando" className="h-16 w-16 shrink-0" />
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#EEF0FF]">
+                  Uma conversa real
+                </p>
+                <p className="mt-1 font-display text-lg font-semibold">“gastei 45 no mercado”</p>
+                <p className="mt-1 text-sm text-[#F4F5F8]">Registrado · Alimentação · R$ 45,00</p>
+              </div>
+            </div>
+            <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#151827]">
+              <div className="h-full w-3/4 rounded-full bg-[#5B5CE2]" />
             </div>
           </div>
-          <p className="mt-5 text-xs text-[#94A3B8]/40">
+          <p className="mt-5 text-xs text-[#F4F5F8]">
             FINANZZI — inteligência para o seu dinheiro.
           </p>
         </div>
       </aside>
 
       <main className="relative flex min-h-screen flex-col">
-        <div className="pointer-events-none absolute -right-24 top-20 size-72 rounded-full bg-primary/8 blur-3xl animate-float-slow" />
+        <div className="pointer-events-none absolute -right-24 top-20 size-72 rounded-full bg-[#5B5CE2]/10 blur-3xl" />
         <div className="relative flex items-center justify-between px-4 py-4 sm:px-6">
           <Link
             to="/"
             aria-label="Voltar para o início"
-            className="grid size-11 place-items-center rounded-full border border-border bg-card/80 text-muted-foreground shadow-soft backdrop-blur transition-all hover:-translate-x-0.5 hover:text-foreground"
+            className="grid size-11 place-items-center rounded-full border border-[#E4E7EF] bg-white text-[#3F4658] shadow-sm transition-all hover:-translate-x-0.5 hover:border-[#5B5CE2] hover:text-[#5B5CE2] dark:border-[#667085] dark:bg-[#3F4658] dark:text-[#F4F5F8]"
           >
             <ArrowLeft className="size-5" />
           </Link>
@@ -161,18 +167,15 @@ function AuthPage() {
             <Logo />
           </Link>
           <div className="mb-7 animate-fin-fade-up">
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-primary/8 px-3 py-1.5 text-xs font-semibold text-primary">
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-[#EEF0FF] px-3 py-1.5 text-xs font-bold text-[#4546C8] dark:bg-[#3F4658] dark:text-[#EEF0FF]">
               <LockKeyhole className="size-3.5" /> Acesso seguro
             </div>
             <h1 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
               {title}
             </h1>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">{subtitle}</p>
+            <p className="mt-2 text-sm leading-6 text-[#3F4658] dark:text-[#F4F5F8]">{subtitle}</p>
           </div>
-          <div
-            className="surface-card animate-fin-scale-in p-5 shadow-lift sm:p-7"
-            style={{ animationDelay: "100ms" }}
-          >
+          <div className="rounded-[1.75rem] border border-[#E4E7EF] bg-white p-5 shadow-[0_18px_55px_rgba(21,24,39,.08)] animate-fin-scale-in dark:border-[#667085] dark:bg-[#3F4658] sm:p-7">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">E-mail</Label>
@@ -183,23 +186,21 @@ function AuthPage() {
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
                   placeholder="voce@email.com"
-                  className="h-12 rounded-xl bg-background/70 transition-all focus:bg-background"
+                  className="h-12 rounded-xl border-[#E4E7EF] bg-[#FCFBF7] text-[#151827] placeholder:text-[#667085] focus:border-[#5B5CE2] focus:ring-[#5B5CE2] dark:border-[#667085] dark:bg-[#151827] dark:text-[#FCFBF7] dark:placeholder:text-[#F4F5F8]"
                   required
                 />
               </div>
-              {mode !== "recover" && (
+              {isLogin && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label htmlFor="password">Senha</Label>
-                    {mode === "login" && (
-                      <button
-                        type="button"
-                        className="text-xs font-semibold text-primary transition-opacity hover:opacity-75"
-                        onClick={() => setMode("recover")}
-                      >
-                        Esqueci minha senha
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      className="text-xs font-bold text-[#5B5CE2] transition-opacity hover:opacity-75 dark:text-[#EEF0FF]"
+                      onClick={() => setMode("recover")}
+                    >
+                      Esqueci minha senha
+                    </button>
                   </div>
                   <div className="relative">
                     <Input
@@ -210,14 +211,14 @@ function AuthPage() {
                       onChange={(event) => setPassword(event.target.value)}
                       minLength={6}
                       placeholder="Mínimo de 6 caracteres"
-                      className="h-12 rounded-xl bg-background/70 pr-12 transition-all focus:bg-background"
+                      className="h-12 rounded-xl border-[#E4E7EF] bg-[#FCFBF7] pr-12 text-[#151827] placeholder:text-[#667085] focus:border-[#5B5CE2] focus:ring-[#5B5CE2] dark:border-[#667085] dark:bg-[#151827] dark:text-[#FCFBF7] dark:placeholder:text-[#F4F5F8]"
                       required
                     />
                     <button
                       type="button"
                       aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
                       onClick={() => setShowPassword((value) => !value)}
-                      className="absolute right-1 top-1 grid size-10 place-items-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
+                      className="absolute right-1 top-1 grid size-10 place-items-center rounded-lg text-[#667085] transition-colors hover:text-[#5B5CE2] dark:text-[#F4F5F8] dark:hover:text-[#EEF0FF]"
                     >
                       {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                     </button>
@@ -226,33 +227,29 @@ function AuthPage() {
               )}
               <Button
                 type="submit"
-                className="h-12 w-full rounded-xl text-base shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lift"
+                className="h-12 w-full rounded-xl bg-[#5B5CE2] text-base font-bold text-[#FCFBF7] shadow-[0_12px_30px_rgba(91,92,226,.24)] hover:bg-[#4546C8]"
                 disabled={busy}
               >
                 {busy
                   ? "Aguarde..."
-                  : mode === "login"
+                  : isLogin
                     ? "Entrar no FINANZZI"
                     : "Enviar link de recuperação"}
                 <ArrowRight className="ml-auto size-4" />
               </Button>
             </form>
             <div className="mt-5 flex items-center justify-center gap-1 text-sm">
-              {mode === "login" && (
+              {isLogin ? (
                 <>
-                  <span className="text-muted-foreground">Ainda não tem acesso?</span>
-                  <Link
-                    to="/oferta"
-                    className="font-semibold text-primary transition-opacity hover:opacity-75"
-                  >
+                  <span className="text-[#667085] dark:text-[#F4F5F8]">Ainda não tem acesso?</span>
+                  <Link to="/oferta" className="font-bold text-[#5B5CE2] dark:text-[#EEF0FF]">
                     Ver oferta
                   </Link>
                 </>
-              )}
-              {mode === "recover" && (
+              ) : (
                 <button
                   type="button"
-                  className="font-semibold text-primary transition-opacity hover:opacity-75"
+                  className="font-bold text-[#5B5CE2] dark:text-[#EEF0FF]"
                   onClick={() => setMode("login")}
                 >
                   Voltar para o login
@@ -260,11 +257,8 @@ function AuthPage() {
               )}
             </div>
           </div>
-          <div
-            className="mt-6 flex items-center justify-center gap-2 text-xs text-muted-foreground animate-fin-fade-up"
-            style={{ animationDelay: "240ms" }}
-          >
-            <ShieldCheck className="size-4 text-primary" /> Os seus dados são tratados com
+          <div className="mt-6 flex items-center justify-center gap-2 text-xs text-[#667085] dark:text-[#F4F5F8] animate-fin-fade-up">
+            <ShieldCheck className="size-4 text-[#5B5CE2]" /> Os seus dados são tratados com
             segurança.
           </div>
         </div>

@@ -63,89 +63,89 @@
 
 :root {
   --radius: 1.1rem;
-  --background: #ffffff;
-  --foreground: #0a0f1d;
-  --card: #ffffff;
-  --card-foreground: #0a0f1d;
-  --popover: #ffffff;
-  --popover-foreground: #0a0f1d;
-  --primary: #39ff14;
-  --primary-foreground: #0a0f1d;
-  --secondary: #1e293b;
-  --secondary-foreground: #ffffff;
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
-  --accent: #39ff14;
-  --accent-foreground: #0a0f1d;
-  --destructive: #94a3b8;
-  --destructive-foreground: #0a0f1d;
-  --success: #39ff14;
-  --success-foreground: #0a0f1d;
-  --warning: #94a3b8;
-  --warning-foreground: #0a0f1d;
-  --danger: #94a3b8;
-  --danger-foreground: #0a0f1d;
-  --gold: #39ff14;
-  --gold-foreground: #0a0f1d;
-  --border: #1e293b;
-  --input: #1e293b;
-  --ring: #39ff14;
-  --chart-1: #0a0f1d;
-  --chart-2: #1e293b;
-  --chart-3: #39ff14;
-  --chart-4: #94a3b8;
-  --chart-5: #ffffff;
-  --sidebar: #ffffff;
-  --sidebar-foreground: #0a0f1d;
-  --sidebar-primary: #39ff14;
-  --sidebar-primary-foreground: #0a0f1d;
-  --sidebar-accent: #1e293b;
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #1e293b;
-  --sidebar-ring: #39ff14;
+  --background: #fcfbf7;
+  --foreground: #151827;
+  --card: #fcfbf7;
+  --card-foreground: #151827;
+  --popover: #fcfbf7;
+  --popover-foreground: #151827;
+  --primary: #5b5ce2;
+  --primary-foreground: #fcfbf7;
+  --secondary: #eef0ff;
+  --secondary-foreground: #151827;
+  --muted: #f4f5f8;
+  --muted-foreground: #3f4658;
+  --accent: #eef0ff;
+  --accent-foreground: #151827;
+  --destructive: #ff6b6b;
+  --destructive-foreground: #151827;
+  --success: #5b5ce2;
+  --success-foreground: #fcfbf7;
+  --warning: #ff6b6b;
+  --warning-foreground: #151827;
+  --danger: #ff6b6b;
+  --danger-foreground: #151827;
+  --gold: #5b5ce2;
+  --gold-foreground: #fcfbf7;
+  --border: #e4e7ef;
+  --input: #e4e7ef;
+  --ring: #5b5ce2;
+  --chart-1: #5b5ce2;
+  --chart-2: #4546c8;
+  --chart-3: #eef0ff;
+  --chart-4: #ff6b6b;
+  --chart-5: #667085;
+  --sidebar: #fcfbf7;
+  --sidebar-foreground: #151827;
+  --sidebar-primary: #5b5ce2;
+  --sidebar-primary-foreground: #fcfbf7;
+  --sidebar-accent: #eef0ff;
+  --sidebar-accent-foreground: #151827;
+  --sidebar-border: #e4e7ef;
+  --sidebar-ring: #5b5ce2;
 }
 
 .dark {
-  --background: #0a0f1d;
-  --foreground: #ffffff;
-  --card: #1e293b;
-  --card-foreground: #ffffff;
-  --popover: #1e293b;
-  --popover-foreground: #ffffff;
-  --primary: #39ff14;
-  --primary-foreground: #0a0f1d;
-  --secondary: #1e293b;
-  --secondary-foreground: #ffffff;
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
-  --accent: #39ff14;
-  --accent-foreground: #0a0f1d;
-  --destructive: #94a3b8;
-  --destructive-foreground: #0a0f1d;
-  --success: #39ff14;
-  --success-foreground: #0a0f1d;
-  --warning: #94a3b8;
-  --warning-foreground: #0a0f1d;
-  --danger: #94a3b8;
-  --danger-foreground: #0a0f1d;
-  --gold: #39ff14;
-  --gold-foreground: #0a0f1d;
-  --border: #1e293b;
-  --input: #1e293b;
-  --ring: #39ff14;
-  --chart-1: #0a0f1d;
-  --chart-2: #1e293b;
-  --chart-3: #39ff14;
-  --chart-4: #94a3b8;
-  --chart-5: #ffffff;
-  --sidebar: #0a0f1d;
-  --sidebar-foreground: #ffffff;
-  --sidebar-primary: #39ff14;
-  --sidebar-primary-foreground: #0a0f1d;
-  --sidebar-accent: #1e293b;
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #1e293b;
-  --sidebar-ring: #39ff14;
+  --background: #151827;
+  --foreground: #fcfbf7;
+  --card: #3f4658;
+  --card-foreground: #fcfbf7;
+  --popover: #3f4658;
+  --popover-foreground: #fcfbf7;
+  --primary: #5b5ce2;
+  --primary-foreground: #fcfbf7;
+  --secondary: #4546c8;
+  --secondary-foreground: #fcfbf7;
+  --muted: #3f4658;
+  --muted-foreground: #f4f5f8;
+  --accent: #eef0ff;
+  --accent-foreground: #151827;
+  --destructive: #ff6b6b;
+  --destructive-foreground: #151827;
+  --success: #5b5ce2;
+  --success-foreground: #fcfbf7;
+  --warning: #ff6b6b;
+  --warning-foreground: #151827;
+  --danger: #ff6b6b;
+  --danger-foreground: #151827;
+  --gold: #5b5ce2;
+  --gold-foreground: #fcfbf7;
+  --border: #667085;
+  --input: #3f4658;
+  --ring: #5b5ce2;
+  --chart-1: #5b5ce2;
+  --chart-2: #4546c8;
+  --chart-3: #eef0ff;
+  --chart-4: #ff6b6b;
+  --chart-5: #667085;
+  --sidebar: #151827;
+  --sidebar-foreground: #fcfbf7;
+  --sidebar-primary: #5b5ce2;
+  --sidebar-primary-foreground: #fcfbf7;
+  --sidebar-accent: #3f4658;
+  --sidebar-accent-foreground: #fcfbf7;
+  --sidebar-border: #667085;
+  --sidebar-ring: #5b5ce2;
 }
 
 @layer base {
@@ -193,11 +193,11 @@
     letter-spacing: -0.025em;
   }
   :focus-visible {
-    outline: 3px solid #39ff14;
+    outline: 3px solid #5b5ce2;
     outline-offset: 3px;
   }
   ::selection {
-    background: #39ff14;
+    background: #5b5ce2;
   }
 }
 
@@ -208,10 +208,10 @@
   box-shadow: var(--shadow-soft);
 }
 @utility gradient-brand {
-  background-image: linear-gradient(135deg, #0a0f1d 0%, #1e293b 62%, #39ff14 150%);
+  background-image: linear-gradient(135deg, #151827 0%, #4546c8 68%, #5b5ce2 130%);
 }
 @utility gradient-hero {
-  background-image: linear-gradient(135deg, #0a0f1d 0%, #1e293b 70%);
+  background-image: linear-gradient(135deg, #151827 0%, #4546c8 100%);
 }
 
 @keyframes float-slow {
@@ -393,9 +393,9 @@
 
 /* FINANZZI premium decision system. */
 @utility surface-ink {
-  background: #0a0f1d;
-  color: #ffffff;
-  border: 1px solid #1e293b;
+  background: #151827;
+  color: #fcfbf7;
+  border: 1px solid #3f4658;
   box-shadow: 0 20px 60px rgb(0 0 0 / 0.32);
 }
 @utility text-balance {
@@ -404,15 +404,15 @@
 
 .fin-grid {
   background-image:
-    linear-gradient(rgb(57 255 20 / 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(57 255 20 / 0.1) 1px, transparent 1px);
+    linear-gradient(rgb(91 92 226 / 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(91 92 226 / 0.1) 1px, transparent 1px);
   background-size: 32px 32px;
   mask-image: linear-gradient(to bottom, black, transparent 82%);
 }
 .fin-glow {
   box-shadow:
-    0 0 0 1px rgb(57 255 20 / 0.14),
-    0 18px 60px rgb(57 255 20 / 0.12);
+    0 0 0 1px rgb(91 92 226 / 0.18),
+    0 18px 60px rgb(91 92 226 / 0.16);
 }
 .fin-number {
   font-variant-numeric: tabular-nums;

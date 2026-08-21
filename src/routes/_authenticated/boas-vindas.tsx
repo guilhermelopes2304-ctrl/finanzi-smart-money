@@ -108,37 +108,37 @@ function Onboarding() {
 
   return (
     <div className="min-h-screen overflow-hidden bg-background lg:grid lg:grid-cols-[.88fr_1.12fr]">
-      <aside className="relative hidden overflow-hidden bg-[#0A0F1D] text-white lg:flex lg:flex-col lg:justify-between">
+      <aside className="relative hidden overflow-hidden bg-[#151827] text-white lg:flex lg:flex-col lg:justify-between">
         <div className="fin-grid pointer-events-none absolute inset-0 opacity-50" />
         <div className="relative p-10 xl:p-14">
           <Logo />
           <div className="mt-24 max-w-md">
             <FinMascot expression="calmo" className="mb-8 h-24 w-24" />
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#1E293B]/10 bg-white/[0.07] px-3 py-2 text-xs font-semibold text-[#39FF14]">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#3F4658]/10 bg-white/[0.07] px-3 py-2 text-xs font-semibold text-[#5B5CE2]">
               <Sparkles className="size-3.5" /> Vamos descobrir o seu momento
             </div>
             <h1 className="mt-6 font-display text-4xl font-semibold leading-tight xl:text-5xl">
               Seu FINANZZI começa com contexto.
             </h1>
-            <p className="mt-5 text-base leading-7 text-[#94A3B8]/60">
+            <p className="mt-5 text-base leading-7 text-[#F4F5F8]/60">
               Com três respostas, o Fin consegue organizar a primeira leitura da sua vida financeira
               e mostrar o que merece atenção.
             </p>
-            <div className="mt-9 space-y-4 text-sm text-[#94A3B8]/75">
+            <div className="mt-9 space-y-4 text-sm text-[#F4F5F8]/75">
               <p className="flex items-center gap-3">
-                <span className="grid size-7 place-items-center rounded-full bg-[#39FF14] text-[#0A0F1D]">
+                <span className="grid size-7 place-items-center rounded-full bg-[#5B5CE2] text-[#151827]">
                   <Check className="size-4" />
                 </span>
                 Uma visão mais pessoal desde o primeiro acesso.
               </p>
               <p className="flex items-center gap-3">
-                <span className="grid size-7 place-items-center rounded-full bg-[#1E293B]/10 text-[#39FF14]">
+                <span className="grid size-7 place-items-center rounded-full bg-[#3F4658]/10 text-[#5B5CE2]">
                   <Target className="size-4" />
                 </span>
                 Metas e prioridades mais claras.
               </p>
               <p className="flex items-center gap-3">
-                <span className="grid size-7 place-items-center rounded-full bg-[#1E293B]/10 text-[#39FF14]">
+                <span className="grid size-7 place-items-center rounded-full bg-[#3F4658]/10 text-[#5B5CE2]">
                   <ShieldCheck className="size-4" />
                 </span>
                 Seus dados continuam protegidos e isolados.
@@ -147,10 +147,10 @@ function Onboarding() {
           </div>
         </div>
         <div className="relative p-10 xl:p-14">
-          <p className="text-xs text-[#94A3B8]/40">Primeira leitura</p>
+          <p className="text-xs text-[#F4F5F8]/40">Primeira leitura</p>
           <p className="mt-1 font-display text-lg font-semibold">Entender antes de agir.</p>
-          <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#1E293B]/10">
-            <div className="h-full w-1/3 rounded-full bg-[#39FF14]" />
+          <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#3F4658]/10">
+            <div className="h-full w-1/3 rounded-full bg-[#5B5CE2]" />
           </div>
         </div>
       </aside>

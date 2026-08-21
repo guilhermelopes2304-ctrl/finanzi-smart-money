@@ -109,7 +109,7 @@ export function expensesByCategory(
     .map(([id, value]) => ({
       id,
       name: byId.get(id)?.name ?? "Sem categoria",
-      color: byId.get(id)?.color ?? "#94a3b8",
+      color: byId.get(id)?.color ?? "#667085",
       value,
       share: total ? (value / total) * 100 : 0,
     }))
@@ -213,7 +213,11 @@ export function futureInstallmentTotal(transactions: Transaction[]): number {
     .reduce((sum, tx) => sum + Number(tx.amount), 0);
 }
 
-export function cardInvoice(card: CreditCard, transactions: Transaction[], monthOffset = 0): number {
+export function cardInvoice(
+  card: CreditCard,
+  transactions: Transaction[],
+  monthOffset = 0,
+): number {
   const now = new Date();
   const start = new Date(now.getFullYear(), now.getMonth() + monthOffset, 1);
   const end = new Date(now.getFullYear(), now.getMonth() + monthOffset + 1, 0);
@@ -286,10 +290,7 @@ export function spendCapacity(args: {
   const upcomingInstallments = args.transactions
     .filter(
       (tx) =>
-        tx.type === "expense" &&
-        !!tx.installment_total &&
-        tx.date > today &&
-        tx.date <= endOfMonth,
+        tx.type === "expense" && !!tx.installment_total && tx.date > today && tx.date <= endOfMonth,
     )
     .reduce((sum, tx) => sum + Number(tx.amount), 0);
   const goalsReserve = args.goals.reduce((sum, g) => sum + (goalMonthlyTarget(g) ?? 0), 0);
@@ -433,8 +434,15 @@ export function analyzePurchase(args: {
   upcomingBills: number;
   balance: number;
 }): PurchaseAdvice {
-  const { price, installments, monthlyIncome, monthlyExpenses, existingInstallments, upcomingBills, balance } =
-    args;
+  const {
+    price,
+    installments,
+    monthlyIncome,
+    monthlyExpenses,
+    existingInstallments,
+    upcomingBills,
+    balance,
+  } = args;
   const monthlyImpact = price / Math.max(1, installments);
   const reasons: string[] = [];
   reasons.push(`Essa compra adicionaria ${brl(monthlyImpact)} por mês ao seu orçamento.`);
