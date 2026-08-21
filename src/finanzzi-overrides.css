@@ -1,15 +1,39 @@
-/* FINANZZI visual refinements: calm internal UI + product-demo phone frame. */
+/* FINANZZI visual refinements: consumer-product palette + high contrast. */
 
-/* Internal app: the authenticated shell has an aside; this keeps the calmer palette scoped away from the commercial landing. */
+/*
+  Brand direction:
+  - Electric blue: trust, action and energy.
+  - Warm coral: small moments of personality.
+  - Warm white: editorial, human background.
+  - Ink: strong readability.
+
+  The palette intentionally avoids TikTok's own brand colors and keeps
+  contrast/legibility ahead of decoration.
+*/
+
+:root {
+  --fin-blue: #5B5CE2;
+  --fin-blue-strong: #4546C8;
+  --fin-blue-soft: #EEF0FF;
+  --fin-ink: #151827;
+  --fin-copy: #3F4658;
+  --fin-muted: #667085;
+  --fin-line: #E4E7EF;
+  --fin-soft: #F4F5F8;
+  --fin-coral: #FF6B6B;
+  --fin-coral-soft: #FFF0EE;
+}
+
+/* Internal app: calmer consumer palette, applied to the authenticated area only. */
 aside ~ main {
-  --fin-ink: #1b211a;
-  --fin-copy: #4f574b;
-  --fin-muted: #697264;
-  --fin-line: #dfe4da;
-  --fin-soft: #f4f6f1;
-  --fin-soft-green: #eaf4d9;
-  --fin-green: #7fb34a;
-  --fin-green-strong: #5f8a36;
+  --fin-ink: #151827;
+  --fin-copy: #3F4658;
+  --fin-muted: #667085;
+  --fin-line: #E4E7EF;
+  --fin-soft: #F4F5F8;
+  --fin-soft-green: #EEF0FF;
+  --fin-green: #5B5CE2;
+  --fin-green-strong: #4546C8;
 }
 
 aside ~ main .text-primary,
@@ -22,11 +46,11 @@ aside ~ main .bg-primary {
 }
 
 aside ~ main .text-primary-foreground {
-  color: #ffffff !important;
+  color: #FFFFFF !important;
 }
 
 aside ~ main .bg-accent {
-  background-color: var(--fin-soft-green) !important;
+  background-color: var(--fin-blue-soft) !important;
   color: var(--fin-ink) !important;
 }
 
@@ -36,12 +60,12 @@ aside ~ main .text-accent-foreground {
 
 aside ~ main .bg-primary\/10,
 aside ~ main .bg-primary\/5 {
-  background-color: var(--fin-soft-green) !important;
+  background-color: var(--fin-blue-soft) !important;
 }
 
 aside ~ main .border-primary\/20,
 aside ~ main .border-primary\/50 {
-  border-color: #cfe1b6 !important;
+  border-color: #D0D2FA !important;
 }
 
 aside ~ main .text-muted-foreground,
@@ -64,38 +88,77 @@ aside ~ main .border-border\/70 {
 
 aside ~ main .surface-card {
   border-color: var(--fin-line) !important;
-  box-shadow: 0 12px 32px rgb(30 38 27 / 0.05) !important;
+  box-shadow: 0 12px 32px rgb(20 28 48 / 0.06) !important;
 }
 
-/* Make the authenticated navigation readable without the washed-out gray text. */
+/* Make the authenticated navigation readable instead of washed-out gray. */
 aside {
-  color: #2f372d;
+  color: #2D3446;
 }
 
 aside .text-muted-foreground {
-  color: #5c6659 !important;
+  color: #4F5A70 !important;
 }
 
 aside .text-primary {
-  color: #5f8a36 !important;
+  color: #4546C8 !important;
 }
 
 aside .bg-primary {
-  background-color: #7fb34a !important;
+  background-color: #151827 !important;
 }
 
-/* Commercial landing: turn the existing demo panel into a real phone-like product mockup. */
+/* Commercial landing: recolor the existing visual language without changing its copy/layout. */
+body [class~="bg-[#F6F5EF]"] { background-color: #FCFBF7 !important; }
+body [class~="text-[#161815]"] { color: #151827 !important; }
+body [class~="bg-[#161815]"] { background-color: #151827 !important; }
+body [class~="bg-[#B8EE63]"] { background-color: #5B5CE2 !important; }
+body [class~="text-[#4E6B30]"] { color: #FFFFFF !important; }
+body [class~="text-[#557234]"] { color: #4546C8 !important; }
+body [class~="bg-[#EAF5DA]"] { background-color: #EEF0FF !important; }
+body [class~="text-[#5C7D37]"] { color: #4546C8 !important; }
+body [class~="text-[#6C824F]"] { color: #4546C8 !important; }
+body [class~="text-[#5F7E41]"] { color: #4546C8 !important; }
+body [class~="text-[#69824D]"] { color: #4546C8 !important; }
+body [class~="text-[#55713A]"] { color: #FFFFFF !important; }
+body [class~="text-[#53684A]"] { color: #4B55B0 !important; }
+body [class~="bg-[#E9F6D7]"] { background-color: #EEF0FF !important; }
+body [class~="bg-[#F1F3ED]"] { background-color: #F4F5F8 !important; }
+body [class~="text-[#8A9385]"] { color: #7B8497 !important; }
+body [class~="text-[#7C8776]"] { color: #667085 !important; }
+body [class~="text-[#7A8276]"] { color: #667085 !important; }
+body [class~="text-[#5E665B]"] { color: #4F5668 !important; }
+body [class~="text-[#636B60]"] { color: #4F5668 !important; }
+body [class~="text-[#697164]"] { color: #5E6678 !important; }
+body [class~="text-[#4F574B]"] { color: #3F4658 !important; }
+body [class~="text-[#2F352D]"] { color: #151827 !important; }
+body [class~="text-[#20241F]"] { color: #151827 !important; }
+body [class~="text-[#1B211A]"] { color: #151827 !important; }
+body [class~="border-[#D8DCCF]"] { border-color: #D9DDEA !important; }
+body [class~="border-[#D9DDCF]"] { border-color: #D9DDEA !important; }
+body [class~="border-[#DDE1D5]"] { border-color: #E4E7EF !important; }
+body [class~="border-[#E7EAE3]"] { border-color: #E8EBF1 !important; }
+body [class~="border-[#DCE1D6]"] { border-color: #E1E4EC !important; }
+body [class~="bg-white"] { background-color: #FFFFFF !important; }
+body [class~="bg-white\/75"] { background-color: rgb(255 255 255 / 0.86) !important; }
+
+/* Small coral accents: use sparingly so the page feels social, not noisy. */
+body [class~="max-w-[470px]"] .bg-\[\#B8EE63\]:last-child {
+  background-color: #FF6B6B !important;
+}
+
+/* Hero phone frame stays dark so the product demo reads like a real device. */
 [class~="max-w-[470px]"] {
   position: relative;
   width: min(100%, 360px) !important;
   max-width: 360px !important;
   padding: 10px !important;
-  border: 10px solid #1b211a !important;
+  border: 10px solid #20243A !important;
   border-radius: 42px !important;
-  background: #1b211a !important;
+  background: #20243A !important;
   box-shadow:
-    0 30px 70px rgb(27 33 26 / 0.18),
-    0 8px 18px rgb(27 33 26 / 0.12) !important;
+    0 30px 70px rgb(21 24 39 / 0.16),
+    0 8px 18px rgb(21 24 39 / 0.12) !important;
 }
 
 [class~="max-w-[470px]"]::before {
@@ -108,14 +171,14 @@ aside .bg-primary {
   height: 18px;
   transform: translateX(-50%);
   border-radius: 999px;
-  background: #1b211a;
+  background: #20243A !important;
 }
 
 [class~="max-w-[470px]"] > div {
   overflow: hidden !important;
   border: 0 !important;
   border-radius: 31px !important;
-  background: #eef1e9 !important;
+  background: #EEF0FF !important;
   padding: 8px !important;
   box-shadow: none !important;
 }
@@ -147,4 +210,34 @@ aside .bg-primary {
   [class~="max-w-[470px]"] > div > div {
     border-radius: 21px !important;
   }
+}
+
+/* Dark mode remains calm and readable; no neon green. */
+.dark aside ~ main {
+  --fin-ink: #F8FAFC;
+  --fin-copy: #D4DAE7;
+  --fin-muted: #A8B0C0;
+  --fin-line: #2C3244;
+  --fin-soft: #202536;
+  --fin-soft-green: #272B55;
+  --fin-green: #8B8CF5;
+  --fin-green-strong: #A3A4FF;
+}
+
+.dark aside ~ main .bg-muted,
+.dark aside ~ main .bg-muted\/60,
+.dark aside ~ main .bg-muted\/70,
+.dark aside ~ main .bg-muted\/40 {
+  background-color: var(--fin-soft) !important;
+}
+
+.dark aside ~ main .text-muted-foreground,
+.dark aside ~ main .text-muted-foreground\/65 {
+  color: var(--fin-muted) !important;
+}
+
+.dark aside ~ main .border-border,
+.dark aside ~ main .border-border\/60,
+.dark aside ~ main .border-border\/70 {
+  border-color: var(--fin-line) !important;
 }
