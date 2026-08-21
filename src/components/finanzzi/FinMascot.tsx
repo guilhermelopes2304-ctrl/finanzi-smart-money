@@ -1,4 +1,3 @@
-import humanSecretaryAsset from "@/visual-experiments/fin-human-secretary-hidden.svg";
 import { cn } from "@/lib/utils";
 
 export type FinMascotExpression =
@@ -25,11 +24,15 @@ export function FinMascot({
   alt?: string;
 }) {
   return (
-    <img
-      src={humanSecretaryAsset}
-      alt={alt ?? LABELS[expression]}
-      className={cn("select-none object-contain", className)}
-      draggable={false}
-    />
+    <span
+      aria-label={alt ?? LABELS[expression]}
+      title={alt ?? LABELS[expression]}
+      className={cn(
+        "inline-flex min-h-10 min-w-10 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 px-3 py-2 font-display text-[0.65rem] font-bold uppercase tracking-[0.18em] text-primary",
+        className,
+      )}
+    >
+      FIN
+    </span>
   );
 }
