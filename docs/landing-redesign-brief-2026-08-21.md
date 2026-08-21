@@ -31,3 +31,13 @@ A landing reconstruída deverá incluir demonstrações de “gastei 42 no merca
 ## Referência
 
 [1] [Porquim — página comercial pública](https://www.oporquim.com.br/)
+
+## Verificação inicial em produção
+
+O deployment `0e472f1` publicou a nova landing no domínio oficial. O hero agora começa com “Registrar seus gastos ficou fácil.” e uma conversa de demonstração com “gastei 42 no mercado”, sem dashboard ou gráficos. A sequência seguinte apresenta a pergunta emocional sobre gastos, a narrativa “Foi só mandar uma mensagem” e cinco tabs de cenas: gasto, Uber, conta, receita e parcela. O conteúdo está disponível no HTML público e a hierarquia visual usa fundo claro quente, verde-lima e preto, com espaço e blocos grandes.
+
+A interação da tab “UMA CONTA” foi validada em produção: a conversa mudou para “Netflix 39,90 todo mês”, “Lembrete criado” e “Netflix · R$ 39,90/mês · Assinatura”. No fim da página, a oferta e o CTA “QUERO O FINANZZI” aparecem em bloco de alto contraste, com a nota de que não há cobrança enquanto o checkout próprio não estiver configurado.
+
+## Validação mobile
+
+Screenshots reais da produção foram gerados em 360×844 e 390×844. Em ambos, o header compacto mantém logo e CTA, a headline quebra de forma legível, os dois CTAs ocupam a largura disponível em coluna e a demonstração começa no primeiro viewport. Não foi observado overflow horizontal nem perda do disclosure de pagamento. A direção funciona como produto de consumo no celular, em vez de dashboard responsivo.
