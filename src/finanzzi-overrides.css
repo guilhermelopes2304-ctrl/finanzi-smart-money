@@ -1,1 +1,31 @@
-/* FINANZZI */
+/* FINANZZI compatibility layer — canonical green identity only. */
+:root { --fin-soft: var(--fin-surface-muted); --fin-coral: var(--fin-danger); }
+body [class~="bg-primary"] { background-color: var(--fin-brand) !important; }
+body [class~="text-primary"] { color: var(--fin-brand-hover) !important; }
+body [class~="bg-primary\/10"], body [class~="bg-primary\/5"] { background-color: var(--fin-brand-soft) !important; }
+body [class~="border-primary\/20"], body [class~="border-primary\/50"] { border-color: var(--fin-line) !important; }
+:focus-visible { outline: 3px solid var(--fin-brand) !important; outline-offset: 3px; }
+::selection { background: var(--fin-brand-soft) !important; color: var(--fin-ink) !important; }
+[data-fin-app-shell] { color: var(--fin-ink); background: var(--fin-canvas); }
+[data-fin-app-shell] aside { color: var(--sidebar-foreground); background: var(--sidebar); border-color: var(--sidebar-border); }
+[data-fin-app-shell] aside .text-muted-foreground { color: var(--sidebar-foreground) !important; opacity: .76; }
+[data-fin-app-shell] aside .text-primary { color: var(--sidebar-primary) !important; }
+[data-fin-app-shell] aside .text-primary-foreground { color: var(--sidebar-primary-foreground) !important; }
+[data-fin-app-shell] aside .bg-primary { background-color: var(--sidebar-primary) !important; }
+[data-fin-app-shell] aside ~ main { background: var(--fin-canvas); color: var(--fin-ink); }
+[data-fin-app-shell] aside ~ main .text-primary { color: var(--fin-brand-hover) !important; }
+[data-fin-app-shell] aside ~ main .bg-primary { background-color: var(--fin-brand) !important; }
+[data-fin-app-shell] aside ~ main .text-primary-foreground { color: var(--primary-foreground) !important; }
+[data-fin-app-shell] aside ~ main .bg-accent { background-color: var(--fin-brand-soft) !important; color: var(--fin-ink) !important; }
+[data-fin-app-shell] aside ~ main .text-accent-foreground { color: var(--fin-brand-hover) !important; }
+[data-fin-app-shell] aside ~ main .text-muted-foreground { color: var(--fin-muted) !important; }
+[data-fin-app-shell] aside ~ main .bg-muted { background-color: var(--fin-surface-muted) !important; }
+[data-fin-app-shell] aside ~ main .border-border { border-color: var(--fin-line) !important; }
+[data-fin-app-shell] aside ~ main .surface-card { border-color: var(--fin-line) !important; box-shadow: 0 1px 3px rgb(17 24 39 / .06) !important; }
+
+/* Hero: photographic product scene, using the existing licensed local photography asset. */
+[class~="max-w-[470px]"] { position: relative; width: min(100%,470px) !important; max-width: 470px !important; padding: 0 !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; aspect-ratio: 3 / 2; overflow: visible !important; }
+[class~="max-w-[470px]"]::before { content: ""; position: absolute; inset: 0; z-index: 0; border-radius: 32px; background: linear-gradient(135deg,rgb(234 249 240 / .22),rgb(25 201 107 / .08)); box-shadow: 0 28px 80px rgb(17 24 39 / .12); }
+[class~="max-w-[470px]"]::after { content: ""; position: absolute; inset: 0; z-index: 3; border-radius: 32px; background: url('/images/photography/finanzi-phone-payment.webp') center / cover no-repeat; box-shadow: 0 28px 80px rgb(17 24 39 / .16); }
+[class~="max-w-[470px]"] > div { visibility: hidden !important; }
+@media (max-width:640px) { [class~="max-w-[470px]"] { width: min(100%,420px) !important; max-width:420px !important; aspect-ratio:3 / 2.15; } [class~="max-w-[470px]"]::before,[class~="max-w-[470px]"]::after { border-radius:24px; } }
