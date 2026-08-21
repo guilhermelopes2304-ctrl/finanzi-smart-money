@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as OfertaRouteImport } from './routes/oferta'
 import { Route as RedefinirSenhaRouteImport } from './routes/redefinir-senha'
 import { Route as AuthenticatedBoasVindasRouteImport } from './routes/_authenticated/boas-vindas'
 import { Route as AuthenticatedCartoesRouteImport } from './routes/_authenticated/cartoes'
@@ -37,6 +38,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OfertaRoute = OfertaRouteImport.update({
+  id: '/oferta',
+  path: '/oferta',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RedefinirSenhaRoute = RedefinirSenhaRouteImport.update({
@@ -107,6 +113,7 @@ const ApiBillingWebhookRoute = ApiBillingWebhookRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/oferta': typeof OfertaRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
   '/boas-vindas': typeof AuthenticatedBoasVindasRoute
   '/cartoes': typeof AuthenticatedCartoesRoute
@@ -123,6 +130,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/oferta': typeof OfertaRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
   '/boas-vindas': typeof AuthenticatedBoasVindasRoute
   '/cartoes': typeof AuthenticatedCartoesRoute
@@ -141,6 +149,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/oferta': typeof OfertaRoute
   '/redefinir-senha': typeof RedefinirSenhaRoute
   '/_authenticated/boas-vindas': typeof AuthenticatedBoasVindasRoute
   '/_authenticated/cartoes': typeof AuthenticatedCartoesRoute
@@ -159,6 +168,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/oferta'
     | '/redefinir-senha'
     | '/boas-vindas'
     | '/cartoes'
@@ -175,6 +185,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/oferta'
     | '/redefinir-senha'
     | '/boas-vindas'
     | '/cartoes'
@@ -192,6 +203,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/oferta'
     | '/redefinir-senha'
     | '/_authenticated/boas-vindas'
     | '/_authenticated/cartoes'
@@ -210,6 +222,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  OfertaRoute: typeof OfertaRoute
   RedefinirSenhaRoute: typeof RedefinirSenhaRoute
   ApiBillingWebhookRoute: typeof ApiBillingWebhookRoute
 }
@@ -235,6 +248,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/oferta': {
+      id: '/oferta'
+      path: '/oferta'
+      fullPath: '/oferta'
+      preLoaderRoute: typeof OfertaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/redefinir-senha': {
@@ -357,6 +377,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  OfertaRoute: OfertaRoute,
   RedefinirSenhaRoute: RedefinirSenhaRoute,
   ApiBillingWebhookRoute: ApiBillingWebhookRoute,
 }

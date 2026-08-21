@@ -18,14 +18,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/finanzzi/Logo";
 import { ThemeToggle } from "@/components/finanzzi/ThemeToggle";
-import { trackProductEvent } from "@/lib/product-analytics";
 
-type Mode = "login" | "signup" | "recover";
+type Mode = "login" | "recover";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>): { mode?: Mode } => {
+  validateSearch: (search: Record<string, unknown>): { mode?: Mode; returnTo?: string } => {
     const mode = search["mode"];
-    return mode === "signup" || mode === "recover" || mode === "login" ? { mode } : {};
+    const returnTo = typeof search["returnTo"] === "string" ? search["returnTo"] : undefined;
+    return {
+      ...(mode === "recover" || mode === "login" ? { mode } : {}),
+      ...(returnTo?.startsWith("/") ? { returnTo } : {}),
+    };
   },
   head: () => ({
     meta: [
@@ -37,7 +40,7 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
-  const { mode: initialMode } = Route.useSearch();
+  const { mode: initialMode, returnTo } = Route.useSearch();
   const [mode, setMode] = useState<Mode>(initialMode ?? "login");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -58,30 +61,11 @@ function AuthPage() {
     event.preventDefault();
     setBusy(true);
     try {
-      if (mode === "signup") {
-        const { data, error } = await supabase.auth.signUp({
-          email: email.trim(),
-          password,
-          options: {
-            data: { name: name.trim() },
-            emailRedirectTo: `${window.location.origin}/dashboard`,
-          },
-        });
-        if (error) throw error;
-        trackProductEvent("signup_completed");
-        if (data.session) {
-          toast.success("Conta criada! Vamos organizar sua vida financeira.");
-          await navigate({ to: "/dashboard" });
-        } else {
-          toast.success("Conta criada! Confirme seu e-mail para continuar.");
-          setMode("login");
-          setPassword("");
-        }
-      } else if (mode === "login") {
+      if (mode === "login") {
         const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
         if (error) throw error;
         toast.success("Bem-vindo de volta!");
-        await navigate({ to: "/dashboard" });
+        await navigate({ to: returnTo === "/oferta" ? "/oferta" : "/dashboard" });
       } else {
         const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
           redirectTo: `${window.location.origin}/redefinir-senha`,
@@ -97,18 +81,11 @@ function AuthPage() {
     }
   }
 
-  const title =
-    mode === "signup"
-      ? "Comece a entender seu dinheiro"
-      : mode === "login"
-        ? "Que bom ter você de volta"
-        : "Vamos recuperar seu acesso";
+  const title = mode === "login" ? "Que bom ter você de volta" : "Vamos recuperar seu acesso";
   const subtitle =
-    mode === "signup"
-      ? "Crie sua conta e dê ao Fin o contexto para ajudar nas suas próximas decisões."
-      : mode === "login"
-        ? "Entre para continuar de onde parou — com clareza, não culpa."
-        : "Digite seu e-mail e enviaremos um link seguro para redefinir sua senha.";
+    mode === "login"
+      ? "Entre para acessar o FINANZZI completo após a aprovação da sua assinatura."
+      : "Digite seu e-mail e enviaremos um link seguro para redefinir sua senha.";
 
   return (
     <div className="min-h-screen overflow-hidden bg-background lg:grid lg:grid-cols-[1.05fr_.95fr]">
@@ -195,20 +172,6 @@ function AuthPage() {
             style={{ animationDelay: "100ms" }}
           >
             <form onSubmit={handleSubmit} className="space-y-4">
-              {mode === "signup" && (
-                <div className="space-y-2 animate-fin-fade-up">
-                  <Label htmlFor="name">Seu nome</Label>
-                  <Input
-                    id="name"
-                    value={name}
-                    onChange={(event) => setName(event.target.value)}
-                    placeholder="Como podemos te chamar?"
-                    autoComplete="name"
-                    className="h-12 rounded-xl bg-background/70 transition-all focus:bg-background"
-                    required
-                  />
-                </div>
-              )}
               <div className="space-y-2">
                 <Label htmlFor="email">E-mail</Label>
                 <Input
@@ -240,7 +203,7 @@ function AuthPage() {
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
-                      autoComplete={mode === "signup" ? "new-password" : "current-password"}
+                      autoComplete="current-password"
                       value={password}
                       onChange={(event) => setPassword(event.target.value)}
                       minLength={6}
@@ -266,37 +229,22 @@ function AuthPage() {
               >
                 {busy
                   ? "Aguarde..."
-                  : mode === "signup"
-                    ? "Criar minha conta"
-                    : mode === "login"
-                      ? "Entrar no FINANZZI"
-                      : "Enviar link de recuperação"}
+                  : mode === "login"
+                    ? "Entrar no FINANZZI"
+                    : "Enviar link de recuperação"}
                 <ArrowRight className="ml-auto size-4" />
               </Button>
             </form>
             <div className="mt-5 flex items-center justify-center gap-1 text-sm">
               {mode === "login" && (
                 <>
-                  <span className="text-muted-foreground">Ainda não tem conta?</span>
-                  <button
-                    type="button"
+                  <span className="text-muted-foreground">Ainda não tem acesso?</span>
+                  <Link
+                    to="/oferta"
                     className="font-semibold text-primary transition-opacity hover:opacity-75"
-                    onClick={() => setMode("signup")}
                   >
-                    Criar gratuitamente
-                  </button>
-                </>
-              )}
-              {mode === "signup" && (
-                <>
-                  <span className="text-muted-foreground">Já tem conta?</span>
-                  <button
-                    type="button"
-                    className="font-semibold text-primary transition-opacity hover:opacity-75"
-                    onClick={() => setMode("login")}
-                  >
-                    Entrar
-                  </button>
+                    Ver oferta
+                  </Link>
                 </>
               )}
               {mode === "recover" && (

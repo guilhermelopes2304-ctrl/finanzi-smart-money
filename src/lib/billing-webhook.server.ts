@@ -1,5 +1,11 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { subscriptionPatchFromWebhook, type BillingWebhookEvent } from "@/lib/billing";
+import type { Json } from "@/integrations/supabase/types";
+import {
+  billingEventFromHubla,
+  subscriptionPatchFromWebhook,
+  type BillingWebhookEvent,
+  type HublaWebhookPayload,
+} from "@/lib/billing";
 
 function bytesToHex(bytes: ArrayBuffer) {
   return Array.from(new Uint8Array(bytes), (byte) => byte.toString(16).padStart(2, "0")).join("");
@@ -38,48 +44,101 @@ export async function verifyBillingWebhookSignature(
   return signaturesMatch(await hmacSha256(secret, payload), receivedSignature);
 }
 
-export async function handleBillingWebhookRequest(request: Request) {
-  const payload = await request.text();
-  if (!(await verifyBillingWebhookSignature(payload, request.headers.get("x-billing-signature")))) {
-    return Response.json({ error: "Invalid billing webhook signature" }, { status: 401 });
+function verifyHublaToken(receivedToken: string | null) {
+  const configuredToken = process.env["HUBLA_WEBHOOK_TOKEN"];
+  return Boolean(
+    configuredToken && receivedToken && signaturesMatch(configuredToken, receivedToken),
+  );
+}
+
+function isHublaRequest(request: Request) {
+  return Boolean(
+    request.headers.get("x-hubla-token") || request.headers.get("x-hubla-idempotency"),
+  );
+}
+
+async function findOrCreateUserByEmail(email: string, name?: string) {
+  const normalizedEmail = email.trim().toLowerCase();
+  if (!normalizedEmail || !normalizedEmail.includes("@")) return null;
+
+  const admin = supabaseAdmin;
+  const { data: existing, error: lookupError } = await admin.auth.admin.listUsers({
+    page: 1,
+    perPage: 1000,
+  });
+  const matchedUser = existing.users.find(
+    (candidate) => candidate.email?.toLowerCase() === normalizedEmail,
+  );
+  if (!lookupError && matchedUser) return matchedUser.id;
+
+  const { data, error } = await admin.auth.admin.createUser({
+    email: normalizedEmail,
+    email_confirm: true,
+    user_metadata: {
+      name: name?.trim() || normalizedEmail.split("@")[0],
+      source: "hubla",
+      requires_password_setup: true,
+    },
+  });
+  if (error || !data.user) {
+    console.error("[Hubla] Unable to create Auth user", error?.message);
+    return null;
+  }
+  return data.user.id;
+}
+
+async function resolveUserId(event: BillingWebhookEvent) {
+  const admin = supabaseAdmin;
+  const externalId = event.data.externalSubscriptionId ?? null;
+  if (event.data.userId) return event.data.userId;
+
+  if (externalId) {
+    const { data: subscription } = await admin
+      .from("subscriptions")
+      .select("user_id")
+      .eq("external_subscription_id", externalId)
+      .maybeSingle();
+    if (subscription?.user_id) return subscription.user_id;
   }
 
-  let event: BillingWebhookEvent;
-  try {
-    event = JSON.parse(payload) as BillingWebhookEvent;
-  } catch {
-    return Response.json({ error: "Invalid billing webhook payload" }, { status: 400 });
-  }
-  if (!event.id || !event.type || !event.occurredAt) {
-    return Response.json({ error: "Incomplete billing webhook payload" }, { status: 422 });
+  if (event.data.buyerEmail && ["payment_approved", "subscription_created"].includes(event.type)) {
+    return findOrCreateUserByEmail(event.data.buyerEmail, event.data.buyerName);
   }
 
+  return null;
+}
+
+async function processNormalizedEvent(event: BillingWebhookEvent, rawPayload: unknown) {
   const admin = supabaseAdmin;
   const { data: existing } = await admin
     .from("billing_webhook_events")
     .select("id, status")
     .eq("id", event.id)
     .maybeSingle();
-  if (existing?.status === "processed") return Response.json({ ok: true, duplicate: true });
+  if (existing?.status === "processed") return { ok: true, duplicate: true };
 
-  const externalId = event.data.externalSubscriptionId ?? null;
-  let userId = event.data.userId ?? null;
-  if (!userId && externalId) {
-    const { data: subscription } = await admin
-      .from("subscriptions")
-      .select("user_id")
-      .eq("external_subscription_id", externalId)
-      .maybeSingle();
-    userId = subscription?.user_id ?? null;
+  const userId = await resolveUserId(event);
+  if (!userId) {
+    await admin.from("billing_webhook_events").upsert(
+      {
+        id: event.id,
+        event_type: event.type,
+        user_id: null,
+        payload: rawPayload as Json,
+        status: "ignored",
+        error_message: "No FINANZZI user could be resolved from the event",
+      },
+      { onConflict: "id" },
+    );
+    return { ok: true, ignored: true };
   }
-  if (!userId) return Response.json({ error: "Webhook has no resolvable user" }, { status: 422 });
 
   await admin.from("billing_webhook_events").upsert(
     {
       id: event.id,
       event_type: event.type,
       user_id: userId,
-      payload: event,
+      payload: rawPayload as Json,
       status: "received",
     },
     { onConflict: "id" },
@@ -94,12 +153,66 @@ export async function handleBillingWebhookRequest(request: Request) {
       .from("billing_webhook_events")
       .update({ status: "failed", error_message: subscriptionError.message })
       .eq("id", event.id);
-    return Response.json({ error: "Unable to update subscription" }, { status: 500 });
+    throw new Error(subscriptionError.message);
   }
 
   await admin
     .from("billing_webhook_events")
     .update({ status: "processed", processed_at: new Date().toISOString() })
     .eq("id", event.id);
-  return Response.json({ ok: true });
+  return { ok: true };
+}
+
+export async function handleBillingWebhookRequest(request: Request) {
+  const payload = await request.text();
+  const hublaRequest = isHublaRequest(request);
+
+  if (hublaRequest) {
+    if (!verifyHublaToken(request.headers.get("x-hubla-token"))) {
+      return Response.json({ error: "Invalid Hubla webhook token" }, { status: 401 });
+    }
+
+    let hublaPayload: HublaWebhookPayload;
+    try {
+      hublaPayload = JSON.parse(payload) as HublaWebhookPayload;
+    } catch {
+      return Response.json({ error: "Invalid Hubla webhook payload" }, { status: 400 });
+    }
+
+    const idempotencyKey = request.headers.get("x-hubla-idempotency");
+    if (!idempotencyKey)
+      return Response.json({ error: "Missing Hubla idempotency key" }, { status: 422 });
+
+    const event = billingEventFromHubla(hublaPayload, idempotencyKey);
+    if (!event)
+      return Response.json({ ok: true, ignored: true, reason: "Unsupported Hubla event" });
+
+    try {
+      return Response.json(await processNormalizedEvent(event, hublaPayload));
+    } catch (error) {
+      console.error("[Hubla] Webhook processing failed", error);
+      return Response.json({ error: "Unable to process Hubla webhook" }, { status: 500 });
+    }
+  }
+
+  if (!(await verifyBillingWebhookSignature(payload, request.headers.get("x-billing-signature")))) {
+    return Response.json({ error: "Invalid billing webhook signature" }, { status: 401 });
+  }
+
+  let event: BillingWebhookEvent;
+  try {
+    event = JSON.parse(payload) as BillingWebhookEvent;
+  } catch {
+    return Response.json({ error: "Invalid billing webhook payload" }, { status: 400 });
+  }
+  if (!event.id || !event.type || !event.occurredAt) {
+    return Response.json({ error: "Incomplete billing webhook payload" }, { status: 422 });
+  }
+
+  try {
+    return Response.json(await processNormalizedEvent(event, event));
+  } catch (error) {
+    console.error("[Billing] Webhook processing failed", error);
+    return Response.json({ error: "Unable to update subscription" }, { status: 500 });
+  }
 }

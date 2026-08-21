@@ -137,12 +137,12 @@ function IntelligencePage() {
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-primary">
-                FIN Pro
+                Acesso completo
               </p>
               <h2 className="mt-1 text-base font-semibold">Próximas ações avançadas</h2>
             </div>
             <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-primary">
-              Pro
+              Ativo
             </span>
           </div>
           <div className="mt-3 grid gap-3 sm:grid-cols-3">

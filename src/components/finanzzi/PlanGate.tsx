@@ -1,5 +1,4 @@
 import { useState, type ReactNode } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { ArrowRight, Check, LockKeyhole, ShieldCheck, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -12,8 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { usePlan } from "@/hooks/usePlan";
 import { PRO_FEATURE_LABELS, type ProFeature } from "@/lib/plan";
-import { BILLING_PLANS, type BillingInterval } from "@/lib/billing";
-import { prepareBillingCheckout } from "@/lib/billing.functions";
+import { BILLING_PLANS, getHublaCheckoutUrl, type BillingInterval } from "@/lib/billing";
 import { trackProductEvent } from "@/lib/product-analytics";
 
 export function PlanGate({
@@ -55,7 +53,7 @@ export function ProUpsell({ feature, onOpen }: { feature: ProFeature; onOpen?: (
         </span>
         <div className="min-w-0">
           <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-200">
-            FIN Pro
+            Acesso completo
           </p>
           <h3 className="mt-1 text-lg font-semibold">{copy.title}</h3>
           <p className="mt-2 text-sm leading-6 text-white/65">{copy.benefit}</p>
@@ -69,7 +67,7 @@ export function ProUpsell({ feature, onOpen }: { feature: ProFeature; onOpen?: (
         onClick={onOpen}
         className="relative mt-5 h-11 rounded-xl bg-emerald-300 px-4 font-bold text-[#062117] hover:bg-emerald-200"
       >
-        Conhecer o FIN Pro <ArrowRight className="ml-auto size-4" />
+        Ver oferta <ArrowRight className="ml-auto size-4" />
       </Button>
     </div>
   );
@@ -93,15 +91,15 @@ export function ProModal({
             <div className="pointer-events-none absolute -right-16 -top-16 size-56 rounded-full bg-emerald-300/15 blur-3xl" />
             <DialogHeader className="relative">
               <div className="mb-3 inline-flex w-fit items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1.5 text-xs font-bold text-emerald-200">
-                <Sparkles className="size-3.5" /> Experiência FIN Pro
+                <Sparkles className="size-3.5" /> Acesso completo FINANZZI
               </div>
               <DialogTitle className="font-display text-3xl font-semibold text-white">
                 Seu dinheiro pode trabalhar melhor.
               </DialogTitle>
               <DialogDescription className="mt-3 text-sm leading-6 text-white/65">
                 {focus
-                  ? `${focus.title} é uma das experiências que o FIN Pro prepara para você.`
-                  : "Mais contexto, mais projeção e mais clareza para tomar decisões melhores."}
+                  ? `${focus.title} faz parte do acesso completo ao FINANZZI.`
+                  : "Registro, organização, lembretes e orientação num único acesso."}
               </DialogDescription>
             </DialogHeader>
           </div>
@@ -112,31 +110,37 @@ export function ProModal({
   );
 }
 
-function BillingOffer({ onClose }: { onClose: () => void }) {
+export function BillingOffer({ onClose }: { onClose: () => void }) {
   const [selected, setSelected] = useState<"pro_monthly" | "pro_annual">("pro_annual");
   const [status, setStatus] = useState<string | null>(null);
-  const prepareCheckout = useServerFn(prepareBillingCheckout);
   const selectedPlan = BILLING_PLANS[selected];
 
-  async function handleCheckout() {
+  function handleCheckout() {
     setStatus(null);
-    try {
-      const result = await prepareCheckout({ data: { planId: selected } });
-      setStatus(result.message);
-      toast.success("Checkout preparado", {
-        description: "O provedor de billing ainda não está configurado.",
+    const checkoutUrl = getHublaCheckoutUrl(selected);
+    if (!checkoutUrl) {
+      setStatus(
+        "Checkout Hubla ainda não configurado. Nenhuma cobrança foi criada e o acesso continua bloqueado até a configuração do provedor.",
+      );
+      toast.info("Checkout pendente", {
+        description: "Configure a oferta Hubla do FINANZZI para ativar as vendas.",
       });
-    } catch {
-      setStatus("Checkout ainda não está disponível — configure o provedor para continuar.");
-      toast.info("Billing ainda não ativado", { description: "Nenhuma cobrança foi criada." });
+      return;
     }
+    trackProductEvent("checkout_started");
+    window.location.assign(checkoutUrl);
   }
 
   return (
     <div className="space-y-6 p-6 sm:p-8">
+      <div className="rounded-2xl border border-primary/15 bg-primary/[0.04] px-4 py-3 text-center text-sm">
+        <span className="text-muted-foreground">Preço de referência: R$ 97</span>
+        <span className="mx-2 text-muted-foreground/50">·</span>
+        <strong>Oferta planejada: {selectedPlan.priceLabel}</strong>
+      </div>
       <div className="grid gap-3 sm:grid-cols-2">
         <PlanChoice
-          title="Pro Mensal"
+          title="FINANZZI Mensal"
           price={BILLING_PLANS.pro_monthly.priceLabel}
           detail={BILLING_PLANS.pro_monthly.savingsLabel}
           selected={selected === "pro_monthly"}
@@ -144,7 +148,7 @@ function BillingOffer({ onClose }: { onClose: () => void }) {
           onSelect={() => setSelected("pro_monthly")}
         />
         <PlanChoice
-          title="Pro Anual"
+          title="FINANZZI Anual"
           price={BILLING_PLANS.pro_annual.priceLabel}
           detail={BILLING_PLANS.pro_annual.savingsLabel}
           selected={selected === "pro_annual"}
@@ -152,28 +156,22 @@ function BillingOffer({ onClose }: { onClose: () => void }) {
           onSelect={() => setSelected("pro_annual")}
         />
       </div>
-      <div className="grid gap-3 sm:grid-cols-2">
-        <PlanColumn
-          title="Free"
-          items={[
-            "Dashboard e saldo",
-            "Contas e transações",
-            "Metas básicas",
-            "Quick Entry básico",
-            "Insights essenciais",
-          ]}
-        />
-        <PlanColumn
-          title="Pro"
-          emphasized
-          items={[
-            "FIN avançado",
-            "Análise de assinaturas",
-            "Previsões e projeções",
-            "Insights personalizados",
-            "Voz e limites inteligentes",
-          ]}
-        />
+      <div className="rounded-2xl border border-primary/20 bg-primary/[0.05] p-5">
+        <p className="text-sm font-semibold">O acesso completo inclui</p>
+        <div className="mt-4 grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
+          {[
+            "Registro por texto e voz",
+            "Contas, assinaturas e lembretes",
+            "Parcelas, cartões e metas",
+            "FIN com contexto financeiro",
+            "Análises e direcionamentos",
+            "Histórico e relatórios completos",
+          ].map((item) => (
+            <p key={item} className="flex items-center gap-2">
+              <Check className="size-4 shrink-0 text-primary" /> {item}
+            </p>
+          ))}
+        </div>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="rounded-2xl border border-border bg-muted/45 p-4">
@@ -188,7 +186,8 @@ function BillingOffer({ onClose }: { onClose: () => void }) {
             <ShieldCheck className="size-4 text-primary" /> Sem surpresas
           </p>
           <p className="mt-1 text-sm leading-6 text-muted-foreground">
-            Cancelamento transparente, dados preservados e nenhuma cobrança nesta etapa.
+            Cancelamento transparente, dados preservados e nenhuma cobrança é criada enquanto o
+            provedor não estiver configurado.
           </p>
         </div>
       </div>
@@ -201,25 +200,26 @@ function BillingOffer({ onClose }: { onClose: () => void }) {
         <p className="text-sm font-semibold">Perguntas rápidas</p>
         <div className="mt-3 space-y-2 text-sm leading-6 text-muted-foreground">
           <p>
-            <strong className="text-foreground">O Free deixa de funcionar?</strong> Não. O essencial
-            continua sempre disponível.
+            <strong className="text-foreground">Quando o acesso é liberado?</strong> Somente depois
+            de o backend confirmar o pagamento aprovado pelo provedor.
           </p>
           <p>
-            <strong className="text-foreground">Posso cancelar?</strong> Sim. O cancelamento futuro
-            será tratado pelo provedor configurado, sem apagar os seus dados.
+            <strong className="text-foreground">Posso cancelar?</strong> Sim. O cancelamento será
+            tratado pelo provedor configurado, sem apagar os seus dados.
           </p>
           <p>
             <strong className="text-foreground">Já existe cobrança?</strong> Não. O checkout está
-            apenas preparado.
+            preparado, mas nenhum gateway foi ligado ainda.
           </p>
         </div>
       </div>
       <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
         <Button type="button" variant="outline" onClick={onClose} className="rounded-xl">
-          Continuar no Free
+          Voltar
         </Button>
         <Button type="button" onClick={() => void handleCheckout()} className="rounded-xl">
-          Conhecer o FIN Pro <ArrowRight className="ml-auto size-4" />
+          {getHublaCheckoutUrl(selected) ? "Ir para o checkout" : "Checkout pendente"}{" "}
+          <ArrowRight className="ml-auto size-4" />
         </Button>
       </div>
     </div>

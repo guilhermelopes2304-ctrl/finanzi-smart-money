@@ -165,7 +165,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               to="/configuracoes"
               className="rounded-full bg-muted px-2 py-1 text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground hover:bg-primary/10 hover:text-primary"
             >
-              {isPro ? "Pro" : "Free"}
+              {isPro ? "Acesso ativo" : "Acesso pago"}
             </Link>
           </div>
           <p className="mt-1 text-xs leading-5 text-muted-foreground">

@@ -22,11 +22,11 @@ import { ThemeToggle } from "@/components/finanzzi/ThemeToggle";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "FINANZZI — Inteligência para o seu dinheiro" },
+      { title: "Assinar FINANZZI — Seu dinheiro mais simples" },
       {
         name: "description",
         content:
-          "O copiloto financeiro pessoal que ajuda você a entender seu dinheiro e tomar decisões melhores.",
+          "Registre, organize, lembre, entenda e oriente sua vida financeira com o acesso completo ao FINANZZI.",
       },
     ],
   }),
@@ -99,8 +99,8 @@ function Landing() {
               asChild
               className="rounded-full px-5 shadow-soft transition-transform hover:-translate-y-0.5"
             >
-              <Link to="/auth" search={{ mode: "signup" }}>
-                Começar grátis <ArrowRight className="ml-1 size-4" />
+              <Link to="/oferta">
+                Assinar FINANZZI <ArrowRight className="ml-1 size-4" />
               </Link>
             </Button>
           </div>
@@ -121,7 +121,7 @@ function Landing() {
                 className="animate-fin-fade-up mt-7 max-w-2xl font-display text-4xl font-semibold leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl"
                 style={{ animationDelay: "80ms" }}
               >
-                Pare de apenas controlar seu dinheiro.
+                Seu dinheiro não precisa ser complicado.
                 <br />
                 <span className="text-emerald-300">Comece a entendê-lo.</span>
               </h1>
@@ -129,8 +129,9 @@ function Landing() {
                 className="animate-fin-fade-up mx-auto mt-6 max-w-xl text-base leading-7 text-white/65 sm:text-lg lg:mx-0"
                 style={{ animationDelay: "140ms" }}
               >
-                O FINANZZI transforma seus gastos, metas e contas em decisões simples — com o{" "}
-                <strong className="text-white">Fin</strong> ao seu lado.
+                Registre seus gastos por texto ou voz. O FINANZZI organiza tudo, lembra das suas
+                contas e ajuda você a decidir com o <strong className="text-white">Fin</strong> ao
+                seu lado.
               </p>
               <div
                 className="animate-fin-fade-up mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center lg:justify-start"
@@ -141,8 +142,8 @@ function Landing() {
                   size="lg"
                   className="h-13 rounded-full bg-emerald-300 px-8 text-base text-[#062117] shadow-[0_12px_40px_rgba(110,231,183,.2)] hover:bg-emerald-200"
                 >
-                  <Link to="/auth" search={{ mode: "signup" }}>
-                    Começar grátis <ArrowRight className="ml-1 size-4" />
+                  <Link to="/oferta">
+                    Assinar FINANZZI <ArrowRight className="ml-1 size-4" />
                   </Link>
                 </Button>
                 <Button
@@ -312,8 +313,8 @@ function Landing() {
                 </p>
               </div>
               <Button asChild className="mt-5 h-12 w-full rounded-xl">
-                <Link to="/auth" search={{ mode: "signup" }}>
-                  Quero entender meu dinheiro <ArrowRight className="ml-auto size-4" />
+                <Link to="/oferta">
+                  Ver a oferta completa <ArrowRight className="ml-auto size-4" />
                 </Link>
               </Button>
             </div>
@@ -369,8 +370,8 @@ function Landing() {
             Registre uma despesa, acompanhe seu saldo e deixe o Fin ajudar no restante.
           </p>
           <Button asChild size="lg" className="mt-8 h-13 rounded-full px-8 shadow-lift">
-            <Link to="/auth" search={{ mode: "signup" }}>
-              Criar minha conta <ArrowRight className="ml-1 size-4" />
+            <Link to="/oferta">
+              Assinar agora <ArrowRight className="ml-1 size-4" />
             </Link>
           </Button>
         </section>

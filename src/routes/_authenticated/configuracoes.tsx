@@ -82,19 +82,22 @@ function SettingsPage() {
             </span>
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-primary">
-                Plano atual
+                Acesso atual
               </p>
-              <h2 className="mt-1 text-lg font-semibold">FINANZZI {isPro ? "Pro" : "Free"}</h2>
+              <h2 className="mt-1 text-lg font-semibold">
+                FINANZZI {isPro ? "ativo" : "pendente"}
+              </h2>
               <p className="mt-1 text-sm text-muted-foreground">
                 {isPro
-                  ? "Você tem acesso às experiências avançadas do Fin."
-                  : "O essencial para organizar o seu dinheiro continua disponível."}
+                  ? "Seu acesso completo está ativo após a confirmação do pagamento."
+                  : "O acesso completo depende da confirmação do pagamento aprovado."}
               </p>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/45 px-3 py-1.5 text-xs font-semibold">
-              <ShieldCheck className="size-3.5 text-primary" /> plano {plan}
+              <ShieldCheck className="size-3.5 text-primary" /> acesso{" "}
+              {isPro ? "ativo" : "pendente"}
             </span>
             <span className="rounded-full border border-border bg-muted/45 px-3 py-1.5 text-xs font-semibold">
               estado {billingStatus}
@@ -108,14 +111,14 @@ function SettingsPage() {
                 }}
                 className="rounded-xl"
               >
-                Conhecer o FIN Pro
+                Ver oferta de acesso
               </Button>
             )}
           </div>
         </div>
         <p className="relative mt-4 border-t border-border pt-3 text-[11px] leading-5 text-muted-foreground">
-          O plano é lido do seu perfil protegido. A alteração de plano não está disponível nesta
-          interface e depende de uma operação administrativa segura.
+          O estado de acesso é lido do billing protegido. A alteração não está disponível nesta
+          interface e depende de uma confirmação administrativa segura do provedor.
         </p>
       </section>
       <ProModal open={proOpen} onOpenChange={setProOpen} />

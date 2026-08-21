@@ -318,6 +318,9 @@ export type Database = {
           last_webhook_at: string | null;
           last_webhook_id: string | null;
           plan: string;
+          provider: string | null;
+          provider_offer_id: string | null;
+          provider_product_id: string | null;
           started_at: string | null;
           status: string;
           trial_end_at: string | null;
@@ -337,6 +340,9 @@ export type Database = {
           last_webhook_at?: string | null;
           last_webhook_id?: string | null;
           plan?: string;
+          provider?: string | null;
+          provider_offer_id?: string | null;
+          provider_product_id?: string | null;
           started_at?: string | null;
           status?: string;
           trial_end_at?: string | null;
@@ -356,6 +362,9 @@ export type Database = {
           last_webhook_at?: string | null;
           last_webhook_id?: string | null;
           plan?: string;
+          provider?: string | null;
+          provider_offer_id?: string | null;
+          provider_product_id?: string | null;
           started_at?: string | null;
           status?: string;
           trial_end_at?: string | null;
