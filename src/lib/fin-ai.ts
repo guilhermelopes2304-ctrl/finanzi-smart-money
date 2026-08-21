@@ -5,15 +5,15 @@ import { supabase } from "@/integrations/supabase/client";
  * com o JWT do usuário autenticado. A chave da IA nunca vem para o frontend.
  */
 export async function askFinAI(question: string): Promise<string> {
-  const { data, error } = await supabase.functions.invoke("fin-chat", {
+  const { data, error, response } = await supabase.functions.invoke("fin-chat", {
     body: { question },
   });
   if (error) {
     let detail = (data as { error?: string } | null)?.error;
-    const response = (error as { context?: Response }).context;
-    if (!detail && response) {
+    const errorResponse = response ?? (error as { context?: Response }).context;
+    if (!detail && errorResponse) {
       try {
-        const body = (await response.clone().json()) as { error?: string };
+        const body = (await errorResponse.clone().json()) as { error?: string };
         detail = body.error;
       } catch {
         // Mantém a mensagem segura quando a resposta não é JSON.
