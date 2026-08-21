@@ -28,3 +28,12 @@ Relatórios em produção confirmou o momento viral de categoria: card vertical 
 
 
 A verificação da raiz oficial foi corrigida para `https://finanzzi.vercel.app/` (dois “z”). Ela confirma a landing nova em produção, com hero do copiloto, simulação pública de margem, benefícios, Fin e CTA. A URL `https://finanzi.vercel.app/` (um “z”) é outro site/template e não pertence ao FINANZZI oficial.
+
+
+Novo teste autenticado iniciado após configurar o secret: a URL oficial abriu com sessão real do utilizador, o Fin foi aberto e recebeu `Posso gastar 200 hoje?`; a UI mostrou `Analisando seus dados...` antes da resposta.
+
+
+Após a configuração do secret, a API administrativa confirmou `OPENAI_API_KEY` presente, e `fin-chat` ACTIVE na versão 2 com `verify_jwt=true`. O teste autenticado real de `Posso gastar 200 hoje?` ainda respondeu `Não consegui falar com a inteligência do Fin agora.`. A tentativa de consultar logs via endpoint ClickHouse respondeu 200 com erro interno do backend; o painel web de Edge Functions foi aberto para investigação adicional, sem alteração de configuração.
+
+
+Após o deploy v3 de `fin-chat`, a sessão autenticada real voltou a receber `Posso gastar 200 hoje?`; o Fin iniciou o processamento e mostrou `Analisando seus dados...`.

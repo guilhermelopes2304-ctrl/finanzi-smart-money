@@ -9,7 +9,16 @@ export async function askFinAI(question: string): Promise<string> {
     body: { question },
   });
   if (error) {
-    const detail = (data as { error?: string } | null)?.error;
+    let detail = (data as { error?: string } | null)?.error;
+    const response = (error as { context?: Response }).context;
+    if (!detail && response) {
+      try {
+        const body = (await response.clone().json()) as { error?: string };
+        detail = body.error;
+      } catch {
+        // Mantém a mensagem segura quando a resposta não é JSON.
+      }
+    }
     throw new Error(detail || "Não consegui falar com a inteligência do Fin agora.");
   }
   if (!data?.answer) throw new Error("O Fin não conseguiu gerar uma resposta agora.");
