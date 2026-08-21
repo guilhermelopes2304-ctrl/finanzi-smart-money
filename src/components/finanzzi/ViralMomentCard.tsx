@@ -59,8 +59,8 @@ async function buildMomentFile(
   if (!context) return null;
 
   const gradient = context.createLinearGradient(0, 0, 1080, 1920);
-  gradient.addColorStop(0, "#06251a");
-  gradient.addColorStop(1, "#0b4a31");
+  gradient.addColorStop(0, "#0A0F1D");
+  gradient.addColorStop(1, "#1E293B");
   context.fillStyle = gradient;
   context.fillRect(0, 0, 1080, 1920);
   context.fillStyle = "rgba(183, 255, 82, 0.12)";
@@ -68,7 +68,7 @@ async function buildMomentFile(
   context.arc(940, 160, 260, 0, Math.PI * 2);
   context.fill();
 
-  context.fillStyle = "#b7ff52";
+  context.fillStyle = "#39FF14";
   context.font = "700 34px Arial, sans-serif";
   context.fillText("FINANZZI", 90, 130);
   context.fillStyle = "rgba(255,255,255,0.55)";
@@ -81,7 +81,7 @@ async function buildMomentFile(
   context.fillStyle = "#ffffff";
   context.font = "700 82px Arial, sans-serif";
   drawWrappedText(context, props.title, 90, 1335, 900, 98);
-  context.fillStyle = "#d8ff79";
+  context.fillStyle = "#39FF14";
   context.font = "700 112px Arial, sans-serif";
   drawWrappedText(context, props.value, 90, 1600, 900, 125);
   context.fillStyle = "rgba(255,255,255,0.72)";
@@ -151,27 +151,27 @@ export function ViralMomentCard({
     <div className={cn("surface-card p-4", className)}>
       <div className="grid gap-4 sm:grid-cols-[minmax(0,14rem)_1fr] sm:items-center">
         <div className="mx-auto w-full max-w-[14rem]">
-          <div className="relative aspect-[9/16] overflow-hidden rounded-[1.35rem] bg-[#06251a] p-5 text-white shadow-[0_18px_50px_rgba(2,32,20,0.22)]">
-            <div className="absolute -top-16 -right-16 size-40 rounded-full bg-emerald-400/20 blur-2xl" />
-            <div className="absolute -bottom-20 -left-14 size-44 rounded-full bg-lime-300/10 blur-2xl" />
+          <div className="relative aspect-[9/16] overflow-hidden rounded-[1.35rem] bg-[#0A0F1D] p-5 text-white shadow-[0_18px_50px_rgba(2,32,20,0.22)]">
+            <div className="absolute -top-16 -right-16 size-40 rounded-full bg-[#39FF14]/20 blur-2xl" />
+            <div className="absolute -bottom-20 -left-14 size-44 rounded-full bg-[#39FF14]/10 blur-2xl" />
             <div className="relative flex h-full flex-col">
-              <div className="flex items-center justify-between text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-emerald-200/80">
+              <div className="flex items-center justify-between text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[#39FF14]/80">
                 <span>FINANZZI</span>
                 <span>Descoberta</span>
               </div>
               <div className="mt-auto">
-                <p className="text-[0.68rem] font-medium uppercase tracking-[0.16em] text-emerald-200/80">
+                <p className="text-[0.68rem] font-medium uppercase tracking-[0.16em] text-[#39FF14]/80">
                   {eyebrow}
                 </p>
                 <h3 className="mt-3 text-[1.55rem] leading-[1.03] font-semibold tracking-[-0.05em]">
                   {title}
                 </h3>
-                <p className="mt-6 text-[2rem] leading-none font-semibold tracking-[-0.06em] text-lime-200">
+                <p className="mt-6 text-[2rem] leading-none font-semibold tracking-[-0.06em] text-[#39FF14]">
                   {value}
                 </p>
-                <p className="mt-3 text-xs leading-relaxed text-white/70">{detail}</p>
+                <p className="mt-3 text-xs leading-relaxed text-[#94A3B8]/70">{detail}</p>
               </div>
-              <div className="mt-8 border-t border-white/15 pt-3 text-[0.65rem] text-white/50">
+              <div className="mt-8 border-t border-[#1E293B]/15 pt-3 text-[0.65rem] text-[#94A3B8]/50">
                 Você registra. O FINANZZI organiza.
               </div>
             </div>

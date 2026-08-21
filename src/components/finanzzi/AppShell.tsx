@@ -219,7 +219,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </header>
 
       {isInternalTest && (
-        <div className="border-b border-amber-500/25 bg-amber-500/10 px-4 py-2 text-center text-[10px] font-bold uppercase tracking-[0.16em] text-amber-700 dark:text-amber-300 lg:pl-[256px]">
+        <div className="border-b border-[#1E293B] bg-[#1E293B] px-4 py-2 text-center text-[10px] font-bold uppercase tracking-[0.16em] text-[#39FF14] lg:pl-[256px]">
           Ambiente de teste · acesso interno sem cobrança real
         </div>
       )}

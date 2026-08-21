@@ -89,26 +89,26 @@ function AuthPage() {
 
   return (
     <div className="min-h-screen overflow-hidden bg-background lg:grid lg:grid-cols-[1.05fr_.95fr]">
-      <aside className="relative hidden overflow-hidden bg-[#071a12] text-white lg:flex lg:flex-col lg:justify-between">
+      <aside className="relative hidden overflow-hidden bg-[#0A0F1D] text-white lg:flex lg:flex-col lg:justify-between">
         <div className="fin-grid pointer-events-none absolute inset-0 opacity-50" />
-        <div className="absolute -left-24 -top-24 size-96 rounded-full bg-emerald-300/10 blur-3xl animate-float-slower" />
+        <div className="absolute -left-24 -top-24 size-96 rounded-full bg-[#39FF14]/10 blur-3xl animate-float-slower" />
         <div className="absolute -bottom-28 right-0 size-96 rounded-full bg-primary/25 blur-3xl animate-float-slow" />
         <div className="relative p-10 xl:p-14">
           <Link to="/" className="animate-fin-fade-up">
             <Logo />
           </Link>
           <div className="mt-28 max-w-lg animate-fin-fade-up" style={{ animationDelay: "100ms" }}>
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.07] px-3.5 py-2 text-xs font-semibold text-emerald-200 backdrop-blur">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#1E293B]/10 bg-white/[0.07] px-3.5 py-2 text-xs font-semibold text-[#39FF14] backdrop-blur">
               <Sparkles className="size-3.5" /> Inteligência para o seu dinheiro
             </span>
             <h2 className="mt-6 max-w-md font-display text-4xl font-semibold leading-tight xl:text-5xl">
               O seu dinheiro merece uma conversa melhor.
             </h2>
-            <p className="mt-5 max-w-md leading-7 text-white/65">
+            <p className="mt-5 max-w-md leading-7 text-[#94A3B8]/65">
               O FINANZZI organiza o que aconteceu, explica o que importa e ajuda você a decidir o
               que vem depois.
             </p>
-            <div className="mt-9 space-y-3 text-sm text-white/75">
+            <div className="mt-9 space-y-3 text-sm text-[#94A3B8]/75">
               {[
                 "Uma visão simples da sua vida financeira",
                 "Fin para ajudar nas decisões do dia a dia",
@@ -119,7 +119,7 @@ function AuthPage() {
                   className="flex items-center gap-2 animate-fin-fade-up"
                   style={{ animationDelay: `${180 + index * 70}ms` }}
                 >
-                  <span className="grid size-6 place-items-center rounded-full bg-white/10 text-emerald-200">
+                  <span className="grid size-6 place-items-center rounded-full bg-[#1E293B]/10 text-[#39FF14]">
                     <CheckCircle2 className="size-4" />
                   </span>
                   <span>{text}</span>
@@ -129,16 +129,18 @@ function AuthPage() {
           </div>
         </div>
         <div className="relative p-10 xl:p-14">
-          <div className="rounded-3xl border border-white/10 bg-white/[0.06] p-5 backdrop-blur-xl animate-fin-scale-in">
-            <p className="text-xs text-white/45">Seu próximo passo</p>
+          <div className="rounded-3xl border border-[#1E293B]/10 bg-white/[0.06] p-5 backdrop-blur-xl animate-fin-scale-in">
+            <p className="text-xs text-[#94A3B8]/45">Seu próximo passo</p>
             <p className="mt-1 font-display text-lg font-semibold">
               Ver seu dinheiro com mais clareza.
             </p>
-            <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/10">
-              <div className="h-full w-3/4 rounded-full bg-emerald-300 animate-fin-pulse" />
+            <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#1E293B]/10">
+              <div className="h-full w-3/4 rounded-full bg-[#39FF14] animate-fin-pulse" />
             </div>
           </div>
-          <p className="mt-5 text-xs text-white/40">FINANZZI — inteligência para o seu dinheiro.</p>
+          <p className="mt-5 text-xs text-[#94A3B8]/40">
+            FINANZZI — inteligência para o seu dinheiro.
+          </p>
         </div>
       </aside>
 

@@ -33,27 +33,27 @@ export function BalanceHero({
     <div className="gradient-hero relative animate-in fade-in zoom-in-95 overflow-hidden rounded-3xl p-5 text-white shadow-[var(--shadow-lift)] duration-500 sm:p-6">
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-16 -right-16 size-56 rounded-full bg-[oklch(0.78_0.14_82_/_0.22)] blur-2xl"
+        className="pointer-events-none absolute -top-16 -right-16 size-56 rounded-full bg-[#39FF14]/15 blur-2xl"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -bottom-20 -left-10 size-48 rounded-full bg-white/5 blur-2xl"
+        className="pointer-events-none absolute -bottom-20 -left-10 size-48 rounded-full bg-[#1E293B]/5 blur-2xl"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[oklch(0.78_0.14_82_/_0.6)] to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#39FF14] to-transparent"
       />
 
       <div className="relative">
-        <p className="text-sm font-medium text-white/75">{greeting}</p>
+        <p className="text-sm font-medium text-[#94A3B8]/75">{greeting}</p>
 
         <div className="mt-4 flex items-center gap-2">
-          <span className="text-sm text-white/75">Saldo disponível</span>
+          <span className="text-sm text-[#94A3B8]/75">Saldo disponível</span>
           <button
             type="button"
             onClick={toggle}
             aria-label={hidden ? "Mostrar saldo" : "Esconder saldo"}
-            className="grid size-6 place-items-center rounded-full text-white/70 transition-all hover:scale-110 hover:bg-white/10 hover:text-white active:scale-90"
+            className="grid size-6 place-items-center rounded-full text-[#94A3B8]/70 transition-all hover:scale-110 hover:bg-[#1E293B]/10 hover:text-white active:scale-90"
           >
             {hidden ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
           </button>
@@ -62,16 +62,18 @@ export function BalanceHero({
           {hidden ? "R$ ••••••" : formatBRL(balance)}
         </p>
 
+        <div className="mt-5 h-px bg-gradient-to-r from-[#0A0F1D] via-[#1E293B] to-[#39FF14]" />
+
         <div className="mt-5 grid grid-cols-2 gap-3">
-          <div className="rounded-2xl bg-white/10 p-3 backdrop-blur-sm">
-            <div className="flex items-center gap-1.5 text-white/75">
+          <div className="rounded-2xl bg-[#1E293B]/10 p-3 backdrop-blur-sm">
+            <div className="flex items-center gap-1.5 text-[#94A3B8]/75">
               <ArrowUpRight className="size-3.5" />
               <span className="text-xs font-medium">Receitas</span>
             </div>
             <p className="mt-1 text-base font-semibold">{hidden ? "••••" : formatBRL(income)}</p>
           </div>
-          <div className="rounded-2xl bg-white/10 p-3 backdrop-blur-sm">
-            <div className="flex items-center gap-1.5 text-white/75">
+          <div className="rounded-2xl bg-[#1E293B]/10 p-3 backdrop-blur-sm">
+            <div className="flex items-center gap-1.5 text-[#94A3B8]/75">
               <ArrowDownRight className="size-3.5" />
               <span className="text-xs font-medium">Despesas</span>
             </div>

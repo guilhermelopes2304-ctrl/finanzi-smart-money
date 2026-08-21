@@ -25,3 +25,9 @@ O Fin passa a ser uma criatura ilustrada não humana, com corpo em forma de seme
 ## Regras de uso
 
 O Fin normal aparece no widget e em estados neutros. O Fin feliz confirma registos e pequenas vitórias. O Fin pensando acompanha respostas analíticas. O Fin atento aparece em lembretes e riscos, sem alarmismo. O Fin comemorando acompanha objetivos e progresso. O Fin surpreso pode aparecer em descobertas partilháveis. Nenhum asset expõe renda, saldo ou dados pessoais automaticamente.
+
+## Atualização para a identidade high-tech — 21 de agosto de 2026
+
+A identidade aplicada passou a usar exclusivamente os cinco tokens definidos para a nova fase: `#0A0F1D` como Deep Space Blue e base dominante, `#FFFFFF` para texto de alto contraste, `#94A3B8` para informação secundária, `#39FF14` para CTA, IA, estados positivos e crescimento, e `#1E293B` para superfícies, bordas e divisores. O modo escuro é agora o padrão quando não existe preferência guardada.
+
+A landing foi validada visualmente na pré-visualização local: o hero apresenta fundo Deep Space, headline branca, CTA Neon Lime e uma demonstração de conversa sobre superfície Dark Slate. A linha Deep Space→Lime aparece como sinal visual de IA, sem representar números reais. A oferta mantém checkout e copy existentes, mas com CTA Lime e hierarquia de segurança em Slate.

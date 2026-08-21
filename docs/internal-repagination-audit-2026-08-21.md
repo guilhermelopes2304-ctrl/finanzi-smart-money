@@ -23,3 +23,7 @@ As rotas existentes incluem Home, lançamentos, contas, cartões, metas, relató
 ## Auditoria do provider do Fin — 21 de agosto de 2026
 
 A Edge Function `fin-chat` autentica o JWT, consulta apenas as tabelas do utilizador autenticado, calcula `disponivel_para_gastar` no backend e chama um provider real (`LOVABLE_API_KEY` quando disponível, caso contrário OpenAI com `OPENAI_API_KEY`). A listagem administrativa de secrets do projeto confirmou `OPENAI_API_KEY`, mas não confirmou `LOVABLE_API_KEY`. A chave OpenAI já tinha devolvido HTTP 401 em produção, portanto respostas abertas da IA continuam dependentes da substituição desse secret no Supabase. A interface agora responde localmente, com dados reais, a margem de compra, próximos compromissos, assinaturas, cartões e parcelas; perguntas abertas continuam a mostrar o erro real do provider, sem mock.
+
+## Validação real do FIN após atualização da chave — 21 de agosto de 2026
+
+Com a sessão autenticada da conta interna em produção, foi enviada a pergunta aberta “Explique a minha maior preocupação financeira com base nos dados registados.” O Fin deixou de devolver “A OPENAI_API_KEY foi rejeitada”/HTTP 401. A resposta exibida foi “O limite ou saldo da conta OpenAI foi atingido”, o que confirma que a chave está a ser aceite e que o bloqueio atual é quota/saldo da conta OpenAI, não autenticação da chave. A correção restante depende de adicionar saldo, aumentar limite ou usar um projeto/organização OpenAI com billing ativo.

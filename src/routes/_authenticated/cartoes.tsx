@@ -316,29 +316,31 @@ function CardsPage() {
                 <div
                   className="relative overflow-hidden p-5 text-white"
                   style={{
-                    background: `linear-gradient(135deg, ${c.color || "#0d4b32"}, #071a12)`,
+                    background: `linear-gradient(135deg, ${c.color || "#1E293B"}, #0A0F1D)`,
                   }}
                 >
-                  <div className="pointer-events-none absolute -right-10 -top-12 size-40 rounded-full bg-white/10 blur-2xl" />
+                  <div className="pointer-events-none absolute -right-10 -top-12 size-40 rounded-full bg-[#1E293B]/10 blur-2xl" />
                   <div className="relative flex items-start justify-between gap-4">
                     <div>
-                      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/55">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#94A3B8]/55">
                         Cartão FINANZZI
                       </p>
                       <p className="mt-4 text-lg font-semibold">{c.name}</p>
-                      <p className="mt-1 text-xs text-white/55">{c.bank ?? "Cartão de crédito"}</p>
+                      <p className="mt-1 text-xs text-[#94A3B8]/55">
+                        {c.bank ?? "Cartão de crédito"}
+                      </p>
                     </div>
-                    <CreditCard className="size-6 text-white/70" />
+                    <CreditCard className="size-6 text-[#94A3B8]/70" />
                   </div>
                   <div className="relative mt-8 flex items-end justify-between gap-3">
                     <div>
-                      <p className="text-[10px] text-white/50">Disponível</p>
+                      <p className="text-[10px] text-[#94A3B8]/50">Disponível</p>
                       <p className="mt-1 font-display text-2xl font-semibold">
                         {formatBRL(available)}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-[10px] text-white/50">Próxima fatura</p>
+                      <p className="text-[10px] text-[#94A3B8]/50">Próxima fatura</p>
                       <p className="mt-1 text-sm font-semibold">{formatBRL(invoice)}</p>
                     </div>
                   </div>

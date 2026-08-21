@@ -57,95 +57,95 @@
   --color-danger-foreground: var(--danger-foreground);
   --color-gold: var(--gold);
   --color-gold-foreground: var(--gold-foreground);
-  --shadow-soft: 0 1px 2px oklch(0.28 0.08 150 / 0.04), 0 10px 24px oklch(0.28 0.08 150 / 0.045);
-  --shadow-lift: 0 4px 10px oklch(0.28 0.08 150 / 0.06), 0 20px 42px oklch(0.28 0.08 150 / 0.1);
+  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.24), 0 12px 32px rgb(0 0 0 / 0.2);
+  --shadow-lift: 0 4px 12px rgb(0 0 0 / 0.28), 0 22px 52px rgb(0 0 0 / 0.3);
 }
 
 :root {
-  --radius: 1.3rem;
-  --background: oklch(0.972 0.016 92);
-  --foreground: oklch(0.2 0.035 150);
-  --card: oklch(0.996 0.006 88);
-  --card-foreground: oklch(0.2 0.035 150);
-  --popover: oklch(0.996 0.006 88);
-  --popover-foreground: oklch(0.2 0.035 150);
-  --primary: oklch(0.32 0.09 153);
-  --primary-foreground: oklch(0.985 0.01 92);
-  --secondary: oklch(0.93 0.035 101);
-  --secondary-foreground: oklch(0.28 0.06 150);
-  --muted: oklch(0.948 0.016 92);
-  --muted-foreground: oklch(0.5 0.03 150);
-  --accent: oklch(0.9 0.16 103);
-  --accent-foreground: oklch(0.25 0.06 150);
-  --destructive: oklch(0.58 0.2 25);
-  --destructive-foreground: oklch(0.99 0.01 150);
-  --success: oklch(0.58 0.15 152);
-  --success-foreground: oklch(0.99 0.01 150);
-  --warning: oklch(0.78 0.14 82);
-  --warning-foreground: oklch(0.28 0.06 75);
-  --danger: oklch(0.58 0.2 25);
-  --danger-foreground: oklch(0.99 0.01 150);
-  --gold: oklch(0.78 0.14 82);
-  --gold-foreground: oklch(0.28 0.06 75);
-  --border: oklch(0.88 0.025 92);
-  --input: oklch(0.88 0.025 92);
-  --ring: oklch(0.32 0.09 153);
-  --chart-1: oklch(0.36 0.1 155);
-  --chart-2: oklch(0.58 0.15 152);
-  --chart-3: oklch(0.62 0.12 195);
-  --chart-4: oklch(0.58 0.2 25);
-  --chart-5: oklch(0.5 0.09 155);
-  --sidebar: oklch(0.985 0.012 92);
-  --sidebar-foreground: oklch(0.2 0.035 150);
-  --sidebar-primary: oklch(0.32 0.09 153);
-  --sidebar-primary-foreground: oklch(0.985 0.01 92);
-  --sidebar-accent: oklch(0.9 0.16 103);
-  --sidebar-accent-foreground: oklch(0.25 0.06 150);
-  --sidebar-border: oklch(0.88 0.025 92);
-  --sidebar-ring: oklch(0.32 0.09 153);
+  --radius: 1.1rem;
+  --background: #ffffff;
+  --foreground: #0a0f1d;
+  --card: #ffffff;
+  --card-foreground: #0a0f1d;
+  --popover: #ffffff;
+  --popover-foreground: #0a0f1d;
+  --primary: #39ff14;
+  --primary-foreground: #0a0f1d;
+  --secondary: #1e293b;
+  --secondary-foreground: #ffffff;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #39ff14;
+  --accent-foreground: #0a0f1d;
+  --destructive: #94a3b8;
+  --destructive-foreground: #0a0f1d;
+  --success: #39ff14;
+  --success-foreground: #0a0f1d;
+  --warning: #94a3b8;
+  --warning-foreground: #0a0f1d;
+  --danger: #94a3b8;
+  --danger-foreground: #0a0f1d;
+  --gold: #39ff14;
+  --gold-foreground: #0a0f1d;
+  --border: #1e293b;
+  --input: #1e293b;
+  --ring: #39ff14;
+  --chart-1: #0a0f1d;
+  --chart-2: #1e293b;
+  --chart-3: #39ff14;
+  --chart-4: #94a3b8;
+  --chart-5: #ffffff;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0a0f1d;
+  --sidebar-primary: #39ff14;
+  --sidebar-primary-foreground: #0a0f1d;
+  --sidebar-accent: #1e293b;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #1e293b;
+  --sidebar-ring: #39ff14;
 }
 
 .dark {
-  --background: oklch(0.145 0.012 155);
-  --foreground: oklch(0.95 0.008 150);
-  --card: oklch(0.19 0.018 155);
-  --card-foreground: oklch(0.95 0.008 150);
-  --popover: oklch(0.19 0.018 155);
-  --popover-foreground: oklch(0.95 0.008 150);
-  --primary: oklch(0.68 0.13 152);
-  --primary-foreground: oklch(0.14 0.02 155);
-  --secondary: oklch(0.245 0.022 155);
-  --secondary-foreground: oklch(0.94 0.008 150);
-  --muted: oklch(0.235 0.018 155);
-  --muted-foreground: oklch(0.72 0.018 150);
-  --accent: oklch(0.285 0.04 155);
-  --accent-foreground: oklch(0.88 0.07 152);
-  --destructive: oklch(0.65 0.19 25);
-  --destructive-foreground: oklch(0.98 0.01 150);
-  --success: oklch(0.68 0.15 152);
-  --success-foreground: oklch(0.15 0.02 155);
-  --warning: oklch(0.82 0.14 82);
-  --warning-foreground: oklch(0.22 0.05 75);
-  --danger: oklch(0.65 0.19 25);
-  --danger-foreground: oklch(0.98 0.01 150);
-  --gold: oklch(0.82 0.14 82);
-  --gold-foreground: oklch(0.22 0.05 75);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 13%);
-  --ring: oklch(0.68 0.13 152);
-  --chart-1: oklch(0.68 0.13 152);
-  --chart-2: oklch(0.58 0.15 152);
-  --chart-3: oklch(0.68 0.12 195);
-  --chart-4: oklch(0.65 0.19 25);
-  --chart-5: oklch(0.55 0.09 155);
-  --sidebar: oklch(0.17 0.015 155);
-  --sidebar-foreground: oklch(0.95 0.008 150);
-  --sidebar-primary: oklch(0.68 0.13 152);
-  --sidebar-primary-foreground: oklch(0.14 0.02 155);
-  --sidebar-accent: oklch(0.245 0.03 155);
-  --sidebar-accent-foreground: oklch(0.88 0.07 152);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.68 0.13 152);
+  --background: #0a0f1d;
+  --foreground: #ffffff;
+  --card: #1e293b;
+  --card-foreground: #ffffff;
+  --popover: #1e293b;
+  --popover-foreground: #ffffff;
+  --primary: #39ff14;
+  --primary-foreground: #0a0f1d;
+  --secondary: #1e293b;
+  --secondary-foreground: #ffffff;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #39ff14;
+  --accent-foreground: #0a0f1d;
+  --destructive: #94a3b8;
+  --destructive-foreground: #0a0f1d;
+  --success: #39ff14;
+  --success-foreground: #0a0f1d;
+  --warning: #94a3b8;
+  --warning-foreground: #0a0f1d;
+  --danger: #94a3b8;
+  --danger-foreground: #0a0f1d;
+  --gold: #39ff14;
+  --gold-foreground: #0a0f1d;
+  --border: #1e293b;
+  --input: #1e293b;
+  --ring: #39ff14;
+  --chart-1: #0a0f1d;
+  --chart-2: #1e293b;
+  --chart-3: #39ff14;
+  --chart-4: #94a3b8;
+  --chart-5: #ffffff;
+  --sidebar: #0a0f1d;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #39ff14;
+  --sidebar-primary-foreground: #0a0f1d;
+  --sidebar-accent: #1e293b;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #1e293b;
+  --sidebar-ring: #39ff14;
 }
 
 @layer base {
@@ -193,11 +193,11 @@
     letter-spacing: -0.025em;
   }
   :focus-visible {
-    outline: 3px solid color-mix(in oklab, var(--color-primary) 72%, white);
+    outline: 3px solid #39ff14;
     outline-offset: 3px;
   }
   ::selection {
-    background: color-mix(in oklab, var(--color-primary) 22%, transparent);
+    background: #39ff14;
   }
 }
 
@@ -208,10 +208,10 @@
   box-shadow: var(--shadow-soft);
 }
 @utility gradient-brand {
-  background-image: linear-gradient(135deg, oklch(0.34 0.1 155), oklch(0.52 0.1 155));
+  background-image: linear-gradient(135deg, #0a0f1d 0%, #1e293b 62%, #39ff14 150%);
 }
 @utility gradient-hero {
-  background-image: linear-gradient(135deg, oklch(0.34 0.1 155), oklch(0.25 0.07 155));
+  background-image: linear-gradient(135deg, #0a0f1d 0%, #1e293b 70%);
 }
 
 @keyframes float-slow {
@@ -338,14 +338,7 @@
 .dark [class*="border-gray-100"] {
   border-color: var(--color-border) !important;
 }
-.dark [class*="bg-emerald-50"],
-.dark [class*="bg-green-50"] {
-  background-color: color-mix(in oklab, var(--color-primary) 13%, var(--color-card)) !important;
-}
-.dark [class*="bg-emerald-100"],
-.dark [class*="bg-green-100"] {
-  background-color: color-mix(in oklab, var(--color-primary) 18%, var(--color-card)) !important;
-}
+
 .dark [class*="shadow-"] {
   --tw-shadow-color: color-mix(in oklab, black 30%, transparent);
 }
@@ -400,10 +393,10 @@
 
 /* FINANZZI premium decision system. */
 @utility surface-ink {
-  background: #071a12;
-  color: white;
-  border: 1px solid color-mix(in oklab, var(--color-primary) 24%, transparent);
-  box-shadow: 0 20px 60px color-mix(in oklab, #071a12 20%, transparent);
+  background: #0a0f1d;
+  color: #ffffff;
+  border: 1px solid #1e293b;
+  box-shadow: 0 20px 60px rgb(0 0 0 / 0.32);
 }
 @utility text-balance {
   text-wrap: balance;
@@ -411,19 +404,15 @@
 
 .fin-grid {
   background-image:
-    linear-gradient(color-mix(in oklab, var(--color-primary) 8%, transparent) 1px, transparent 1px),
-    linear-gradient(
-      90deg,
-      color-mix(in oklab, var(--color-primary) 8%, transparent) 1px,
-      transparent 1px
-    );
+    linear-gradient(rgb(57 255 20 / 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(57 255 20 / 0.1) 1px, transparent 1px);
   background-size: 32px 32px;
   mask-image: linear-gradient(to bottom, black, transparent 82%);
 }
 .fin-glow {
   box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--color-primary) 10%, transparent),
-    0 18px 60px color-mix(in oklab, var(--color-primary) 12%, transparent);
+    0 0 0 1px rgb(57 255 20 / 0.14),
+    0 18px 60px rgb(57 255 20 / 0.12);
 }
 .fin-number {
   font-variant-numeric: tabular-nums;
