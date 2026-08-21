@@ -12,8 +12,16 @@ import {
   useTransactions,
 } from "@/hooks/useFinanceData";
 import { useAuth } from "@/hooks/useAuth";
-import { formatBRL, formatDateBR, todayISO } from "@/lib/format";
-import { cardInvoice, futureInstallmentTotal, spendCapacity } from "@/lib/finance";
+import { formatBRL, formatDateBR, monthRange, todayISO } from "@/lib/format";
+import {
+  buildPeriod,
+  cardInvoice,
+  expensesByCategory,
+  futureInstallmentTotal,
+  goalMonthlyTarget,
+  spendCapacity,
+  totalsFor,
+} from "@/lib/finance";
 import { nextCommitments, subscriptionTotals } from "@/lib/commitments";
 import {
   buildTransactionInput,
@@ -213,6 +221,28 @@ export function FinancialAssistant({ className }: { className?: string }) {
       return total > 0
         ? `Você tem ${formatBRL(total)} em parcelas futuras já registradas.`
         : "Não encontrei parcelas futuras registradas.";
+    }
+    if (interpretation.intent === "query_fin") {
+      const normalized = interpretation.text.toLowerCase();
+      const period = buildPeriod("current", monthRange());
+      if (/como está|resumo|meu mês|meu mes/.test(normalized)) {
+        const totals = totalsFor(transactions, period);
+        return `Neste mês entraram ${formatBRL(totals.income)} e saíram ${formatBRL(totals.expense)}. O resultado até agora é ${formatBRL(totals.balance)}.`;
+      }
+      if (/onde|gastando demais|maior gasto|gasto mais/.test(normalized)) {
+        const top = expensesByCategory(transactions, categories, period)[0];
+        return top
+          ? `Sua maior categoria neste mês é ${top.name}, com ${formatBRL(top.value)} (${Math.round(top.share)}% das despesas).`
+          : "Ainda não tenho despesas suficientes para encontrar um padrão.";
+      }
+      if (/objetivo|meta|chegar/.test(normalized)) {
+        const goal = goals.find((item) => Number(item.current_amount) < Number(item.target_amount));
+        if (!goal)
+          return "Você ainda não tem um objetivo em andamento. Quando criar um, eu calculo o ritmo necessário.";
+        const remaining = Math.max(0, Number(goal.target_amount) - Number(goal.current_amount));
+        const monthly = goalMonthlyTarget(goal);
+        return `${goal.name} está em ${formatBRL(Number(goal.current_amount))} de ${formatBRL(Number(goal.target_amount))}. Faltam ${formatBRL(remaining)}${monthly ? `, cerca de ${formatBRL(monthly)} por mês para chegar no prazo` : ""}.`;
+      }
     }
     return null;
   }
