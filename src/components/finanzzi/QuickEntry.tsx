@@ -4,9 +4,11 @@ import { Camera, Check, Mic, Send, Sparkles, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import {
   useAccounts,
+  useBills,
   useCategories,
   useCreditCards,
   useInvalidateFinance,
+  useSaveRow,
 } from "@/hooks/useFinanceData";
 import { interpretFinanceMessage } from "@/lib/channel-engine";
 import type { QuickParseResult } from "@/lib/quick-parse";
@@ -39,9 +41,13 @@ export function recurrenceLabel(value: QuickParseResult["recurrence"]) {
 export function QuickEntry() {
   const { user } = useAuth();
   const invalidate = useInvalidateFinance();
+  const { data: bills = [] } = useBills();
   const { data: categories = [] } = useCategories();
   const { data: accounts = [] } = useAccounts();
   const { data: cards = [] } = useCreditCards();
+  const saveBill = useSaveRow<Record<string, unknown>>("bills", {
+    successMessage: "Compromisso atualizado",
+  });
   const [text, setText] = useState("");
   const [draft, setDraft] = useState<QuickParseResult | null>(null);
   const [type, setType] = useState<TransactionType>("expense");
@@ -54,6 +60,7 @@ export function QuickEntry() {
   const [manualOpen, setManualOpen] = useState(false);
   const [manualText, setManualText] = useState("");
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const [paidBillId, setPaidBillId] = useState<string | null>(null);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -76,13 +83,18 @@ export function QuickEntry() {
     event.preventDefault();
     if (!text.trim()) return;
     trackProductEvent("quick_entry_used");
-    const result = interpretFinanceMessage({
+    const interpretation = interpretFinanceMessage({
       channel: "app",
       text,
       categories,
       accounts,
       cards,
-    }).draft;
+      bills,
+    });
+    const result = interpretation.draft;
+    setPaidBillId(
+      interpretation.intent === "mark_bill_paid" ? (interpretation.matchedBillId ?? null) : null,
+    );
     if (result.confidence === "low") {
       setManualText(result.raw);
       setManualOpen(true);
@@ -108,6 +120,18 @@ export function QuickEntry() {
     }
     setBusy(true);
     try {
+      if (paidBillId) {
+        await saveBill.mutateAsync({
+          id: paidBillId,
+          values: { status: "paid", paid_at: todayISO() },
+        });
+        toast.success("Compromisso marcado como pago");
+        invalidate();
+        setDraft(null);
+        setPaidBillId(null);
+        setText("");
+        return;
+      }
       const category = categoryId === NONE ? null : categoryId;
       const account = accountId === NONE ? null : accountId;
       if (draft.recurrence !== "none") {
@@ -259,10 +283,12 @@ export function QuickEntry() {
           <div className="mb-4 flex items-start justify-between gap-3">
             <div>
               <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-primary">
-                Entendi assim
+                {paidBillId ? "Conta encontrada" : "Entendi assim"}
               </p>
               <p className="mt-1 text-sm text-muted-foreground">
-                Confira antes de confirmar o lançamento.
+                {paidBillId
+                  ? "Vou atualizar o compromisso, sem criar outro lançamento."
+                  : "Confira antes de confirmar o lançamento."}
               </p>
             </div>
             <span
@@ -273,7 +299,11 @@ export function QuickEntry() {
                   : "bg-warning/15 text-warning",
               )}
             >
-              {draft.confidence === "high" ? "Leitura segura" : "Confira os campos"}
+              {paidBillId
+                ? "Atualização segura"
+                : draft.confidence === "high"
+                  ? "Leitura segura"
+                  : "Confira os campos"}
             </span>
           </div>
           <div className="mb-4 grid gap-3 rounded-2xl bg-card p-4 sm:grid-cols-[auto_1fr] sm:items-center">
@@ -294,99 +324,111 @@ export function QuickEntry() {
                 <span>{categoryName ?? "Sem categoria"}</span>
                 {cardName && <span>· {cardName}</span>}
                 {draft.installments && <span>· {draft.installments}x</span>}
-                {draft.recurrence !== "none" && <span>· {recurrenceLabel(draft.recurrence)}</span>}
+                {paidBillId ? (
+                  <span>· será marcada como paga</span>
+                ) : (
+                  draft.recurrence !== "none" && <span>· {recurrenceLabel(draft.recurrence)}</span>
+                )}
               </div>
             </div>
           </div>
-          <div className="mb-4 grid grid-cols-2 gap-2 rounded-xl bg-background p-1">
-            {(["expense", "income"] as TransactionType[]).map((option) => (
-              <button
-                key={option}
-                type="button"
-                onClick={() => setType(option)}
-                className={cn(
-                  "min-h-11 rounded-lg text-sm font-semibold transition-colors",
-                  type === option
-                    ? option === "income"
-                      ? "bg-success text-success-foreground"
-                      : "bg-danger text-danger-foreground"
-                    : "text-muted-foreground hover:bg-muted",
-                )}
-              >
-                {option === "income" ? "Receita" : "Despesa"}
-              </button>
-            ))}
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div className="space-y-1.5">
-              <Label htmlFor="qe-amount">Valor</Label>
-              <MoneyInput id="qe-amount" value={amount} onChange={setAmount} />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="qe-desc">Descrição</Label>
-              <Input
-                id="qe-desc"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Categoria</Label>
-              <Select value={categoryId} onValueChange={setCategoryId}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value={NONE}>Sem categoria</SelectItem>
-                  {visibleCategories.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label>Conta</Label>
-              <Select value={accountId} onValueChange={setAccountId}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value={NONE}>Sem conta</SelectItem>
-                  {accounts.map((a) => (
-                    <SelectItem key={a.id} value={a.id}>
-                      {a.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1.5 sm:col-span-2">
-              <Label>Cartão</Label>
-              <Select value={cardId} onValueChange={setCardId}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value={NONE}>Sem cartão</SelectItem>
-                  {cards.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+          {!paidBillId && (
+            <>
+              <div className="mb-4 grid grid-cols-2 gap-2 rounded-xl bg-background p-1">
+                {(["expense", "income"] as TransactionType[]).map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    onClick={() => setType(option)}
+                    className={cn(
+                      "min-h-11 rounded-lg text-sm font-semibold transition-colors",
+                      type === option
+                        ? option === "income"
+                          ? "bg-success text-success-foreground"
+                          : "bg-danger text-danger-foreground"
+                        : "text-muted-foreground hover:bg-muted",
+                    )}
+                  >
+                    {option === "income" ? "Receita" : "Despesa"}
+                  </button>
+                ))}
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <Label htmlFor="qe-amount">Valor</Label>
+                  <MoneyInput id="qe-amount" value={amount} onChange={setAmount} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="qe-desc">Descrição</Label>
+                  <Input
+                    id="qe-desc"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Categoria</Label>
+                  <Select value={categoryId} onValueChange={setCategoryId}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={NONE}>Sem categoria</SelectItem>
+                      {visibleCategories.map((c) => (
+                        <SelectItem key={c.id} value={c.id}>
+                          {c.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Conta</Label>
+                  <Select value={accountId} onValueChange={setAccountId}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={NONE}>Sem conta</SelectItem>
+                      {accounts.map((a) => (
+                        <SelectItem key={a.id} value={a.id}>
+                          {a.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1.5 sm:col-span-2">
+                  <Label>Cartão</Label>
+                  <Select value={cardId} onValueChange={setCardId}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={NONE}>Sem cartão</SelectItem>
+                      {cards.map((c) => (
+                        <SelectItem key={c.id} value={c.id}>
+                          {c.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </>
+          )}
           <div className="mt-5 flex gap-2">
             <Button onClick={confirm} disabled={busy} className="h-11 flex-1">
-              <Check className="size-4" /> {busy ? "Salvando..." : "Confirmar lançamento"}
+              <Check className="size-4" />{" "}
+              {busy ? "Salvando..." : paidBillId ? "Marcar como paga" : "Confirmar lançamento"}
             </Button>
             <Button
               variant="outline"
               className="h-11"
-              onClick={() => setDraft(null)}
+              onClick={() => {
+                setDraft(null);
+                setPaidBillId(null);
+              }}
               aria-label="Cancelar"
             >
               <X className="size-4" />

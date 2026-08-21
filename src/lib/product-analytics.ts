@@ -12,6 +12,7 @@ export type ProductEvent =
   | "subscription_moment_shared"
   | "installment_moment_shared"
   | "category_moment_shared"
+  | "fin_month_moment_shared"
   | "commitment_reminder_viewed";
 
 const STORAGE_KEY = "finanzzi-product-events";

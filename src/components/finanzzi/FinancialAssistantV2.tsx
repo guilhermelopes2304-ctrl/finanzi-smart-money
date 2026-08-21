@@ -8,10 +8,11 @@ import {
   useGoals,
   useInvalidateFinance,
   useProfile,
+  useSaveRow,
   useTransactions,
 } from "@/hooks/useFinanceData";
 import { useAuth } from "@/hooks/useAuth";
-import { formatBRL, formatDateBR } from "@/lib/format";
+import { formatBRL, formatDateBR, todayISO } from "@/lib/format";
 import { cardInvoice, futureInstallmentTotal, spendCapacity } from "@/lib/finance";
 import { nextCommitments, subscriptionTotals } from "@/lib/commitments";
 import {
@@ -61,6 +62,9 @@ export function FinancialAssistant({ className }: { className?: string }) {
   const { data: goals = [] } = useGoals();
   const { data: transactions = [] } = useTransactions();
   const invalidate = useInvalidateFinance();
+  const saveBill = useSaveRow<Record<string, unknown>>("bills", {
+    successMessage: "Compromisso atualizado",
+  });
 
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
@@ -109,6 +113,29 @@ export function FinancialAssistant({ className }: { className?: string }) {
         from: "fin",
         text: "Entendi a conta recorrente, mas não consegui salvar agora. Tente novamente.",
       });
+    } finally {
+      setBusy(false);
+      setPending(null);
+    }
+  }
+
+  async function commitBillPaid(interpretation: FinanceChannelInterpretation) {
+    if (!user || interpretation.intent !== "mark_bill_paid" || !interpretation.matchedBillId)
+      return;
+    const bill = bills.find((item) => item.id === interpretation.matchedBillId);
+    setBusy(true);
+    try {
+      await saveBill.mutateAsync({
+        id: interpretation.matchedBillId,
+        values: { status: "paid", paid_at: todayISO() },
+      });
+      invalidate();
+      push({
+        from: "fin",
+        text: `${bill?.description ?? "Esse compromisso"} foi marcado como pago. Não criei uma despesa duplicada.`,
+      });
+    } catch {
+      push({ from: "fin", text: "Encontrei o compromisso, mas não consegui atualizá-lo agora." });
     } finally {
       setBusy(false);
       setPending(null);
@@ -201,8 +228,13 @@ export function FinancialAssistant({ className }: { className?: string }) {
       categories,
       accounts,
       cards,
+      bills,
     });
     const { draft } = interpretation;
+    if (interpretation.intent === "mark_bill_paid" && interpretation.matchedBillId) {
+      await commitBillPaid(interpretation);
+      return;
+    }
     if (
       (interpretation.intent === "record_transaction" ||
         interpretation.intent === "create_recurring_bill") &&

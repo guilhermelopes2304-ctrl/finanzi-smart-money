@@ -13,7 +13,10 @@ export interface ViralMomentCardProps {
   shareText: string;
   event: Extract<
     ProductEvent,
-    "subscription_moment_shared" | "installment_moment_shared" | "category_moment_shared"
+    | "subscription_moment_shared"
+    | "installment_moment_shared"
+    | "category_moment_shared"
+    | "fin_month_moment_shared"
   >;
   className?: string;
 }

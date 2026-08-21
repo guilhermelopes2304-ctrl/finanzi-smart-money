@@ -1,4 +1,4 @@
-import type { Account, Category, CreditCard } from "@/types/finance";
+import type { Account, Bill, Category, CreditCard } from "@/types/finance";
 import { todayISO } from "@/lib/format";
 import { normalize, parseQuickEntry, type QuickParseResult } from "@/lib/quick-parse";
 import type { SaveTransactionInput } from "@/lib/transactions";
@@ -11,6 +11,7 @@ export type FinanceChannelIntent =
   | "record_transaction"
   | "query_fin"
   | "create_recurring_bill"
+  | "mark_bill_paid"
   | "list_upcoming_bills"
   | "list_subscriptions"
   | "check_purchase"
@@ -22,6 +23,7 @@ export interface FinanceChannelContext {
   categories: Category[];
   accounts: Account[];
   cards: CreditCard[];
+  bills?: Bill[];
 }
 
 export interface FinanceChannelInput extends FinanceChannelContext {
@@ -35,6 +37,7 @@ export interface FinanceChannelInterpretation {
   text: string;
   /** O draft existe também em mensagens ambíguas para permitir confirmação pelo canal. */
   draft: QuickParseResult;
+  matchedBillId?: string | null;
 }
 
 export interface BuildTransactionOptions {
@@ -53,6 +56,24 @@ const SUBSCRIPTIONS_RE = /\b(assinaturas?|streaming|mensalidades?|recorrentes?)\
 const PURCHASE_RE = /\b(posso|devo|consigo|cabe|gastar|comprar|compra)\b/i;
 const CARDS_RE = /\b(cart[oõ]es?|cart[aã]o|fatura|limite)\b/i;
 const INSTALLMENTS_RE = /\b(parcelas?|parcelado|parcelamento)\b/i;
+const PAID_RE = /\b(paguei|pago|quit(ei|ado)|liquid(ei|ado))\b/i;
+
+function findPaidBill(text: string, amount: number, bills: Bill[] = []): Bill | null {
+  if (!PAID_RE.test(text) || amount <= 0) return null;
+  const normalized = normalize(text);
+  const exact = bills.filter(
+    (bill) => bill.status !== "paid" && Math.abs(Number(bill.amount) - amount) < 0.01,
+  );
+  if (exact.length === 1) return exact[0] ?? null;
+  return (
+    exact.find((bill) =>
+      normalize(bill.description)
+        .split(/[^a-z0-9]+/)
+        .filter((word) => word.length > 2)
+        .some((word) => normalized.includes(word)),
+    ) ?? null
+  );
+}
 
 function detectQueryIntent(
   text: string,
@@ -80,21 +101,25 @@ export function interpretFinanceMessage(input: FinanceChannelInput): FinanceChan
   const text = input.text.trim();
   const draft = parseQuickEntry(text, input.categories, input.cards, input.accounts);
   const isQuestion = QUESTION_RE.test(text);
+  const paidBill = findPaidBill(text, draft.amount, input.bills);
   const isAction = (ACTION_RE.test(text) || draft.amount > 0) && !isQuestion;
   const isRecurring =
     draft.type === "expense" && draft.amount > 0 && draft.recurrence !== "none" && !isQuestion;
 
   return {
     channel: input.channel,
-    intent: isRecurring
-      ? "create_recurring_bill"
-      : isAction
-        ? "record_transaction"
-        : isQuestion
-          ? detectQueryIntent(text)
-          : "query_fin",
+    intent: paidBill
+      ? "mark_bill_paid"
+      : isRecurring
+        ? "create_recurring_bill"
+        : isAction
+          ? "record_transaction"
+          : isQuestion
+            ? detectQueryIntent(text)
+            : "query_fin",
     text,
     draft,
+    matchedBillId: paidBill?.id ?? null,
   };
 }
 

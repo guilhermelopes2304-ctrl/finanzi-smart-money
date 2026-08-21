@@ -1,13 +1,18 @@
 import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Check, ShieldCheck, Sparkles, Target } from "lucide-react";
-import { useProfile, useUpdateProfile } from "@/hooks/useFinanceData";
+import { useCategories, useProfile, useUpdateProfile } from "@/hooks/useFinanceData";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MoneyInput } from "@/components/finanzzi/MoneyInput";
 import { Logo } from "@/components/finanzzi/Logo";
-import { parseBRL } from "@/lib/format";
+import { FinMascot } from "@/components/finanzzi/FinMascot";
+import { parseBRL, todayISO } from "@/lib/format";
+import { interpretFinanceMessage } from "@/lib/channel-engine";
+import { saveRecurringBill } from "@/lib/bills";
+import { saveTransaction } from "@/lib/transactions";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/boas-vindas")({
@@ -34,10 +39,13 @@ const GOALS = [
 ];
 
 function Onboarding() {
+  const { user } = useAuth();
   const { data: profile } = useProfile();
+  const { data: categories = [] } = useCategories();
   const navigate = useNavigate();
   const update = useUpdateProfile("Tudo pronto! Vamos começar.");
   const [name, setName] = useState("");
+  const [firstEntry, setFirstEntry] = useState("");
   const [income, setIncome] = useState("");
   const [balance, setBalance] = useState("");
   const [goal, setGoal] = useState(GOALS[0]!);
@@ -45,14 +53,57 @@ function Onboarding() {
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    await update.mutateAsync({
-      name: displayName,
-      monthly_income: parseBRL(income),
-      current_balance: parseBRL(balance),
-      main_goal: goal,
-      onboarded: true,
-    });
-    await navigate({ to: "/dashboard" });
+    if (!user) return;
+    try {
+      await update.mutateAsync({
+        name: displayName,
+        monthly_income: parseBRL(income),
+        current_balance: parseBRL(balance),
+        main_goal: goal,
+        onboarded: true,
+      });
+      const text = firstEntry.trim();
+      if (text) {
+        const interpretation = interpretFinanceMessage({
+          channel: "app",
+          text,
+          categories,
+          accounts: [],
+          cards: [],
+        });
+        const { draft } = interpretation;
+        if (draft.amount > 0 && interpretation.intent === "create_recurring_bill") {
+          await saveRecurringBill({
+            userId: user.id,
+            description: draft.description || draft.raw,
+            amount: draft.amount,
+            categoryId: draft.categoryId,
+            accountId: null,
+            recurrence: draft.recurrence,
+            dueDay: draft.dueDay,
+            notes: "Criado no onboarding",
+          });
+        } else if (draft.amount > 0 && interpretation.intent === "record_transaction") {
+          await saveTransaction({
+            userId: user.id,
+            description: draft.description || draft.raw,
+            amount: draft.amount,
+            type: draft.type,
+            categoryId: draft.categoryId,
+            accountId: null,
+            cardId: null,
+            date: todayISO(),
+            method: "pix",
+            notes: "Primeiro registro no onboarding",
+            recurrence: "none",
+            ...(draft.installments ? { installments: draft.installments } : {}),
+          });
+        }
+      }
+      await navigate({ to: "/dashboard" });
+    } catch {
+      // The shared mutation already surfaces its error. Keep the user on the first-value step.
+    }
   }
 
   return (
@@ -62,6 +113,7 @@ function Onboarding() {
         <div className="relative p-10 xl:p-14">
           <Logo />
           <div className="mt-24 max-w-md">
+            <FinMascot expression="calmo" className="mb-8 h-24 w-24" />
             <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.07] px-3 py-2 text-xs font-semibold text-emerald-200">
               <Sparkles className="size-3.5" /> Vamos descobrir o seu momento
             </div>
@@ -113,31 +165,63 @@ function Onboarding() {
             <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-primary">
               Primeiros passos
             </p>
-            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-              Vamos descobrir como está sua vida financeira.
-            </h2>
-            <p className="mt-3 max-w-lg text-sm leading-6 text-muted-foreground">
-              São três respostas rápidas. Depois, o Fin prepara uma visão inicial feita para você.
-            </p>
+            <div className="flex items-start gap-4">
+              <FinMascot expression="calmo" className="h-16 w-16 shrink-0 sm:hidden" />
+              <div>
+                <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
+                  Me conta o básico. Eu organizo o resto.
+                </h2>
+                <p className="mt-3 max-w-lg text-sm leading-6 text-muted-foreground">
+                  São três respostas rápidas. Depois, o Fin prepara uma primeira leitura feita para
+                  você.
+                </p>
+              </div>
+            </div>
           </div>
           <form onSubmit={handleSubmit} className="surface-card space-y-6 p-5 shadow-lift sm:p-7">
+            <div className="rounded-[1.5rem] bg-primary p-4 text-primary-foreground sm:p-5">
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-primary-foreground/60">
+                Primeiro momento de valor
+              </p>
+              <Label
+                htmlFor="ob-first-entry"
+                className="mt-2 block text-base font-semibold text-primary-foreground"
+              >
+                Conte seu primeiro gasto
+              </Label>
+              <p className="mt-1 text-xs leading-5 text-primary-foreground/65">
+                Escreva como falaria com o Fin. Por exemplo: mercado 82.
+              </p>
+              <Input
+                id="ob-first-entry"
+                value={firstEntry}
+                onChange={(event) => setFirstEntry(event.target.value)}
+                placeholder="mercado 82"
+                className="mt-3 h-12 rounded-xl border-0 bg-primary-foreground text-base text-foreground shadow-none placeholder:text-muted-foreground/70 focus-visible:ring-2 focus-visible:ring-accent"
+              />
+            </div>
             <div className="grid gap-2">
               <Label htmlFor="ob-name">Como podemos te chamar?</Label>
               <Input
                 id="ob-name"
                 value={displayName}
                 onChange={(event) => setName(event.target.value)}
-                placeholder="Seu nome"
+                placeholder="Como você gosta de ser chamado?"
                 className="h-12 rounded-xl bg-background/70"
-                required
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="ob-income">Qual sua renda mensal aproximada?</Label>
+              <Label htmlFor="ob-income">
+                Qual sua renda mensal aproximada?{" "}
+                <span className="font-normal text-muted-foreground">(opcional)</span>
+              </Label>
               <MoneyInput id="ob-income" value={income} onChange={setIncome} />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="ob-balance">Quanto você possui atualmente?</Label>
+              <Label htmlFor="ob-balance">
+                Quanto você possui atualmente?{" "}
+                <span className="font-normal text-muted-foreground">(opcional)</span>
+              </Label>
               <MoneyInput id="ob-balance" value={balance} onChange={setBalance} />
             </div>
             <div className="space-y-3">
@@ -174,7 +258,7 @@ function Onboarding() {
               className="h-12 w-full rounded-xl text-base shadow-soft"
               disabled={update.isPending}
             >
-              {update.isPending ? "Preparando seu espaço..." : "Ver minha primeira análise"}
+              {update.isPending ? "Preparando seu espaço..." : "Ver meu ponto de partida"}
               <ArrowRight className="ml-auto size-4" />
             </Button>
           </form>

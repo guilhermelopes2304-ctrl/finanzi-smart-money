@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { PlanGate } from "@/components/finanzzi/PlanGate";
 import { trackProductEvent } from "@/lib/product-analytics";
 import { FinMascot } from "@/components/finanzzi/FinMascot";
+import { ViralMomentCard } from "@/components/finanzzi/ViralMomentCard";
 
 export const Route = createFileRoute("/_authenticated/inteligencia")({
   head: () => ({
@@ -95,6 +96,19 @@ function IntelligencePage() {
           onCustomChange={setCustom}
         />
       </div>
+
+      <ViralMomentCard
+        className="mb-4"
+        eyebrow="O Fin analisou meu mês"
+        title="Descobri coisas que eu não estava vendo."
+        value={`${Math.max(1, insights.diagnosis.length)} descobertas`}
+        detail={
+          insights.opportunities[0]?.title ??
+          "Uma leitura simples dos seus movimentos, compromissos e próximos passos."
+        }
+        shareText="Perguntei ao Fin sobre meu mês e descobri coisas que eu não estava vendo. O FINANZZI organizou meus dados sem expor informações pessoais."
+        event="fin_month_moment_shared"
+      />
 
       <div className="surface-card p-5">
         <h2 className="text-base font-semibold">Diagnóstico financeiro</h2>
