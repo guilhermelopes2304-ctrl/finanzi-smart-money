@@ -48,46 +48,46 @@ body [class~="text-[#94A3B8]"] {
   color: var(--fin-ink) !important;
 }
 
-/* Authenticated application: calm, readable consumer palette. */
-aside {
+/* Authenticated application: apply compatibility rules only inside AppShell. */
+[data-fin-app-shell] aside {
   color: #2d3446;
 }
-aside .text-muted-foreground {
+[data-fin-app-shell] aside .text-muted-foreground {
   color: #4f5a70 !important;
 }
-aside .text-primary {
+[data-fin-app-shell] aside .text-primary {
   color: var(--fin-blue-strong) !important;
 }
-aside .bg-primary {
+[data-fin-app-shell] aside .bg-primary {
   background-color: var(--fin-ink) !important;
 }
 
-aside ~ main .text-primary {
+[data-fin-app-shell] aside ~ main .text-primary {
   color: var(--fin-blue-strong) !important;
 }
-aside ~ main .bg-primary {
+[data-fin-app-shell] aside ~ main .bg-primary {
   background-color: var(--fin-blue) !important;
 }
-aside ~ main .text-primary-foreground {
+[data-fin-app-shell] aside ~ main .text-primary-foreground {
   color: #ffffff !important;
 }
-aside ~ main .bg-accent {
+[data-fin-app-shell] aside ~ main .bg-accent {
   background-color: var(--fin-blue-soft) !important;
   color: var(--fin-ink) !important;
 }
-aside ~ main .text-accent-foreground {
+[data-fin-app-shell] aside ~ main .text-accent-foreground {
   color: var(--fin-ink) !important;
 }
-aside ~ main .text-muted-foreground {
+[data-fin-app-shell] aside ~ main .text-muted-foreground {
   color: var(--fin-muted) !important;
 }
-aside ~ main .bg-muted {
+[data-fin-app-shell] aside ~ main .bg-muted {
   background-color: var(--fin-soft) !important;
 }
-aside ~ main .border-border {
+[data-fin-app-shell] aside ~ main .border-border {
   border-color: var(--fin-line) !important;
 }
-aside ~ main .surface-card {
+[data-fin-app-shell] aside ~ main .surface-card {
   border-color: var(--fin-line) !important;
   box-shadow: 0 12px 32px rgb(20 28 48 / 0.06) !important;
 }
@@ -218,16 +218,16 @@ body [class~="bg-white/75"] {
 }
 
 /* Dark mode: keep the same brand, simply invert surfaces for readability. */
-.dark aside ~ main .bg-muted {
+.dark [data-fin-app-shell] aside ~ main .bg-muted {
   background-color: #202536 !important;
 }
-.dark aside ~ main .text-muted-foreground {
+.dark [data-fin-app-shell] aside ~ main .text-muted-foreground {
   color: #a8b0c0 !important;
 }
-.dark aside ~ main .border-border {
+.dark [data-fin-app-shell] aside ~ main .border-border {
   border-color: #2c3244 !important;
 }
-.dark aside ~ main .surface-card {
+.dark [data-fin-app-shell] aside ~ main .surface-card {
   border-color: #2c3244 !important;
   box-shadow: 0 12px 32px rgb(0 0 0 / 0.2) !important;
 }

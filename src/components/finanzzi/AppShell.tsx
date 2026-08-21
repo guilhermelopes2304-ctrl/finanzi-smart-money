@@ -162,7 +162,10 @@ export function AppShell({ children }: { children: ReactNode }) {
   const desktopBannerPadding = sidebarCollapsed ? "lg:pl-[88px]" : "lg:pl-[256px]";
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
+    <div
+      data-fin-app-shell
+      className="min-h-screen bg-background text-foreground transition-colors duration-300"
+    >
       <NavigationLoading />
       <aside
         className={cn(
@@ -189,12 +192,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           {!sidebarCollapsed && <ThemeToggle />}
         </div>
 
-        <div
-          className={cn(
-            "border-b border-border",
-            sidebarCollapsed ? "px-3 py-4" : "px-5 py-4",
-          )}
-        >
+        <div className={cn("border-b border-border", sidebarCollapsed ? "px-3 py-4" : "px-5 py-4")}>
           {sidebarCollapsed ? (
             <div className="flex justify-center">
               <span className="grid size-9 place-items-center rounded-full bg-primary/10 text-[10px] font-black uppercase tracking-[0.08em] text-primary">
@@ -204,7 +202,9 @@ export function AppShell({ children }: { children: ReactNode }) {
           ) : (
             <>
               <div className="flex items-center justify-between gap-2">
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary">Seu dinheiro</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary">
+                  Seu dinheiro
+                </p>
                 <Link
                   to="/configuracoes"
                   className="rounded-full bg-muted px-2 py-1 text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground hover:bg-primary/10 hover:text-primary"
@@ -270,7 +270,11 @@ export function AppShell({ children }: { children: ReactNode }) {
           aria-label={sidebarCollapsed ? "Mostrar menu lateral" : "Esconder menu lateral"}
           title={sidebarCollapsed ? "Mostrar menu lateral" : "Esconder menu lateral"}
         >
-          {sidebarCollapsed ? <ChevronRight className="size-3.5" /> : <ChevronLeft className="size-3.5" />}
+          {sidebarCollapsed ? (
+            <ChevronRight className="size-3.5" />
+          ) : (
+            <ChevronLeft className="size-3.5" />
+          )}
         </button>
       </aside>
 
@@ -301,7 +305,12 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       )}
 
-      <main className={cn("min-w-0 px-3 pb-32 pt-4 sm:px-5 lg:px-8 lg:pb-10 lg:pt-8", desktopSidebarWidth)}>
+      <main
+        className={cn(
+          "min-w-0 px-3 pb-32 pt-4 sm:px-5 lg:px-8 lg:pb-10 lg:pt-8",
+          desktopSidebarWidth,
+        )}
+      >
         <div className="mx-auto min-w-0 max-w-7xl">{children}</div>
       </main>
 
@@ -348,7 +357,9 @@ export function AppShell({ children }: { children: ReactNode }) {
             <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-muted-foreground/25" />
             <div className="mb-5 flex items-center justify-between">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-primary">FINANZZI</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-primary">
+                  FINANZZI
+                </p>
                 <h2 className="mt-1 text-xl font-semibold">Mais opções</h2>
               </div>
               <button
@@ -371,7 +382,9 @@ export function AppShell({ children }: { children: ReactNode }) {
                   }}
                   className={cn(
                     "flex min-h-[88px] flex-col items-center justify-center gap-2 rounded-2xl border border-border bg-background px-2 text-center text-xs font-semibold transition-all active:scale-95",
-                    pathname === item.to ? "border-primary bg-primary/10 text-primary" : "text-foreground hover:bg-muted",
+                    pathname === item.to
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "text-foreground hover:bg-muted",
                   )}
                 >
                   <span className="grid size-9 place-items-center rounded-xl bg-muted/70">
