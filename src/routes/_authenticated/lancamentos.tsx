@@ -218,7 +218,7 @@ function TransactionsPage() {
               <span
                 className={cn(
                   "font-display font-semibold",
-                  tx.type === "income" ? "text-success" : "text-danger",
+                  tx.type === "income" ? "text-success" : "text-primary",
                 )}
               >
                 {tx.type === "income" ? "+" : "-"} {formatBRL(Number(tx.amount))}

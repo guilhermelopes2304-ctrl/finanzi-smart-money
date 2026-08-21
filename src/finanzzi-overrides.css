@@ -1,14 +1,11 @@
 /* FINANZZI visual system: consumer fintech, high contrast, TikTok-friendly. */
 :root {
-  --fin-blue: #5B5CE2;
-  --fin-blue-strong: #4546C8;
-  --fin-blue-soft: #EEF0FF;
-  --fin-ink: #151827;
-  --fin-copy: #3F4658;
-  --fin-muted: #667085;
-  --fin-line: #E4E7EF;
-  --fin-soft: #F4F5F8;
-  --fin-coral: #FF6B6B;
+  /* Legacy aliases now resolve to the canonical FINANZZI design tokens. */
+  --fin-blue: var(--fin-brand);
+  --fin-blue-strong: var(--fin-brand-hover);
+  --fin-blue-soft: var(--fin-brand-soft);
+  --fin-soft: var(--fin-surface-muted);
+  --fin-coral: var(--fin-danger);
 }
 
 /* Global action language: one recognizable blue across login + app. */

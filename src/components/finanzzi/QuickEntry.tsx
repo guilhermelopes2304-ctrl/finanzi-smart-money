@@ -310,7 +310,7 @@ export function QuickEntry() {
             <div
               className={cn(
                 "grid size-14 place-items-center rounded-2xl text-lg font-bold",
-                type === "income" ? "bg-success/15 text-success" : "bg-danger/10 text-danger",
+                type === "income" ? "bg-success/15 text-success" : "bg-primary/10 text-primary",
               )}
             >
               {type === "income" ? "+" : "−"}
@@ -345,7 +345,7 @@ export function QuickEntry() {
                       type === option
                         ? option === "income"
                           ? "bg-success text-success-foreground"
-                          : "bg-danger text-danger-foreground"
+                          : "bg-primary text-primary-foreground"
                         : "text-muted-foreground hover:bg-muted",
                     )}
                   >

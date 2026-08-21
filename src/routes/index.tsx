@@ -4,6 +4,7 @@ import { ArrowRight, Check, ChevronDown, Mic, Play, ShieldCheck, Sparkles } from
 import { Logo } from "@/components/finanzzi/Logo";
 import { BILLING_PLANS, getHublaCheckoutUrl } from "@/lib/billing";
 import { trackProductEvent } from "@/lib/product-analytics";
+import { Reveal } from "@/components/finanzzi/Reveal";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -82,7 +83,7 @@ function Landing() {
                 <a href={checkout("annual")} className="inline-flex h-14 items-center justify-center gap-2 rounded-full bg-[#5B5CE2] px-7 text-sm font-bold text-[#FCFBF7] transition-transform hover:-translate-y-0.5 sm:text-base">
                   QUERO O FINANZZI <ArrowRight className="size-4" />
                 </a>
-                <a href="#demo" className="inline-flex h-14 items-center justify-center gap-2 rounded-full border border-[#E4E7EF] bg-white/75 px-7 text-sm font-bold text-[#151827] transition-colors hover:bg-white sm:text-base">
+                <a href="#como-funciona" className="inline-flex h-14 items-center justify-center gap-2 rounded-full border border-[#E4E7EF] bg-white/75 px-7 text-sm font-bold text-[#151827] transition-colors hover:bg-white sm:text-base">
                   <Play className="size-4 fill-current" /> VER NA PRÁTICA
                 </a>
               </div>
@@ -138,7 +139,36 @@ function Landing() {
           </div>
         </section>
 
-        <section id="demo" className="px-4 py-20 sm:px-6 sm:py-28">
+        <section className="border-y border-[#E4E7EF] bg-[#F4F5F8] px-4 py-12 sm:px-6 sm:py-16">
+          <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1.05fr_.95fr] lg:items-center lg:gap-14">
+            <Reveal className="relative overflow-hidden rounded-[2rem] border border-[#E4E7EF] bg-white shadow-[0_22px_60px_rgba(21,24,39,.10)]">
+              <img
+                src="/images/photography/finanzi-phone-payment.webp"
+                alt="Pessoa a utilizar um smartphone para uma decisão de pagamento junto a um portátil"
+                width={1600}
+                height={1067}
+                loading="eager"
+                className="aspect-[1.35] w-full object-cover"
+              />
+              <div className="absolute inset-x-4 bottom-4 rounded-2xl border border-white/30 bg-[#151827]/82 px-4 py-3 text-white backdrop-blur-md">
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#EEF0FF]">Vida real, decisões reais</p>
+                <p className="mt-1 text-sm font-semibold">O FINANZZI ajuda a decidir antes de gastar.</p>
+              </div>
+            </Reveal>
+            <Reveal delay={90} className="max-w-xl">
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#4546C8]">Feito para o seu dia</p>
+              <h2 className="mt-3 font-display text-4xl font-semibold leading-[.96] tracking-[-0.06em] sm:text-6xl">Dinheiro não acontece numa planilha.</h2>
+              <p className="mt-5 text-base leading-7 text-[#3F4658] sm:text-lg">Acontece no supermercado, no café, no checkout e naquele momento em que você decide se uma compra cabe. O FINANZZI acompanha esse contexto sem transformar a sua vida num formulário.</p>
+              <div className="mt-6 flex flex-wrap gap-2 text-xs font-semibold text-[#4546C8]">
+                <span className="rounded-full bg-[#EEF0FF] px-3 py-2">sem banco conectado</span>
+                <span className="rounded-full bg-[#EEF0FF] px-3 py-2">feito para celular</span>
+                <span className="rounded-full bg-[#EEF0FF] px-3 py-2">do seu jeito</span>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        <section id="como-funciona" className="px-4 py-20 sm:px-6 sm:py-28">
           <div className="mx-auto max-w-6xl">
             <div className="max-w-2xl">
               <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#4546C8]">Como funciona</p>
@@ -199,6 +229,19 @@ function Landing() {
               </a>
             </div>
             <div className="grid gap-4">
+              <figure className="relative overflow-hidden rounded-[1.6rem] border border-[#E4E7EF] bg-white shadow-[0_14px_36px_rgba(25,30,22,0.05)]">
+                <img
+                  src="/images/photography/finanzi-planning.webp"
+                  alt="Pessoa a planear o dia junto a um smartphone"
+                  width={500}
+                  height={750}
+                  loading="lazy"
+                  className="h-52 w-full object-cover sm:h-64"
+                />
+                <figcaption className="absolute inset-x-4 bottom-4 rounded-xl bg-[#151827]/82 px-3 py-2 text-xs font-semibold text-[#FCFBF7] backdrop-blur-md">
+                  Pequenas decisões ficam mais leves quando você tem contexto.
+                </figcaption>
+              </figure>
               {["Descobri quanto gasto em assinaturas.", "Perguntei se podia comprar.", "O FINANZZI lembrou das minhas contas."].map((text) => (
                 <div key={text} className="rounded-[1.6rem] border border-[#E4E7EF] bg-white p-5 shadow-[0_12px_34px_rgba(25,30,22,0.04)]">
                   <div className="flex items-start gap-3">

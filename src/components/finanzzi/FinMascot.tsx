@@ -4,14 +4,14 @@ export type FinMascotExpression =
   "normal" | "feliz" | "surpreso" | "pensando" | "atento" | "comemorando" | "explicando" | "calmo";
 
 const SOURCES: Record<FinMascotExpression, string> = {
-  normal: "/fin-mascote-reference-clean.png",
-  feliz: "/fin-mascote-feliz-clean.png",
-  surpreso: "/fin-mascote-surpreso-clean.png",
-  pensando: "/fin-mascote-pensando-clean.png",
-  atento: "/fin-mascote-atento-clean.png",
-  comemorando: "/fin-mascote-comemorando-clean.png",
-  explicando: "/fin-mascote-explicando-clean.png",
-  calmo: "/fin-mascote-calmo-clean.png",
+  normal: "/fin-mascote-reference-indigo.png",
+  feliz: "/fin-mascote-feliz-indigo.png",
+  surpreso: "/fin-mascote-surpreso-indigo.png",
+  pensando: "/fin-mascote-pensando-indigo.png",
+  atento: "/fin-mascote-atento-indigo.png",
+  comemorando: "/fin-mascote-comemorando-indigo.png",
+  explicando: "/fin-mascote-explicando-indigo.png",
+  calmo: "/fin-mascote-calmo-indigo.png",
 };
 
 const LABELS: Record<FinMascotExpression, string> = {
