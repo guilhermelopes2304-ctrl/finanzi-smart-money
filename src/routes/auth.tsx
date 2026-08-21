@@ -102,7 +102,7 @@ function AuthPage() {
             <span className="inline-flex items-center gap-2 rounded-full border border-[#667085]/70 bg-[#3F4658]/60 px-3.5 py-2 text-xs font-semibold text-[#EEF0FF]">
               <Sparkles className="size-3.5 text-[#5B5CE2]" /> Seu dinheiro, do jeito que você fala.
             </span>
-            <h2 className="mt-6 max-w-lg font-display text-5xl font-semibold leading-[1.02] tracking-[-0.055em] xl:text-6xl">
+            <h2 className="mt-6 max-w-lg font-display text-5xl font-semibold leading-[1.02] tracking-[-0.055em] text-[#FCFBF7] xl:text-6xl">
               Registre. Entenda. Decida melhor.
             </h2>
             <p className="mt-5 max-w-md text-base leading-7 text-[#F4F5F8]">
@@ -136,7 +136,9 @@ function AuthPage() {
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#EEF0FF]">
                   Uma conversa real
                 </p>
-                <p className="mt-1 font-display text-lg font-semibold">“gastei 45 no mercado”</p>
+                <p className="mt-1 font-display text-lg font-semibold text-[#FCFBF7]">
+                  “gastei 45 no mercado”
+                </p>
                 <p className="mt-1 text-sm text-[#F4F5F8]">Registrado · Alimentação · R$ 45,00</p>
               </div>
             </div>

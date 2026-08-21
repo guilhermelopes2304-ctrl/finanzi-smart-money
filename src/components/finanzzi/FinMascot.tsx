@@ -3,26 +3,15 @@ import { cn } from "@/lib/utils";
 export type FinMascotExpression =
   "normal" | "feliz" | "surpreso" | "pensando" | "atento" | "comemorando" | "explicando" | "calmo";
 
-const SOURCES: Record<FinMascotExpression, string> = {
-  normal: "/fin-mascote-reference-clean.png",
-  feliz: "/fin-mascote-feliz-clean.png",
-  surpreso: "/fin-mascote-surpreso-clean.png",
-  pensando: "/fin-mascote-pensando-clean.png",
-  atento: "/fin-mascote-atento-clean.png",
-  comemorando: "/fin-mascote-comemorando-clean.png",
-  explicando: "/fin-mascote-explicando-clean.png",
-  calmo: "/fin-mascote-calmo-clean.png",
-};
-
 const LABELS: Record<FinMascotExpression, string> = {
-  normal: "Fin",
-  feliz: "Fin feliz",
-  surpreso: "Fin surpreso",
-  pensando: "Fin pensando",
-  atento: "Fin atento",
-  comemorando: "Fin comemorando",
-  explicando: "Fin explicando",
-  calmo: "Fin calmo",
+  normal: "Assistente financeiro",
+  feliz: "Assistente financeiro confiante",
+  surpreso: "Assistente financeiro atento",
+  pensando: "Assistente financeiro a analisar",
+  atento: "Assistente financeiro atento",
+  comemorando: "Assistente financeiro a celebrar um progresso",
+  explicando: "Assistente financeiro a explicar",
+  calmo: "Assistente financeiro tranquilo",
 };
 
 export function FinMascot({
@@ -35,11 +24,15 @@ export function FinMascot({
   alt?: string;
 }) {
   return (
-    <img
-      src={SOURCES[expression]}
-      alt={alt ?? LABELS[expression]}
-      className={cn("select-none object-contain", className)}
-      draggable={false}
-    />
+    <span
+      aria-label={alt ?? LABELS[expression]}
+      title={alt ?? LABELS[expression]}
+      className={cn(
+        "inline-flex min-h-10 min-w-10 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 px-3 py-2 font-display text-[0.65rem] font-bold uppercase tracking-[0.18em] text-primary",
+        className,
+      )}
+    >
+      FIN
+    </span>
   );
 }

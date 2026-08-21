@@ -25,6 +25,15 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-fin-brand: var(--fin-brand);
+  --color-fin-brand-hover: var(--fin-brand-hover);
+  --color-fin-brand-soft: var(--fin-brand-soft);
+  --color-fin-success: var(--fin-success);
+  --color-fin-success-soft: var(--fin-success-soft);
+  --color-fin-warning: var(--fin-warning);
+  --color-fin-warning-soft: var(--fin-warning-soft);
+  --color-fin-danger: var(--fin-danger);
+  --color-fin-danger-soft: var(--fin-danger-soft);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -63,6 +72,28 @@
 
 :root {
   --radius: 1.1rem;
+
+  /* FINANZZI brand tokens — índigo is identity; semantic colors are state-only. */
+  --fin-brand: #5b5ce2;
+  --fin-brand-hover: #4546c8;
+  --fin-brand-soft: #eef0ff;
+  --fin-canvas: #fcfbf7;
+  --fin-surface: #ffffff;
+  --fin-surface-muted: #f4f5f8;
+  --fin-ink: #151827;
+  --fin-copy: #3f4658;
+  --fin-muted: #667085;
+  --fin-line: #e4e7ef;
+  --fin-success: #16a34a;
+  --fin-success-soft: #dcfce7;
+  --fin-success-foreground: #ffffff;
+  --fin-warning: #f59e0b;
+  --fin-warning-soft: #fef3c7;
+  --fin-warning-foreground: #151827;
+  --fin-danger: #ff6b6b;
+  --fin-danger-soft: #fff1f2;
+  --fin-danger-foreground: #151827;
+
   --background: #fcfbf7;
   --foreground: #151827;
   --card: #fcfbf7;
@@ -79,14 +110,14 @@
   --accent-foreground: #151827;
   --destructive: #ff6b6b;
   --destructive-foreground: #151827;
-  --success: #5b5ce2;
-  --success-foreground: #fcfbf7;
-  --warning: #ff6b6b;
-  --warning-foreground: #151827;
-  --danger: #ff6b6b;
-  --danger-foreground: #151827;
-  --gold: #5b5ce2;
-  --gold-foreground: #fcfbf7;
+  --success: var(--fin-success);
+  --success-foreground: var(--fin-success-foreground);
+  --warning: var(--fin-warning);
+  --warning-foreground: var(--fin-warning-foreground);
+  --danger: var(--fin-danger);
+  --danger-foreground: var(--fin-danger-foreground);
+  --gold: var(--fin-warning);
+  --gold-foreground: var(--fin-warning-foreground);
   --border: #e4e7ef;
   --input: #e4e7ef;
   --ring: #5b5ce2;
@@ -106,6 +137,26 @@
 }
 
 .dark {
+  --fin-brand: #5b5ce2;
+  --fin-brand-hover: #4546c8;
+  --fin-brand-soft: #3f4658;
+  --fin-canvas: #151827;
+  --fin-surface: #3f4658;
+  --fin-surface-muted: #202536;
+  --fin-ink: #fcfbf7;
+  --fin-copy: #f4f5f8;
+  --fin-muted: #a8b0c0;
+  --fin-line: #667085;
+  --fin-success: #34d399;
+  --fin-success-soft: #064e3b;
+  --fin-success-foreground: #f0fdf4;
+  --fin-warning: #fbbf24;
+  --fin-warning-soft: #78350f;
+  --fin-warning-foreground: #151827;
+  --fin-danger: #ff6b6b;
+  --fin-danger-soft: #5b2430;
+  --fin-danger-foreground: #151827;
+
   --background: #151827;
   --foreground: #fcfbf7;
   --card: #3f4658;
@@ -122,14 +173,14 @@
   --accent-foreground: #151827;
   --destructive: #ff6b6b;
   --destructive-foreground: #151827;
-  --success: #5b5ce2;
-  --success-foreground: #fcfbf7;
-  --warning: #ff6b6b;
-  --warning-foreground: #151827;
-  --danger: #ff6b6b;
-  --danger-foreground: #151827;
-  --gold: #5b5ce2;
-  --gold-foreground: #fcfbf7;
+  --success: var(--fin-success);
+  --success-foreground: var(--fin-success-foreground);
+  --warning: var(--fin-warning);
+  --warning-foreground: var(--fin-warning-foreground);
+  --danger: var(--fin-danger);
+  --danger-foreground: var(--fin-danger-foreground);
+  --gold: var(--fin-warning);
+  --gold-foreground: var(--fin-warning-foreground);
   --border: #667085;
   --input: #3f4658;
   --ring: #5b5ce2;
