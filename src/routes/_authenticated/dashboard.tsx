@@ -73,7 +73,7 @@ function Dashboard() {
               {greeting}, {firstName}
             </p>
             <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight sm:text-5xl">
-              Você registra. Nós cuidamos do resto.
+              Você registra. O FINANZZI organiza. E cuida do resto.
             </h1>
           </div>
           <button
