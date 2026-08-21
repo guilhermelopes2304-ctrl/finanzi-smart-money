@@ -37,3 +37,6 @@ Após a configuração do secret, a API administrativa confirmou `OPENAI_API_KEY
 
 
 Após o deploy v3 de `fin-chat`, a sessão autenticada real voltou a receber `Posso gastar 200 hoje?`; o Fin iniciou o processamento e mostrou `Analisando seus dados...`.
+
+
+Teste final autenticado em `https://finanzzi.vercel.app/dashboard?fincheck=fde0627`: a pergunta `Posso gastar 200 hoje?` chegou ao Fin e o bridge exibiu a mensagem específica `A OPENAI_API_KEY foi rejeitada pelo provider OpenAI`. Isso confirma que a Edge Function acessa o secret e chama a API OpenAI real, mas o valor configurado é inválido, expirado, revogado ou não pertence a uma chave com acesso à API. Não foi usado mock.
