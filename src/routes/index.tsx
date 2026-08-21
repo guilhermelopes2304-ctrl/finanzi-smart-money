@@ -1,14 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import {
-  ArrowDown,
-  ArrowRight,
-  Check,
-  ChevronDown,
-  Mic2,
-  ShieldCheck,
-  Sparkles,
-} from "lucide-react";
+import { ArrowRight, Check, ChevronDown, Mic, Play, ShieldCheck, Sparkles } from "lucide-react";
 import { Logo } from "@/components/finanzzi/Logo";
 import { BILLING_PLANS, getHublaCheckoutUrl } from "@/lib/billing";
 import { trackProductEvent } from "@/lib/product-analytics";
@@ -16,388 +8,202 @@ import { trackProductEvent } from "@/lib/product-analytics";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "FINANZZI — Registrar seus gastos ficou fácil" },
+      { title: "FINANZZI — Seu dinheiro sem complicação" },
       {
         name: "description",
-        content:
-          "Você fala o que gastou. O FINANZZI organiza. E lembra o que você não pode esquecer.",
+        content: "Registre seus gastos do seu jeito. O FINANZZI organiza, lembra e mostra o que merece sua atenção.",
       },
     ],
   }),
   component: Landing,
 });
 
-type DemoScene = {
-  kicker: string;
-  input: string;
-  result: string;
-  detail: string;
-};
-
-const demoScenes: readonly DemoScene[] = [
-  {
-    kicker: "UM GASTO",
-    input: "gastei 42 no mercado",
-    result: "Registrado ✓",
-    detail: "Mercado · R$ 42,00 · Alimentação",
-  },
-  {
-    kicker: "UM UBER",
-    input: "uber 27",
-    result: "Registrado ✓",
-    detail: "Uber · R$ 27,00 · Transporte",
-  },
-  {
-    kicker: "UMA CONTA",
-    input: "Netflix 39,90 todo mês",
-    result: "Lembrete criado ✓",
-    detail: "Netflix · R$ 39,90/mês · Assinatura",
-  },
-  {
-    kicker: "UMA RECEITA",
-    input: "recebi 2500",
-    result: "Entrada registrada ✓",
-    detail: "Receita · R$ 2.500,00 · Este mês",
-  },
-  {
-    kicker: "UMA PARCELA",
-    input: "tênis 399 em 4x",
-    result: "Parcelado ✓",
-    detail: "4 parcelas de R$ 99,75 · Compras",
-  },
+const examples = [
+  "mercado 82",
+  "uber 27",
+  "Netflix 39,90 todo mês",
+  "recebi 2.500",
+  "tênis 399 em 4x",
 ];
 
-const streamingServices = ["Netflix", "Spotify", "Aluguel", "Energia", "Internet", "Academia"];
-
 function Landing() {
-  const [activeScene, setActiveScene] = useState(0);
-  const currentScene = demoScenes[activeScene] ?? demoScenes[0]!;
+  const [exampleIndex, setExampleIndex] = useState(0);
+  const annual = BILLING_PLANS.pro_annual;
+  const monthly = BILLING_PLANS.pro_monthly;
   const annualCheckout = getHublaCheckoutUrl("pro_annual");
   const monthlyCheckout = getHublaCheckoutUrl("pro_monthly");
 
-  function checkoutHref(plan: "monthly" | "annual") {
-    const checkout = plan === "annual" ? annualCheckout : monthlyCheckout;
-    return checkout ?? "/oferta#oferta";
+  function checkout(plan: "annual" | "monthly") {
+    trackProductEvent("checkout_started");
+    return plan === "annual" ? annualCheckout ?? "/oferta#oferta" : monthlyCheckout ?? "/oferta#oferta";
   }
 
-  function markCheckout() {
-    trackProductEvent("checkout_started");
+  function nextExample() {
+    setExampleIndex((value) => (value + 1) % examples.length);
   }
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#0A0F1D] text-[#FFFFFF] selection:bg-[#39FF14] selection:text-[#FFFFFF]">
-      <header className="sticky top-0 z-40 border-b border-[#1E293B]/10 bg-[#0A0F1D]/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:h-[72px] sm:px-6">
+    <div className="min-h-screen overflow-x-hidden bg-[#F6F5EF] text-[#161815] selection:bg-[#B8EE63] selection:text-[#161815]">
+      <header className="sticky top-0 z-40 border-b border-[#1B211A]/8 bg-[#F6F5EF]/92 backdrop-blur-md">
+        <div className="mx-auto flex h-[68px] max-w-6xl items-center justify-between px-4 sm:px-6">
           <Link to="/" aria-label="FINANZZI — início">
             <Logo />
           </Link>
-          <nav
-            className="hidden items-center gap-7 text-sm font-medium lg:flex"
-            aria-label="Navegação principal"
-          >
-            <a className="transition-colors hover:text-[#39FF14]" href="#como-funciona">
-              Como funciona
-            </a>
-            <a className="transition-colors hover:text-[#39FF14]" href="#contas">
-              Contas
-            </a>
-            <a className="transition-colors hover:text-[#39FF14]" href="#oferta">
-              Oferta
-            </a>
+          <nav className="hidden items-center gap-7 text-sm font-semibold text-[#4F574B] lg:flex">
+            <a href="#como-funciona" className="transition-colors hover:text-[#161815]">Como funciona</a>
+            <a href="#contas" className="transition-colors hover:text-[#161815]">Contas</a>
+            <a href="#oferta" className="transition-colors hover:text-[#161815]">Oferta</a>
           </nav>
           <div className="flex items-center gap-2 sm:gap-3">
-            <Link
-              to="/auth"
-              search={{ mode: "login" }}
-              className="hidden rounded-full px-3 py-2 text-sm font-semibold transition-colors hover:bg-[#0A0F1D]/5 sm:inline-flex"
-            >
+            <Link to="/auth" search={{ mode: "login" }} className="hidden rounded-full px-3 py-2 text-sm font-bold text-[#4F574B] hover:text-[#161815] sm:inline-flex">
               Entrar
             </Link>
-            <a
-              href={checkoutHref("annual")}
-              onClick={markCheckout}
-              className="inline-flex items-center gap-1.5 rounded-full bg-[#39FF14] px-4 py-2.5 text-xs font-bold text-[#0A0F1D] transition-transform hover:-translate-y-0.5 sm:px-5 sm:text-sm"
-            >
-              QUERO O FINANZZI <ArrowRight className="size-3.5 sm:size-4" />
+            <a href={checkout("annual")} className="inline-flex items-center gap-1.5 rounded-full bg-[#161815] px-4 py-2.5 text-xs font-bold text-white transition-transform hover:-translate-y-0.5 sm:px-5 sm:text-sm">
+              QUERO O FINANZZI <ArrowRight className="size-3.5" />
             </a>
           </div>
         </div>
       </header>
 
       <main>
-        <section className="relative overflow-hidden bg-[#0A0F1D]">
-          <div className="pointer-events-none absolute -right-40 top-12 size-[26rem] rounded-full bg-[#39FF14]/40 blur-3xl" />
-          <div className="pointer-events-none absolute -left-48 bottom-0 size-[28rem] rounded-full bg-[#1E293B]/55 blur-3xl" />
-          <div className="relative mx-auto grid max-w-6xl gap-12 px-4 pb-16 pt-14 sm:px-6 sm:pb-24 sm:pt-20 lg:grid-cols-[.92fr_1.08fr] lg:items-center lg:gap-16 lg:pb-28 lg:pt-24">
-            <div className="max-w-xl">
-              <p className="inline-flex rounded-full border border-[#1E293B]/15 bg-[#1E293B]/55 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#39FF14] sm:text-xs">
-                Sem planilha. Sem formulário.
-              </p>
-              <h1 className="mt-6 max-w-2xl font-display text-[3.45rem] font-semibold leading-[.93] tracking-[-0.07em] sm:text-7xl lg:text-[6.6rem]">
-                Registrar seus gastos ficou fácil.
+        <section className="px-4 pb-16 pt-10 sm:px-6 sm:pb-24 sm:pt-16">
+          <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[.9fr_1.1fr] lg:items-center lg:gap-20">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full bg-[#EAF5DA] px-3.5 py-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#5C7D37]">
+                <Sparkles className="size-3.5" /> sem planilha, sem formulário
+              </div>
+              <h1 className="mt-6 max-w-xl font-display text-[3.6rem] font-semibold leading-[.91] tracking-[-0.07em] sm:text-7xl lg:text-[6.35rem]">
+                Seu dinheiro não precisa dar trabalho.
               </h1>
-              <p className="mt-6 max-w-lg text-lg leading-7 text-[#FFFFFF]/70 sm:text-xl sm:leading-8">
-                Você fala o que gastou. O FINANZZI organiza. E lembra o que você não pode esquecer.
+              <p className="mt-6 max-w-lg text-lg leading-8 text-[#5E665B] sm:text-xl">
+                Você fala o que aconteceu. O FINANZZI organiza, lembra das suas contas e te mostra o que merece atenção.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <a
-                  href={checkoutHref("annual")}
-                  onClick={markCheckout}
-                  className="inline-flex h-14 items-center justify-center gap-2 rounded-full bg-[#39FF14] px-7 text-sm font-bold text-[#0A0F1D] transition-transform hover:-translate-y-0.5 sm:text-base"
-                >
+                <a href={checkout("annual")} className="inline-flex h-14 items-center justify-center gap-2 rounded-full bg-[#161815] px-7 text-sm font-bold text-white transition-transform hover:-translate-y-0.5 sm:text-base">
                   QUERO O FINANZZI <ArrowRight className="size-4" />
                 </a>
-                <a
-                  href="#como-funciona"
-                  className="inline-flex h-14 items-center justify-center gap-2 rounded-full border border-[#1E293B]/20 bg-[#1E293B]/45 px-7 text-sm font-bold transition-colors hover:bg-white sm:text-base"
-                >
-                  VER COMO FUNCIONA <ArrowDown className="size-4" />
+                <a href="#demo" className="inline-flex h-14 items-center justify-center gap-2 rounded-full border border-[#D8DCCF] bg-white/75 px-7 text-sm font-bold text-[#2F352D] transition-colors hover:bg-white sm:text-base">
+                  <Play className="size-4 fill-current" /> VER NA PRÁTICA
                 </a>
               </div>
-              <p className="mt-4 text-xs text-[#FFFFFF]/55">
-                Acesso completo liberado depois da confirmação do pagamento.
-              </p>
-            </div>
-
-            <ConversationDemo scene={currentScene} />
-          </div>
-        </section>
-
-        <section className="border-y border-[#1E293B]/10 bg-[#0A0F1D] text-white">
-          <div className="mx-auto grid max-w-6xl gap-0 sm:grid-cols-3">
-            <div className="border-b border-[#1E293B]/15 px-5 py-6 sm:border-b-0 sm:border-r sm:px-8">
-              <p className="text-3xl font-semibold tracking-tight">Você fala.</p>
-              <p className="mt-1 text-sm text-[#94A3B8]/55">Do jeito que você falaria.</p>
-            </div>
-            <div className="border-b border-[#1E293B]/15 px-5 py-6 sm:border-b-0 sm:border-r sm:px-8">
-              <p className="text-3xl font-semibold tracking-tight">Ele entende.</p>
-              <p className="mt-1 text-sm text-[#94A3B8]/55">Sem preencher formulário.</p>
-            </div>
-            <div className="px-5 py-6 sm:px-8">
-              <p className="text-3xl font-semibold tracking-tight text-[#39FF14]">Você respira.</p>
-              <p className="mt-1 text-sm text-[#94A3B8]/55">Porque as contas não somem mais.</p>
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-[#1E293B] px-4 py-20 sm:px-6 sm:py-28">
-          <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[.85fr_1.15fr] lg:items-end">
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#39FF14]">
-                A pergunta incômoda
-              </p>
-              <h2 className="mt-5 max-w-xl font-display text-5xl font-semibold leading-[.95] tracking-[-0.06em] sm:text-7xl">
-                Você sabe quanto gastou este mês?
-              </h2>
-              <p className="mt-6 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-                Provavelmente não.
-              </p>
-            </div>
-            <div className="max-w-xl lg:pb-2">
-              <p className="text-xl leading-8 text-[#FFFFFF]/75 sm:text-2xl sm:leading-9">
-                Você paga Netflix. Spotify. Internet. Academia. Aluguel. Cartão. Parcelas.
-              </p>
-              <p className="mt-6 text-xl font-semibold leading-8 sm:text-2xl sm:leading-9">
-                E no fim do mês parece que seu dinheiro simplesmente sumiu.
-              </p>
-              <div className="mt-8 h-px w-20 bg-[#0A0F1D]/25" />
-              <p className="mt-6 text-lg leading-7 text-[#FFFFFF]/65">
-                O FINANZZI organiza isso para você — sem transformar sua vida numa planilha.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <section id="como-funciona" className="bg-[#0A0F1D] px-4 py-20 sm:px-6 sm:py-28">
-          <div className="mx-auto max-w-6xl">
-            <div className="max-w-2xl">
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#39FF14]">
-                Parece simples porque é
-              </p>
-              <h2 className="mt-5 font-display text-5xl font-semibold leading-[.95] tracking-[-0.06em] sm:text-7xl">
-                Foi só mandar uma mensagem.
-              </h2>
-              <p className="mt-6 max-w-xl text-lg leading-8 text-[#FFFFFF]/65 sm:text-xl">
-                Cada frase vira uma ação organizada. Experimente as cenas — são demonstrações
-                públicas, sem dados reais.
-              </p>
-            </div>
-            <div
-              className="mt-10 flex gap-2 overflow-x-auto pb-2"
-              aria-label="Demonstrações do FINANZZI"
-            >
-              {demoScenes.map((scene, index) => (
-                <button
-                  key={scene.input}
-                  type="button"
-                  aria-pressed={activeScene === index}
-                  onClick={() => setActiveScene(index)}
-                  className={`shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-colors ${
-                    activeScene === index
-                      ? "border-[#1E293B] bg-[#0A0F1D] text-white"
-                      : "border-[#1E293B]/15 bg-[#1E293B]/50 text-[#FFFFFF]/65 hover:bg-white"
-                  }`}
-                >
-                  {scene.kicker}
-                </button>
-              ))}
-            </div>
-            <div className="mt-5 grid gap-6 lg:grid-cols-[1.15fr_.85fr]">
-              <ConversationDemo scene={currentScene} large />
-              <div className="flex flex-col justify-between rounded-[2rem] bg-[#39FF14] p-7 sm:p-9">
-                <div>
-                  <Mic2 className="size-7 text-[#FFFFFF]" />
-                  <p className="mt-10 max-w-sm font-display text-4xl font-semibold leading-[.98] tracking-[-0.05em] sm:text-5xl">
-                    Você não precisa falar a língua das planilhas.
-                  </p>
-                </div>
-                <p className="mt-10 text-sm font-semibold leading-6 text-[#FFFFFF]/70">
-                  Fale como fala com alguém. O FINANZZI cuida da organização.
-                </p>
+              <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold text-[#7A8276]">
+                <span>✓ acesso completo após pagamento</span>
+                <span>✓ feito para celular</span>
+                <span>✓ sem banco conectado</span>
               </div>
             </div>
-          </div>
-        </section>
 
-        <section id="contas" className="bg-[#0A0F1D] px-4 py-20 text-white sm:px-6 sm:py-28">
-          <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-[.82fr_1.18fr] lg:items-center">
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#39FF14]">
-                O susto do fim do mês
-              </p>
-              <h2 className="mt-5 font-display text-5xl font-semibold leading-[.95] tracking-[-0.06em] sm:text-7xl">
-                Nunca mais esqueça suas contas.
-              </h2>
-              <p className="mt-6 max-w-md text-lg leading-8 text-[#94A3B8]/60 sm:text-xl">
-                Cadastre uma vez. O FINANZZI lembra depois — inclusive quando a cobrança parece
-                pequena demais para preocupar.
-              </p>
-              <a
-                href={checkoutHref("annual")}
-                onClick={markCheckout}
-                className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#39FF14] px-6 py-3.5 text-sm font-bold text-[#FFFFFF] transition-transform hover:-translate-y-0.5"
-              >
-                VER MINHAS ASSINATURAS <ArrowRight className="size-4" />
-              </a>
-            </div>
-            <div className="relative">
-              <div className="grid grid-cols-2 gap-x-5 gap-y-0 sm:grid-cols-3">
-                {streamingServices.map((service, index) => (
-                  <div key={service} className="border-b border-[#1E293B]/15 py-5 sm:py-7">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#94A3B8]/35">
-                      0{index + 1}
-                    </p>
-                    <p className="mt-2 text-xl font-semibold sm:text-2xl">{service}</p>
+            <div className="relative mx-auto w-full max-w-[470px] lg:justify-self-end">
+              <div className="absolute -right-6 top-10 hidden h-24 w-24 rounded-[2rem] bg-[#B8EE63] sm:block" />
+              <div className="relative overflow-hidden rounded-[2.4rem] border border-[#D9DDCF] bg-white p-3 shadow-[0_24px_70px_rgba(33,38,29,0.12)] sm:p-4">
+                <div className="rounded-[2rem] bg-[#F1F3ED] p-4 sm:p-5">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#8A9385]">Você fala</p>
+                      <p className="mt-1 text-sm font-semibold text-[#20241F]">como falaria com alguém.</p>
+                    </div>
+                    <span className="grid size-9 place-items-center rounded-full bg-[#B8EE63] text-[#1B211A]"><Mic className="size-4" /></span>
                   </div>
-                ))}
-              </div>
-              <div className="mt-8 border-l-2 border-[#39FF14] pl-5">
-                <p className="text-sm uppercase tracking-[0.14em] text-[#94A3B8]/45">
-                  Demonstração simulada
-                </p>
-                <p className="mt-2 font-display text-5xl font-semibold tracking-[-0.05em] text-[#39FF14] sm:text-7xl">
-                  R$ 327,40
-                </p>
-                <p className="mt-1 text-lg text-[#94A3B8]/60">por mês em assinaturas.</p>
-                <p className="mt-5 text-2xl font-semibold tracking-tight">R$ 3.928,80 por ano.</p>
+                  <button type="button" onClick={nextExample} className="mt-5 w-full rounded-[1.35rem] bg-[#161815] px-4 py-4 text-left text-sm font-semibold text-white shadow-sm">
+                    “{examples[exampleIndex]}”
+                  </button>
+                  <div className="mt-4 rounded-[1.35rem] border border-[#DCE1D6] bg-white p-4">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#7C8776]">Entendi assim</p>
+                    <div className="mt-3 flex items-end justify-between gap-4">
+                      <div>
+                        <p className="font-display text-3xl font-semibold tracking-[-0.05em] text-[#161815]">R$ 82,00</p>
+                        <p className="mt-1 text-xs font-medium text-[#697264]">Mercado · Alimentação</p>
+                      </div>
+                      <span className="rounded-full bg-[#E9F6D7] px-2.5 py-1 text-[10px] font-bold text-[#557234]">registrado</span>
+                    </div>
+                  </div>
+                  <div className="mt-4 rounded-[1.35rem] bg-[#B8EE63] p-4">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#4E6B30]">e depois...</p>
+                    <p className="mt-1 font-display text-xl font-semibold leading-tight text-[#161815]">Você ainda pode gastar R$ 327 hoje.</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between px-2 pb-1 pt-3 text-[10px] font-bold uppercase tracking-[0.14em] text-[#8A9385]">
+                  <span>Registrar</span><span>Organizar</span><span>Orientar</span>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="bg-[#0A0F1D] px-4 py-20 sm:px-6 sm:py-28">
+        <section className="border-y border-[#DDE1D5] bg-white px-4 py-6 sm:px-6">
+          <div className="mx-auto grid max-w-6xl gap-4 text-sm font-semibold text-[#4F574B] sm:grid-cols-3 sm:gap-0">
+            <div className="sm:border-r sm:border-[#E7EAE3] sm:px-6 first:sm:pl-0">Você fala do seu jeito.</div>
+            <div className="sm:border-r sm:border-[#E7EAE3] sm:px-6">O FINANZZI organiza sozinho.</div>
+            <div className="sm:pl-6">E lembra do que você não pode esquecer.</div>
+          </div>
+        </section>
+
+        <section id="demo" className="px-4 py-20 sm:px-6 sm:py-28">
           <div className="mx-auto max-w-6xl">
             <div className="max-w-2xl">
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#39FF14]">
-                Quatro coisas, sem enrolação
-              </p>
-              <h2 className="mt-5 font-display text-5xl font-semibold leading-[.95] tracking-[-0.06em] sm:text-7xl">
-                O que muda no seu dia.
-              </h2>
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#6C824F]">Como funciona</p>
+              <h2 className="mt-4 font-display text-5xl font-semibold leading-[.95] tracking-[-0.06em] sm:text-7xl">Você não preenche. Você conta.</h2>
+              <p className="mt-5 max-w-xl text-lg leading-8 text-[#636B60]">Um gasto, uma conta, uma assinatura ou uma dúvida. Escreva como você falaria. O resto fica por conta do FINANZZI.</p>
             </div>
-            <div className="mt-12 divide-y divide-[#1E293B]/15 border-y border-[#1E293B]/15">
+            <div className="mt-12 grid gap-4 md:grid-cols-3">
               {[
-                ["01", "REGISTRE", "Fale o que aconteceu."],
-                ["02", "ORGANIZE", "Ele entende e categoriza."],
-                ["03", "LEMBRE", "Contas, assinaturas e vencimentos."],
-                ["04", "ORIENTE", "Descubra o que fazer."],
-              ].map(([number, title, text]) => (
-                <div
-                  key={number}
-                  className="grid gap-3 py-7 sm:grid-cols-[80px_1fr_1fr] sm:items-center sm:py-9"
-                >
-                  <span className="text-sm font-bold text-[#39FF14]">{number}</span>
-                  <h3 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-                    {title}
-                  </h3>
-                  <p className="text-base text-[#FFFFFF]/60 sm:text-lg">{text}</p>
-                </div>
+                ["01", "REGISTRE", "“uber 27”", "O FINANZZI entende o que aconteceu."],
+                ["02", "ORGANIZE", "“Netflix 39,90 todo mês”", "Ele entende que é recorrente e lembra depois."],
+                ["03", "ORIENTE", "“posso gastar 200?”", "Ele olha seus compromissos e responde com contexto."],
+              ].map(([number, title, example, description]) => (
+                <article key={number} className="rounded-[1.8rem] border border-[#DDE1D5] bg-white p-6 shadow-[0_14px_36px_rgba(25,30,22,0.04)]">
+                  <span className="text-xs font-black tracking-[0.15em] text-[#87917F]">{number}</span>
+                  <p className="mt-8 text-xs font-bold tracking-[0.16em] text-[#69824D]">{title}</p>
+                  <p className="mt-3 font-display text-2xl font-semibold tracking-[-0.04em]">{example}</p>
+                  <p className="mt-3 text-sm leading-6 text-[#697164]">{description}</p>
+                </article>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="bg-[#39FF14] px-4 py-20 sm:px-6 sm:py-28">
-          <div className="mx-auto max-w-6xl">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#39FF14]">
-              Cenas que dão vontade de testar
-            </p>
-            <h2 className="mt-5 max-w-3xl font-display text-5xl font-semibold leading-[.95] tracking-[-0.06em] sm:text-7xl">
-              Eu testei o FINANZZI com os meus gastos...
-            </h2>
-            <div className="mt-12 grid gap-4 lg:grid-cols-3">
-              <StoryBlock
-                title="Perguntei se podia comprar..."
-                quote="posso gastar 200 hoje?"
-                answer="Pode. Mas sua margem cai para R$ 127."
-              />
-              <StoryBlock
-                title="Descobri quanto pago em streaming..."
-                quote="quanto eu gasto por mês com streaming?"
-                answer="R$ 327,40. R$ 3.928,80 por ano."
-              />
-              <StoryBlock
-                title="Olha o que ele encontrou..."
-                quote="quais contas vencem essa semana?"
-                answer="4 contas. R$ 1.445 no total."
-              />
+        <section id="contas" className="bg-[#161815] px-4 py-20 text-white sm:px-6 sm:py-28">
+          <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#B8EE63]">Contas e assinaturas</p>
+              <h2 className="mt-4 font-display text-5xl font-semibold leading-[.95] tracking-[-0.06em] sm:text-7xl">O pequeno também pesa.</h2>
+              <p className="mt-6 max-w-md text-lg leading-8 text-white/65">Aluguel, luz, internet, Netflix, Spotify, academia, parcelas. Cadastre uma vez e deixe o FINANZZI lembrar por você.</p>
             </div>
-            <p className="mt-7 text-xs font-semibold text-[#FFFFFF]/55">
-              Tudo acima é demonstração simulada. Os números variam conforme os seus dados.
-            </p>
+            <div className="rounded-[2rem] bg-[#F6F5EF] p-6 text-[#161815] sm:p-8">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#7A8276]">Próximos compromissos</p>
+              <div className="mt-6 divide-y divide-[#E1E5DD]">
+                {["Aluguel · R$ 1.200", "Energia · R$ 184", "Netflix · R$ 39,90", "Internet · R$ 99,90"].map((item, index) => (
+                  <div key={item} className="flex items-center justify-between py-4">
+                    <span className="text-sm font-semibold">{item}</span>
+                    <span className="rounded-full bg-white px-3 py-1 text-[10px] font-bold text-[#6F796B]">{index + 2} dias</span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-5 rounded-2xl bg-[#B8EE63] p-4">
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#55713A]">olha isso</p>
+                <p className="mt-1 font-display text-3xl font-semibold tracking-[-0.05em]">R$ 1.523,80</p>
+                <p className="mt-1 text-sm font-medium text-[#53684A]">em compromissos próximos.</p>
+              </div>
+            </div>
           </div>
         </section>
 
-        <section className="bg-[#0A0F1D] px-4 py-20 sm:px-6 sm:py-28">
-          <div className="mx-auto max-w-6xl">
-            <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
-              <div className="max-w-2xl">
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#39FF14]">
-                  Prova social, do jeito certo
-                </p>
-                <h2 className="mt-5 font-display text-5xl font-semibold leading-[.95] tracking-[-0.06em] sm:text-7xl">
-                  Quando chegarem os vídeos, eles entram aqui.
-                </h2>
-              </div>
-              <span className="rounded-full border border-[#1E293B]/15 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#FFFFFF]/55">
-                DEMO · aguardando conteúdo real
-              </span>
+        <section className="px-4 py-20 sm:px-6 sm:py-28">
+          <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1.05fr_.95fr] lg:items-center">
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#6C824F]">Uma descoberta por vez</p>
+              <h2 className="mt-4 font-display text-5xl font-semibold leading-[.95] tracking-[-0.06em] sm:text-7xl">O FINANZZI não só registra. Ele te conta o que isso significa.</h2>
+              <p className="mt-6 max-w-xl text-lg leading-8 text-[#697164]">“Você gastou mais com delivery.” “Essa parcela pesa R$ 99,75 nos próximos meses.” “Você tem quatro contas nesta semana.”</p>
+              <a href={checkout("annual")} className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#161815] px-6 py-3.5 text-sm font-bold text-white transition-transform hover:-translate-y-0.5">
+                QUERO TER ISSO <ArrowRight className="size-4" />
+              </a>
             </div>
-            <div className="mt-10 grid gap-4 md:grid-cols-3">
-              {["Comentário real", "Vídeo de uso", "Print de resultado"].map((item) => (
-                <div
-                  key={item}
-                  className="flex min-h-44 flex-col justify-between border border-dashed border-[#1E293B]/25 bg-[#1E293B]/35 p-6"
-                >
-                  <Sparkles className="size-5 text-[#39FF14]" />
-                  <div>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#39FF14]">
-                      DEMO
-                    </p>
-                    <p className="mt-2 text-lg font-semibold">{item}</p>
-                    <p className="mt-1 text-sm text-[#FFFFFF]/55">
-                      Espaço reservado para prova verificável.
-                    </p>
+            <div className="grid gap-4">
+              {["Descobri quanto gasto em assinaturas.", "Perguntei se podia comprar.", "O FINANZZI lembrou das minhas contas."].map((text) => (
+                <div key={text} className="rounded-[1.6rem] border border-[#DDE1D5] bg-white p-5 shadow-[0_12px_34px_rgba(25,30,22,0.04)]">
+                  <div className="flex items-start gap-3">
+                    <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#EAF5DA] text-[#5B7D39]"><Check className="size-4" /></span>
+                    <p className="text-lg font-semibold leading-7">{text}</p>
                   </div>
                 </div>
               ))}
@@ -405,224 +211,101 @@ function Landing() {
           </div>
         </section>
 
-        <section id="oferta" className="bg-[#0A0F1D] px-4 py-20 text-white sm:px-6 sm:py-28">
-          <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[.9fr_1.1fr] lg:items-start">
-            <div className="lg:sticky lg:top-28">
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#39FF14]">
-                A oferta
-              </p>
-              <h2 className="mt-5 max-w-xl font-display text-5xl font-semibold leading-[.95] tracking-[-0.06em] sm:text-7xl">
-                Pare de tentar lembrar de tudo.
-              </h2>
-              <p className="mt-6 max-w-md text-lg leading-8 text-[#94A3B8]/60">
-                Deixe o FINANZZI organizar. Acesso completo ao produto, com o seu histórico
-                protegido.
-              </p>
-              <div className="mt-8 flex items-center gap-3 text-sm text-[#94A3B8]/65">
-                <ShieldCheck className="size-5 text-[#39FF14]" /> Pagamento seguro · acesso após
-                confirmação
-              </div>
+        <section id="oferta" className="bg-[#EAF5DA] px-4 py-20 sm:px-6 sm:py-28">
+          <div className="mx-auto max-w-6xl">
+            <div className="max-w-2xl">
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#5F7E41]">Acesso completo</p>
+              <h2 className="mt-4 font-display text-5xl font-semibold leading-[.95] tracking-[-0.06em] sm:text-7xl">Pare de tentar lembrar de tudo.</h2>
+              <p className="mt-5 text-lg leading-8 text-[#596251]">Registre. Organize. Lembre. Entenda. E deixe o FINANZZI fazer a parte chata.</p>
             </div>
-            <div className="rounded-[2rem] bg-[#0A0F1D] p-6 text-[#FFFFFF] sm:p-9">
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#39FF14]">
-                    FINANZZI
-                  </p>
-                  <h3 className="mt-2 font-display text-3xl font-semibold tracking-tight">
-                    Acesso completo.
-                  </h3>
-                </div>
-                <span className="rounded-full bg-[#39FF14] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.14em]">
-                  Anual · melhor valor
-                </span>
-              </div>
-              <div className="mt-8 flex items-end gap-3">
-                <span className="font-display text-6xl font-semibold tracking-[-0.07em]">
-                  R$ 12,49
-                </span>
-                <span className="pb-2 text-sm text-[#FFFFFF]/55">por mês no anual</span>
-              </div>
-              <p className="mt-2 text-sm text-[#FFFFFF]/55">
-                Cobrado como {BILLING_PLANS.pro_annual.priceLabel}. Plano mensal:{" "}
-                {BILLING_PLANS.pro_monthly.priceLabel}.
-              </p>
-              <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                {[
-                  "Registro por texto",
-                  "Voz",
-                  "Organização",
-                  "Contas e assinaturas",
-                  "Lembretes",
-                  "Fin e orientação",
-                ].map((benefit) => (
-                  <p key={benefit} className="flex items-center gap-2 text-sm font-semibold">
-                    <Check className="size-4 text-[#39FF14]" /> {benefit}
-                  </p>
-                ))}
-              </div>
-              <a
-                href={checkoutHref("annual")}
-                onClick={markCheckout}
-                className="mt-9 inline-flex h-14 w-full items-center justify-center gap-2 rounded-full bg-[#39FF14] px-6 text-sm font-bold text-[#0A0F1D] transition-transform hover:-translate-y-0.5 sm:text-base"
-              >
-                QUERO O FINANZZI <ArrowRight className="size-4" />
-              </a>
-              <p className="mt-4 text-center text-xs text-[#FFFFFF]/50">
-                Sem cobrança enquanto o checkout próprio não estiver configurado.
-              </p>
+            <div className="mt-10 grid gap-4 lg:grid-cols-2">
+              <PricingCard plan={monthly} checkoutHref={checkout("monthly")} />
+              <PricingCard plan={annual} checkoutHref={checkout("annual")} featured />
+            </div>
+            <div className="mt-7 flex flex-wrap items-center gap-5 text-xs font-semibold text-[#65705E]">
+              <span className="inline-flex items-center gap-2"><ShieldCheck className="size-4" /> pagamento processado pelo checkout</span>
+              <span>acesso liberado após confirmação</span>
+              <span>cancelamento conforme o plano</span>
             </div>
           </div>
         </section>
 
-        <section className="bg-[#1E293B] px-4 py-20 sm:px-6 sm:py-28">
-          <div className="mx-auto max-w-3xl">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#39FF14]">
-              Perguntas simples
-            </p>
-            <h2 className="mt-5 font-display text-5xl font-semibold leading-[.95] tracking-[-0.06em] sm:text-7xl">
-              Antes de começar.
-            </h2>
-            <div className="mt-10 divide-y divide-[#1E293B]/15 border-y border-[#1E293B]/15">
-              <Faq
-                question="Preciso preencher tudo manualmente?"
-                answer="Não. Você escreve ou fala do jeito que falaria com alguém. O FINANZZI organiza a partir disso."
-              />
-              <Faq
-                question="Posso falar meus gastos?"
-                answer="Sim. O registro por voz faz parte do acesso completo; a demonstração pública usa apenas exemplos simulados."
-              />
-              <Faq
-                question="Ele lembra minhas contas?"
-                answer="Sim. Contas recorrentes, assinaturas e vencimentos ficam organizados para você acompanhar antes da data."
-              />
-              <Faq
-                question="Posso cadastrar Netflix e outros streamings?"
-                answer="Sim. Você pode registrar assinaturas e ver o total mensal e anual comprometido."
-              />
-              <Faq
-                question="Ele acessa minha conta bancária?"
-                answer="Não. O FINANZZI não precisa de acesso bancário para funcionar; você escolhe o que registrar."
-              />
-              <Faq
-                question="Quando recebo acesso?"
-                answer="Depois que o backend confirmar o pagamento aprovado pelo checkout configurado. Antes disso, a página mostra apenas demonstrações."
-              />
-              <Faq
-                question="Como funciona o pagamento?"
-                answer="O checkout Hubla será aberto somente quando as URLs próprias do FINANZZI forem configuradas. Nenhuma cobrança é criada enquanto estiver pendente."
-              />
-              <Faq
-                question="Posso cancelar?"
-                answer="O cancelamento será tratado pelo provedor configurado e não apaga os dados financeiros existentes."
-              />
+        <section className="px-4 py-20 sm:px-6 sm:py-24">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#6C824F]">FAQ</p>
+            <h2 className="mt-4 font-display text-4xl font-semibold tracking-[-0.05em] sm:text-6xl">Ainda está pensando?</h2>
+            <div className="mt-8 divide-y divide-[#DDE1D5] rounded-[1.7rem] border border-[#DDE1D5] bg-white px-5 text-left">
+              <Faq title="Preciso preencher tudo manualmente?">Não. O FINANZZI foi pensado para entender frases simples como “uber 27”, “mercado 82” ou “Netflix 39,90 todo mês”.</Faq>
+              <Faq title="O FINANZZI lembra minhas contas?">Sim. Você pode cadastrar contas fixas, assinaturas, parcelas e outros compromissos para acompanhar os próximos vencimentos.</Faq>
+              <Faq title="Ele acessa minha conta bancária?">Não. O FINANZZI não precisa da sua senha bancária para registrar e organizar o que você informa.</Faq>
+              <Faq title="Quando recebo acesso?">O acesso completo é liberado depois da confirmação do pagamento.</Faq>
+              <Faq title="Posso usar pelo celular?">Sim. A experiência foi pensada primeiro para telas pequenas e também funciona no desktop.</Faq>
             </div>
           </div>
         </section>
 
-        <section className="bg-[#39FF14] px-4 py-20 text-center text-[#0A0F1D] sm:px-6 sm:py-28">
-          <div className="mx-auto max-w-3xl">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#0A0F1D]/70">
-              Seu próximo mês pode ser diferente
-            </p>
-            <h2 className="mt-5 font-display text-5xl font-semibold leading-[.9] tracking-[-0.07em] sm:text-8xl">
-              Deixe o FINANZZI organizar.
-            </h2>
-            <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-[#0A0F1D]/70">
-              Registrar seus gastos ficou fácil. O resto começa a fazer sentido.
-            </p>
-            <a
-              href={checkoutHref("annual")}
-              onClick={markCheckout}
-              className="mt-9 inline-flex h-14 items-center justify-center gap-2 rounded-full bg-[#0A0F1D] px-8 text-sm font-bold text-[#FFFFFF] transition-transform hover:-translate-y-0.5 sm:text-base"
-            >
+        <section className="px-4 pb-20 sm:px-6 sm:pb-28">
+          <div className="mx-auto max-w-6xl overflow-hidden rounded-[2.2rem] bg-[#161815] px-6 py-12 text-center text-white sm:px-12 sm:py-16">
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#B8EE63]">FINANZZI</p>
+            <h2 className="mx-auto mt-4 max-w-3xl font-display text-5xl font-semibold leading-[.94] tracking-[-0.06em] sm:text-7xl">Você não precisa virar especialista em finanças. Só precisa começar.</h2>
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/65">Registre do seu jeito. O FINANZZI organiza o resto.</p>
+            <a href={checkout("annual")} className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#B8EE63] px-7 py-4 text-sm font-bold text-[#161815] transition-transform hover:-translate-y-0.5 sm:text-base">
               QUERO O FINANZZI <ArrowRight className="size-4" />
             </a>
           </div>
         </section>
       </main>
-
-      <footer className="bg-[#0A0F1D] px-4 py-8 text-center text-white sm:px-6">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-3">
-          <div className="rounded-full bg-white px-3 py-1">
-            <Logo />
-          </div>
-          <p className="text-xs text-[#94A3B8]/50">
-            Você fala. O FINANZZI organiza. E lembra o que você não pode esquecer.
-          </p>
-          <p className="text-[10px] uppercase tracking-[0.16em] text-[#94A3B8]/30">
-            Demonstrações públicas sem dados reais · WhatsApp no futuro
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }
 
-function ConversationDemo({ scene, large = false }: { scene: DemoScene; large?: boolean }) {
+function PricingCard({
+  plan,
+  checkoutHref,
+  featured = false,
+}: {
+  plan: (typeof BILLING_PLANS)[keyof typeof BILLING_PLANS];
+  checkoutHref: string;
+  featured?: boolean;
+}) {
   return (
-    <div className={`relative mx-auto w-full ${large ? "max-w-3xl" : "max-w-xl"}`}>
-      <div className="absolute -inset-3 rounded-[2.5rem] bg-[#39FF14]/35 blur-2xl" />
-      <div className="relative overflow-hidden rounded-[2rem] border border-[#1E293B]/12 bg-white p-4 shadow-[0_24px_70px_rgba(23,32,28,.12)] sm:p-6">
-        <div className="flex items-center justify-between border-b border-[#1E293B]/10 pb-4">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#39FF14]">
-              Demonstração simulada
-            </p>
-            <p className="mt-1 text-sm font-semibold">Falar dos seus gastos ficou fácil.</p>
-          </div>
-          <span className="grid size-10 place-items-center rounded-full bg-[#39FF14] text-[#FFFFFF]">
-            <Mic2 className="size-4" />
-          </span>
+    <article className={`rounded-[2rem] border p-6 sm:p-8 ${featured ? "border-[#161815] bg-[#161815] text-white shadow-[0_24px_60px_rgba(20,24,18,0.15)]" : "border-[#D9DED2] bg-white text-[#161815]"}`}>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className={`text-xs font-bold uppercase tracking-[0.15em] ${featured ? "text-[#B8EE63]" : "text-[#6B7564]"}`}>{plan.name}</p>
+          <p className="mt-3 font-display text-4xl font-semibold tracking-[-0.05em]">{plan.priceLabel}</p>
+          <p className={`mt-1 text-sm ${featured ? "text-white/60" : "text-[#6C7468]"}`}>{plan.monthlyEquivalentLabel}</p>
         </div>
-        <div className="mt-4 h-px bg-gradient-to-r from-[#0A0F1D] via-[#1E293B] to-[#39FF14]" />
-        <div className="mt-7 space-y-3">
-          <div className="ml-auto max-w-[88%] rounded-[1.35rem] rounded-br-md bg-[#0A0F1D] px-4 py-3 text-sm font-medium text-white sm:text-base">
-            {scene.input}
-          </div>
-          <div className="max-w-[90%] rounded-[1.35rem] rounded-bl-md border border-[#1E293B]/12 bg-[#0A0F1D] px-4 py-4">
-            <p className="text-sm font-semibold text-[#39FF14]">{scene.result}</p>
-            <p className="mt-1 text-sm text-[#FFFFFF]/65">{scene.detail}</p>
-          </div>
-          <div className="rounded-2xl bg-[#39FF14] px-4 py-4">
-            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#39FF14]">
-              Próxima clareza
-            </p>
-            <p className="mt-1 font-display text-2xl font-semibold tracking-tight sm:text-3xl">
-              Seu dinheiro disponível hoje: R$ 327
-            </p>
-          </div>
-        </div>
+        {featured && <span className="rounded-full bg-[#B8EE63] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.12em] text-[#161815]">mais vantajoso</span>}
       </div>
-    </div>
-  );
-}
-
-function StoryBlock({ title, quote, answer }: { title: string; quote: string; answer: string }) {
-  return (
-    <article className="rounded-[1.75rem] bg-[#0A0F1D] p-5 text-[#FFFFFF] sm:p-6">
-      <p className="text-sm font-bold text-[#39FF14]">{title}</p>
-      <p className="mt-7 font-display text-2xl font-semibold leading-tight tracking-tight">
-        “{quote}”
-      </p>
-      <div className="mt-6 border-t border-[#1E293B]/12 pt-4">
-        <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#FFFFFF]/45">
-          FINANZZI responde
-        </p>
-        <p className="mt-2 text-lg font-semibold leading-6">{answer}</p>
-      </div>
+      <p className={`mt-4 text-sm font-semibold ${featured ? "text-white/70" : "text-[#5F685C]"}`}>{plan.savingsLabel}</p>
+      <div className={`my-7 border-t ${featured ? "border-white/10" : "border-[#E6EAE2]"}`} />
+      <ul className={`space-y-3 text-sm ${featured ? "text-white/80" : "text-[#4E574C]"}`}>
+        {[
+          "Registro por texto e voz",
+          "Organização automática",
+          "Contas e assinaturas",
+          "Lembretes e compromissos",
+          "FIN para orientar suas decisões",
+        ].map((item) => (
+          <li key={item} className="flex items-start gap-2"><Check className={`mt-0.5 size-4 shrink-0 ${featured ? "text-[#B8EE63]" : "text-[#668448]"}`} />{item}</li>
+        ))}
+      </ul>
+      <a href={checkoutHref} className={`mt-8 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full text-sm font-bold transition-transform hover:-translate-y-0.5 ${featured ? "bg-[#B8EE63] text-[#161815]" : "bg-[#161815] text-white"}`}>
+        ASSINAR AGORA <ArrowRight className="size-4" />
+      </a>
     </article>
   );
 }
 
-function Faq({ question, answer }: { question: string; answer: string }) {
+function Faq({ title, children }: { title: string; children: string }) {
   return (
     <details className="group py-5">
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold sm:text-lg [&::-webkit-details-marker]:hidden">
-        {question}
-        <ChevronDown className="size-5 shrink-0 transition-transform group-open:rotate-180" />
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold">
+        {title}
+        <ChevronDown className="size-4 shrink-0 transition-transform group-open:rotate-180" />
       </summary>
-      <p className="max-w-2xl pt-3 text-sm leading-6 text-[#FFFFFF]/65 sm:text-base">{answer}</p>
+      <p className="mt-3 max-w-2xl pr-8 text-sm leading-6 text-[#697164]">{children}</p>
     </details>
   );
 }
