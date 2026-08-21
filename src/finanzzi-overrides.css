@@ -37,7 +37,7 @@ aside ~ main {
 }
 
 aside ~ main .text-primary,
-aside ~ main .hover\:text-primary:hover {
+aside ~ main .hover\\:text-primary:hover {
   color: var(--fin-green-strong) !important;
 }
 
@@ -58,31 +58,31 @@ aside ~ main .text-accent-foreground {
   color: var(--fin-ink) !important;
 }
 
-aside ~ main .bg-primary\/10,
-aside ~ main .bg-primary\/5 {
+aside ~ main .bg-primary\\/10,
+aside ~ main .bg-primary\\/5 {
   background-color: var(--fin-blue-soft) !important;
 }
 
-aside ~ main .border-primary\/20,
-aside ~ main .border-primary\/50 {
+aside ~ main .border-primary\\/20,
+aside ~ main .border-primary\\/50 {
   border-color: #D0D2FA !important;
 }
 
 aside ~ main .text-muted-foreground,
-aside ~ main .text-muted-foreground\/65 {
+aside ~ main .text-muted-foreground\\/65 {
   color: var(--fin-muted) !important;
 }
 
 aside ~ main .bg-muted,
-aside ~ main .bg-muted\/60,
-aside ~ main .bg-muted\/70,
-aside ~ main .bg-muted\/40 {
+aside ~ main .bg-muted\\/60,
+aside ~ main .bg-muted\\/70,
+aside ~ main .bg-muted\\/40 {
   background-color: var(--fin-soft) !important;
 }
 
 aside ~ main .border-border,
-aside ~ main .border-border\/60,
-aside ~ main .border-border\/70 {
+aside ~ main .border-border\\/60,
+aside ~ main .border-border\\/70 {
   border-color: var(--fin-line) !important;
 }
 
@@ -140,10 +140,10 @@ body [class~="border-[#DDE1D5]"] { border-color: #E4E7EF !important; }
 body [class~="border-[#E7EAE3]"] { border-color: #E8EBF1 !important; }
 body [class~="border-[#DCE1D6]"] { border-color: #E1E4EC !important; }
 body [class~="bg-white"] { background-color: #FFFFFF !important; }
-body [class~="bg-white\/75"] { background-color: rgb(255 255 255 / 0.86) !important; }
+body [class~="bg-white/75"] { background-color: rgb(255 255 255 / 0.86) !important; }
 
 /* Small coral accents: use sparingly so the page feels social, not noisy. */
-body [class~="max-w-[470px]"] .bg-\[\#B8EE63\]:last-child {
+body [class~="max-w-[470px]"] .bg-\\[\\#B8EE63\\]:last-child {
   background-color: #FF6B6B !important;
 }
 
@@ -225,19 +225,71 @@ body [class~="max-w-[470px]"] .bg-\[\#B8EE63\]:last-child {
 }
 
 .dark aside ~ main .bg-muted,
-.dark aside ~ main .bg-muted\/60,
-.dark aside ~ main .bg-muted\/70,
-.dark aside ~ main .bg-muted\/40 {
+.dark aside ~ main .bg-muted\\/60,
+.dark aside ~ main .bg-muted\\/70,
+.dark aside ~ main .bg-muted\\/40 {
   background-color: var(--fin-soft) !important;
 }
 
 .dark aside ~ main .text-muted-foreground,
-.dark aside ~ main .text-muted-foreground\/65 {
+.dark aside ~ main .text-muted-foreground\\/65 {
   color: var(--fin-muted) !important;
 }
 
 .dark aside ~ main .border-border,
-.dark aside ~ main .border-border\/60,
-.dark aside ~ main .border-border\/70 {
+.dark aside ~ main .border-border\\/60,
+.dark aside ~ main .border-border\\/70 {
   border-color: var(--fin-line) !important;
+}
+
+/* Global brand tokens: one FINANZZI language across login + app. */
+body .bg-primary,
+body [class~="bg-primary"] {
+  background-color: var(--fin-blue) !important;
+}
+body .text-primary,
+body [class~="text-primary"] {
+  color: var(--fin-blue-strong) !important;
+}
+body [class~="bg-primary/10"],
+body [class~="bg-primary/5"] {
+  background-color: var(--fin-blue-soft) !important;
+}
+body [class~="border-primary/20"],
+body [class~="border-primary/50"] {
+  border-color: #D0D2FA !important;
+}
+body [class~="text-[#39FF14]"] {
+  color: var(--fin-blue) !important;
+}
+body [class~="bg-[#39FF14]"] {
+  background-color: var(--fin-blue) !important;
+}
+body [class~="bg-[#39FF14]/10"] {
+  background-color: color-mix(in srgb, var(--fin-blue) 10%, transparent) !important;
+}
+body [class~="bg-[#0A0F1D]"] {
+  background-color: var(--fin-ink) !important;
+}
+body [class~="text-[#94A3B8]"] {
+  color: var(--fin-muted) !important;
+}
+
+:focus-visible {
+  outline-color: var(--fin-blue) !important;
+}
+
+::selection {
+  background: #DDE0FF !important;
+  color: var(--fin-ink) !important;
+}
+
+/* Login: turn the visual into a product preview rather than a generic AI panel. */
+@media (min-width: 1024px) {
+  body:has(main) .bg-\\[\\#0A0F1D\\] {
+    background: linear-gradient(160deg, #151827 0%, #20243A 100%) !important;
+  }
+}
+body [class~="bg-[#39FF14]/10"] {
+  background-color: rgb(91 92 226 / 0.10) !important;
 }
