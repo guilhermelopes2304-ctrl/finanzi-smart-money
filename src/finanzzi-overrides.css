@@ -1,7 +1,7 @@
 /* FINANZZI visual refinements: calm internal UI + product-demo phone frame. */
 
-/* Internal app: replace the neon/high-tech feel with a calmer consumer-product palette. */
-[data-fin-app="internal"] {
+/* Internal app: the authenticated shell has an aside; this keeps the calmer palette scoped away from the commercial landing. */
+aside ~ main {
   --fin-ink: #1b211a;
   --fin-copy: #4f574b;
   --fin-muted: #697264;
@@ -12,62 +12,79 @@
   --fin-green-strong: #5f8a36;
 }
 
-[data-fin-app="internal"] .text-primary,
-[data-fin-app="internal"] .hover\:text-primary:hover {
+aside ~ main .text-primary,
+aside ~ main .hover\:text-primary:hover {
   color: var(--fin-green-strong) !important;
 }
 
-[data-fin-app="internal"] .bg-primary {
+aside ~ main .bg-primary {
   background-color: var(--fin-ink) !important;
 }
 
-[data-fin-app="internal"] .text-primary-foreground {
+aside ~ main .text-primary-foreground {
   color: #ffffff !important;
 }
 
-[data-fin-app="internal"] .bg-accent {
+aside ~ main .bg-accent {
   background-color: var(--fin-soft-green) !important;
   color: var(--fin-ink) !important;
 }
 
-[data-fin-app="internal"] .text-accent-foreground {
+aside ~ main .text-accent-foreground {
   color: var(--fin-ink) !important;
 }
 
-[data-fin-app="internal"] .bg-primary\/10,
-[data-fin-app="internal"] .bg-primary\/5 {
+aside ~ main .bg-primary\/10,
+aside ~ main .bg-primary\/5 {
   background-color: var(--fin-soft-green) !important;
 }
 
-[data-fin-app="internal"] .border-primary\/20,
-[data-fin-app="internal"] .border-primary\/50 {
+aside ~ main .border-primary\/20,
+aside ~ main .border-primary\/50 {
   border-color: #cfe1b6 !important;
 }
 
-[data-fin-app="internal"] .text-muted-foreground,
-[data-fin-app="internal"] .text-muted-foreground\/65 {
+aside ~ main .text-muted-foreground,
+aside ~ main .text-muted-foreground\/65 {
   color: var(--fin-muted) !important;
 }
 
-[data-fin-app="internal"] .bg-muted,
-[data-fin-app="internal"] .bg-muted\/60,
-[data-fin-app="internal"] .bg-muted\/70,
-[data-fin-app="internal"] .bg-muted\/40 {
+aside ~ main .bg-muted,
+aside ~ main .bg-muted\/60,
+aside ~ main .bg-muted\/70,
+aside ~ main .bg-muted\/40 {
   background-color: var(--fin-soft) !important;
 }
 
-[data-fin-app="internal"] .border-border,
-[data-fin-app="internal"] .border-border\/60,
-[data-fin-app="internal"] .border-border\/70 {
+aside ~ main .border-border,
+aside ~ main .border-border\/60,
+aside ~ main .border-border\/70 {
   border-color: var(--fin-line) !important;
 }
 
-[data-fin-app="internal"] .surface-card {
+aside ~ main .surface-card {
   border-color: var(--fin-line) !important;
   box-shadow: 0 12px 32px rgb(30 38 27 / 0.05) !important;
 }
 
-/* Product hero on the landing: turn the existing demo into a recognizable phone. */
+/* Make the authenticated navigation readable without the washed-out gray text. */
+aside {
+  color: #2f372d;
+}
+
+aside .text-muted-foreground {
+  color: #5c6659 !important;
+}
+
+aside .text-primary {
+  color: #5f8a36 !important;
+}
+
+aside .bg-primary {
+  background-color: #7fb34a !important;
+}
+
+/* Commercial landing: turn the existing demo panel into a real phone-like product mockup. */
 [class~="max-w-[470px]"] {
   position: relative;
   width: min(100%, 360px) !important;
