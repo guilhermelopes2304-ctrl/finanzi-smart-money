@@ -95,10 +95,7 @@ export function DashboardView({
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">
-                    Decisão do dia
-                  </p>
-                  <h2 id="capacity-title" className="mt-1 text-base font-semibold">
+                  <h2 id="capacity-title" className="text-base font-semibold">
                     Quanto posso gastar hoje?
                   </h2>
                 </div>
@@ -117,7 +114,7 @@ export function DashboardView({
               >
                 {hasPressure
                   ? "Seus compromissos já ocupam praticamente toda a sua margem."
-                  : "Depois dos compromissos que já conhecemos. Você está dentro da sua margem."}
+                  : "Depois dos compromissos que já conhecemos."}
               </p>
             </div>
           )}
@@ -126,10 +123,7 @@ export function DashboardView({
         <section aria-labelledby="commitments-title" className="mt-8">
           <div className="mb-3 flex items-end justify-between gap-3">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">
-                Lembrar
-              </p>
-              <h2 id="commitments-title" className="mt-1 text-xl font-semibold tracking-[-0.03em]">
+              <h2 id="commitments-title" className="text-xl font-semibold tracking-[-0.03em]">
                 Próximos compromissos
               </h2>
               {commitments.length > 0 && (
@@ -185,10 +179,7 @@ export function DashboardView({
 
         <section aria-labelledby="fin-insight-title" className="mt-8 pb-8">
           <div className="mb-3">
-            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">
-              Inteligência
-            </p>
-            <h2 id="fin-insight-title" className="mt-1 text-xl font-semibold tracking-[-0.03em]">
+            <h2 id="fin-insight-title" className="text-xl font-semibold tracking-[-0.03em]">
               O FIN percebeu uma coisa.
             </h2>
           </div>
