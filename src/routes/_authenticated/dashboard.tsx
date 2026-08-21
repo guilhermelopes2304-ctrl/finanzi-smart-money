@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Bell, CalendarClock, Check, CircleHelp, MessageCircle } from "lucide-react";
+import { ArrowRight, CalendarClock, CircleHelp, MessageCircle } from "lucide-react";
 import {
   useAccounts,
   useBills,
@@ -10,22 +10,18 @@ import {
   useTransactions,
 } from "@/hooks/useFinanceData";
 import { buildInsights, buildPeriod, spendCapacity } from "@/lib/finance";
-import { buildCommitmentReminders, nextCommitments } from "@/lib/commitments";
+import { nextCommitments } from "@/lib/commitments";
 import { formatBRL, formatDateBR, monthRange } from "@/lib/format";
 import { QuickEntry } from "@/components/finanzzi/QuickEntry";
 import { FinMascot } from "@/components/finanzzi/FinMascot";
 import { EmptyState } from "@/components/finanzzi/EmptyState";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
       { title: "Início — FINANZZI" },
-      {
-        name: "description",
-        content: "Conte para o FINANZZI o que aconteceu. Ele cuida do resto.",
-      },
+      { name: "description", content: "Conte o que aconteceu. O FINANZZI organiza e lembra do resto." },
     ],
   }),
   component: Dashboard,
@@ -44,7 +40,6 @@ function Dashboard() {
     [accounts, transactions, bills, goals],
   );
   const commitments = useMemo(() => nextCommitments(bills, categories, 3), [bills, categories]);
-  const reminders = useMemo(() => buildCommitmentReminders(bills, categories), [bills, categories]);
   const insights = useMemo(
     () =>
       buildInsights({
@@ -60,136 +55,109 @@ function Dashboard() {
   const firstName = profile?.name?.split(" ")[0] || "você";
   const available = Math.max(0, capacity.perDay);
   const hasPressure = capacity.perDay <= 0;
-  const insight = insights.opportunities[0] ?? insights.actions[0] ?? reminders[0];
+  const insight = insights.opportunities[0] ?? insights.actions[0];
   const commitmentsTotal = commitments.reduce((sum, bill) => sum + Number(bill.amount), 0);
 
   return (
-    <div className="min-h-full bg-background text-foreground">
-      <div className="mx-auto w-full max-w-4xl px-1 py-1 sm:px-2 lg:py-3">
-        <header className="flex items-start justify-between gap-4 pb-7 pt-1 sm:pb-10">
-          <div className="max-w-2xl">
-            <p className="text-sm font-semibold text-muted-foreground">
-              {getGreeting()}, {firstName}
-            </p>
-            <h1 className="mt-2 max-w-2xl font-display text-[2.35rem] font-semibold leading-[1.04] tracking-[-0.055em] sm:text-6xl">
-              {hasPressure ? "Atenção: sua semana está pesada." : "Você está no controle."}
+    <div className="min-h-full bg-[#F7F7F2] text-[#161815]">
+      <div className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
+        <header className="flex items-start justify-between gap-6 pb-7 sm:pb-9">
+          <div className="max-w-3xl">
+            <p className="text-sm font-semibold text-[#697164]">{getGreeting()}, {firstName}</p>
+            <h1 className="mt-2 font-display text-[2.65rem] font-semibold leading-[0.98] tracking-[-0.055em] sm:text-6xl">
+              {hasPressure ? "Vamos organizar essa semana." : "Seu dinheiro, sem complicação."}
             </h1>
-            <p className="mt-4 max-w-lg text-sm leading-6 text-muted-foreground sm:text-base">
-              Você conta para o FINANZZI o que aconteceu. Ele organiza e lembra do resto.
+            <p className="mt-4 max-w-xl text-sm leading-6 text-[#697164] sm:text-base">
+              Registre do seu jeito. O FINANZZI organiza, lembra e mostra o que merece sua atenção.
             </p>
           </div>
           <FinMascot
             expression={hasPressure ? "atento" : "normal"}
-            className="hidden h-20 w-20 shrink-0 sm:block"
+            className="hidden h-16 w-16 shrink-0 sm:block"
           />
         </header>
 
         {isLoading ? (
-          <Skeleton className="h-60 rounded-[2rem]" />
+          <Skeleton className="h-56 rounded-[2rem] bg-white" />
         ) : (
-          <section className="relative overflow-hidden rounded-[2rem] bg-primary p-6 text-primary-foreground shadow-lift sm:p-9">
-            <div className="pointer-events-none absolute -right-14 -top-20 size-64 rounded-full bg-accent/15 blur-3xl" />
-            <div className="relative flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
+          <section className="relative overflow-hidden rounded-[2rem] border border-[#E4E7DE] bg-white p-6 shadow-[0_18px_50px_rgba(20,25,18,0.06)] sm:p-8">
+            <div className="absolute inset-y-0 left-0 w-1.5 bg-[#9EEB45]" />
+            <div className="flex flex-col gap-7 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary-foreground/60">
-                  Você pode gastar hoje
-                </p>
-                <p className="mt-3 font-display text-5xl font-semibold leading-none tracking-[-0.06em] sm:text-7xl">
+                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#77806F]">Você pode gastar hoje</p>
+                <p className="mt-2 font-display text-5xl font-semibold leading-none tracking-[-0.06em] sm:text-7xl">
                   {formatBRL(available)}
                 </p>
-                <p className="mt-4 max-w-md text-sm leading-6 text-primary-foreground/65">
-                  sem comprometer os próximos compromissos.
+                <p className="mt-3 max-w-md text-sm leading-6 text-[#697164]">
+                  {hasPressure
+                    ? "Sua margem está apertada. Vamos olhar primeiro os compromissos."
+                    : "Depois dos compromissos que já conhecemos."}
                 </p>
               </div>
-              <div className="flex items-center gap-3 text-xs font-semibold text-primary-foreground/65 sm:max-w-[180px] sm:text-right">
-                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-primary-foreground/10">
-                  <Check className="size-4" />
-                </span>
-                {hasPressure
-                  ? "Vamos olhar o que pesa primeiro."
-                  : "Sua margem já considera o que vem pela frente."}
+              <div className="flex flex-col gap-2 sm:items-end">
+                <Link
+                  to="/posso-comprar"
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#161815] px-5 text-sm font-bold text-white transition-transform hover:-translate-y-0.5"
+                >
+                  Entender minha margem <ArrowRight className="size-4" />
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => window.dispatchEvent(new CustomEvent("finanzzi:open-assistant"))}
+                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full px-4 text-xs font-bold text-[#53604E] transition-colors hover:bg-[#F0F3EA]"
+                >
+                  Perguntar ao FIN <MessageCircle className="size-3.5" />
+                </button>
               </div>
-            </div>
-            <div className="relative mt-8 flex flex-wrap gap-3">
-              <Link
-                to="/posso-comprar"
-                className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-accent px-4 text-sm font-bold text-accent-foreground transition-transform hover:-translate-y-0.5 active:scale-95"
-              >
-                Entender minha margem <ArrowRight className="size-4" />
-              </Link>
-              <button
-                type="button"
-                onClick={() => window.dispatchEvent(new CustomEvent("finanzzi:open-assistant"))}
-                className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-primary-foreground/20 px-4 text-sm font-semibold text-primary-foreground/85 transition-colors hover:bg-primary-foreground/10"
-              >
-                Perguntar ao Fin <MessageCircle className="size-4" />
-              </button>
             </div>
           </section>
         )}
 
-        <section className="mt-8 sm:mt-10">
+        <section className="mt-9 sm:mt-11">
           <div className="mb-3 flex items-end justify-between gap-3">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
-                Registrar
-              </p>
-              <h2 className="mt-1 font-display text-2xl font-semibold tracking-[-0.04em] sm:text-3xl">
-                O que aconteceu?
-              </h2>
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#77806F]">Registrar</p>
+              <h2 className="mt-1 font-display text-3xl font-semibold tracking-[-0.045em]">O que aconteceu?</h2>
             </div>
-            <span className="hidden text-xs text-muted-foreground sm:block">
-              texto, voz ou foto
+            <span className="hidden rounded-full bg-white px-3 py-1.5 text-[11px] font-semibold text-[#77806F] sm:block">
+              texto · voz · foto
             </span>
           </div>
-          <QuickEntry />
+          <div className="rounded-[1.75rem] border border-[#E4E7DE] bg-white p-2 shadow-[0_14px_40px_rgba(20,25,18,0.04)] sm:p-3">
+            <QuickEntry />
+          </div>
         </section>
 
-        <section className="mt-10 sm:mt-12">
+        <section className="mt-9 sm:mt-11">
           <div className="mb-4 flex items-end justify-between gap-3">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
-                Lembrar
-              </p>
-              <h2 className="mt-1 font-display text-2xl font-semibold tracking-[-0.04em] sm:text-3xl">
-                Próximos compromissos
-              </h2>
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#77806F]">Lembrar</p>
+              <h2 className="mt-1 font-display text-3xl font-semibold tracking-[-0.045em]">Próximos compromissos</h2>
               {commitments.length > 0 && (
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {formatBRL(commitmentsTotal)} nos próximos pagamentos.
-                </p>
+                <p className="mt-1 text-sm text-[#697164]">{formatBRL(commitmentsTotal)} nos próximos pagamentos.</p>
               )}
             </div>
-            <Link
-              to="/contas"
-              className="inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline"
-            >
-              Ver todos <ArrowRight className="size-3.5" />
+            <Link to="/contas" className="inline-flex items-center gap-1 text-xs font-bold text-[#394238] hover:underline">
+              Ver tudo <ArrowRight className="size-3.5" />
             </Link>
           </div>
           {commitments.length === 0 ? (
-            <EmptyState
-              title="Nada vencendo por agora"
-              description="Registre uma conta fixa e o FINANZZI lembra por você."
-            />
+            <div className="rounded-[1.5rem] border border-dashed border-[#D5DACD] bg-white/70">
+              <EmptyState title="Nada vencendo por agora" description="Registre uma conta fixa e o FINANZZI lembra por você." />
+            </div>
           ) : (
-            <div className="divide-y divide-border overflow-hidden rounded-[1.5rem] border border-border bg-card">
-              {commitments.map((bill) => {
+            <div className="overflow-hidden rounded-[1.5rem] border border-[#E4E7DE] bg-white">
+              {commitments.map((bill, index) => {
                 const days = daysUntil(bill.due_date);
                 return (
-                  <div key={bill.id} className="flex items-center gap-3 px-4 py-4 sm:px-5">
-                    <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-secondary text-secondary-foreground">
+                  <div key={bill.id} className={`flex items-center gap-3 px-4 py-4 sm:px-5 ${index > 0 ? "border-t border-[#EEF0EA]" : ""}`}>
+                    <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[#F1F4EB] text-[#5C6856]">
                       <CalendarClock className="size-4" />
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold">{bill.description}</p>
-                      <p className="mt-0.5 text-xs text-muted-foreground">
-                        {days <= 0
-                          ? "vence hoje"
-                          : days === 1
-                            ? "vence amanhã"
-                            : `vence em ${days} dias`}{" "}
-                        · {formatDateBR(bill.due_date)}
+                      <p className="mt-0.5 text-xs text-[#7A8274]">
+                        {days <= 0 ? "vence hoje" : days === 1 ? "vence amanhã" : `vence em ${days} dias`} · {formatDateBR(bill.due_date)}
                       </p>
                     </div>
                     <p className="shrink-0 text-sm font-bold">{formatBRL(Number(bill.amount))}</p>
@@ -200,41 +168,32 @@ function Dashboard() {
           )}
         </section>
 
-        <section className="mt-10 pb-8 sm:mt-12">
+        <section className="mt-9 pb-8 sm:mt-11">
           <div className="mb-4 flex items-end justify-between gap-3">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
-                Orientar
-              </p>
-              <h2 className="mt-1 font-display text-2xl font-semibold tracking-[-0.04em] sm:text-3xl">
-                Uma coisa que você deveria saber
-              </h2>
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#77806F]">Orientar</p>
+              <h2 className="mt-1 font-display text-3xl font-semibold tracking-[-0.045em]">Uma coisa que merece sua atenção</h2>
             </div>
             <button
               type="button"
               onClick={() => window.dispatchEvent(new CustomEvent("finanzzi:open-assistant"))}
-              className="inline-flex min-h-10 items-center gap-2 rounded-xl bg-secondary px-3 text-xs font-bold text-secondary-foreground transition-colors hover:bg-accent"
+              className="inline-flex min-h-10 items-center gap-2 rounded-full bg-white px-4 text-xs font-bold text-[#394238] shadow-sm ring-1 ring-[#E4E7DE] transition-colors hover:bg-[#F0F3EA]"
             >
               Perguntar <MessageCircle className="size-3.5" />
             </button>
           </div>
-          <div className="surface-card flex items-start gap-4 p-5 sm:p-6">
-            <FinMascot
-              expression={insight ? "pensando" : "normal"}
-              className="h-16 w-16 shrink-0"
-            />
+          <div className="flex items-start gap-4 rounded-[1.5rem] border border-[#E4E7DE] bg-white p-5 shadow-[0_12px_34px_rgba(20,25,18,0.04)] sm:p-6">
+            <FinMascot expression={insight ? "pensando" : "normal"} className="h-14 w-14 shrink-0" />
             {insight ? (
               <div>
                 <p className="text-sm font-semibold">{insight.title}</p>
-                <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                  {insight.description}
-                </p>
+                <p className="mt-1 text-sm leading-6 text-[#697164]">{insight.description}</p>
               </div>
             ) : (
               <div className="flex items-start gap-3">
-                <CircleHelp className="mt-0.5 size-4 shrink-0 text-primary" />
-                <p className="text-sm leading-6 text-muted-foreground">
-                  Registre alguns dias e o Fin vai encontrar uma coisa importante para você.
+                <CircleHelp className="mt-0.5 size-4 shrink-0 text-[#718068]" />
+                <p className="text-sm leading-6 text-[#697164]">
+                  Registre alguns dias e o FIN começa a encontrar padrões importantes para você.
                 </p>
               </div>
             )}
