@@ -48,18 +48,28 @@ body [class~="text-[#94A3B8]"] {
   color: var(--fin-ink) !important;
 }
 
-/* Authenticated application: apply compatibility rules only inside AppShell. */
+/* Authenticated application: use the canonical sidebar tokens in both themes. */
 [data-fin-app-shell] aside {
-  color: #2d3446;
+  color: var(--sidebar-foreground);
 }
 [data-fin-app-shell] aside .text-muted-foreground {
-  color: #4f5a70 !important;
+  color: var(--sidebar-foreground) !important;
+  opacity: 0.76;
 }
 [data-fin-app-shell] aside .text-primary {
-  color: var(--fin-blue-strong) !important;
+  color: var(--sidebar-primary) !important;
+}
+[data-fin-app-shell] aside .text-primary-foreground {
+  color: var(--sidebar-primary-foreground) !important;
 }
 [data-fin-app-shell] aside .bg-primary {
-  background-color: var(--fin-ink) !important;
+  background-color: var(--sidebar-primary) !important;
+}
+.dark [data-fin-app-shell] aside .text-primary {
+  color: var(--sidebar-primary-foreground) !important;
+}
+.dark [data-fin-app-shell] aside .text-muted-foreground {
+  opacity: 0.84;
 }
 
 [data-fin-app-shell] aside ~ main .text-primary {
