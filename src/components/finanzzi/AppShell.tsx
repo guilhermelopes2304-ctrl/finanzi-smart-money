@@ -134,8 +134,16 @@ function NavItem({
   );
 }
 
-export function AppShell({ children }: { children: ReactNode }) {
+export function AppShell({
+  children,
+  visualReview = false,
+}: {
+  children: ReactNode;
+  visualReview?: boolean;
+}) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const activePathname =
+    visualReview && pathname === "/visual-review/dashboard" ? "/dashboard" : pathname;
   const { data: profile, isLoading, isPro, isInternalTest } = usePlan();
   const navigate = useNavigate();
   const [transactionOpen, setTransactionOpen] = useState(false);
@@ -232,7 +240,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   <NavItem
                     key={item.to}
                     item={item}
-                    active={pathname === item.to}
+                    active={activePathname === item.to}
                     collapsed={sidebarCollapsed}
                   />
                 ))}
@@ -247,7 +255,9 @@ export function AppShell({ children }: { children: ReactNode }) {
               "h-11 rounded-xl shadow-sm transition-transform active:scale-[0.98]",
               sidebarCollapsed ? "w-11 justify-center px-0" : "w-full",
             )}
-            onClick={() => setTransactionOpen(true)}
+            onClick={() => {
+              if (!visualReview) setTransactionOpen(true);
+            }}
             title={sidebarCollapsed ? "Lançar agora" : undefined}
           >
             <Plus className="size-4" />
@@ -316,12 +326,14 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       <nav className="fixed inset-x-2 bottom-2 z-30 rounded-[1.4rem] border border-border bg-card/95 pb-[env(safe-area-inset-bottom)] shadow-[0_10px_35px_rgba(0,0,0,0.08)] lg:hidden">
         <div className="grid grid-cols-5 items-end px-1.5 py-1">
-          <NavItem item={NAV[0]} active={pathname === NAV[0].to} mobile />
-          <NavItem item={NAV[1]} active={pathname === NAV[1].to} mobile />
-          <NavItem item={NAV[2]} active={pathname === NAV[2].to} mobile />
+          <NavItem item={NAV[0]} active={activePathname === NAV[0].to} mobile />
+          <NavItem item={NAV[1]} active={activePathname === NAV[1].to} mobile />
+          <NavItem item={NAV[2]} active={activePathname === NAV[2].to} mobile />
           <button
             type="button"
-            onClick={openAssistant}
+            onClick={() => {
+              if (!visualReview) openAssistant();
+            }}
             className="group flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[10px] font-semibold text-muted-foreground transition-all active:scale-[0.96] active:text-primary"
           >
             <span className="grid size-9 place-items-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground">
@@ -331,7 +343,9 @@ export function AppShell({ children }: { children: ReactNode }) {
           </button>
           <button
             type="button"
-            onClick={() => setMoreOpen(true)}
+            onClick={() => {
+              if (!visualReview) setMoreOpen(true);
+            }}
             className={cn(
               "group flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[10px] font-semibold transition-all active:scale-[0.96]",
               moreOpen ? "text-primary" : "text-muted-foreground",
@@ -382,7 +396,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   }}
                   className={cn(
                     "flex min-h-[88px] flex-col items-center justify-center gap-2 rounded-2xl border border-border bg-background px-2 text-center text-xs font-semibold transition-all active:scale-95",
-                    pathname === item.to
+                    activePathname === item.to
                       ? "border-primary bg-primary/10 text-primary"
                       : "text-foreground hover:bg-muted",
                   )}
@@ -405,7 +419,9 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       )}
 
-      <TransactionDialog open={transactionOpen} onOpenChange={setTransactionOpen} />
+      {!visualReview && (
+        <TransactionDialog open={transactionOpen} onOpenChange={setTransactionOpen} />
+      )}
       <FinancialAssistant />
     </div>
   );

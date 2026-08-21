@@ -24,6 +24,7 @@ import { Route as AuthenticatedLancamentosRouteImport } from './routes/_authenti
 import { Route as AuthenticatedMetasRouteImport } from './routes/_authenticated/metas'
 import { Route as AuthenticatedPossoComprarRouteImport } from './routes/_authenticated/posso-comprar'
 import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated/relatorios'
+import { Route as VisualReviewDashboardRouteImport } from './routes/visual-review/dashboard'
 import { Route as ApiBillingWebhookRouteImport } from './routes/api/billing/webhook'
 
 const IndexRoute = IndexRouteImport.update({
@@ -104,6 +105,11 @@ const AuthenticatedRelatoriosRoute = AuthenticatedRelatoriosRouteImport.update({
   path: '/relatorios',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const VisualReviewDashboardRoute = VisualReviewDashboardRouteImport.update({
+  id: '/visual-review/dashboard',
+  path: '/visual-review/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiBillingWebhookRoute = ApiBillingWebhookRouteImport.update({
   id: '/api/billing/webhook',
   path: '/api/billing/webhook',
@@ -125,6 +131,7 @@ export interface FileRoutesByFullPath {
   '/metas': typeof AuthenticatedMetasRoute
   '/posso-comprar': typeof AuthenticatedPossoComprarRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
+  '/visual-review/dashboard': typeof VisualReviewDashboardRoute
   '/api/billing/webhook': typeof ApiBillingWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -142,6 +149,7 @@ export interface FileRoutesByTo {
   '/metas': typeof AuthenticatedMetasRoute
   '/posso-comprar': typeof AuthenticatedPossoComprarRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
+  '/visual-review/dashboard': typeof VisualReviewDashboardRoute
   '/api/billing/webhook': typeof ApiBillingWebhookRoute
 }
 export interface FileRoutesById {
@@ -161,6 +169,7 @@ export interface FileRoutesById {
   '/_authenticated/metas': typeof AuthenticatedMetasRoute
   '/_authenticated/posso-comprar': typeof AuthenticatedPossoComprarRoute
   '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
+  '/visual-review/dashboard': typeof VisualReviewDashboardRoute
   '/api/billing/webhook': typeof ApiBillingWebhookRoute
 }
 export interface FileRouteTypes {
@@ -180,6 +189,7 @@ export interface FileRouteTypes {
     | '/metas'
     | '/posso-comprar'
     | '/relatorios'
+    | '/visual-review/dashboard'
     | '/api/billing/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -197,6 +207,7 @@ export interface FileRouteTypes {
     | '/metas'
     | '/posso-comprar'
     | '/relatorios'
+    | '/visual-review/dashboard'
     | '/api/billing/webhook'
   id:
     | '__root__'
@@ -215,6 +226,7 @@ export interface FileRouteTypes {
     | '/_authenticated/metas'
     | '/_authenticated/posso-comprar'
     | '/_authenticated/relatorios'
+    | '/visual-review/dashboard'
     | '/api/billing/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -224,6 +236,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   OfertaRoute: typeof OfertaRoute
   RedefinirSenhaRoute: typeof RedefinirSenhaRoute
+  VisualReviewDashboardRoute: typeof VisualReviewDashboardRoute
   ApiBillingWebhookRoute: typeof ApiBillingWebhookRoute
 }
 
@@ -334,6 +347,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRelatoriosRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/visual-review/dashboard': {
+      id: '/visual-review/dashboard'
+      path: '/visual-review/dashboard'
+      fullPath: '/visual-review/dashboard'
+      preLoaderRoute: typeof VisualReviewDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/billing/webhook': {
       id: '/api/billing/webhook'
       path: '/api/billing/webhook'
@@ -379,6 +399,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   OfertaRoute: OfertaRoute,
   RedefinirSenhaRoute: RedefinirSenhaRoute,
+  VisualReviewDashboardRoute: VisualReviewDashboardRoute,
   ApiBillingWebhookRoute: ApiBillingWebhookRoute,
 }
 export const routeTree = rootRouteImport
