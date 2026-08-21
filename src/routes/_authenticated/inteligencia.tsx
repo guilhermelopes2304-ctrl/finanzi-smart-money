@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { MessageCircle } from "lucide-react";
 import { useBills, useCategories, useProfile, useTransactions } from "@/hooks/useFinanceData";
 import { buildInsights, buildPeriod, expensesByCategory, type PeriodPreset } from "@/lib/finance";
 import { formatBRL, monthRange } from "@/lib/format";
@@ -9,6 +10,7 @@ import { EmptyState } from "@/components/finanzzi/EmptyState";
 import { cn } from "@/lib/utils";
 import { PlanGate } from "@/components/finanzzi/PlanGate";
 import { trackProductEvent } from "@/lib/product-analytics";
+import { FinMascot } from "@/components/finanzzi/FinMascot";
 
 export const Route = createFileRoute("/_authenticated/inteligencia")({
   head: () => ({
@@ -55,8 +57,8 @@ function IntelligencePage() {
     return (
       <div>
         <PageHeader
-          title="Inteligência Finanzzi"
-          subtitle="Análises feitas com os seus dados reais."
+          title="Fin"
+          subtitle="Seu dinheiro explicado de um jeito que dá para decidir."
         />
         <EmptyState
           title="Ainda não temos dados suficientes."
@@ -68,10 +70,23 @@ function IntelligencePage() {
 
   return (
     <div>
-      <PageHeader
-        title="Inteligência Finanzzi"
-        subtitle="Análises feitas com os seus dados reais."
-      />
+      <PageHeader title="Fin" subtitle="Seu dinheiro explicado de um jeito que dá para decidir." />
+      <section className="mb-5 flex items-center gap-4 rounded-[1.7rem] border border-primary/15 bg-primary/[0.045] p-4 sm:p-5">
+        <FinMascot expression="pensando" className="h-16 w-16 shrink-0" />
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-semibold">Quer entender uma coisa específica?</p>
+          <p className="mt-1 text-sm leading-5 text-muted-foreground">
+            Pergunte ao Fin usando os dados que você já registrou.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => window.dispatchEvent(new CustomEvent("finanzzi:open-assistant"))}
+          className="inline-flex min-h-10 shrink-0 items-center gap-2 rounded-xl bg-primary px-3 text-xs font-bold text-primary-foreground transition-transform hover:-translate-y-0.5 active:scale-95"
+        >
+          <MessageCircle className="size-3.5" /> <span className="hidden sm:inline">Conversar</span>
+        </button>
+      </section>
       <div className="mb-4">
         <PeriodSelect
           preset={preset}
@@ -85,7 +100,10 @@ function IntelligencePage() {
         <h2 className="text-base font-semibold">Diagnóstico financeiro</h2>
         <ul className="mt-3 space-y-1.5 text-sm text-muted-foreground">
           {insights.diagnosis.map((line) => (
-            <li key={line}>• {line}</li>
+            <li key={line} className="flex gap-2">
+              <span className="text-primary">•</span>
+              <span>{line}</span>
+            </li>
           ))}
         </ul>
       </div>

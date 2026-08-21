@@ -29,10 +29,10 @@ import { cn } from "@/lib/utils";
 const NAV = [
   { to: "/dashboard", label: "Início", icon: Home },
   { to: "/lancamentos", label: "Lançar", icon: Wallet },
-  { to: "/contas", label: "Contas", icon: CalendarClock },
+  { to: "/contas", label: "Compromissos", icon: CalendarClock },
   { to: "/cartoes", label: "Cartões", icon: CreditCard },
-  { to: "/metas", label: "Metas", icon: Target },
-  { to: "/relatorios", label: "Relatórios", icon: BarChart3 },
+  { to: "/metas", label: "Objetivos", icon: Target },
+  { to: "/relatorios", label: "Finanças", icon: BarChart3 },
   { to: "/inteligencia", label: "Fin", icon: Brain },
   { to: "/posso-comprar", label: "Posso gastar", icon: ShoppingBag },
   { to: "/configuracoes", label: "Configurações", icon: Settings },
@@ -228,26 +228,17 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="mx-auto min-w-0 max-w-7xl">{children}</div>
       </main>
 
-      <nav className="fixed inset-x-2 bottom-2 z-30 rounded-[1.4rem] border border-border/70 bg-card/90 pb-[env(safe-area-inset-bottom)] shadow-[0_10px_35px_rgba(0,0,0,0.12)] backdrop-blur-2xl lg:hidden">
+      <nav className="fixed inset-x-2 bottom-2 z-30 rounded-[1.4rem] border border-border/70 bg-card/95 pb-[env(safe-area-inset-bottom)] shadow-[0_10px_35px_rgba(0,0,0,0.1)] lg:hidden">
         <div className="grid grid-cols-5 items-end px-1.5 py-1">
           <NavItem item={NAV[0]} active={pathname === NAV[0].to} mobile />
           <NavItem item={NAV[1]} active={pathname === NAV[1].to} mobile />
-          <div className="flex min-h-14 justify-center">
-            <button
-              type="button"
-              onClick={() => setTransactionOpen(true)}
-              aria-label="Lançar agora"
-              className="-mt-7 grid size-[56px] place-items-center rounded-full border-[5px] border-background bg-primary text-primary-foreground shadow-lg transition-all duration-200 active:scale-90"
-            >
-              <Plus className="size-6" strokeWidth={2.5} />
-            </button>
-          </div>
+          <NavItem item={NAV[2]} active={pathname === NAV[2].to} mobile />
           <button
             type="button"
             onClick={openAssistant}
             className="group flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[10px] font-semibold text-muted-foreground transition-all active:scale-[0.96] active:text-primary"
           >
-            <span className="grid size-9 place-items-center rounded-xl group-hover:bg-muted/70">
+            <span className="grid size-9 place-items-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground">
               <MessageCircle className="size-[18px]" />
             </span>
             <span>Fin</span>
@@ -295,7 +286,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               </button>
             </div>
             <div className="grid grid-cols-3 gap-2">
-              {NAV.slice(2).map((item) => (
+              {NAV.slice(3).map((item) => (
                 <Link
                   key={item.to}
                   to={item.to}

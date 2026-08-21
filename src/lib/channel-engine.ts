@@ -1,6 +1,6 @@
 import type { Account, Category, CreditCard } from "@/types/finance";
 import { todayISO } from "@/lib/format";
-import { parseQuickEntry, type QuickParseResult } from "@/lib/quick-parse";
+import { normalize, parseQuickEntry, type QuickParseResult } from "@/lib/quick-parse";
 import type { SaveTransactionInput } from "@/lib/transactions";
 
 /** Canais de interação que podem consumir o mesmo motor financeiro. */
@@ -47,6 +47,30 @@ const ACTION_RE =
   /\b(gastei|paguei|comprei|torrei|recebi|ganhei|entrou|caiu|vendi|registra|registrar|registre|anota|anotar|lan[cç]a|lan[cç]ar)\b/i;
 const QUESTION_RE =
   /(\?|\b(posso|quanto|qual|quais|como|onde|por que|porque|devo|vale a pena|consigo)\b)/i;
+const UPCOMING_RE =
+  /\b(contas?|compromissos?|pagamentos?|vence|vencem|pagar)\b.*\b(hoje|amanha|amanhã|semana|dias|mes|m[eê]s|pr[oó]xim)/i;
+const SUBSCRIPTIONS_RE = /\b(assinaturas?|streaming|mensalidades?|recorrentes?)\b/i;
+const PURCHASE_RE = /\b(posso|devo|consigo|cabe|gastar|comprar|compra)\b/i;
+const CARDS_RE = /\b(cart[oõ]es?|cart[aã]o|fatura|limite)\b/i;
+const INSTALLMENTS_RE = /\b(parcelas?|parcelado|parcelamento)\b/i;
+
+function detectQueryIntent(
+  text: string,
+): Exclude<FinanceChannelIntent, "record_transaction" | "create_recurring_bill" | "unknown"> {
+  const normalized = normalize(text);
+  if (PURCHASE_RE.test(normalized) && /\b(posso|devo|consigo|cabe)\b/.test(normalized))
+    return "check_purchase";
+  if (SUBSCRIPTIONS_RE.test(normalized)) return "list_subscriptions";
+  if (INSTALLMENTS_RE.test(normalized)) return "list_installments";
+  if (CARDS_RE.test(normalized)) return "list_cards";
+  if (
+    UPCOMING_RE.test(normalized) ||
+    /\b(o que vence|quanto tenho de contas|quanto vou pagar)\b/.test(normalized)
+  ) {
+    return "list_upcoming_bills";
+  }
+  return "query_fin";
+}
 
 /**
  * Converte texto de qualquer canal numa interpretação única.
@@ -56,13 +80,19 @@ export function interpretFinanceMessage(input: FinanceChannelInput): FinanceChan
   const text = input.text.trim();
   const draft = parseQuickEntry(text, input.categories, input.cards, input.accounts);
   const isQuestion = QUESTION_RE.test(text);
-  const isAction = ACTION_RE.test(text) && !isQuestion;
+  const isAction = (ACTION_RE.test(text) || draft.amount > 0) && !isQuestion;
   const isRecurring =
     draft.type === "expense" && draft.amount > 0 && draft.recurrence !== "none" && !isQuestion;
 
   return {
     channel: input.channel,
-    intent: isRecurring ? "create_recurring_bill" : isAction ? "record_transaction" : "query_fin",
+    intent: isRecurring
+      ? "create_recurring_bill"
+      : isAction
+        ? "record_transaction"
+        : isQuestion
+          ? detectQueryIntent(text)
+          : "query_fin",
     text,
     draft,
   };

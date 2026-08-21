@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Check, Mic, Sparkles, X } from "lucide-react";
+import { Camera, Check, Mic, Send, Sparkles, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import {
   useAccounts,
@@ -30,7 +30,7 @@ import { trackProductEvent } from "@/lib/product-analytics";
 import type { TransactionType } from "@/types/finance";
 
 const NONE = "__none__";
-const EXAMPLES = ["gastei 42 no mercado", "recebi 3500 salário", "comprei tênis 399"];
+const EXAMPLES = ["mercado 82", "uber 27", "recebi 2.500", "netflix 39,90", "aluguel 1200"];
 
 export function recurrenceLabel(value: QuickParseResult["recurrence"]) {
   return value === "monthly" ? "todo mês" : value === "yearly" ? "todo ano" : "toda semana";
@@ -53,6 +53,20 @@ export function QuickEntry() {
   const [busy, setBusy] = useState(false);
   const [manualOpen, setManualOpen] = useState(false);
   const [manualText, setManualText] = useState("");
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setPlaceholderIndex((current) => (current + 1) % EXAMPLES.length);
+    }, 3200);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  function handlePhoto() {
+    toast("Leitura de foto ainda não está ligada a um OCR real.", {
+      description: "Nada foi registado. Você pode escrever o que aconteceu para o Fin interpretar.",
+    });
+  }
 
   function openFinVoice() {
     window.dispatchEvent(new CustomEvent("finanzzi:open-assistant", { detail: { listen: true } }));
@@ -187,7 +201,7 @@ export function QuickEntry() {
           <Input
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder="Ex.: gastei R$ 45 no mercado"
+            placeholder={EXAMPLES[placeholderIndex]}
             className="h-12 min-w-0 flex-1 border-0 bg-transparent px-3 text-base shadow-none focus-visible:ring-0"
             aria-label="Registro rápido por texto"
           />
@@ -200,8 +214,14 @@ export function QuickEntry() {
           >
             <Mic className="size-5" />
           </Button>
-          <Button type="submit" disabled={!text.trim()} className="h-11 shrink-0 rounded-xl px-4">
-            Interpretar
+          <Button
+            type="submit"
+            disabled={!text.trim()}
+            className="h-11 shrink-0 rounded-xl px-4"
+            aria-label="Interpretar lançamento"
+          >
+            <Send className="size-4 sm:hidden" />
+            <span className="hidden sm:inline">Interpretar</span>
           </Button>
         </div>
         <div className="flex flex-wrap items-center gap-2 px-1">
@@ -217,13 +237,22 @@ export function QuickEntry() {
             </button>
           ))}
         </div>
-        <button
-          type="button"
-          onClick={openFinVoice}
-          className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 text-sm font-semibold text-primary transition-colors hover:bg-primary/10 active:scale-[0.99] sm:hidden"
-        >
-          <Mic className="size-4" /> Falar com o Fin
-        </button>
+        <div className="grid grid-cols-2 gap-2 sm:hidden">
+          <button
+            type="button"
+            onClick={openFinVoice}
+            className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 text-sm font-semibold text-primary transition-colors hover:bg-primary/10 active:scale-[0.99]"
+          >
+            <Mic className="size-4" /> Falar
+          </button>
+          <button
+            type="button"
+            onClick={handlePhoto}
+            className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border bg-muted/40 px-4 text-sm font-semibold text-foreground transition-colors hover:bg-muted active:scale-[0.99]"
+          >
+            <Camera className="size-4" /> Foto
+          </button>
+        </div>
       </form>
       {draft && (
         <div className="mt-5 rounded-[1.5rem] border border-primary/20 bg-primary/[0.035] p-4 animate-fin-fade-up sm:p-5">

@@ -26,7 +26,7 @@ import {
 export const Route = createFileRoute("/_authenticated/metas")({
   head: () => ({
     meta: [
-      { title: "Metas — FINANZZI" },
+      { title: "Objetivos — FINANZZI" },
       {
         name: "description",
         content: "Planeje viagens, reservas e conquistas com metas financeiras.",
@@ -75,22 +75,22 @@ function GoalsPage() {
   return (
     <div>
       <PageHeader
-        title="Metas que fazem sentido"
-        subtitle="Transforme planos em um ritmo que você consegue acompanhar."
+        title="Objetivos"
+        subtitle="O que você quer construir, com um ritmo que cabe na sua vida."
         action={
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button>
-                <Plus className="size-4" /> Nova meta
+                <Plus className="size-4" /> Novo objetivo
               </Button>
             </DialogTrigger>
             <DialogContent className="max-h-[92vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>Nova meta</DialogTitle>
+                <DialogTitle>Novo objetivo</DialogTitle>
               </DialogHeader>
               <form onSubmit={submit} className="space-y-4">
                 <div className="space-y-1.5">
-                  <Label htmlFor="goal-name">Nome da meta</Label>
+                  <Label htmlFor="goal-name">Nome do objetivo</Label>
                   <Input
                     id="goal-name"
                     value={form.name}
@@ -137,7 +137,7 @@ function GoalsPage() {
                 </div>
                 <DialogFooter>
                   <Button type="submit" disabled={save.isPending}>
-                    Salvar meta
+                    Salvar objetivo
                   </Button>
                 </DialogFooter>
               </form>
@@ -148,8 +148,8 @@ function GoalsPage() {
 
       {goals.length === 0 ? (
         <EmptyState
-          title="Você ainda não criou metas."
-          description="Defina um objetivo e acompanhe o quanto falta para conquistá-lo."
+          title="Você ainda não criou objetivos."
+          description="Defina algo que importa e acompanhe o quanto falta para chegar lá."
         />
       ) : (
         <div className="grid gap-4 lg:grid-cols-2">
@@ -185,10 +185,10 @@ function GoalsPage() {
                         save.mutate({ id: goal.id, values: { current_amount: current + value } });
                       }}
                     >
-                      Guardar
+                      Adicionar
                     </Button>
                     <ConfirmDelete
-                      title="Excluir meta?"
+                      title="Excluir objetivo?"
                       onConfirm={() => remove.mutate(goal.id)}
                       trigger={
                         <Button size="icon" variant="ghost" aria-label="Excluir">
@@ -201,7 +201,7 @@ function GoalsPage() {
                 <div className="mt-5 flex items-center justify-between gap-3 text-xs">
                   <span className="inline-flex items-center gap-1.5 font-semibold text-primary">
                     <Sparkles className="size-3.5" />{" "}
-                    {pct >= 100 ? "Meta alcançada" : `${pct}% do caminho`}
+                    {pct >= 100 ? "Objetivo alcançado" : `${pct}% do caminho`}
                   </span>
                   <span className="text-muted-foreground">
                     {formatBRL(Math.max(0, target - current))} restantes
@@ -238,7 +238,7 @@ function GoalsPage() {
                 )}
                 {pct >= 100 && (
                   <p className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-success">
-                    <Check className="size-4" /> Você alcançou essa meta.
+                    <Check className="size-4" /> Você alcançou esse objetivo.
                   </p>
                 )}
               </div>

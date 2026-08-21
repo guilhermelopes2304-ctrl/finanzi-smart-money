@@ -59,11 +59,14 @@ const NONE = "__none__";
 function BillsPage() {
   return (
     <div>
-      <PageHeader title="Contas" subtitle="Seus vencimentos e suas contas bancárias." />
+      <PageHeader
+        title="Compromissos"
+        subtitle="O que já está no caminho e o que você precisa lembrar."
+      />
       <Tabs defaultValue="bills">
         <TabsList className="mb-4">
-          <TabsTrigger value="bills">A pagar</TabsTrigger>
-          <TabsTrigger value="accounts">Minhas contas</TabsTrigger>
+          <TabsTrigger value="bills">Compromissos</TabsTrigger>
+          <TabsTrigger value="accounts">Contas financeiras</TabsTrigger>
         </TabsList>
         <TabsContent value="bills">
           <BillsTab />
@@ -152,29 +155,35 @@ function BillsTab() {
 
   return (
     <div>
-      <div className="mb-4 grid gap-3 sm:grid-cols-3">
-        <div className="surface-card p-4">
-          <p className="text-sm text-muted-foreground">Próximos 7 dias</p>
-          <p className="font-display text-xl font-semibold">
-            {formatBRL(next7.reduce((s, b) => s + Number(b.amount), 0))}
-          </p>
-          <p className="text-xs text-muted-foreground">{next7.length} compromisso(s)</p>
+      <section className="mb-5 rounded-[1.7rem] bg-primary p-5 text-primary-foreground shadow-lift sm:p-7">
+        <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary-foreground/60">
+          Próximos 7 dias
+        </p>
+        <div className="mt-3 flex flex-wrap items-end justify-between gap-5">
+          <div>
+            <p className="font-display text-4xl font-semibold tracking-[-0.05em] sm:text-6xl">
+              {formatBRL(next7.reduce((s, b) => s + Number(b.amount), 0))}
+            </p>
+            <p className="mt-2 text-sm text-primary-foreground/65">
+              {next7.length === 1 ? "1 compromisso" : `${next7.length} compromissos`} nesta semana.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-2 text-xs font-semibold sm:min-w-[250px]">
+            <div className="rounded-2xl bg-primary-foreground/10 p-3">
+              <p className="text-primary-foreground/55">30 dias</p>
+              <p className="mt-1 text-base text-primary-foreground">
+                {formatBRL(next30.reduce((s, b) => s + Number(b.amount), 0))}
+              </p>
+            </div>
+            <div className="rounded-2xl bg-primary-foreground/10 p-3">
+              <p className="text-primary-foreground/55">Assinaturas/mês</p>
+              <p className="mt-1 text-base text-primary-foreground">
+                {formatBRL(subscriptions.monthly)}
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="surface-card p-4">
-          <p className="text-sm text-muted-foreground">Próximos 30 dias</p>
-          <p className="font-display text-xl font-semibold">
-            {formatBRL(next30.reduce((s, b) => s + Number(b.amount), 0))}
-          </p>
-          <p className="text-xs text-muted-foreground">{next30.length} compromisso(s)</p>
-        </div>
-        <div className="surface-card p-4">
-          <p className="text-sm text-muted-foreground">Assinaturas por mês</p>
-          <p className="font-display text-xl font-semibold">{formatBRL(subscriptions.monthly)}</p>
-          <p className="text-xs text-muted-foreground">
-            {subscriptions.subscriptions.length} assinatura(s)
-          </p>
-        </div>
-      </div>
+      </section>
 
       {subscriptions.subscriptions.length > 0 && (
         <ViralMomentCard
@@ -214,12 +223,12 @@ function BillsTab() {
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button className="ml-auto">
-              <Plus className="size-4" /> Nova conta
+              <Plus className="size-4" /> Adicionar compromisso
             </Button>
           </DialogTrigger>
           <DialogContent className="max-h-[92vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Nova conta a pagar</DialogTitle>
+              <DialogTitle>Novo compromisso</DialogTitle>
             </DialogHeader>
             <form onSubmit={submit} className="space-y-4">
               <div className="space-y-1.5">
@@ -322,16 +331,16 @@ function BillsTab() {
       {rows.length === 0 ? (
         <EmptyState
           title="Nada nesta seção."
-          description="Registre uma conta fixa pelo botão acima e o FINANZZI organiza os próximos compromissos."
+          description="Conte ao FINANZZI o que precisa lembrar e ele organiza os próximos compromissos."
         />
       ) : (
-        <div className="space-y-2">
+        <div className="divide-y divide-border overflow-hidden rounded-[1.5rem] border border-border bg-card">
           {rows.map((bill) => {
             const status = billStatus(bill);
             return (
-              <div key={bill.id} className="surface-card flex flex-wrap items-center gap-3 p-4">
+              <div key={bill.id} className="flex flex-wrap items-center gap-3 px-4 py-4 sm:px-5">
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium">{bill.description}</p>
+                  <p className="truncate text-sm font-semibold">{bill.description}</p>
                   <p className="text-xs text-muted-foreground">
                     Vence em {formatDateBR(bill.due_date)}
                   </p>

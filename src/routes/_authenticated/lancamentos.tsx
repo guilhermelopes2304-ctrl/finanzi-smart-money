@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { Filter, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { useCategories, useDeleteRow, useTransactions } from "@/hooks/useFinanceData";
 import { formatBRL, formatDateBR, todayISO } from "@/lib/format";
 import { PAYMENT_METHODS, type Transaction } from "@/types/finance";
@@ -46,6 +46,7 @@ function TransactionsPage() {
   const [sort, setSort] = useState("date-desc");
   const [editing, setEditing] = useState<Transaction | null>(null);
   const [open, setOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const categoryName = useMemo(() => new Map(categories.map((c) => [c.id, c.name])), [categories]);
 
@@ -86,8 +87,8 @@ function TransactionsPage() {
   return (
     <div>
       <PageHeader
-        title="Lançamentos"
-        subtitle="Tudo o que entra e sai do seu bolso."
+        title="Movimentos"
+        subtitle="A memória simples do que aconteceu com o seu dinheiro."
         action={
           <Button
             onClick={() => {
@@ -95,7 +96,7 @@ function TransactionsPage() {
               setOpen(true);
             }}
           >
-            <Plus className="size-4" /> Novo lançamento
+            <Plus className="size-4" /> Lançar
           </Button>
         }
       />
@@ -112,51 +113,68 @@ function TransactionsPage() {
         />
       )}
 
-      <div className="surface-card mb-4 flex flex-wrap gap-3 p-4">
-        <div className="relative min-w-[200px] flex-1">
-          <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            className="pl-9"
-            placeholder="Pesquisar por descrição"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-        <Select value={type} onValueChange={setType}>
-          <SelectTrigger className="w-[150px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todos os tipos</SelectItem>
-            <SelectItem value="income">Receitas</SelectItem>
-            <SelectItem value="expense">Despesas</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select value={category} onValueChange={setCategory}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todas as categorias</SelectItem>
-            {categories.map((c) => (
-              <SelectItem key={c.id} value={c.id}>
-                {c.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={sort} onValueChange={setSort}>
-          <SelectTrigger className="w-[170px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="date-desc">Mais recentes</SelectItem>
-            <SelectItem value="date-asc">Mais antigos</SelectItem>
-            <SelectItem value="amount-desc">Maior valor</SelectItem>
-            <SelectItem value="amount-asc">Menor valor</SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <p className="text-sm text-muted-foreground">{rows.length} movimento(s) encontrado(s).</p>
+        <button
+          type="button"
+          onClick={() => setFiltersOpen((value) => !value)}
+          className={cn(
+            "inline-flex min-h-10 items-center gap-2 rounded-xl border px-3 text-sm font-semibold transition-colors",
+            filtersOpen
+              ? "border-primary bg-primary/10 text-primary"
+              : "border-border text-muted-foreground hover:bg-muted",
+          )}
+        >
+          <Filter className="size-4" /> Filtrar
+        </button>
       </div>
+      {filtersOpen && (
+        <div className="surface-card mb-4 grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="relative min-w-0 sm:col-span-2 lg:col-span-1">
+            <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              className="pl-9"
+              placeholder="Pesquisar"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+          <Select value={type} onValueChange={setType}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos os tipos</SelectItem>
+              <SelectItem value="income">Receitas</SelectItem>
+              <SelectItem value="expense">Despesas</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={category} onValueChange={setCategory}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas as categorias</SelectItem>
+              {categories.map((c) => (
+                <SelectItem key={c.id} value={c.id}>
+                  {c.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={sort} onValueChange={setSort}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="date-desc">Mais recentes</SelectItem>
+              <SelectItem value="date-asc">Mais antigos</SelectItem>
+              <SelectItem value="amount-desc">Maior valor</SelectItem>
+              <SelectItem value="amount-asc">Menor valor</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      )}
 
       {isLoading ? (
         <div className="space-y-2">
@@ -180,14 +198,14 @@ function TransactionsPage() {
           }
         />
       ) : (
-        <div className="space-y-2">
+        <div className="divide-y divide-border overflow-hidden rounded-[1.5rem] border border-border bg-card">
           {rows.map((tx) => (
             <div
               key={tx.id}
-              className="surface-card flex flex-wrap items-center gap-3 p-4 transition-shadow hover:shadow-[var(--shadow-lift)]"
+              className="flex flex-wrap items-center gap-3 px-4 py-4 transition-colors hover:bg-muted/40 sm:px-5"
             >
               <div className="min-w-0 flex-1">
-                <p className="truncate font-medium">{tx.description}</p>
+                <p className="truncate text-sm font-semibold">{tx.description}</p>
                 <p className="mt-0.5 text-xs text-muted-foreground">
                   {formatDateBR(tx.date)} ·{" "}
                   {categoryName.get(tx.category_id ?? "") ?? "Sem categoria"} ·{" "}

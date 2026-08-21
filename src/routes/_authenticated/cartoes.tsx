@@ -118,20 +118,20 @@ function CardsPage() {
   return (
     <div>
       <PageHeader
-        title="Cartões sob controle"
-        subtitle="Veja o peso das suas decisões de hoje nos próximos meses."
+        title="Cartões"
+        subtitle="O que está disponível, o que já está na fatura e o que vem depois."
         action={
           <div className="flex gap-2">
             {cards.length > 0 && (
               <Dialog open={openPurchase} onOpenChange={setOpenPurchase}>
                 <DialogTrigger asChild>
                   <Button variant="outline">
-                    <Plus className="size-4" /> Nova compra
+                    <Plus className="size-4" /> Lançar compra
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-h-[92vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>Nova compra no cartão</DialogTitle>
+                    <DialogTitle>Registrar compra no cartão</DialogTitle>
                   </DialogHeader>
                   <form onSubmit={submitPurchase} className="space-y-4">
                     <div className="space-y-1.5">

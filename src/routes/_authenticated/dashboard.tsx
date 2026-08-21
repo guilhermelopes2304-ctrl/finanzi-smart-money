@@ -1,14 +1,6 @@
 import { useMemo } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-  ArrowRight,
-  Bell,
-  CalendarClock,
-  Check,
-  CircleHelp,
-  MessageCircle,
-  Sparkles,
-} from "lucide-react";
+import { ArrowRight, Bell, CalendarClock, Check, CircleHelp, MessageCircle } from "lucide-react";
 import {
   useAccounts,
   useBills,
@@ -21,6 +13,7 @@ import { buildInsights, buildPeriod, spendCapacity } from "@/lib/finance";
 import { buildCommitmentReminders, nextCommitments } from "@/lib/commitments";
 import { formatBRL, formatDateBR, monthRange } from "@/lib/format";
 import { QuickEntry } from "@/components/finanzzi/QuickEntry";
+import { FinMascot } from "@/components/finanzzi/FinMascot";
 import { EmptyState } from "@/components/finanzzi/EmptyState";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
@@ -29,7 +22,10 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
       { title: "Início — FINANZZI" },
-      { name: "description", content: "Você registra. O FINANZZI organiza." },
+      {
+        name: "description",
+        content: "Conte para o FINANZZI o que aconteceu. Ele cuida do resto.",
+      },
     ],
   }),
   component: Dashboard,
@@ -60,96 +56,115 @@ function Dashboard() {
       }),
     [transactions, categories, bills, period, profile?.monthly_income],
   );
+
   const firstName = profile?.name?.split(" ")[0] || "você";
-  const greeting = getGreeting();
+  const available = Math.max(0, capacity.perDay);
+  const hasPressure = capacity.perDay <= 0;
   const insight = insights.opportunities[0] ?? insights.actions[0] ?? reminders[0];
+  const commitmentsTotal = commitments.reduce((sum, bill) => sum + Number(bill.amount), 0);
 
   return (
     <div className="min-h-full bg-background text-foreground">
-      <div className="mx-auto w-full max-w-3xl px-1 py-1 sm:px-2 lg:py-4">
-        <header className="mb-8 flex items-end justify-between gap-4 animate-fade-up">
-          <div>
-            <p className="text-sm font-medium text-muted-foreground">
-              {greeting}, {firstName}
+      <div className="mx-auto w-full max-w-4xl px-1 py-1 sm:px-2 lg:py-3">
+        <header className="flex items-start justify-between gap-4 pb-7 pt-1 sm:pb-10">
+          <div className="max-w-2xl">
+            <p className="text-sm font-semibold text-muted-foreground">
+              {getGreeting()}, {firstName}
             </p>
-            <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight sm:text-5xl">
-              Você registra. O FINANZZI organiza. E cuida do resto.
+            <h1 className="mt-2 max-w-2xl font-display text-[2.35rem] font-semibold leading-[1.04] tracking-[-0.055em] sm:text-6xl">
+              {hasPressure ? "Atenção: sua semana está pesada." : "Você está no controle."}
             </h1>
+            <p className="mt-4 max-w-lg text-sm leading-6 text-muted-foreground sm:text-base">
+              Você conta para o FINANZZI o que aconteceu. Ele organiza e lembra do resto.
+            </p>
           </div>
-          <button
-            type="button"
-            onClick={() => window.dispatchEvent(new CustomEvent("finanzzi:open-assistant"))}
-            className="hidden size-11 place-items-center rounded-full border border-border bg-card text-primary shadow-soft transition-transform hover:-translate-y-0.5 sm:grid"
-            aria-label="Falar com o Fin"
-          >
-            <MessageCircle className="size-5" />
-          </button>
+          <FinMascot
+            expression={hasPressure ? "atento" : "normal"}
+            className="hidden h-20 w-20 shrink-0 sm:block"
+          />
         </header>
 
         {isLoading ? (
-          <Skeleton className="h-56 rounded-[2rem]" />
+          <Skeleton className="h-60 rounded-[2rem]" />
         ) : (
-          <section className="relative overflow-hidden rounded-[2rem] bg-[#071a12] p-6 text-white shadow-lift sm:p-8 animate-scale-in">
-            <div className="pointer-events-none absolute -right-20 -top-24 size-80 rounded-full bg-emerald-300/15 blur-3xl" />
-            <div className="relative">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200/70">
-                Sua margem de hoje
-              </p>
-              <h2 className="mt-4 max-w-xl font-display text-3xl font-semibold leading-tight tracking-tight sm:text-5xl">
-                Você tem {formatBRL(capacity.perDay)} para gastar hoje.
-              </h2>
-              <p className="mt-4 max-w-xl text-sm leading-6 text-white/65">
-                Uma estimativa depois das contas, parcelas e compromissos que já estão no seu
-                caminho.
-              </p>
-              <div className="mt-7 flex flex-wrap items-center gap-3">
-                <Link
-                  to="/posso-comprar"
-                  className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-emerald-300 px-4 text-sm font-bold text-[#032013] transition-transform hover:-translate-y-0.5 active:scale-95"
-                >
-                  Entender minha margem <ArrowRight className="size-4" />
-                </Link>
-                <button
-                  type="button"
-                  onClick={() => window.dispatchEvent(new CustomEvent("finanzzi:open-assistant"))}
-                  className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/15 px-4 text-sm font-semibold text-white/80 hover:bg-white/10"
-                >
-                  Perguntar ao Fin <MessageCircle className="size-4" />
-                </button>
+          <section className="relative overflow-hidden rounded-[2rem] bg-primary p-6 text-primary-foreground shadow-lift sm:p-9">
+            <div className="pointer-events-none absolute -right-14 -top-20 size-64 rounded-full bg-accent/15 blur-3xl" />
+            <div className="relative flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary-foreground/60">
+                  Você pode gastar hoje
+                </p>
+                <p className="mt-3 font-display text-5xl font-semibold leading-none tracking-[-0.06em] sm:text-7xl">
+                  {formatBRL(available)}
+                </p>
+                <p className="mt-4 max-w-md text-sm leading-6 text-primary-foreground/65">
+                  sem comprometer os próximos compromissos.
+                </p>
               </div>
+              <div className="flex items-center gap-3 text-xs font-semibold text-primary-foreground/65 sm:max-w-[180px] sm:text-right">
+                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-primary-foreground/10">
+                  <Check className="size-4" />
+                </span>
+                {hasPressure
+                  ? "Vamos olhar o que pesa primeiro."
+                  : "Sua margem já considera o que vem pela frente."}
+              </div>
+            </div>
+            <div className="relative mt-8 flex flex-wrap gap-3">
+              <Link
+                to="/posso-comprar"
+                className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-accent px-4 text-sm font-bold text-accent-foreground transition-transform hover:-translate-y-0.5 active:scale-95"
+              >
+                Entender minha margem <ArrowRight className="size-4" />
+              </Link>
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new CustomEvent("finanzzi:open-assistant"))}
+                className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-primary-foreground/20 px-4 text-sm font-semibold text-primary-foreground/85 transition-colors hover:bg-primary-foreground/10"
+              >
+                Perguntar ao Fin <MessageCircle className="size-4" />
+              </button>
             </div>
           </section>
         )}
 
-        <section className="mt-6 animate-fade-up">
+        <section className="mt-8 sm:mt-10">
           <div className="mb-3 flex items-end justify-between gap-3">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-primary">
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
                 Registrar
               </p>
-              <h2 className="mt-1 font-display text-2xl font-semibold tracking-tight">
+              <h2 className="mt-1 font-display text-2xl font-semibold tracking-[-0.04em] sm:text-3xl">
                 O que aconteceu?
               </h2>
             </div>
             <span className="hidden text-xs text-muted-foreground sm:block">
-              Texto ou voz, do seu jeito.
+              texto, voz ou foto
             </span>
           </div>
           <QuickEntry />
         </section>
 
-        <section className="mt-8 animate-fade-up" style={{ animationDelay: "80ms" }}>
-          <div className="mb-3 flex items-center justify-between gap-3">
+        <section className="mt-10 sm:mt-12">
+          <div className="mb-4 flex items-end justify-between gap-3">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-primary">
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
                 Lembrar
               </p>
-              <h2 className="mt-1 font-display text-2xl font-semibold tracking-tight">
+              <h2 className="mt-1 font-display text-2xl font-semibold tracking-[-0.04em] sm:text-3xl">
                 Próximos compromissos
               </h2>
+              {commitments.length > 0 && (
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {formatBRL(commitmentsTotal)} nos próximos pagamentos.
+                </p>
+              )}
             </div>
-            <Link to="/contas" className="text-xs font-semibold text-primary hover:underline">
-              Ver contas
+            <Link
+              to="/contas"
+              className="inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline"
+            >
+              Ver todos <ArrowRight className="size-3.5" />
             </Link>
           </div>
           {commitments.length === 0 ? (
@@ -158,12 +173,12 @@ function Dashboard() {
               description="Registre uma conta fixa e o FINANZZI lembra por você."
             />
           ) : (
-            <div className="space-y-2">
+            <div className="divide-y divide-border overflow-hidden rounded-[1.5rem] border border-border bg-card">
               {commitments.map((bill) => {
                 const days = daysUntil(bill.due_date);
                 return (
-                  <div key={bill.id} className="surface-card flex items-center gap-3 p-4">
-                    <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary">
+                  <div key={bill.id} className="flex items-center gap-3 px-4 py-4 sm:px-5">
+                    <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-secondary text-secondary-foreground">
                       <CalendarClock className="size-4" />
                     </span>
                     <div className="min-w-0 flex-1">
@@ -185,47 +200,39 @@ function Dashboard() {
           )}
         </section>
 
-        <section className="mt-8 animate-fade-up" style={{ animationDelay: "140ms" }}>
-          <div className="mb-3 flex items-center justify-between gap-3">
+        <section className="mt-10 pb-8 sm:mt-12">
+          <div className="mb-4 flex items-end justify-between gap-3">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-primary">
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
                 Orientar
               </p>
-              <h2 className="mt-1 font-display text-2xl font-semibold tracking-tight">
+              <h2 className="mt-1 font-display text-2xl font-semibold tracking-[-0.04em] sm:text-3xl">
                 Uma coisa que você deveria saber
               </h2>
             </div>
             <button
               type="button"
               onClick={() => window.dispatchEvent(new CustomEvent("finanzzi:open-assistant"))}
-              className="grid size-10 place-items-center rounded-xl bg-primary/10 text-primary"
-              aria-label="Perguntar ao Fin"
+              className="inline-flex min-h-10 items-center gap-2 rounded-xl bg-secondary px-3 text-xs font-bold text-secondary-foreground transition-colors hover:bg-accent"
             >
-              <Sparkles className="size-4" />
+              Perguntar <MessageCircle className="size-3.5" />
             </button>
           </div>
-          <div className="surface-card p-5 sm:p-6">
+          <div className="surface-card flex items-start gap-4 p-5 sm:p-6">
+            <FinMascot
+              expression={insight ? "pensando" : "normal"}
+              className="h-16 w-16 shrink-0"
+            />
             {insight ? (
-              <div className="flex gap-3">
-                <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
-                  {insights.opportunities[0] || insights.actions[0] ? (
-                    <Check className="size-4" />
-                  ) : (
-                    <Bell className="size-4" />
-                  )}
-                </span>
-                <div>
-                  <p className="text-sm font-semibold">{insight.title}</p>
-                  <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                    {insight.description}
-                  </p>
-                </div>
+              <div>
+                <p className="text-sm font-semibold">{insight.title}</p>
+                <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                  {insight.description}
+                </p>
               </div>
             ) : (
               <div className="flex items-start gap-3">
-                <span className="grid size-9 place-items-center rounded-xl bg-primary/10 text-primary">
-                  <CircleHelp className="size-4" />
-                </span>
+                <CircleHelp className="mt-0.5 size-4 shrink-0 text-primary" />
                 <p className="text-sm leading-6 text-muted-foreground">
                   Registre alguns dias e o Fin vai encontrar uma coisa importante para você.
                 </p>

@@ -2,13 +2,18 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Loader2, Mic, MicOff, Send, Sparkles, X } from "lucide-react";
 import {
   useAccounts,
+  useBills,
   useCategories,
   useCreditCards,
+  useGoals,
   useInvalidateFinance,
   useProfile,
+  useTransactions,
 } from "@/hooks/useFinanceData";
 import { useAuth } from "@/hooks/useAuth";
-import { formatBRL } from "@/lib/format";
+import { formatBRL, formatDateBR } from "@/lib/format";
+import { cardInvoice, futureInstallmentTotal, spendCapacity } from "@/lib/finance";
+import { nextCommitments, subscriptionTotals } from "@/lib/commitments";
 import {
   buildTransactionInput,
   interpretFinanceMessage,
@@ -19,6 +24,7 @@ import { saveTransaction } from "@/lib/transactions";
 import { askFinAI } from "@/lib/fin-ai";
 import { cn } from "@/lib/utils";
 import { trackProductEvent } from "@/lib/product-analytics";
+import { FinMascot } from "@/components/finanzzi/FinMascot";
 
 type Message = { from: "fin" | "user"; text: string };
 type RecognitionResult = {
@@ -49,8 +55,11 @@ export function FinancialAssistant({ className }: { className?: string }) {
   const { user } = useAuth();
   const { data: profile } = useProfile();
   const { data: accounts = [] } = useAccounts();
+  const { data: bills = [] } = useBills();
   const { data: categories = [] } = useCategories();
   const { data: cards = [] } = useCreditCards();
+  const { data: goals = [] } = useGoals();
+  const { data: transactions = [] } = useTransactions();
   const invalidate = useInvalidateFinance();
 
   const [open, setOpen] = useState(false);
@@ -65,6 +74,10 @@ export function FinancialAssistant({ className }: { className?: string }) {
   const categoryName = useMemo(
     () => (id: string | null) => categories.find((c) => c.id === id)?.name ?? null,
     [categories],
+  );
+  const capacity = useMemo(
+    () => spendCapacity({ accounts, transactions, bills, goals }),
+    [accounts, transactions, bills, goals],
   );
 
   function push(message: Message) {
@@ -131,6 +144,52 @@ export function FinancialAssistant({ className }: { className?: string }) {
     }
   }
 
+  function localAnswer(interpretation: FinanceChannelInterpretation): string | null {
+    const { draft } = interpretation;
+    if (interpretation.intent === "check_purchase") {
+      if (!draft.amount) return "Me diga o valor da compra e eu comparo com o que está livre hoje.";
+      const amount = draft.amount;
+      const perDay = capacity.perDay;
+      if (amount <= perDay) {
+        return `Sim — ${formatBRL(amount)} cabe na sua margem de hoje. Depois dela, ainda ficam cerca de ${formatBRL(Math.max(0, perDay - amount))} para o dia.`;
+      }
+      return `Eu teria cuidado: ${formatBRL(amount)} passa da sua margem diária de ${formatBRL(perDay)}. Antes de decidir, veja se dá para adiar ou reduzir essa compra.`;
+    }
+    if (interpretation.intent === "list_upcoming_bills") {
+      const upcoming = nextCommitments(bills, categories, 5);
+      if (upcoming.length === 0) return "Não encontrei compromissos próximos em aberto.";
+      const total = upcoming.reduce((sum, bill) => sum + Number(bill.amount), 0);
+      const lines = upcoming.map(
+        (bill) =>
+          `${bill.description}: ${formatBRL(Number(bill.amount))} em ${formatDateBR(bill.due_date)}`,
+      );
+      return `Você tem ${formatBRL(total)} nos próximos compromissos.\n${lines.join("\n")}`;
+    }
+    if (interpretation.intent === "list_subscriptions") {
+      const summary = subscriptionTotals(bills, categories);
+      if (summary.subscriptions.length === 0)
+        return "Ainda não encontrei assinaturas recorrentes cadastradas.";
+      return `Suas assinaturas somam ${formatBRL(summary.monthly)} por mês e ${formatBRL(summary.yearly)} por ano. As maiores são: ${summary.subscriptions
+        .slice(0, 3)
+        .map((item) => `${item.description} (${formatBRL(Number(item.amount))})`)
+        .join(", ")}.`;
+    }
+    if (interpretation.intent === "list_cards") {
+      if (cards.length === 0) return "Você ainda não cadastrou um cartão.";
+      const lines = cards
+        .slice(0, 4)
+        .map((card) => `${card.name}: fatura de ${formatBRL(cardInvoice(card, transactions))}`);
+      return `Encontrei ${cards.length} cartão(ões).\n${lines.join("\n")}`;
+    }
+    if (interpretation.intent === "list_installments") {
+      const total = futureInstallmentTotal(transactions);
+      return total > 0
+        ? `Você tem ${formatBRL(total)} em parcelas futuras já registradas.`
+        : "Não encontrei parcelas futuras registradas.";
+    }
+    return null;
+  }
+
   async function handle(text: string) {
     trackProductEvent("fin_used");
     push({ from: "user", text });
@@ -164,6 +223,12 @@ export function FinancialAssistant({ className }: { className?: string }) {
         });
         return;
       }
+    }
+
+    const local = localAnswer(interpretation);
+    if (local) {
+      push({ from: "fin", text: local });
+      return;
     }
 
     setBusy(true);
@@ -280,7 +345,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
           className,
         )}
       >
-        <img src="/fin-assistente.png" alt="Fin" className="h-full w-full object-cover" />
+        <FinMascot expression="normal" className="h-full w-full" />
         <span className="absolute bottom-0 right-0 size-3 rounded-full border-2 border-[#062117] bg-emerald-400" />
       </button>
     );
@@ -294,8 +359,8 @@ export function FinancialAssistant({ className }: { className?: string }) {
     >
       <div className="flex items-center justify-between border-b border-white/10 bg-gradient-to-r from-emerald-300/10 to-transparent p-4 sm:p-5">
         <div className="flex items-center gap-3">
-          <div className="size-10 overflow-hidden rounded-xl">
-            <img src="/fin-assistente.png" alt="Fin" className="h-full w-full object-cover" />
+          <div className="grid size-10 place-items-center overflow-hidden rounded-xl bg-emerald-100/10">
+            <FinMascot expression={busy ? "pensando" : "normal"} className="h-full w-full" />
           </div>
           <div>
             <div className="flex items-center gap-1 text-sm font-bold">
@@ -328,9 +393,27 @@ export function FinancialAssistant({ className }: { className?: string }) {
             {message.text}
           </div>
         ))}
+        {messages.length === 1 && !busy && !pending && (
+          <div className="flex flex-wrap gap-2">
+            {[
+              "Posso gastar 200 hoje?",
+              "O que vence essa semana?",
+              "Quanto pago em assinaturas?",
+            ].map((suggestion) => (
+              <button
+                key={suggestion}
+                type="button"
+                onClick={() => send(suggestion)}
+                className="rounded-full border border-emerald-200/15 bg-white/[0.05] px-3 py-2 text-left text-xs text-white/70 transition-colors hover:bg-emerald-300/15 hover:text-white"
+              >
+                {suggestion}
+              </button>
+            ))}
+          </div>
+        )}
         {busy && (
           <div className="flex items-center gap-2 rounded-2xl bg-white/[0.07] px-3 py-2 text-sm text-white/60">
-            <Loader2 className="size-3.5 animate-spin" /> Analisando seus dados...
+            <Loader2 className="size-3.5 animate-spin" /> Pensando no seu dinheiro...
           </div>
         )}
         {pending && !busy && (
