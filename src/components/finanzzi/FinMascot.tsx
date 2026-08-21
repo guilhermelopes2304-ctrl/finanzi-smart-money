@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 
 export type FinMascotExpression =
-  "normal" | "feliz" | "surpreso" | "pensando" | "atento" | "comemorando";
+  "normal" | "feliz" | "surpreso" | "pensando" | "atento" | "comemorando" | "explicando" | "calmo";
 
 const SOURCES: Record<FinMascotExpression, string> = {
   normal: "/fin-mascote-reference-clean.png",
@@ -10,6 +10,8 @@ const SOURCES: Record<FinMascotExpression, string> = {
   pensando: "/fin-mascote-pensando-clean.png",
   atento: "/fin-mascote-atento-clean.png",
   comemorando: "/fin-mascote-comemorando-clean.png",
+  explicando: "/fin-mascote-explicando-clean.png",
+  calmo: "/fin-mascote-calmo-clean.png",
 };
 
 const LABELS: Record<FinMascotExpression, string> = {
@@ -19,6 +21,8 @@ const LABELS: Record<FinMascotExpression, string> = {
   pensando: "Fin pensando",
   atento: "Fin atento",
   comemorando: "Fin comemorando",
+  explicando: "Fin explicando",
+  calmo: "Fin calmo",
 };
 
 export function FinMascot({

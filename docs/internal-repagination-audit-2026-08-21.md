@@ -19,3 +19,7 @@ As rotas existentes incluem Home, lançamentos, contas, cartões, metas, relató
 ## Auditoria do asset atual do Fin
 
 `public/fin-assistente.png` é uma composição raster de 1536×1024 com uma pessoa humana fotorealista, dashboard de telemóvel, textos promocionais e um pequeno robô genérico. Este asset não deve ser usado como avatar principal na nova experiência. O novo sistema visual precisa de um mascote ilustrado não humano, com silhueta simples, versões pequena/circular/monocromática e expressões reutilizáveis, sem apagar o asset antigo até a substituição ser validada.
+
+## Auditoria do provider do Fin — 21 de agosto de 2026
+
+A Edge Function `fin-chat` autentica o JWT, consulta apenas as tabelas do utilizador autenticado, calcula `disponivel_para_gastar` no backend e chama um provider real (`LOVABLE_API_KEY` quando disponível, caso contrário OpenAI com `OPENAI_API_KEY`). A listagem administrativa de secrets do projeto confirmou `OPENAI_API_KEY`, mas não confirmou `LOVABLE_API_KEY`. A chave OpenAI já tinha devolvido HTTP 401 em produção, portanto respostas abertas da IA continuam dependentes da substituição desse secret no Supabase. A interface agora responde localmente, com dados reais, a margem de compra, próximos compromissos, assinaturas, cartões e parcelas; perguntas abertas continuam a mostrar o erro real do provider, sem mock.
