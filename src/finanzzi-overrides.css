@@ -4,179 +4,73 @@
   --fin-coral: var(--fin-danger);
 }
 
-body [class~="bg-primary"] {
-  background-color: var(--fin-brand) !important;
-}
-body [class~="text-primary"] {
-  color: var(--fin-brand-hover) !important;
-}
+body [class~="bg-primary"] { background-color: var(--fin-brand) !important; }
+body [class~="text-primary"] { color: var(--fin-brand-hover) !important; }
 body [class~="bg-primary\/10"],
-body [class~="bg-primary\/5"] {
-  background-color: var(--fin-brand-soft) !important;
-}
+body [class~="bg-primary\/5"] { background-color: var(--fin-brand-soft) !important; }
 body [class~="border-primary\/20"],
-body [class~="border-primary\/50"] {
-  border-color: var(--fin-line) !important;
-}
+body [class~="border-primary\/50"] { border-color: var(--fin-line) !important; }
 
-:focus-visible {
-  outline: 3px solid var(--fin-brand) !important;
-  outline-offset: 3px;
-}
-::selection {
-  background: var(--fin-brand-soft) !important;
-  color: var(--fin-ink) !important;
-}
+:focus-visible { outline: 3px solid var(--fin-brand) !important; outline-offset: 3px; }
+::selection { background: var(--fin-brand-soft) !important; color: var(--fin-ink) !important; }
 
 /* Authenticated application: canonical light consumer-app shell. */
-[data-fin-app-shell] {
-  color: var(--fin-ink);
-  background: var(--fin-canvas);
-}
-[data-fin-app-shell] aside {
-  color: var(--sidebar-foreground);
-  background: var(--sidebar);
-  border-color: var(--sidebar-border);
-}
-[data-fin-app-shell] aside .text-muted-foreground {
-  color: var(--sidebar-foreground) !important;
-  opacity: 0.76;
-}
-[data-fin-app-shell] aside .text-primary {
-  color: var(--sidebar-primary) !important;
-}
-[data-fin-app-shell] aside .text-primary-foreground {
-  color: var(--sidebar-primary-foreground) !important;
-}
-[data-fin-app-shell] aside .bg-primary {
-  background-color: var(--sidebar-primary) !important;
-}
-[data-fin-app-shell] aside ~ main {
-  background: var(--fin-canvas);
-  color: var(--fin-ink);
-}
-[data-fin-app-shell] aside ~ main .text-primary {
-  color: var(--fin-brand-hover) !important;
-}
-[data-fin-app-shell] aside ~ main .bg-primary {
-  background-color: var(--fin-brand) !important;
-}
-[data-fin-app-shell] aside ~ main .text-primary-foreground {
-  color: var(--primary-foreground) !important;
-}
-[data-fin-app-shell] aside ~ main .bg-accent {
-  background-color: var(--fin-brand-soft) !important;
-  color: var(--fin-ink) !important;
-}
-[data-fin-app-shell] aside ~ main .text-accent-foreground {
-  color: var(--fin-brand-hover) !important;
-}
-[data-fin-app-shell] aside ~ main .text-muted-foreground {
-  color: var(--fin-muted) !important;
-}
-[data-fin-app-shell] aside ~ main .bg-muted {
-  background-color: var(--fin-surface-muted) !important;
-}
-[data-fin-app-shell] aside ~ main .border-border {
-  border-color: var(--fin-line) !important;
-}
-[data-fin-app-shell] aside ~ main .surface-card {
-  border-color: var(--fin-line) !important;
-  box-shadow: 0 1px 3px rgb(17 24 39 / 0.06) !important;
-}
+[data-fin-app-shell] { color: var(--fin-ink); background: var(--fin-canvas); }
+[data-fin-app-shell] aside { color: var(--sidebar-foreground); background: var(--sidebar); border-color: var(--sidebar-border); }
+[data-fin-app-shell] aside .text-muted-foreground { color: var(--sidebar-foreground) !important; opacity: 0.76; }
+[data-fin-app-shell] aside .text-primary { color: var(--sidebar-primary) !important; }
+[data-fin-app-shell] aside .text-primary-foreground { color: var(--sidebar-primary-foreground) !important; }
+[data-fin-app-shell] aside .bg-primary { background-color: var(--sidebar-primary) !important; }
+[data-fin-app-shell] aside ~ main { background: var(--fin-canvas); color: var(--fin-ink); }
+[data-fin-app-shell] aside ~ main .text-primary { color: var(--fin-brand-hover) !important; }
+[data-fin-app-shell] aside ~ main .bg-primary { background-color: var(--fin-brand) !important; }
+[data-fin-app-shell] aside ~ main .text-primary-foreground { color: var(--primary-foreground) !important; }
+[data-fin-app-shell] aside ~ main .bg-accent { background-color: var(--fin-brand-soft) !important; color: var(--fin-ink) !important; }
+[data-fin-app-shell] aside ~ main .text-accent-foreground { color: var(--fin-brand-hover) !important; }
+[data-fin-app-shell] aside ~ main .text-muted-foreground { color: var(--fin-muted) !important; }
+[data-fin-app-shell] aside ~ main .bg-muted { background-color: var(--fin-surface-muted) !important; }
+[data-fin-app-shell] aside ~ main .border-border { border-color: var(--fin-line) !important; }
+[data-fin-app-shell] aside ~ main .surface-card { border-color: var(--fin-line) !important; box-shadow: 0 1px 3px rgb(17 24 39 / 0.06) !important; }
 
-/* Hero device: real-device visual language using the actual FINANZZI UI as the screen. */
+/* Marketing hero: use a photographic product scene, not a CSS phone illustration. */
 [class~="max-w-[470px]"] {
   position: relative;
-  width: min(100%, 360px) !important;
-  max-width: 360px !important;
-  padding: 9px !important;
-  border: 9px solid #080a0b !important;
-  border-radius: 42px !important;
-  background: #080a0b !important;
-  box-shadow: 0 30px 70px rgb(17 24 39 / 0.18), 0 8px 20px rgb(17 24 39 / 0.10) !important;
+  width: min(100%, 470px) !important;
+  max-width: 470px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  aspect-ratio: 3 / 2;
+  overflow: visible !important;
 }
 [class~="max-w-[470px]"]::before {
   content: "";
   position: absolute;
-  z-index: 6;
-  top: 9px;
-  left: 50%;
-  width: 88px;
-  height: 19px;
-  transform: translateX(-50%);
-  border-radius: 999px;
-  background: #080a0b !important;
-  box-shadow: 0 1px 0 rgb(255 255 255 / 0.08) inset !important;
+  inset: 0;
+  z-index: 0;
+  border-radius: 32px;
+  background: linear-gradient(135deg, rgb(234 249 240 / 0.2), rgb(25 201 107 / 0.08));
+  box-shadow: 0 28px 80px rgb(17 24 39 / 0.12);
 }
 [class~="max-w-[470px]"]::after {
   content: "";
   position: absolute;
-  z-index: 5;
-  top: 76px;
-  right: -12px;
-  width: 3px;
-  height: 64px;
-  border-radius: 0 3px 3px 0;
-  background: #080a0b !important;
-  box-shadow: 0 76px 0 #080a0b !important;
-}
-[class~="max-w-[470px]"] > div {
-  overflow: hidden !important;
-  position: relative;
-  border: 0 !important;
-  border-radius: 32px !important;
-  background: var(--fin-canvas) !important;
-  padding: 8px !important;
-  box-shadow: none !important;
-}
-[class~="max-w-[470px]"] > div::before {
-  content: "";
-  position: absolute;
   z-index: 3;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 34px;
-  pointer-events: none;
-  background: linear-gradient(180deg, rgb(255 255 255 / 0.10), transparent) !important;
+  inset: 0;
+  border-radius: 32px;
+  background: url('/images/marketing/finanzzi-hero-real.webp') center / cover no-repeat;
+  box-shadow: 0 28px 80px rgb(17 24 39 / 0.16);
 }
-[class~="max-w-[470px]"] > div > div {
-  border-radius: 25px !important;
-}
-
-/* Keep the demonstration itself readable: the device frame is the hero, not decoration around it. */
-[class~="max-w-[470px]"] .shadow-\[0_24px_70px_rgba\(33\,38\,29\,0\.12\)\] {
-  box-shadow: none !important;
-}
-[class~="max-w-[470px]"] .rounded-\[2\.4rem\] {
-  border-color: transparent !important;
-}
+[class~="max-w-[470px]"] > div { visibility: hidden !important; }
 
 @media (max-width: 640px) {
   [class~="max-w-[470px]"] {
-    width: min(100%, 320px) !important;
-    max-width: 320px !important;
-    border-width: 8px !important;
-    border-radius: 37px !important;
-    padding: 7px !important;
+    width: min(100%, 420px) !important;
+    max-width: 420px !important;
+    aspect-ratio: 3 / 2.15;
   }
-  [class~="max-w-[470px]"]::before {
-    top: 8px;
-    width: 74px;
-    height: 16px;
-  }
-  [class~="max-w-[470px]"]::after {
-    top: 64px;
-    right: -11px;
-    height: 52px;
-    box-shadow: 0 64px 0 #080a0b !important;
-  }
-  [class~="max-w-[470px]"] > div {
-    border-radius: 29px !important;
-    padding: 6px !important;
-  }
-  [class~="max-w-[470px]"] > div > div {
-    border-radius: 22px !important;
-  }
+  [class~="max-w-[470px]"]::before,
+  [class~="max-w-[470px]"]::after { border-radius: 24px; }
 }
