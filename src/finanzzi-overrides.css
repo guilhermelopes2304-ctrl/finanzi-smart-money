@@ -43,6 +43,63 @@ body:not(:has([data-fin-app-shell])) [id="oferta"] { scroll-margin-top: 80px; }
 body:not(:has([data-fin-app-shell])) [id="oferta"] article { background: var(--fin-surface) !important; border: 1px solid var(--fin-line) !important; border-radius: 24px !important; }
 body:not(:has([data-fin-app-shell])) footer { background: var(--fin-ink) !important; color: white !important; }
 
+/* Hero product demo: a real app screen presented inside a premium phone frame. */
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] {
+  position: relative;
+  width: min(100%, 366px) !important;
+  max-width: 366px !important;
+  padding: 9px !important;
+  border: 10px solid #111827 !important;
+  border-radius: 44px !important;
+  background: #111827 !important;
+  box-shadow: 0 28px 70px rgb(17 24 39 / .18), 0 8px 24px rgb(25 201 107 / .10) !important;
+  transform: rotate(1.2deg);
+  isolation: isolate;
+}
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]::before {
+  content: "";
+  position: absolute;
+  z-index: 5;
+  top: 10px;
+  left: 50%;
+  width: 86px;
+  height: 19px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: #111827;
+}
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]::after {
+  content: "";
+  position: absolute;
+  z-index: 6;
+  right: -13px;
+  top: 116px;
+  width: 4px;
+  height: 70px;
+  border-radius: 0 4px 4px 0;
+  background: #111827;
+  box-shadow: 0 86px 0 #111827;
+}
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] > div {
+  overflow: hidden !important;
+  border: 0 !important;
+  border-radius: 34px !important;
+  background: #FCFCF8 !important;
+  padding: 9px !important;
+  box-shadow: none !important;
+}
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] > div > div {
+  border-radius: 27px !important;
+}
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] button {
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgb(17 24 39 / .16);
+}
+
 /* Authenticated app: quiet consumer-fintech surface, no dark SaaS shell. */
 [data-fin-app-shell] { min-height: 100vh; }
 [data-fin-app-shell] aside { transition: width .2s ease, background-color .2s ease; }
@@ -68,6 +125,11 @@ body:not(:has([data-fin-app-shell])) footer { background: var(--fin-ink) !import
   body:not(:has([data-fin-app-shell])) main > section:first-child { padding-top: 32px; padding-bottom: 56px; }
   body:not(:has([data-fin-app-shell])) main > section:first-child .max-w-6xl { gap: 40px; }
   body:not(:has([data-fin-app-shell])) main > section article:hover { transform: none; box-shadow: none; }
+  body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] { width: min(100%, 326px) !important; max-width: 326px !important; border-width: 8px !important; border-radius: 38px !important; padding: 7px !important; transform: none; }
+  body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]::before { top: 8px; width: 74px; height: 16px; }
+  body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]::after { display: none; }
+  body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] > div { border-radius: 29px !important; padding: 7px !important; }
+  body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] > div > div { border-radius: 23px !important; }
   [data-fin-app-shell] main { padding-bottom: 88px; }
   [data-fin-app-shell] aside { display: none; }
 }
