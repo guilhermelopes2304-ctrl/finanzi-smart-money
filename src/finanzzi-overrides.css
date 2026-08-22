@@ -1,154 +1,86 @@
-/* FINANZZI compatibility layer — canonical green identity only. */
-:root {
-  --fin-soft: var(--fin-surface-muted);
-  --fin-coral: var(--fin-danger);
+/* FINANZZI final visual polish — green consumer-finance identity. */
+:root { --fin-soft: var(--fin-surface-muted); --fin-coral: var(--fin-danger); }
+body [class~="bg-primary"] { background-color: var(--fin-brand) !important; }
+body [class~="text-primary"] { color: var(--fin-brand-hover) !important; }
+body [class~="bg-primary\/10"], body [class~="bg-primary\/5"] { background-color: var(--fin-brand-soft) !important; }
+body [class~="border-primary\/20"], body [class~="border-primary\/50"] { border-color: var(--fin-line) !important; }
+:focus-visible { outline: 3px solid var(--fin-brand) !important; outline-offset: 3px; }
+::selection { background: var(--fin-brand-soft) !important; color: var(--fin-ink) !important; }
+
+[data-fin-app-shell] { min-height: 100vh; color: var(--fin-ink); background: var(--fin-canvas); }
+[data-fin-app-shell] aside { color: var(--sidebar-foreground); background: var(--sidebar); border-color: var(--sidebar-border); transition: width .2s ease, background-color .2s ease; }
+[data-fin-app-shell] aside .text-muted-foreground { color: var(--sidebar-foreground) !important; opacity: .76; }
+[data-fin-app-shell] aside .text-primary { color: var(--sidebar-primary) !important; }
+[data-fin-app-shell] aside .text-primary-foreground { color: var(--sidebar-primary-foreground) !important; }
+[data-fin-app-shell] aside .bg-primary { background-color: var(--sidebar-primary) !important; }
+[data-fin-app-shell] aside nav a { border-radius: 12px; }
+[data-fin-app-shell] aside nav a:hover,
+[data-fin-app-shell] aside nav a[aria-current="page"],
+[data-fin-app-shell] aside nav a[data-active="true"] { background: var(--fin-brand-soft) !important; color: var(--fin-brand-hover) !important; }
+[data-fin-app-shell] aside ~ main { min-width: 0; background: var(--fin-canvas); color: var(--fin-ink); }
+[data-fin-app-shell] aside ~ main .text-primary { color: var(--fin-brand-hover) !important; }
+[data-fin-app-shell] aside ~ main .bg-primary { background-color: var(--fin-brand) !important; }
+[data-fin-app-shell] aside ~ main .text-primary-foreground { color: var(--primary-foreground) !important; }
+[data-fin-app-shell] aside ~ main .bg-accent { background: var(--fin-brand-soft) !important; color: var(--fin-ink) !important; }
+[data-fin-app-shell] aside ~ main .text-accent-foreground { color: var(--fin-brand-hover) !important; }
+[data-fin-app-shell] aside ~ main .text-muted-foreground { color: var(--fin-muted) !important; }
+[data-fin-app-shell] aside ~ main .bg-muted { background: var(--fin-surface-muted) !important; }
+[data-fin-app-shell] aside ~ main .border-border { border-color: var(--fin-line) !important; }
+[data-fin-app-shell] main > div { max-width: 1120px; }
+[data-fin-app-shell] .surface-card { border-radius: 16px !important; background: var(--fin-surface) !important; border-color: var(--fin-line) !important; box-shadow: 0 1px 3px rgb(17 24 39 / .06) !important; }
+[data-fin-app-shell] button[class*="bg-primary"], [data-fin-app-shell] a[class*="bg-primary"] { box-shadow: 0 8px 20px rgb(25 201 107 / .16); }
+[data-fin-app-shell] input, [data-fin-app-shell] textarea, [data-fin-app-shell] select { background: var(--fin-surface) !important; color: var(--fin-ink) !important; border-color: var(--fin-line) !important; }
+[data-fin-app-shell] input::placeholder, [data-fin-app-shell] textarea::placeholder { color: var(--fin-muted) !important; opacity: 1; }
+[data-fin-app-shell] .text-white { color: var(--fin-ink) !important; }
+[data-fin-app-shell] .bg-white { background: var(--fin-surface) !important; }
+[data-fin-app-shell] button, [data-fin-app-shell] a { -webkit-tap-highlight-color: transparent; }
+
+body:not(:has([data-fin-app-shell])) { background: var(--fin-canvas); color: var(--fin-ink); }
+body:not(:has([data-fin-app-shell])) header { backdrop-filter: blur(10px); background: rgb(252 252 248 / .92) !important; border-color: var(--fin-line) !important; }
+body:not(:has([data-fin-app-shell])) main > section { position: relative; }
+body:not(:has([data-fin-app-shell])) main > section h2 { text-wrap: balance; }
+body:not(:has([data-fin-app-shell])) main > section p { text-wrap: pretty; }
+body:not(:has([data-fin-app-shell])) main > section article { transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
+body:not(:has([data-fin-app-shell])) main > section article:hover { transform: translateY(-3px); box-shadow: 0 18px 44px rgb(17 24 39 / .08); border-color: rgb(25 201 107 / .35); }
+body:not(:has([data-fin-app-shell])) main > section:first-child { min-height: 680px; display: flex; align-items: center; }
+body:not(:has([data-fin-app-shell])) main > section:first-child h1 { max-width: 690px; }
+body:not(:has([data-fin-app-shell])) main > section:first-child > div { width: 100%; }
+body:not(:has([data-fin-app-shell])) #como-funciona { scroll-margin-top: 80px; }
+body:not(:has([data-fin-app-shell])) #como-funciona article > div:first-child { min-height: 178px; display: flex; flex-direction: column; justify-content: space-between; }
+body:not(:has([data-fin-app-shell])) #como-funciona article p:last-child { color: var(--fin-copy); }
+body:not(:has([data-fin-app-shell])) [id="contas"] { background: var(--fin-canvas) !important; }
+body:not(:has([data-fin-app-shell])) [id="contas"] article { background: var(--fin-surface) !important; }
+body:not(:has([data-fin-app-shell])) [id="oferta"] { scroll-margin-top: 80px; }
+body:not(:has([data-fin-app-shell])) [id="oferta"] article { background: var(--fin-surface) !important; border: 1px solid var(--fin-line) !important; border-radius: 24px !important; }
+body:not(:has([data-fin-app-shell])) footer { background: var(--fin-ink) !important; color: white !important; }
+
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] { position: relative; width: min(100%, 366px) !important; max-width: 366px !important; padding: 9px !important; border: 10px solid #111827 !important; border-radius: 44px !important; background: #111827 !important; box-shadow: 0 28px 70px rgb(17 24 39 / .18), 0 8px 24px rgb(25 201 107 / .10) !important; transform: rotate(1.2deg); isolation: isolate; }
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]::before { content: ""; position: absolute; z-index: 5; top: 10px; left: 50%; width: 86px; height: 19px; transform: translateX(-50%); border-radius: 999px; background: #111827; }
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]::after { content: ""; position: absolute; z-index: 6; right: -13px; top: 116px; width: 4px; height: 70px; border-radius: 0 4px 4px 0; background: #111827; box-shadow: 0 86px 0 #111827; }
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] > div { overflow: hidden !important; border: 0 !important; border-radius: 34px !important; background: #FCFCF8 !important; padding: 9px !important; box-shadow: none !important; }
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] > div > div { border-radius: 27px !important; }
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] button { cursor: pointer; transition: transform .18s ease, box-shadow .18s ease; }
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] button:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgb(17 24 39 / .16); }
+
+@media (max-width:900px) {
+  body:not(:has([data-fin-app-shell])) main > section:first-child { min-height: 0; }
+  body:not(:has([data-fin-app-shell])) main > section:first-child h1 { font-size: clamp(3rem, 14vw, 5.5rem); }
+}
+@media (max-width:640px) {
+  body:not(:has([data-fin-app-shell])) header { height: 62px; }
+  body:not(:has([data-fin-app-shell])) main > section { scroll-margin-top: 70px; }
+  body:not(:has([data-fin-app-shell])) main > section:first-child { padding-top: 32px; padding-bottom: 56px; }
+  body:not(:has([data-fin-app-shell])) main > section:first-child .max-w-6xl { gap: 40px; }
+  body:not(:has([data-fin-app-shell])) main > section article:hover { transform: none; box-shadow: none; }
+  body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] { width: min(100%, 326px) !important; max-width: 326px !important; border-width: 8px !important; border-radius: 38px !important; padding: 7px !important; transform: none; }
+  body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]::before { top: 8px; width: 74px; height: 16px; }
+  body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]::after { display: none; }
+  body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] > div { border-radius: 29px !important; padding: 7px !important; }
+  body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] > div > div { border-radius: 23px !important; }
+  [data-fin-app-shell] main { padding-bottom: 88px; }
+  [data-fin-app-shell] aside { display: none; }
 }
 
-body [class~="bg-primary"] {
-  background-color: var(--fin-brand) !important;
-}
-body [class~="text-primary"] {
-  color: var(--fin-brand-hover) !important;
-}
-body [class~="bg-primary\/10"],
-body [class~="bg-primary\/5"] {
-  background-color: var(--fin-brand-soft) !important;
-}
-body [class~="border-primary\/20"],
-body [class~="border-primary\/50"] {
-  border-color: var(--fin-line) !important;
-}
-
-:focus-visible {
-  outline: 3px solid var(--fin-brand) !important;
-  outline-offset: 3px;
-}
-::selection {
-  background: var(--fin-brand-soft) !important;
-  color: var(--fin-ink) !important;
-}
-
-/* Authenticated application: use the canonical sidebar tokens in both themes. */
-[data-fin-app-shell] aside {
-  color: var(--sidebar-foreground);
-}
-[data-fin-app-shell] aside .text-muted-foreground {
-  color: var(--sidebar-foreground) !important;
-  opacity: 0.76;
-}
-[data-fin-app-shell] aside .text-primary {
-  color: var(--sidebar-primary) !important;
-}
-[data-fin-app-shell] aside .text-primary-foreground {
-  color: var(--sidebar-primary-foreground) !important;
-}
-[data-fin-app-shell] aside .bg-primary {
-  background-color: var(--sidebar-primary) !important;
-}
-.dark [data-fin-app-shell] aside .text-primary {
-  color: var(--sidebar-primary) !important;
-}
-.dark [data-fin-app-shell] aside .text-muted-foreground {
-  opacity: 0.84;
-}
-
-[data-fin-app-shell] aside ~ main .text-primary {
-  color: var(--fin-brand-hover) !important;
-}
-[data-fin-app-shell] aside ~ main .bg-primary {
-  background-color: var(--fin-brand) !important;
-}
-[data-fin-app-shell] aside ~ main .text-primary-foreground {
-  color: var(--primary-foreground) !important;
-}
-[data-fin-app-shell] aside ~ main .bg-accent {
-  background-color: var(--fin-brand-soft) !important;
-  color: var(--fin-ink) !important;
-}
-[data-fin-app-shell] aside ~ main .text-accent-foreground {
-  color: var(--fin-brand-hover) !important;
-}
-[data-fin-app-shell] aside ~ main .text-muted-foreground {
-  color: var(--fin-muted) !important;
-}
-[data-fin-app-shell] aside ~ main .bg-muted {
-  background-color: var(--fin-surface-muted) !important;
-}
-[data-fin-app-shell] aside ~ main .border-border {
-  border-color: var(--fin-line) !important;
-}
-[data-fin-app-shell] aside ~ main .surface-card {
-  border-color: var(--fin-line) !important;
-  box-shadow: 0 8px 24px rgb(17 24 39 / 0.06) !important;
-}
-
-/* Phone mockups keep a quiet consumer-app frame, not an AI glow. */
-[class~="max-w-[470px]"] {
-  position: relative;
-  width: min(100%, 360px) !important;
-  max-width: 360px !important;
-  padding: 10px !important;
-  border: 10px solid var(--fin-ink) !important;
-  border-radius: 42px !important;
-  background: var(--fin-ink) !important;
-  box-shadow: 0 22px 48px rgb(17 24 39 / 0.14) !important;
-}
-[class~="max-w-[470px]"]::before {
-  content: "";
-  position: absolute;
-  z-index: 4;
-  top: 10px;
-  left: 50%;
-  width: 84px;
-  height: 18px;
-  transform: translateX(-50%);
-  border-radius: 999px;
-  background: var(--fin-ink) !important;
-}
-[class~="max-w-[470px]"] > div {
-  overflow: hidden !important;
-  border: 0 !important;
-  border-radius: 31px !important;
-  background: var(--fin-brand-soft) !important;
-  padding: 8px !important;
-  box-shadow: none !important;
-}
-[class~="max-w-[470px]"] > div > div {
-  border-radius: 24px !important;
-}
-
-@media (max-width: 640px) {
-  [class~="max-w-[470px]"] {
-    width: min(100%, 320px) !important;
-    max-width: 320px !important;
-    border-width: 8px !important;
-    border-radius: 36px !important;
-    padding: 7px !important;
-  }
-  [class~="max-w-[470px]"]::before {
-    top: 8px;
-    width: 72px;
-    height: 15px;
-  }
-  [class~="max-w-[470px]"] > div {
-    border-radius: 28px !important;
-    padding: 6px !important;
-  }
-  [class~="max-w-[470px]"] > div > div {
-    border-radius: 21px !important;
-  }
-}
-
-.dark [data-fin-app-shell] aside ~ main .bg-muted {
-  background-color: #111827 !important;
-}
-.dark [data-fin-app-shell] aside ~ main .text-muted-foreground {
-  color: #e1e7e3 !important;
-}
-.dark [data-fin-app-shell] aside ~ main .border-border {
-  border-color: #556070 !important;
-}
-.dark [data-fin-app-shell] aside ~ main .surface-card {
-  border-color: #556070 !important;
-  box-shadow: 0 8px 24px rgb(0 0 0 / 0.16) !important;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
 }
