@@ -23,12 +23,6 @@ body [class~="border-primary\/20"], body [class~="border-primary\/50"] { border-
 [data-fin-app-shell] aside ~ main .border-border { border-color: var(--fin-line) !important; }
 [data-fin-app-shell] aside ~ main .surface-card { border-color: var(--fin-line) !important; box-shadow: 0 1px 3px rgb(17 24 39 / .06) !important; }
 
-/* Hero: photographic product scene, using the existing licensed local photography asset. */
-[class~="max-w-[470px]"] { position: relative; width: min(100%,470px) !important; max-width: 470px !important; padding: 0 !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; aspect-ratio: 3 / 2; overflow: visible !important; }
-[class~="max-w-[470px]"]::before { content: ""; position: absolute; inset: 0; z-index: 0; border-radius: 32px; background: linear-gradient(135deg,rgb(234 249 240 / .22),rgb(25 201 107 / .08)); box-shadow: 0 28px 80px rgb(17 24 39 / .12); }
-[class~="max-w-[470px]"]::after { content: ""; position: absolute; inset: 0; z-index: 3; border-radius: 32px; background: url('/images/photography/finanzi-phone-payment.webp') center / cover no-repeat; box-shadow: 0 28px 80px rgb(17 24 39 / .16); }
-[class~="max-w-[470px]"] > div { visibility: hidden !important; }
-
 /* Landing: product-advertising language without SaaS visual noise. */
 body:not(:has([data-fin-app-shell])) { background: var(--fin-canvas); }
 body:not(:has([data-fin-app-shell])) header { backdrop-filter: blur(10px); background: rgb(252 252 248 / .92) !important; border-color: var(--fin-line) !important; }
@@ -69,8 +63,6 @@ body:not(:has([data-fin-app-shell])) footer { background: var(--fin-ink) !import
   body:not(:has([data-fin-app-shell])) main > section:first-child h1 { font-size: clamp(3rem, 14vw, 5.5rem); }
 }
 @media (max-width:640px) {
-  [class~="max-w-[470px]"] { width: min(100%,420px) !important; max-width:420px !important; aspect-ratio:3 / 2.15; }
-  [class~="max-w-[470px]"]::before,[class~="max-w-[470px]"]::after { border-radius:24px; }
   body:not(:has([data-fin-app-shell])) header { height: 62px; }
   body:not(:has([data-fin-app-shell])) main > section { scroll-margin-top: 70px; }
   body:not(:has([data-fin-app-shell])) main > section:first-child { padding-top: 32px; padding-bottom: 56px; }
