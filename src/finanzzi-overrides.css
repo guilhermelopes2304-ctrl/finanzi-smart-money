@@ -28,4 +28,54 @@ body [class~="border-primary\/20"], body [class~="border-primary\/50"] { border-
 [class~="max-w-[470px]"]::before { content: ""; position: absolute; inset: 0; z-index: 0; border-radius: 32px; background: linear-gradient(135deg,rgb(234 249 240 / .22),rgb(25 201 107 / .08)); box-shadow: 0 28px 80px rgb(17 24 39 / .12); }
 [class~="max-w-[470px]"]::after { content: ""; position: absolute; inset: 0; z-index: 3; border-radius: 32px; background: url('/images/photography/finanzi-phone-payment.webp') center / cover no-repeat; box-shadow: 0 28px 80px rgb(17 24 39 / .16); }
 [class~="max-w-[470px]"] > div { visibility: hidden !important; }
-@media (max-width:640px) { [class~="max-w-[470px]"] { width: min(100%,420px) !important; max-width:420px !important; aspect-ratio:3 / 2.15; } [class~="max-w-[470px]"]::before,[class~="max-w-[470px]"]::after { border-radius:24px; } }
+
+/* Landing: product-advertising language without SaaS visual noise. */
+body:not(:has([data-fin-app-shell])) { background: var(--fin-canvas); }
+body:not(:has([data-fin-app-shell])) header { backdrop-filter: blur(10px); background: rgb(252 252 248 / .92) !important; border-color: var(--fin-line) !important; }
+body:not(:has([data-fin-app-shell])) main > section { position: relative; }
+body:not(:has([data-fin-app-shell])) main > section h2 { text-wrap: balance; }
+body:not(:has([data-fin-app-shell])) main > section p { text-wrap: pretty; }
+body:not(:has([data-fin-app-shell])) main > section article { transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
+body:not(:has([data-fin-app-shell])) main > section article:hover { transform: translateY(-3px); box-shadow: 0 18px 44px rgb(17 24 39 / .08); border-color: rgb(25 201 107 / .35); }
+body:not(:has([data-fin-app-shell])) main > section:first-child { min-height: 680px; display: flex; align-items: center; }
+body:not(:has([data-fin-app-shell])) main > section:first-child h1 { max-width: 690px; }
+body:not(:has([data-fin-app-shell])) main > section:first-child > div { width: 100%; }
+body:not(:has([data-fin-app-shell])) #como-funciona { scroll-margin-top: 80px; }
+body:not(:has([data-fin-app-shell])) #como-funciona article > div:first-child { min-height: 178px; display: flex; flex-direction: column; justify-content: space-between; }
+body:not(:has([data-fin-app-shell])) #como-funciona article p:last-child { color: var(--fin-copy); }
+body:not(:has([data-fin-app-shell])) [id="contas"] { background: var(--fin-canvas) !important; }
+body:not(:has([data-fin-app-shell])) [id="contas"] article { background: var(--fin-surface) !important; }
+body:not(:has([data-fin-app-shell])) [id="oferta"] { scroll-margin-top: 80px; }
+body:not(:has([data-fin-app-shell])) [id="oferta"] article { background: var(--fin-surface) !important; border: 1px solid var(--fin-line) !important; border-radius: 24px !important; }
+body:not(:has([data-fin-app-shell])) footer { background: var(--fin-ink) !important; color: white !important; }
+
+/* Authenticated app: quiet consumer-fintech surface, no dark SaaS shell. */
+[data-fin-app-shell] { min-height: 100vh; }
+[data-fin-app-shell] aside { transition: width .2s ease, background-color .2s ease; }
+[data-fin-app-shell] aside nav a { border-radius: 12px; }
+[data-fin-app-shell] aside nav a:hover { background: var(--fin-brand-soft) !important; color: var(--fin-brand-hover) !important; }
+[data-fin-app-shell] aside nav a[aria-current="page"], [data-fin-app-shell] aside nav a[data-active="true"] { background: var(--fin-brand-soft) !important; color: var(--fin-brand-hover) !important; }
+[data-fin-app-shell] main { min-width: 0; }
+[data-fin-app-shell] main > div { max-width: 1120px; }
+[data-fin-app-shell] .surface-card { border-radius: 16px !important; background: var(--fin-surface) !important; }
+[data-fin-app-shell] button[class*="bg-primary"], [data-fin-app-shell] a[class*="bg-primary"] { box-shadow: 0 8px 20px rgb(25 201 107 / .16); }
+[data-fin-app-shell] input, [data-fin-app-shell] textarea, [data-fin-app-shell] select { background: var(--fin-surface) !important; color: var(--fin-ink) !important; border-color: var(--fin-line) !important; }
+[data-fin-app-shell] input::placeholder, [data-fin-app-shell] textarea::placeholder { color: var(--fin-muted) !important; opacity: 1; }
+[data-fin-app-shell] .text-white { color: var(--fin-ink) !important; }
+[data-fin-app-shell] .bg-white { background: var(--fin-surface) !important; }
+
+@media (max-width:900px) {
+  body:not(:has([data-fin-app-shell])) main > section:first-child { min-height: 0; }
+  body:not(:has([data-fin-app-shell])) main > section:first-child h1 { font-size: clamp(3rem, 14vw, 5.5rem); }
+}
+@media (max-width:640px) {
+  [class~="max-w-[470px]"] { width: min(100%,420px) !important; max-width:420px !important; aspect-ratio:3 / 2.15; }
+  [class~="max-w-[470px]"]::before,[class~="max-w-[470px]"]::after { border-radius:24px; }
+  body:not(:has([data-fin-app-shell])) header { height: 62px; }
+  body:not(:has([data-fin-app-shell])) main > section { scroll-margin-top: 70px; }
+  body:not(:has([data-fin-app-shell])) main > section:first-child { padding-top: 32px; padding-bottom: 56px; }
+  body:not(:has([data-fin-app-shell])) main > section:first-child .max-w-6xl { gap: 40px; }
+  body:not(:has([data-fin-app-shell])) main > section article:hover { transform: none; box-shadow: none; }
+  [data-fin-app-shell] main { padding-bottom: 88px; }
+  [data-fin-app-shell] aside { display: none; }
+}
