@@ -1,4 +1,4 @@
-/* FINANZZI compatibility layer — canonical green identity only. */
+/* FINANZZI final visual polish — green consumer-finance identity. */
 :root { --fin-soft: var(--fin-surface-muted); --fin-coral: var(--fin-danger); }
 body [class~="bg-primary"] { background-color: var(--fin-brand) !important; }
 body [class~="text-primary"] { color: var(--fin-brand-hover) !important; }
@@ -6,25 +6,36 @@ body [class~="bg-primary\/10"], body [class~="bg-primary\/5"] { background-color
 body [class~="border-primary\/20"], body [class~="border-primary\/50"] { border-color: var(--fin-line) !important; }
 :focus-visible { outline: 3px solid var(--fin-brand) !important; outline-offset: 3px; }
 ::selection { background: var(--fin-brand-soft) !important; color: var(--fin-ink) !important; }
-[data-fin-app-shell] { color: var(--fin-ink); background: var(--fin-canvas); }
-[data-fin-app-shell] aside { color: var(--sidebar-foreground); background: var(--sidebar); border-color: var(--sidebar-border); }
+
+[data-fin-app-shell] { min-height: 100vh; color: var(--fin-ink); background: var(--fin-canvas); }
+[data-fin-app-shell] aside { color: var(--sidebar-foreground); background: var(--sidebar); border-color: var(--sidebar-border); transition: width .2s ease, background-color .2s ease; }
 [data-fin-app-shell] aside .text-muted-foreground { color: var(--sidebar-foreground) !important; opacity: .76; }
 [data-fin-app-shell] aside .text-primary { color: var(--sidebar-primary) !important; }
 [data-fin-app-shell] aside .text-primary-foreground { color: var(--sidebar-primary-foreground) !important; }
 [data-fin-app-shell] aside .bg-primary { background-color: var(--sidebar-primary) !important; }
-[data-fin-app-shell] aside ~ main { background: var(--fin-canvas); color: var(--fin-ink); }
+[data-fin-app-shell] aside nav a { border-radius: 12px; }
+[data-fin-app-shell] aside nav a:hover,
+[data-fin-app-shell] aside nav a[aria-current="page"],
+[data-fin-app-shell] aside nav a[data-active="true"] { background: var(--fin-brand-soft) !important; color: var(--fin-brand-hover) !important; }
+[data-fin-app-shell] aside ~ main { min-width: 0; background: var(--fin-canvas); color: var(--fin-ink); }
 [data-fin-app-shell] aside ~ main .text-primary { color: var(--fin-brand-hover) !important; }
 [data-fin-app-shell] aside ~ main .bg-primary { background-color: var(--fin-brand) !important; }
 [data-fin-app-shell] aside ~ main .text-primary-foreground { color: var(--primary-foreground) !important; }
-[data-fin-app-shell] aside ~ main .bg-accent { background-color: var(--fin-brand-soft) !important; color: var(--fin-ink) !important; }
+[data-fin-app-shell] aside ~ main .bg-accent { background: var(--fin-brand-soft) !important; color: var(--fin-ink) !important; }
 [data-fin-app-shell] aside ~ main .text-accent-foreground { color: var(--fin-brand-hover) !important; }
 [data-fin-app-shell] aside ~ main .text-muted-foreground { color: var(--fin-muted) !important; }
-[data-fin-app-shell] aside ~ main .bg-muted { background-color: var(--fin-surface-muted) !important; }
+[data-fin-app-shell] aside ~ main .bg-muted { background: var(--fin-surface-muted) !important; }
 [data-fin-app-shell] aside ~ main .border-border { border-color: var(--fin-line) !important; }
-[data-fin-app-shell] aside ~ main .surface-card { border-color: var(--fin-line) !important; box-shadow: 0 1px 3px rgb(17 24 39 / .06) !important; }
+[data-fin-app-shell] main > div { max-width: 1120px; }
+[data-fin-app-shell] .surface-card { border-radius: 16px !important; background: var(--fin-surface) !important; border-color: var(--fin-line) !important; box-shadow: 0 1px 3px rgb(17 24 39 / .06) !important; }
+[data-fin-app-shell] button[class*="bg-primary"], [data-fin-app-shell] a[class*="bg-primary"] { box-shadow: 0 8px 20px rgb(25 201 107 / .16); }
+[data-fin-app-shell] input, [data-fin-app-shell] textarea, [data-fin-app-shell] select { background: var(--fin-surface) !important; color: var(--fin-ink) !important; border-color: var(--fin-line) !important; }
+[data-fin-app-shell] input::placeholder, [data-fin-app-shell] textarea::placeholder { color: var(--fin-muted) !important; opacity: 1; }
+[data-fin-app-shell] .text-white { color: var(--fin-ink) !important; }
+[data-fin-app-shell] .bg-white { background: var(--fin-surface) !important; }
+[data-fin-app-shell] button, [data-fin-app-shell] a { -webkit-tap-highlight-color: transparent; }
 
-/* Landing: product-advertising language without SaaS visual noise. */
-body:not(:has([data-fin-app-shell])) { background: var(--fin-canvas); }
+body:not(:has([data-fin-app-shell])) { background: var(--fin-canvas); color: var(--fin-ink); }
 body:not(:has([data-fin-app-shell])) header { backdrop-filter: blur(10px); background: rgb(252 252 248 / .92) !important; border-color: var(--fin-line) !important; }
 body:not(:has([data-fin-app-shell])) main > section { position: relative; }
 body:not(:has([data-fin-app-shell])) main > section h2 { text-wrap: balance; }
@@ -43,77 +54,14 @@ body:not(:has([data-fin-app-shell])) [id="oferta"] { scroll-margin-top: 80px; }
 body:not(:has([data-fin-app-shell])) [id="oferta"] article { background: var(--fin-surface) !important; border: 1px solid var(--fin-line) !important; border-radius: 24px !important; }
 body:not(:has([data-fin-app-shell])) footer { background: var(--fin-ink) !important; color: white !important; }
 
-/* Hero product demo: a real app screen presented inside a premium phone frame. */
-body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] {
-  position: relative;
-  width: min(100%, 366px) !important;
-  max-width: 366px !important;
-  padding: 9px !important;
-  border: 10px solid #111827 !important;
-  border-radius: 44px !important;
-  background: #111827 !important;
-  box-shadow: 0 28px 70px rgb(17 24 39 / .18), 0 8px 24px rgb(25 201 107 / .10) !important;
-  transform: rotate(1.2deg);
-  isolation: isolate;
-}
-body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]::before {
-  content: "";
-  position: absolute;
-  z-index: 5;
-  top: 10px;
-  left: 50%;
-  width: 86px;
-  height: 19px;
-  transform: translateX(-50%);
-  border-radius: 999px;
-  background: #111827;
-}
-body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]::after {
-  content: "";
-  position: absolute;
-  z-index: 6;
-  right: -13px;
-  top: 116px;
-  width: 4px;
-  height: 70px;
-  border-radius: 0 4px 4px 0;
-  background: #111827;
-  box-shadow: 0 86px 0 #111827;
-}
-body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] > div {
-  overflow: hidden !important;
-  border: 0 !important;
-  border-radius: 34px !important;
-  background: #FCFCF8 !important;
-  padding: 9px !important;
-  box-shadow: none !important;
-}
-body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] > div > div {
-  border-radius: 27px !important;
-}
-body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] button {
-  cursor: pointer;
-  transition: transform .18s ease, box-shadow .18s ease;
-}
-body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgb(17 24 39 / .16);
-}
-
-/* Authenticated app: quiet consumer-fintech surface, no dark SaaS shell. */
-[data-fin-app-shell] { min-height: 100vh; }
-[data-fin-app-shell] aside { transition: width .2s ease, background-color .2s ease; }
-[data-fin-app-shell] aside nav a { border-radius: 12px; }
-[data-fin-app-shell] aside nav a:hover { background: var(--fin-brand-soft) !important; color: var(--fin-brand-hover) !important; }
-[data-fin-app-shell] aside nav a[aria-current="page"], [data-fin-app-shell] aside nav a[data-active="true"] { background: var(--fin-brand-soft) !important; color: var(--fin-brand-hover) !important; }
-[data-fin-app-shell] main { min-width: 0; }
-[data-fin-app-shell] main > div { max-width: 1120px; }
-[data-fin-app-shell] .surface-card { border-radius: 16px !important; background: var(--fin-surface) !important; }
-[data-fin-app-shell] button[class*="bg-primary"], [data-fin-app-shell] a[class*="bg-primary"] { box-shadow: 0 8px 20px rgb(25 201 107 / .16); }
-[data-fin-app-shell] input, [data-fin-app-shell] textarea, [data-fin-app-shell] select { background: var(--fin-surface) !important; color: var(--fin-ink) !important; border-color: var(--fin-line) !important; }
-[data-fin-app-shell] input::placeholder, [data-fin-app-shell] textarea::placeholder { color: var(--fin-muted) !important; opacity: 1; }
-[data-fin-app-shell] .text-white { color: var(--fin-ink) !important; }
-[data-fin-app-shell] .bg-white { background: var(--fin-surface) !important; }
+/* Hero: app screen presented as the product, not a generic phone illustration. */
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] { position: relative; width: min(100%, 366px) !important; max-width: 366px !important; padding: 9px !important; border: 10px solid #111827 !important; border-radius: 44px !important; background: #111827 !important; box-shadow: 0 28px 70px rgb(17 24 39 / .18), 0 8px 24px rgb(25 201 107 / .10) !important; transform: rotate(1.2deg); isolation: isolate; }
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]::before { content: ""; position: absolute; z-index: 5; top: 10px; left: 50%; width: 86px; height: 19px; transform: translateX(-50%); border-radius: 999px; background: #111827; }
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]::after { content: ""; position: absolute; z-index: 6; right: -13px; top: 116px; width: 4px; height: 70px; border-radius: 0 4px 4px 0; background: #111827; box-shadow: 0 86px 0 #111827; }
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] > div { overflow: hidden !important; border: 0 !important; border-radius: 34px !important; background: #FCFCF8 !important; padding: 9px !important; box-shadow: none !important; }
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] > div > div { border-radius: 27px !important; }
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] button { cursor: pointer; transition: transform .18s ease, box-shadow .18s ease; }
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] button:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgb(17 24 39 / .16); }
 
 @media (max-width:900px) {
   body:not(:has([data-fin-app-shell])) main > section:first-child { min-height: 0; }
@@ -132,4 +80,8 @@ body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[
   body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] > div > div { border-radius: 23px !important; }
   [data-fin-app-shell] main { padding-bottom: 88px; }
   [data-fin-app-shell] aside { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
 }
