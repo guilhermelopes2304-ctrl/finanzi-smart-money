@@ -1,4 +1,4 @@
-/* FINANZZI shell polish: floating mobile header + bottom navigation */
+/* FINANZZI motion system: premium movement inspired by modern fintech products */
 [data-fin-app-shell] > header {
   margin: 10px 12px 0;
   border: 1px solid color-mix(in oklab, var(--color-border) 72%, transparent);
@@ -7,23 +7,12 @@
   box-shadow: 0 10px 30px oklch(0.25 0.02 150 / 0.08);
   -webkit-backdrop-filter: blur(18px) saturate(1.12);
   backdrop-filter: blur(18px) saturate(1.12);
+  animation: fin-header-in .65s cubic-bezier(.22,1,.36,1) both;
 }
 
-[data-fin-app-shell] > header > div {
-  min-height: 48px;
-}
-
-[data-fin-app-shell] > header .gradient-brand {
-  width: 34px;
-  height: 34px;
-  border-radius: 11px;
-}
-
-[data-fin-app-shell] > header .gradient-brand svg {
-  width: 17px;
-  height: 17px;
-}
-
+[data-fin-app-shell] > header > div { min-height: 48px; }
+[data-fin-app-shell] > header .gradient-brand { width: 34px; height: 34px; border-radius: 11px; }
+[data-fin-app-shell] > header .gradient-brand svg { width: 17px; height: 17px; }
 [data-fin-app-shell] > header a[href="/configuracoes"] {
   width: 40px;
   height: 40px;
@@ -31,7 +20,26 @@
   background: color-mix(in oklab, var(--color-card) 72%, var(--color-primary) 8%);
   box-shadow: 0 6px 18px oklch(0.25 0.02 150 / 0.08);
   color: var(--color-foreground);
+  transition: transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s ease;
 }
+[data-fin-app-shell] > header a[href="/configuracoes"]:hover { transform: translateY(-2px) rotate(2deg); box-shadow: 0 12px 24px color-mix(in oklab, var(--color-primary) 16%, transparent); }
+
+[data-fin-app-shell] .shadow-soft,
+[data-fin-app-shell] .shadow-\[var\(--shadow-soft\)\] {
+  transition: transform .45s cubic-bezier(.22,1,.36,1), box-shadow .45s ease, border-color .45s ease;
+}
+[data-fin-app-shell] .shadow-soft:hover,
+[data-fin-app-shell] .shadow-\[var\(--shadow-soft\)\]:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 42px oklch(0.25 0.02 150 / 0.10);
+}
+
+[data-fin-app-shell] button,
+[data-fin-app-shell] a {
+  transition-timing-function: cubic-bezier(.22,1,.36,1);
+}
+[data-fin-app-shell] button:active,
+[data-fin-app-shell] a:active { transform: scale(.975); }
 
 @media (max-width: 1023px) {
   [data-fin-app-shell] nav.fixed {
@@ -47,42 +55,29 @@
     box-shadow: 0 18px 42px oklch(0.25 0.02 150 / 0.14), 0 4px 12px oklch(0.25 0.02 150 / 0.08) !important;
     -webkit-backdrop-filter: blur(22px) saturate(1.2);
     backdrop-filter: blur(22px) saturate(1.2);
+    animation: fin-nav-in .7s cubic-bezier(.22,1,.36,1) both;
   }
-
   [data-fin-app-shell] nav.fixed a {
     min-height: 50px;
     border-radius: 17px;
     padding: 6px 4px;
     color: var(--color-muted-foreground);
-    transition: transform .18s ease, background-color .18s ease, color .18s ease;
+    transition: transform .3s cubic-bezier(.22,1,.36,1), background-color .25s ease, color .25s ease;
   }
-
-  [data-fin-app-shell] nav.fixed a:active {
-    transform: scale(.96);
-  }
-
+  [data-fin-app-shell] nav.fixed a:hover { transform: translateY(-2px); }
+  [data-fin-app-shell] nav.fixed a:active { transform: scale(.94); }
   [data-fin-app-shell] nav.fixed a.bg-fin-brand-soft {
     background: color-mix(in oklab, var(--color-primary) 10%, transparent) !important;
     color: var(--color-primary) !important;
   }
-
   [data-fin-app-shell] nav.fixed a.bg-fin-brand-soft span[class*="bg-primary"] {
     box-shadow: 0 7px 18px color-mix(in oklab, var(--color-primary) 24%, transparent);
+    animation: fin-active-pulse 2.8s ease-in-out infinite;
   }
-
-  [data-fin-app-shell] nav.fixed a span.grid {
-    transition: transform .18s ease, box-shadow .18s ease;
-  }
-
-  [data-fin-app-shell] nav.fixed a.bg-fin-brand-soft span.grid {
-    transform: translateY(-1px);
-  }
-
-  [data-fin-app-shell] nav.fixed a span.max-w-\[78px\] {
-    font-size: 10px;
-    letter-spacing: -0.01em;
-  }
-
+  [data-fin-app-shell] nav.fixed a span.grid { transition: transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s ease; }
+  [data-fin-app-shell] nav.fixed a:hover span.grid { transform: translateY(-2px) scale(1.04); }
+  [data-fin-app-shell] nav.fixed a.bg-fin-brand-soft span.grid { transform: translateY(-1px); }
+  [data-fin-app-shell] nav.fixed a span.max-w-\[78px\] { font-size: 10px; letter-spacing: -0.01em; }
   [data-fin-app-shell] nav.fixed::before {
     content: "";
     position: absolute;
@@ -91,18 +86,34 @@
     pointer-events: none;
     background: linear-gradient(180deg, color-mix(in oklab, white 20%, transparent), transparent 42%);
   }
-
   [data-fin-app-shell] main,
-  [data-fin-app-shell] [role="main"] {
-    scroll-padding-bottom: 100px;
-  }
+  [data-fin-app-shell] [role="main"] { scroll-padding-bottom: 100px; }
 }
 
+/* Landing: floating chips, phone and ambient movement */
+.animate-float-a { animation: fin-float-a 5.8s ease-in-out infinite; }
+.animate-float-b { animation: fin-float-b 6.6s ease-in-out infinite; animation-delay: -.9s; }
+.animate-float-c { animation: fin-float-c 7.2s ease-in-out infinite; animation-delay: -1.8s; }
+.animate-fin-rise { animation: fin-rise .9s cubic-bezier(.22,1,.36,1) both, fin-phone-float 6.5s ease-in-out 1s infinite; }
+.animate-fin-fade-up { animation: fin-fade-up .65s cubic-bezier(.22,1,.36,1) both; }
+
+.surface-card {
+  transition: transform .5s cubic-bezier(.22,1,.36,1), box-shadow .5s ease, border-color .5s ease;
+}
+.surface-card:hover { transform: translateY(-7px); box-shadow: 0 22px 48px oklch(0.25 0.02 150 / .10); }
+.gradient-stage { background-size: 180% 180%; animation: fin-gradient-drift 9s ease-in-out infinite; }
+
+@keyframes fin-header-in { from { opacity: 0; transform: translateY(-14px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes fin-nav-in { from { opacity: 0; transform: translateY(24px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes fin-fade-up { from { opacity: 0; transform: translateY(18px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes fin-rise { from { opacity: 0; transform: translateY(32px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes fin-phone-float { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-10px) rotate(.35deg); } }
+@keyframes fin-float-a { 0%,100% { transform: translate3d(0,0,0) rotate(-1deg); } 50% { transform: translate3d(7px,-12px,0) rotate(1deg); } }
+@keyframes fin-float-b { 0%,100% { transform: translate3d(0,0,0) rotate(1deg); } 50% { transform: translate3d(-8px,10px,0) rotate(-1deg); } }
+@keyframes fin-float-c { 0%,100% { transform: translate3d(0,0,0); } 50% { transform: translate3d(9px,-8px,0); } }
+@keyframes fin-active-pulse { 0%,100% { box-shadow: 0 7px 18px color-mix(in oklab, var(--color-primary) 22%, transparent); } 50% { box-shadow: 0 10px 25px color-mix(in oklab, var(--color-primary) 34%, transparent); } }
+@keyframes fin-gradient-drift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
 @media (prefers-reduced-motion: reduce) {
-  [data-fin-app-shell] > header,
-  [data-fin-app-shell] nav.fixed,
-  [data-fin-app-shell] nav.fixed a,
-  [data-fin-app-shell] nav.fixed a span.grid {
-    transition: none !important;
-  }
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
