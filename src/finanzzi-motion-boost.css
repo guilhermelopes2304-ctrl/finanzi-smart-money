@@ -1,0 +1,49 @@
+/* FINANZZI motion boost — stronger continuous movement + scroll-driven reveals. */
+@keyframes fin-float-drift { 0%,100%{transform:translate3d(0,0,0) rotate(-1deg)} 25%{transform:translate3d(10px,-12px,0) rotate(.6deg)} 50%{transform:translate3d(-4px,-22px,0) rotate(1.2deg)} 75%{transform:translate3d(-12px,-8px,0) rotate(-.5deg)} }
+@keyframes fin-orbit { from{transform:rotate(0deg) translateX(10px) rotate(0deg)} to{transform:rotate(360deg) translateX(10px) rotate(-360deg)} }
+@keyframes fin-shine { 0%,70%,100%{transform:translateX(-120%);opacity:0} 35%{transform:translateX(120%);opacity:.65} }
+@keyframes fin-bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)} }
+@keyframes fin-pop-in { 0%{opacity:0;transform:translateY(30px) scale(.94)} 60%{opacity:1;transform:translateY(-4px) scale(1.01)} 100%{opacity:1;transform:translateY(0) scale(1)} }
+@keyframes fin-list-in { from{opacity:0;transform:translateX(-18px)} to{opacity:1;transform:none} }
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]{animation:fin-float-drift 6.5s ease-in-out infinite !important;will-change:transform}
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] > div{position:relative;overflow:hidden}
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] > div::after{content:"";position:absolute;inset:0;width:36%;background:linear-gradient(100deg,transparent,rgb(255 255 255 / .22),transparent);transform:translateX(-120%);animation:fin-shine 5.5s ease-in-out infinite;pointer-events:none}
+body:not(:has([data-fin-app-shell])) main > section:first-child .animate-float-a{animation:fin-float-drift 6s ease-in-out infinite !important}
+body:not(:has([data-fin-app-shell])) main > section:first-child .animate-float-b{animation:fin-float-drift 7.5s ease-in-out .5s infinite reverse !important}
+body:not(:has([data-fin-app-shell])) main > section:first-child .animate-float-c{animation:fin-orbit 11s linear infinite !important}
+body:not(:has([data-fin-app-shell])) main > section article{animation:fin-pop-in .8s cubic-bezier(.22,1,.36,1) both;animation-timeline:view();animation-range:entry 0% cover 35%}
+body:not(:has([data-fin-app-shell])) main > section:nth-child(2) article{animation-delay:.08s}
+body:not(:has([data-fin-app-shell])) main > section:nth-child(3) article{animation-delay:.16s}
+body:not(:has([data-fin-app-shell])) main > section:nth-child(4) article{animation-delay:.24s}
+body:not(:has([data-fin-app-shell])) main > section:nth-child(5) article{animation-delay:.32s}
+[data-fin-app-shell] main > div{perspective:1200px}
+[data-fin-app-shell] main > div > section{animation:fin-pop-in .85s cubic-bezier(.22,1,.36,1) both;animation-timeline:view();animation-range:entry 0% cover 28%;will-change:transform,opacity}
+[data-fin-app-shell] main > div > section:nth-of-type(2){animation-delay:.06s}
+[data-fin-app-shell] main > div > section:nth-of-type(3){animation-delay:.12s}
+[data-fin-app-shell] main > div > section:nth-of-type(4){animation-delay:.18s}
+[data-fin-app-shell] main > div > section:nth-of-type(5){animation-delay:.24s}
+[data-fin-app-shell] main > div > section:nth-of-type(6){animation-delay:.3s}
+[data-fin-app-shell] main > div > section:nth-of-type(7){animation-delay:.36s}
+[data-fin-app-shell] main > div > section:first-of-type::after{content:"";position:absolute;right:2%;top:10%;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,rgb(25 201 107 / .11),transparent 70%);filter:blur(2px);animation:fin-bob 5s ease-in-out infinite;pointer-events:none}
+[data-fin-app-shell] main > div > section:first-of-type input,[data-fin-app-shell] main > div > section:first-of-type textarea{transition:transform .28s cubic-bezier(.22,1,.36,1),box-shadow .28s ease,border-color .28s ease}
+[data-fin-app-shell] main > div > section:first-of-type input:focus,[data-fin-app-shell] main > div > section:first-of-type textarea:focus{transform:translateY(-4px) scale(1.005)}
+[data-fin-app-shell] main > div > section:nth-of-type(2) > div:first-child{animation:fin-float-drift 8s ease-in-out infinite}
+[data-fin-app-shell] main > div > section:nth-of-type(3) > div{animation:fin-bob 6s ease-in-out infinite}
+[data-fin-app-shell] main > div > section:nth-of-type(4) > div{animation:fin-bob 7s ease-in-out .4s infinite reverse}
+[data-fin-app-shell] main > div > section:nth-of-type(5) > div{animation:fin-bob 8s ease-in-out .8s infinite}
+[data-fin-app-shell] main > div > section:nth-of-type(6) > div{animation:fin-bob 9s ease-in-out 1s infinite reverse}
+[data-fin-app-shell] main > div > section:nth-of-type(3) > div > div{animation:fin-list-in .6s cubic-bezier(.22,1,.36,1) both}
+[data-fin-app-shell] main > div > section:nth-of-type(3) > div > div:nth-child(2){animation-delay:.08s}
+[data-fin-app-shell] main > div > section:nth-of-type(3) > div > div:nth-child(3){animation-delay:.16s}
+[data-fin-app-shell] main > div > section:nth-of-type(3) > div > div:nth-child(4){animation-delay:.24s}
+[data-fin-app-shell] main > div > section:nth-of-type(3) > div > div:nth-child(5){animation-delay:.32s}
+[data-fin-app-shell] main > div > section:nth-of-type(3) > div > div:nth-child(6){animation-delay:.40s}
+@supports not (animation-timeline:view()){
+ body:not(:has([data-fin-app-shell])) main > section article{animation:fin-pop-in .75s cubic-bezier(.22,1,.36,1) both}
+ [data-fin-app-shell] main > div > section{animation:fin-pop-in .75s cubic-bezier(.22,1,.36,1) both}
+}
+@media (max-width:640px){
+ body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]{animation-duration:7s !important}
+ [data-fin-app-shell] main > div > section:nth-of-type(2) > div:first-child,[data-fin-app-shell] main > div > section:nth-of-type(3) > div,[data-fin-app-shell] main > div > section:nth-of-type(4) > div,[data-fin-app-shell] main > div > section:nth-of-type(5) > div,[data-fin-app-shell] main > div > section:nth-of-type(6) > div{animation-duration:7.5s}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none !important;scroll-behavior:auto !important}}
