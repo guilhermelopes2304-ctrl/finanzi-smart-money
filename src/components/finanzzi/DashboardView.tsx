@@ -74,43 +74,65 @@ export function DashboardView({
   const commitmentsTotal = commitments.reduce((sum, bill) => sum + Number(bill.amount), 0);
   const maxCategory = categorySlices[0]?.value ?? 0;
 
+  const recentTransactions = useMemo(
+    () =>
+      [...transactions]
+        .sort((a, b) => String(b.date).localeCompare(String(a.date)))
+        .slice(0, 5),
+    [transactions],
+  );
+
+  function categoryName(categoryId?: string | null) {
+    return categories.find((category) => category.id === categoryId)?.name ?? "Sem categoria";
+  }
+
   return (
     <div className="min-h-full bg-background text-foreground">
       <div className="mx-auto w-full max-w-3xl px-4 pb-28 pt-4 sm:px-6 sm:pb-10 sm:pt-7">
-        <header className="pb-5 sm:pb-7">
+        <header className="pb-5 sm:pb-6">
           <p className="text-sm font-semibold text-muted-foreground">{getGreeting()}, {firstName}</p>
           <h1 className="mt-1 max-w-xl font-display text-3xl font-semibold leading-tight tracking-[-0.055em] sm:text-5xl">
-            Seu dinheiro, de um jeito mais claro.
+            Registre. O FINANZZI organiza.
           </h1>
           <p className="mt-2 max-w-lg text-sm leading-6 text-muted-foreground">
-            Registre do seu jeito. O FINANZZI organiza o resto.
+            Uma entrada rápida agora vale mais do que preencher planilhas depois.
           </p>
         </header>
 
-        <section aria-labelledby="balance-title" className="surface-card overflow-hidden p-5 sm:p-6">
-          <div className="flex items-center justify-between gap-4">
+        <section aria-labelledby="quick-entry-title" className="surface-card overflow-hidden border-primary/15 p-4 shadow-sm sm:p-5">
+          <div className="mb-3 flex items-center justify-between gap-3 px-1">
             <div>
-              <p id="balance-title" className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
-                Saldo disponível
-              </p>
-              <p className="mt-2 font-display text-5xl font-semibold leading-none tracking-[-0.07em] sm:text-6xl">
-                {formatBRL(balance)}
-              </p>
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-primary">Ação principal</p>
+              <h2 id="quick-entry-title" className="mt-1 text-xl font-semibold tracking-[-0.03em]">O que aconteceu?</h2>
             </div>
-            <span className="rounded-full bg-fin-brand-soft px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-fin-brand-hover">
-              este mês
-            </span>
+            <span className="rounded-full bg-fin-brand-soft px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-fin-brand-hover">texto · voz</span>
           </div>
+          <QuickEntry previewMode={previewMode} previewData={quickEntryPreviewData ?? {}} />
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+            <div className="rounded-2xl border border-border bg-background/70 px-3.5 py-3 text-xs text-muted-foreground">
+              <span className="font-semibold text-foreground">Ex.: </span> gastei 82 no mercado
+            </div>
+            <div className="rounded-2xl border border-border bg-background/70 px-3.5 py-3 text-xs text-muted-foreground">
+              <span className="font-semibold text-foreground">Ex.: </span> recebi 2.500 do salário
+            </div>
+          </div>
+        </section>
 
-          <div className="mt-6 grid grid-cols-2 gap-3">
-            <div className="rounded-2xl border border-border bg-background p-3.5">
+        <section aria-labelledby="balance-title" className="mt-5 grid gap-3 sm:grid-cols-[1.25fr_0.75fr]">
+          <div className="surface-card p-5 sm:p-6">
+            <p id="balance-title" className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">Saldo disponível</p>
+            <p className="mt-2 font-display text-5xl font-semibold leading-none tracking-[-0.07em] sm:text-6xl">{formatBRL(balance)}</p>
+            <p className="mt-3 text-xs text-muted-foreground">Atualizado a partir do que você registrou.</p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-1">
+            <div className="rounded-2xl border border-border bg-card p-4">
               <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
                 <span className="grid size-7 place-items-center rounded-full bg-success/10 text-success"><TrendingUp className="size-3.5" /></span>
                 Entrou
               </div>
               <p className="mt-2 text-lg font-bold tabular-nums">{formatBRL(totals.income)}</p>
             </div>
-            <div className="rounded-2xl border border-border bg-background p-3.5">
+            <div className="rounded-2xl border border-border bg-card p-4">
               <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
                 <span className="grid size-7 place-items-center rounded-full bg-danger/10 text-danger"><TrendingDown className="size-3.5" /></span>
                 Saiu
@@ -120,27 +142,52 @@ export function DashboardView({
           </div>
         </section>
 
-        <section aria-labelledby="quick-entry-title" className="surface-card mt-5 p-3 sm:p-4">
-          <div className="mb-2 flex items-center justify-between gap-3 px-1">
-            <h2 id="quick-entry-title" className="text-base font-semibold tracking-[-0.02em]">Entrada ou saída</h2>
-            <span className="rounded-full bg-fin-brand-soft px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-fin-brand-hover">texto · voz</span>
+        <section aria-labelledby="recent-title" className="mt-8">
+          <div className="mb-3 flex items-end justify-between gap-3">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">O que você já registrou</p>
+              <h2 id="recent-title" className="mt-1 text-xl font-semibold tracking-[-0.03em]">Movimentações recentes</h2>
+            </div>
+            <Link to="/movimentacoes" className="inline-flex min-h-9 items-center gap-1 rounded-full px-2.5 text-xs font-bold text-fin-brand-hover transition-colors hover:bg-fin-brand-soft">Ver tudo <ArrowRight className="size-3.5" /></Link>
           </div>
-          <QuickEntry previewMode={previewMode} previewData={quickEntryPreviewData ?? {}} />
+          {recentTransactions.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-border bg-card/70">
+              <EmptyState title="Sua primeira movimentação começa aqui" description="Use o registro acima para lançar qualquer entrada ou saída em poucos segundos." />
+            </div>
+          ) : (
+            <div className="surface-card overflow-hidden">
+              {recentTransactions.map((transaction, index) => {
+                const income = transaction.type === "income";
+                return (
+                  <div key={transaction.id} className={`flex items-center gap-3 px-4 py-3.5 sm:px-5 ${index > 0 ? "border-t border-border" : ""}`}>
+                    <span className={`grid size-10 shrink-0 place-items-center rounded-xl text-sm font-bold ${income ? "bg-success/10 text-success" : "bg-danger/10 text-danger"}`}>
+                      {income ? "+" : "−"}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold">{transaction.description}</p>
+                      <p className="mt-0.5 truncate text-xs text-muted-foreground">{categoryName(transaction.category_id)} · {formatDateBR(transaction.date)}</p>
+                    </div>
+                    <p className={`shrink-0 text-sm font-bold tabular-nums ${income ? "text-success" : "text-danger"}`}>
+                      {income ? "+" : "−"}{formatBRL(Number(transaction.amount))}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </section>
 
-        <section aria-labelledby="capacity-title" className="mt-5">
+        <section aria-labelledby="capacity-title" className="mt-8">
           {isLoading ? (
             <Skeleton className="h-36 rounded-2xl bg-muted" />
           ) : (
             <div className={`rounded-2xl border p-5 sm:p-6 ${hasPressure ? "border-fin-danger/30 bg-fin-danger-soft" : "border-fin-line bg-fin-brand-soft"}`}>
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">Decisão rápida</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">Depois de registrar</p>
                   <h2 id="capacity-title" className="mt-1 text-xl font-semibold tracking-[-0.03em]">Quanto posso gastar?</h2>
                 </div>
-                <Link to="/posso-comprar" className="inline-flex min-h-9 shrink-0 items-center gap-1 rounded-full px-2.5 text-xs font-bold text-fin-brand-hover transition-colors hover:bg-white/70">
-                  Detalhes <ArrowRight className="size-3.5" />
-                </Link>
+                <Link to="/posso-comprar" className="inline-flex min-h-9 shrink-0 items-center gap-1 rounded-full px-2.5 text-xs font-bold text-fin-brand-hover transition-colors hover:bg-white/70">Detalhes <ArrowRight className="size-3.5" /></Link>
               </div>
               <p className="mt-5 font-display text-5xl font-semibold leading-none tracking-[-0.07em] sm:text-6xl">{formatBRL(available)}</p>
               <p className={`mt-3 max-w-xl text-sm leading-5 ${hasPressure ? "text-fin-danger" : "text-muted-foreground"}`}>
@@ -150,10 +197,10 @@ export function DashboardView({
           )}
         </section>
 
-        <section aria-labelledby="spending-title" className="mt-8 lg:hidden">
+        <section aria-labelledby="spending-title" className="mt-8">
           <div className="mb-3 flex items-end justify-between gap-3">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">Seu padrão</p>
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">Leitura automática</p>
               <h2 id="spending-title" className="mt-1 text-xl font-semibold tracking-[-0.03em]">Onde estou gastando</h2>
             </div>
             <Link to="/relatorios" className="inline-flex min-h-9 items-center gap-1 rounded-full px-2.5 text-xs font-bold text-fin-brand-hover">Ver tudo <ArrowRight className="size-3.5" /></Link>
@@ -176,10 +223,6 @@ export function DashboardView({
               ))}
             </div>
           )}
-        </section>
-
-        <section aria-labelledby="can-spend-title" className="mt-8 hidden lg:block">
-          <CanISpend />
         </section>
 
         <section aria-labelledby="commitments-title" className="mt-8">
