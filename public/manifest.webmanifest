@@ -11,9 +11,9 @@
   "lang": "pt-BR",
   "icons": [
     {
-      "src": "/finanzzi-icon.svg?v=3",
-      "sizes": "512x512",
-      "type": "image/svg+xml",
+      "src": "/finanzzi-approved.webp?v=1",
+      "sizes": "256x256",
+      "type": "image/webp",
       "purpose": "any maskable"
     }
   ]
