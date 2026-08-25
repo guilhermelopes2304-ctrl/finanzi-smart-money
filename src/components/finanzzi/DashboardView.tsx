@@ -1,11 +1,19 @@
 import { useMemo } from "react";
-import { ArrowRight, CalendarClock, CircleHelp, Sparkles } from "lucide-react";
+import { ArrowRight, CalendarClock, CircleHelp, Sparkles, TrendingDown, TrendingUp } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { nextCommitments } from "@/lib/commitments";
-import { buildInsights, buildPeriod, spendCapacity } from "@/lib/finance";
+import {
+  availableBalance,
+  buildInsights,
+  buildPeriod,
+  expensesByCategory,
+  spendCapacity,
+  totalsFor,
+} from "@/lib/finance";
 import { formatBRL, formatDateBR, monthRange } from "@/lib/format";
 import type { Account, Bill, Category, Goal, Profile, Transaction } from "@/types/finance";
 import { QuickEntry, type QuickEntryPreviewData } from "@/components/finanzzi/QuickEntry";
+import { CanISpend } from "@/components/finanzzi/CanISpend";
 import { EmptyState } from "@/components/finanzzi/EmptyState";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -35,6 +43,12 @@ export function DashboardView({
   quickEntryPreviewData,
 }: DashboardViewProps) {
   const period = useMemo(() => buildPeriod("current", monthRange()), []);
+  const totals = useMemo(() => totalsFor(transactions, period), [transactions, period]);
+  const balance = useMemo(() => availableBalance(accounts, transactions), [accounts, transactions]);
+  const categorySlices = useMemo(
+    () => expensesByCategory(transactions, categories, period).slice(0, 5),
+    [transactions, categories, period],
+  );
   const capacity = useMemo(
     () => spendCapacity({ accounts, transactions, bills, goals }),
     [accounts, transactions, bills, goals],
@@ -58,30 +72,58 @@ export function DashboardView({
   const available = Math.max(0, dailyCapacity);
   const insight = insights.opportunities[0] ?? insights.actions[0];
   const commitmentsTotal = commitments.reduce((sum, bill) => sum + Number(bill.amount), 0);
+  const maxCategory = categorySlices[0]?.value ?? 0;
 
   return (
     <div className="min-h-full bg-background text-foreground">
       <div className="mx-auto w-full max-w-3xl px-4 pb-28 pt-4 sm:px-6 sm:pb-10 sm:pt-7">
         <header className="pb-5 sm:pb-7">
-          <p className="text-sm font-semibold text-muted-foreground">
-            {getGreeting()}, {firstName}
-          </p>
+          <p className="text-sm font-semibold text-muted-foreground">{getGreeting()}, {firstName}</p>
           <h1 className="mt-1 max-w-xl font-display text-3xl font-semibold leading-tight tracking-[-0.055em] sm:text-5xl">
-            O que aconteceu?
+            Seu dinheiro, de um jeito mais claro.
           </h1>
           <p className="mt-2 max-w-lg text-sm leading-6 text-muted-foreground">
             Registre do seu jeito. O FINANZZI organiza o resto.
           </p>
         </header>
 
-        <section aria-labelledby="quick-entry-title" className="surface-card p-3 sm:p-4">
-          <div className="mb-2 flex items-center justify-between gap-3 px-1">
-            <h2 id="quick-entry-title" className="text-base font-semibold tracking-[-0.02em]">
-              Entrada ou saída
-            </h2>
-            <span className="rounded-full bg-fin-brand-soft px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-fin-brand-hover">
-              texto · voz
+        <section aria-labelledby="balance-title" className="surface-card overflow-hidden p-5 sm:p-6">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p id="balance-title" className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                Saldo disponível
+              </p>
+              <p className="mt-2 font-display text-5xl font-semibold leading-none tracking-[-0.07em] sm:text-6xl">
+                {formatBRL(balance)}
+              </p>
+            </div>
+            <span className="rounded-full bg-fin-brand-soft px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-fin-brand-hover">
+              este mês
             </span>
+          </div>
+
+          <div className="mt-6 grid grid-cols-2 gap-3">
+            <div className="rounded-2xl border border-border bg-background p-3.5">
+              <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
+                <span className="grid size-7 place-items-center rounded-full bg-success/10 text-success"><TrendingUp className="size-3.5" /></span>
+                Entrou
+              </div>
+              <p className="mt-2 text-lg font-bold tabular-nums">{formatBRL(totals.income)}</p>
+            </div>
+            <div className="rounded-2xl border border-border bg-background p-3.5">
+              <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
+                <span className="grid size-7 place-items-center rounded-full bg-danger/10 text-danger"><TrendingDown className="size-3.5" /></span>
+                Saiu
+              </div>
+              <p className="mt-2 text-lg font-bold tabular-nums">{formatBRL(totals.expense)}</p>
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="quick-entry-title" className="surface-card mt-5 p-3 sm:p-4">
+          <div className="mb-2 flex items-center justify-between gap-3 px-1">
+            <h2 id="quick-entry-title" className="text-base font-semibold tracking-[-0.02em]">Entrada ou saída</h2>
+            <span className="rounded-full bg-fin-brand-soft px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-fin-brand-hover">texto · voz</span>
           </div>
           <QuickEntry previewMode={previewMode} previewData={quickEntryPreviewData ?? {}} />
         </section>
@@ -90,84 +132,76 @@ export function DashboardView({
           {isLoading ? (
             <Skeleton className="h-36 rounded-2xl bg-muted" />
           ) : (
-            <div
-              className={`rounded-2xl border p-4 sm:p-5 ${hasPressure ? "border-fin-danger/30 bg-fin-danger-soft" : "border-fin-line bg-fin-brand-soft"}`}
-            >
+            <div className={`rounded-2xl border p-5 sm:p-6 ${hasPressure ? "border-fin-danger/30 bg-fin-danger-soft" : "border-fin-line bg-fin-brand-soft"}`}>
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h2 id="capacity-title" className="text-base font-semibold">
-                    Quanto posso gastar hoje?
-                  </h2>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">Decisão rápida</p>
+                  <h2 id="capacity-title" className="mt-1 text-xl font-semibold tracking-[-0.03em]">Quanto posso gastar?</h2>
                 </div>
-                <Link
-                  to="/posso-comprar"
-                  className="inline-flex min-h-9 shrink-0 items-center gap-1 rounded-full px-2.5 text-xs font-bold text-fin-brand-hover transition-colors hover:bg-white/70"
-                >
-                  Ver detalhes <ArrowRight className="size-3.5" />
+                <Link to="/posso-comprar" className="inline-flex min-h-9 shrink-0 items-center gap-1 rounded-full px-2.5 text-xs font-bold text-fin-brand-hover transition-colors hover:bg-white/70">
+                  Detalhes <ArrowRight className="size-3.5" />
                 </Link>
               </div>
-              <p className="mt-4 font-display text-4xl font-semibold leading-none tracking-[-0.06em] text-foreground sm:text-5xl">
-                {formatBRL(available)}
-              </p>
-              <p
-                className={`mt-3 text-sm leading-5 ${hasPressure ? "text-fin-danger" : "text-muted-foreground"}`}
-              >
-                {hasPressure
-                  ? "Seus compromissos já ocupam praticamente toda a sua margem."
-                  : "Depois dos compromissos que já conhecemos."}
+              <p className="mt-5 font-display text-5xl font-semibold leading-none tracking-[-0.07em] sm:text-6xl">{formatBRL(available)}</p>
+              <p className={`mt-3 max-w-xl text-sm leading-5 ${hasPressure ? "text-fin-danger" : "text-muted-foreground"}`}>
+                {hasPressure ? "Seus compromissos já ocupam praticamente toda a sua margem." : `Cerca de ${formatBRL(available)} por dia considerando os compromissos que já conhecemos.`}
               </p>
             </div>
           )}
         </section>
 
+        <section aria-labelledby="spending-title" className="mt-8 lg:hidden">
+          <div className="mb-3 flex items-end justify-between gap-3">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">Seu padrão</p>
+              <h2 id="spending-title" className="mt-1 text-xl font-semibold tracking-[-0.03em]">Onde estou gastando</h2>
+            </div>
+            <Link to="/relatorios" className="inline-flex min-h-9 items-center gap-1 rounded-full px-2.5 text-xs font-bold text-fin-brand-hover">Ver tudo <ArrowRight className="size-3.5" /></Link>
+          </div>
+          {categorySlices.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-border bg-card/70"><EmptyState title="Ainda não há gastos por categoria" description="Registre algumas movimentações para ver seu padrão." /></div>
+          ) : (
+            <div className="surface-card space-y-4 p-4">
+              {categorySlices.map((slice) => (
+                <div key={slice.id}>
+                  <div className="mb-1.5 flex items-center justify-between gap-3 text-sm">
+                    <span className="truncate font-semibold">{slice.name}</span>
+                    <span className="shrink-0 font-bold tabular-nums">{formatBRL(slice.value)}</span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-muted">
+                    <div className="h-full rounded-full transition-all duration-700" style={{ width: `${maxCategory ? Math.max(4, (slice.value / maxCategory) * 100) : 0}%`, backgroundColor: slice.color }} />
+                  </div>
+                  <p className="mt-1 text-[11px] text-muted-foreground">{Math.round(slice.share)}% dos gastos do mês</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section aria-labelledby="can-spend-title" className="mt-8 hidden lg:block">
+          <CanISpend />
+        </section>
+
         <section aria-labelledby="commitments-title" className="mt-8">
           <div className="mb-3 flex items-end justify-between gap-3">
             <div>
-              <h2 id="commitments-title" className="text-xl font-semibold tracking-[-0.03em]">
-                Próximos compromissos
-              </h2>
-              {commitments.length > 0 && (
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {formatBRL(commitmentsTotal)} nos próximos pagamentos.
-                </p>
-              )}
+              <h2 id="commitments-title" className="text-xl font-semibold tracking-[-0.03em]">Próximos compromissos</h2>
+              {commitments.length > 0 && <p className="mt-1 text-sm text-muted-foreground">{formatBRL(commitmentsTotal)} nos próximos pagamentos.</p>}
             </div>
-            <Link
-              to="/contas"
-              className="inline-flex min-h-9 items-center gap-1 rounded-full px-2.5 text-xs font-bold text-fin-brand-hover transition-colors hover:bg-fin-brand-soft"
-            >
-              Ver tudo <ArrowRight className="size-3.5" />
-            </Link>
+            <Link to="/contas" className="inline-flex min-h-9 items-center gap-1 rounded-full px-2.5 text-xs font-bold text-fin-brand-hover transition-colors hover:bg-fin-brand-soft">Ver tudo <ArrowRight className="size-3.5" /></Link>
           </div>
           {commitments.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-border bg-card/70">
-              <EmptyState
-                title="Você ainda não tem compromissos"
-                description="Cadastre uma conta fixa e eu cuido dos lembretes."
-              />
-            </div>
+            <div className="rounded-2xl border border-dashed border-border bg-card/70"><EmptyState title="Você ainda não tem compromissos" description="Cadastre uma conta fixa e eu cuido dos lembretes." /></div>
           ) : (
             <div className="surface-card overflow-hidden">
               {commitments.map((bill, index) => {
                 const days = daysUntil(bill.due_date);
                 return (
-                  <div
-                    key={bill.id}
-                    className={`flex items-center gap-3 px-4 py-3.5 sm:px-5 ${index > 0 ? "border-t border-border" : ""}`}
-                  >
-                    <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-fin-brand-soft text-fin-brand-hover">
-                      <CalendarClock className="size-4" />
-                    </span>
+                  <div key={bill.id} className={`flex items-center gap-3 px-4 py-3.5 sm:px-5 ${index > 0 ? "border-t border-border" : ""}`}>
+                    <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-fin-brand-soft text-fin-brand-hover"><CalendarClock className="size-4" /></span>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold">{bill.description}</p>
-                      <p className="mt-0.5 text-xs text-muted-foreground">
-                        {days <= 0
-                          ? "vence hoje"
-                          : days === 1
-                            ? "vence amanhã"
-                            : `vence em ${days} dias`}{" "}
-                        · {formatDateBR(bill.due_date)}
-                      </p>
+                      <p className="mt-0.5 text-xs text-muted-foreground">{days <= 0 ? "vence hoje" : days === 1 ? "vence amanhã" : `vence em ${days} dias`} · {formatDateBR(bill.due_date)}</p>
                     </div>
                     <p className="shrink-0 text-sm font-bold">{formatBRL(Number(bill.amount))}</p>
                   </div>
@@ -178,29 +212,13 @@ export function DashboardView({
         </section>
 
         <section aria-labelledby="fin-insight-title" className="mt-8 pb-8">
-          <div className="mb-3">
-            <h2 id="fin-insight-title" className="text-xl font-semibold tracking-[-0.03em]">
-              O FIN percebeu uma coisa.
-            </h2>
-          </div>
+          <div className="mb-3"><h2 id="fin-insight-title" className="text-xl font-semibold tracking-[-0.03em]">O FIN percebeu uma coisa.</h2></div>
           <div className="surface-card flex items-start gap-3 p-4 sm:p-5">
-            <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-fin-brand-soft text-fin-brand-hover">
-              <Sparkles className="size-4" />
-            </span>
+            <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-fin-brand-soft text-fin-brand-hover"><Sparkles className="size-4" /></span>
             {insight ? (
-              <div>
-                <p className="text-sm font-semibold">{insight.title}</p>
-                <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                  {insight.description}
-                </p>
-              </div>
+              <div><p className="text-sm font-semibold">{insight.title}</p><p className="mt-1 text-sm leading-6 text-muted-foreground">{insight.description}</p></div>
             ) : (
-              <div className="flex items-start gap-3">
-                <CircleHelp className="mt-0.5 size-4 shrink-0 text-fin-brand-hover" />
-                <p className="text-sm leading-6 text-muted-foreground">
-                  Registre alguns dias e o FIN encontra um padrão útil para você.
-                </p>
-              </div>
+              <div className="flex items-start gap-3"><CircleHelp className="mt-0.5 size-4 shrink-0 text-fin-brand-hover" /><p className="text-sm leading-6 text-muted-foreground">Registre alguns dias e o FIN encontra um padrão útil para você.</p></div>
             )}
           </div>
         </section>
