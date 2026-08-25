@@ -23,10 +23,7 @@ async function hmacSha256(secret: string, payload: string) {
 }
 
 function signaturesMatch(expected: string, received: string) {
-  const normalized = received
-    .replace(/^sha256=/i, "")
-    .trim()
-    .toLowerCase();
+  const normalized = received.replace(/^sha256=/i, "").trim().toLowerCase();
   if (normalized.length !== expected.length) return false;
   let difference = 0;
   for (let index = 0; index < expected.length; index += 1) {
@@ -57,6 +54,11 @@ function isHublaRequest(request: Request) {
   );
 }
 
+/**
+ * Resolve the FINANZZI account from the buyer email.
+ * For a first purchase, inviteUserByEmail sends the customer a secure Supabase
+ * invitation so they can define their password without any manual cadastro.
+ */
 async function findOrCreateUserByEmail(email: string, name?: string) {
   const normalizedEmail = email.trim().toLowerCase();
   if (!normalizedEmail || !normalizedEmail.includes("@")) return null;
@@ -71,19 +73,20 @@ async function findOrCreateUserByEmail(email: string, name?: string) {
   );
   if (!lookupError && matchedUser) return matchedUser.id;
 
-  const { data, error } = await admin.auth.admin.createUser({
-    email: normalizedEmail,
-    email_confirm: true,
-    user_metadata: {
+  const { data, error } = await admin.auth.admin.inviteUserByEmail(normalizedEmail, {
+    data: {
       name: name?.trim() || normalizedEmail.split("@")[0],
       source: "hubla",
       requires_password_setup: true,
     },
+    redirectTo: "https://finanzzi.vercel.app/redefinir-senha",
   });
+
   if (error || !data.user) {
-    console.error("[Hubla] Unable to create Auth user", error?.message);
+    console.error("[Hubla] Unable to invite Auth user", error?.message);
     return null;
   }
+
   return data.user.id;
 }
 
