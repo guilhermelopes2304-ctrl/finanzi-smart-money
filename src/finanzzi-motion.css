@@ -1,1 +1,46 @@
-/* placeholder */
+/* Cinematic motion layer — landing + authenticated app. */
+@keyframes fin-float-large { 0%,100% { transform: translate3d(0,0,0) rotate(0deg); } 35% { transform: translate3d(10px,-18px,0) rotate(1deg); } 70% { transform: translate3d(-8px,-8px,0) rotate(-.8deg); } }
+@keyframes fin-float-alt { 0%,100% { transform: translate3d(0,0,0) rotate(0deg); } 40% { transform: translate3d(-14px,12px,0) rotate(-1deg); } 75% { transform: translate3d(7px,-7px,0) rotate(.7deg); } }
+@keyframes fin-glow-breathe { 0%,100% { opacity:.48; transform: scale(.96); } 50% { opacity:.9; transform: scale(1.08); } }
+@keyframes fin-gradient-shift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+@keyframes fin-soft-pulse { 0%,100% { transform: scale(1); box-shadow: 0 0 0 0 rgb(25 201 107 / 0); } 50% { transform: scale(1.025); box-shadow: 0 0 0 10px rgb(25 201 107 / .07); } }
+@keyframes fin-button-breathe { 0%,100% { box-shadow: 0 8px 22px rgb(25 201 107 / .14); } 50% { box-shadow: 0 14px 34px rgb(25 201 107 / .24); } }
+@keyframes fin-card-enter { from { opacity:0; transform: translateY(28px) scale(.97) rotateX(5deg); filter: blur(5px); } to { opacity:1; transform:none; filter:none; } }
+@keyframes fin-header-enter { from { opacity:0; transform: translateY(-14px) scale(.98); } to { opacity:1; transform:none; } }
+
+body:not(:has([data-fin-app-shell])) header { animation: fin-header-enter .8s cubic-bezier(.22,1,.36,1) both; }
+body:not(:has([data-fin-app-shell])) main > section:first-child { overflow:hidden; }
+body:not(:has([data-fin-app-shell])) main > section:first-child::before { content:""; position:absolute; width:520px; height:520px; left:-180px; top:-180px; border-radius:50%; background:radial-gradient(circle, rgb(25 201 107 / .12), transparent 68%); filter:blur(8px); pointer-events:none; animation:fin-glow-breathe 8s ease-in-out infinite; }
+body:not(:has([data-fin-app-shell])) main > section:first-child::after { content:""; position:absolute; width:460px; height:460px; right:-190px; bottom:-160px; border-radius:50%; background:radial-gradient(circle, rgb(25 201 107 / .09), transparent 68%); filter:blur(12px); pointer-events:none; animation:fin-glow-breathe 10s ease-in-out 1s infinite reverse; }
+body:not(:has([data-fin-app-shell])) main > section:first-child h1 { animation:fin-card-enter 1s cubic-bezier(.22,1,.36,1) .08s both; }
+body:not(:has([data-fin-app-shell])) main > section:first-child p { animation:fin-card-enter .9s cubic-bezier(.22,1,.36,1) .18s both; }
+body:not(:has([data-fin-app-shell])) main > section:first-child a, body:not(:has([data-fin-app-shell])) main > section:first-child button { animation:fin-card-enter .85s cubic-bezier(.22,1,.36,1) .28s both; }
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] { animation:fin-float-large 8s ease-in-out 1s infinite; }
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] > div { animation:fin-soft-pulse 4.5s ease-in-out 1.2s infinite; }
+body:not(:has([data-fin-app-shell])) main > section article { will-change:transform; }
+body:not(:has([data-fin-app-shell])) main > section article:hover { transform:translateY(-7px) scale(1.012); }
+body:not(:has([data-fin-app-shell])) .gradient-stage { background-size:180% 180%; animation:fin-gradient-shift 9s ease-in-out infinite; }
+body:not(:has([data-fin-app-shell])) .animate-float-a { animation:fin-float-large 6.5s ease-in-out infinite; }
+body:not(:has([data-fin-app-shell])) .animate-float-b { animation:fin-float-alt 8s ease-in-out .4s infinite; }
+body:not(:has([data-fin-app-shell])) .animate-float-c { animation:fin-float-large 7.5s ease-in-out 1s infinite reverse; }
+body:not(:has([data-fin-app-shell])) .animate-fin-rise { animation:fin-card-enter 1.05s cubic-bezier(.22,1,.36,1) both, fin-float-large 7.5s ease-in-out 1.1s infinite; }
+body:not(:has([data-fin-app-shell])) main > section:not(:first-child)::before { content:""; position:absolute; inset:15% auto auto -180px; width:340px; height:340px; border-radius:50%; background:radial-gradient(circle, rgb(25 201 107 / .055), transparent 70%); filter:blur(10px); pointer-events:none; animation:fin-float-alt 14s ease-in-out infinite; }
+[data-fin-app-shell] main > div > header { animation:fin-header-enter .7s cubic-bezier(.22,1,.36,1) both; }
+[data-fin-app-shell] main > div > section { animation:fin-card-enter .75s cubic-bezier(.22,1,.36,1) both; }
+[data-fin-app-shell] main > div > section:nth-of-type(2) { animation-delay:.08s; }
+[data-fin-app-shell] main > div > section:nth-of-type(3) { animation-delay:.14s; }
+[data-fin-app-shell] main > div > section:nth-of-type(4) { animation-delay:.2s; }
+[data-fin-app-shell] main > div > section:nth-of-type(5) { animation-delay:.26s; }
+[data-fin-app-shell] main > div > section:nth-of-type(6) { animation-delay:.32s; }
+[data-fin-app-shell] main > div > section:nth-of-type(7) { animation-delay:.38s; }
+[data-fin-app-shell] .surface-card { transition:transform .45s cubic-bezier(.22,1,.36,1), box-shadow .45s ease, border-color .3s ease; will-change:transform; }
+[data-fin-app-shell] .surface-card:hover { transform:translateY(-6px); box-shadow:0 18px 42px rgb(17 24 39 / .10) !important; border-color:rgb(25 201 107 / .24) !important; }
+[data-fin-app-shell] button[class*="bg-primary"], [data-fin-app-shell] a[class*="bg-primary"] { animation:fin-button-breathe 3.6s ease-in-out infinite; transition:transform .2s cubic-bezier(.22,1,.36,1), box-shadow .2s ease; }
+[data-fin-app-shell] button[class*="bg-primary"]:hover, [data-fin-app-shell] a[class*="bg-primary"]:hover { transform:translateY(-3px) scale(1.015); }
+[data-fin-app-shell] aside nav a { transition:transform .25s cubic-bezier(.22,1,.36,1), background-color .25s ease, color .25s ease; }
+[data-fin-app-shell] aside nav a:hover { transform:translateX(5px); }
+[data-fin-app-shell] aside nav a[aria-current="page"], [data-fin-app-shell] aside nav a[data-active="true"] { animation:fin-soft-pulse 3s ease-in-out infinite; }
+[data-fin-app-shell] input:focus, [data-fin-app-shell] textarea:focus, [data-fin-app-shell] select:focus { transform:translateY(-2px); box-shadow:0 12px 28px rgb(25 201 107 / .10); transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+@media (max-width:900px) { body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] { animation-duration:7.5s; } }
+@media (max-width:640px) { [data-fin-app-shell] main > div > section { animation-duration:.6s; } [data-fin-app-shell] aside nav a:hover { transform:none; } }
+@media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation:none !important; transition:none !important; } }
