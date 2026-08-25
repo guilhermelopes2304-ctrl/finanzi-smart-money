@@ -32,6 +32,17 @@ function signaturesMatch(expected: string, received: string) {
   return difference === 0;
 }
 
+function secretsMatch(expected: string, received: string) {
+  const a = expected.trim();
+  const b = received.trim();
+  if (!a || a.length !== b.length) return false;
+  let difference = 0;
+  for (let index = 0; index < a.length; index += 1) {
+    difference |= a.charCodeAt(index) ^ b.charCodeAt(index);
+  }
+  return difference === 0;
+}
+
 export async function verifyBillingWebhookSignature(
   payload: string,
   receivedSignature: string | null,
@@ -43,9 +54,7 @@ export async function verifyBillingWebhookSignature(
 
 function verifyHublaToken(receivedToken: string | null) {
   const configuredToken = process.env["HUBLA_WEBHOOK_TOKEN"];
-  return Boolean(
-    configuredToken && receivedToken && signaturesMatch(configuredToken, receivedToken),
-  );
+  return Boolean(configuredToken && receivedToken && secretsMatch(configuredToken, receivedToken));
 }
 
 function isHublaRequest(request: Request) {
@@ -54,11 +63,6 @@ function isHublaRequest(request: Request) {
   );
 }
 
-/**
- * Resolve the FINANZZI account from the buyer email.
- * For a first purchase, inviteUserByEmail sends the customer a secure Supabase
- * invitation so they can define their password without any manual cadastro.
- */
 async function findOrCreateUserByEmail(email: string, name?: string) {
   const normalizedEmail = email.trim().toLowerCase();
   if (!normalizedEmail || !normalizedEmail.includes("@")) return null;
