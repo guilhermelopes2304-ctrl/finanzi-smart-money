@@ -6,9 +6,7 @@ export function Logo({ className, compact = false }: { className?: string; compa
       <img
         src="/finanzzi-icon.svg"
         alt="FINANZZI"
-        className="size-9 shrink-0 rounded-xl object-cover shadow-[var(--shadow-soft)]"
-        width={36}
-        height={36}
+        className="size-9 rounded-[22%] object-cover shadow-[var(--shadow-soft)]"
       />
       {!compact && (
         <span className="font-display text-lg font-bold tracking-tight text-foreground">FINANZZI</span>
