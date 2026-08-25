@@ -11,10 +11,10 @@
   "lang": "pt-BR",
   "icons": [
     {
-      "src": "/finanzzi-icon.svg",
+      "src": "/finanzzi-icon.svg?v=3",
       "sizes": "512x512",
       "type": "image/svg+xml",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ]
 }
