@@ -1,0 +1,40 @@
+/* FINANZZI final visual guard: enforce the approved light editorial identity. */
+body:not(:has([data-fin-app-shell])) #contas {
+  background: #FCFCF8 !important;
+  color: #111827 !important;
+  border-color: #E1E7E3 !important;
+}
+body:not(:has([data-fin-app-shell])) #contas .text-white,
+body:not(:has([data-fin-app-shell])) #contas .text-white\/65,
+body:not(:has([data-fin-app-shell])) #contas .text-white\/45 {
+  color: #556070 !important;
+}
+body:not(:has([data-fin-app-shell])) #contas .text-white:not(.text-white\/65):not(.text-white\/45) {
+  color: #111827 !important;
+}
+body:not(:has([data-fin-app-shell])) #contas .bg-white\/\[0\.06\] {
+  background: #FFFFFF !important;
+  border-color: #E1E7E3 !important;
+}
+body:not(:has([data-fin-app-shell])) #contas .border-white\/10 {
+  border-color: #E1E7E3 !important;
+}
+body:not(:has([data-fin-app-shell])) #contas .border-white\/10 + * {
+  border-color: #E1E7E3 !important;
+}
+body:not(:has([data-fin-app-shell])) footer {
+  background: #FFFFFF !important;
+  color: #556070 !important;
+  border-color: #E1E7E3 !important;
+}
+body:not(:has([data-fin-app-shell])) footer .text-white {
+  color: #111827 !important;
+}
+/* Motion stays editorial: transform + opacity only. */
+@media (prefers-reduced-motion: reduce) {
+  body:not(:has([data-fin-app-shell])) * {
+    animation: none !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
