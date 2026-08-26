@@ -1,3 +1,4 @@
+import "@/finanzzi-final-guard.css";
 import { cn } from "@/lib/utils";
 
 export function Logo({ className, compact = false }: { className?: string; compact?: boolean }) {
