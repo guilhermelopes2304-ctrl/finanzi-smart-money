@@ -17,14 +17,13 @@ export function Reveal({
     const node = ref.current;
     if (!node) return;
     const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
+      ([entry]) => {
         if (entry?.isIntersecting) {
           setVisible(true);
           observer.disconnect();
         }
       },
-      { threshold: 0.15 },
+      { threshold: 0.12 },
     );
     observer.observe(node);
     return () => observer.disconnect();
@@ -35,8 +34,8 @@ export function Reveal({
       ref={ref}
       style={{ transitionDelay: visible ? `${delay}ms` : "0ms" }}
       className={cn(
-        "transition-all duration-700 ease-out",
-        visible ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0",
+        "transition-[transform,opacity] duration-300 ease-out motion-reduce:transition-none",
+        visible ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0 motion-reduce:translate-y-0 motion-reduce:opacity-100",
         className,
       )}
     >
