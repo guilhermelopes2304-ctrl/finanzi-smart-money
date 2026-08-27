@@ -51,7 +51,7 @@ body:not(:has([data-fin-app-shell])) [id="contas"] article { background: var(--f
 body:not(:has([data-fin-app-shell])) [id="oferta"] { scroll-margin-top: 80px; }
 body:not(:has([data-fin-app-shell])) [id="oferta"] article { background: var(--fin-surface) !important; border: 1px solid var(--fin-line) !important; border-radius: 24px !important; }
 body:not(:has([data-fin-app-shell])) footer { background: var(--fin-ink) !important; color: white !important; }
-/* REAL iPhone photography — exact uploaded hero asset. */
+/* Exact uploaded photorealistic iPhone image. */
 body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] { position: relative; width: min(100%, 470px) !important; max-width: 470px !important; padding: 0 !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; transform: none !important; animation: none !important; isolation: isolate; }
 body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] > div { display: none !important; }
 body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]::before { content: ""; position: relative; display: block; width: 100%; aspect-ratio: 1024 / 1536; background: url('/finanzi-iphone-hero.png') center / contain no-repeat; transform: rotate(1deg); transform-origin: 50% 60%; animation: fin-real-phone-in .72s cubic-bezier(.2,.8,.2,1) both; will-change: transform, opacity; }
