@@ -40,13 +40,11 @@
 
 html, body { background: #FFFFFF; color: #111111; }
 
-/* Legacy utility classes */
 [class*="text-green-"], [class*="text-emerald-"], [class*="text-teal-"] { color: #FF5A1F !important; }
 [class*="bg-green-"], [class*="bg-emerald-"], [class*="bg-teal-"] { background-color: #FF5A1F !important; }
 [class*="border-green-"], [class*="border-emerald-"], [class*="border-teal-"] { border-color: #FF5A1F !important; }
 [class*="ring-green-"], [class*="ring-emerald-"], [class*="ring-teal-"] { --tw-ring-color: #FF5A1F !important; }
 
-/* Hard-coded legacy FINANZZI colors used by the current landing. */
 [class*="text-[#19C96B]"], [class*="text-[#0F9F52]"] { color: #FF5A1F !important; }
 [class*="bg-[#19C96B]"] { background-color: #FF5A1F !important; }
 [class*="bg-[#EAF9F0]"] { background-color: #FFF0EA !important; }
@@ -55,27 +53,16 @@ html, body { background: #FFFFFF; color: #111111; }
 [class*="text-[#556070]"] { color: #5F5F5F !important; }
 [class*="text-[#111827]"] { color: #111111 !important; }
 [class*="border-[#E1E7E3]"] { border-color: #E5E5E5 !important; }
-[class*="border-2][class*="#19C96B"] { border-color: #FF5A1F !important; }
+[class*="border-[#19C96B]"] { border-color: #FF5A1F !important; }
+[class*="border-2"] { border-color: #E5E5E5; }
+[class*="border-2"][class*="#19C96B"] { border-color: #FF5A1F !important; }
 
-/* Make the new brand visibly own the UI without turning every surface orange. */
-header a[href*="pay.hub.la"], main a[href*="pay.hub.la"] {
-  background-color: #FF5A1F !important;
-  color: #FFFFFF !important;
-}
-
-/* Orange identity accent for native controls. */
+header a[href*="pay.hub.la"], main a[href*="pay.hub.la"] { background-color: #FF5A1F !important; color: #FFFFFF !important; }
 input:focus, textarea:focus, select:focus { border-color: #FF5A1F !important; outline-color: #FF5A1F !important; }
 
-button, a, [role="button"] {
-  transition: transform .22s ease-out, background-color .22s ease-out, border-color .22s ease-out, color .22s ease-out;
-}
+button, a, [role="button"] { transition: transform .22s ease-out, background-color .22s ease-out, border-color .22s ease-out, color .22s ease-out; }
 button:active, a:active, [role="button"]:active { transform: translateY(1px); }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-    scroll-behavior: auto !important;
-    transition-duration: .01ms !important;
-  }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
