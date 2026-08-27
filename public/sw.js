@@ -1,10 +1,12 @@
-const CACHE_NAME = "finanzzi-static-v1";
+const CACHE_NAME = "finanzzi-static-v2";
 
 self.addEventListener("install", () => self.skipWaiting());
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)))),
+    caches
+      .keys()
+      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)))),
   );
   self.clients.claim();
 });
@@ -16,8 +18,13 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  // Never cache HTML/navigation or private application/API data.
-  if (request.mode === "navigate" || url.pathname.startsWith("/api/") || url.pathname.startsWith("/dashboard") || url.pathname.startsWith("/auth")) {
+  // Never serve application HTML or private/API data from the static cache.
+  if (
+    request.mode === "navigate" ||
+    url.pathname.startsWith("/api/") ||
+    url.pathname.startsWith("/dashboard") ||
+    url.pathname.startsWith("/auth")
+  ) {
     return;
   }
 
