@@ -5,9 +5,12 @@ export function Logo({ className, compact = false }: { className?: string; compa
   return (
     <span className={cn("inline-flex items-center gap-2", className)}>
       <img
-        src="/finanzzi-logo-oficial.svg"
+        src="/brand/logo/finanzzi-logo.svg"
         alt="FINANZZI"
-        className={cn("size-9 rounded-xl object-cover", compact && "size-10")}
+        className={cn("size-9 object-contain", compact && "size-10")}
+        onError={(event) => {
+          event.currentTarget.src = "/brand/logo/finanzzi-logo.png";
+        }}
       />
       {!compact && (
         <span className="font-display text-lg font-bold tracking-tight text-foreground">FINANZZI</span>
