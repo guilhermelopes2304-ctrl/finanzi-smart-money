@@ -184,18 +184,38 @@ function Landing() {
         </section>
 
         <section className="border-y border-[#E1E7E3] bg-[#FCFCF8] px-4 py-20 sm:px-6 sm:py-28">
-          <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[.85fr_1.15fr] lg:items-center">
-            <Reveal><p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#0F9F52]">Decisão, não relatório</p><h2 className="mt-4 font-display text-5xl font-semibold leading-[.92] tracking-[-0.065em] sm:text-7xl">Quanto posso gastar hoje?</h2><p className="mt-6 max-w-xl text-lg leading-8 text-[#556070]">O FINANZZI considera o que você já registrou e os compromissos conhecidos para mostrar uma margem prática.</p></Reveal>
-            <Reveal delay={100}><div className="rounded-[2.2rem] border border-[#E1E7E3] bg-white p-7 shadow-[0_18px_45px_rgba(17,24,39,.07)] transition-[transform] duration-300 ease-in-out hover:-translate-y-1 sm:p-10"><p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#556070]">Sua margem de hoje</p><p className="mt-4 font-display text-7xl font-semibold leading-none tracking-[-0.08em] sm:text-8xl">R$ 327</p><p className="mt-3 text-sm font-semibold text-[#556070]">depois dos compromissos que já conhecemos</p></div></Reveal>
+          <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
+            <Reveal>
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#0F9F52]">Por que assinar?</p>
+              <h2 className="mt-4 max-w-3xl font-display text-5xl font-semibold leading-[.92] tracking-[-0.065em] sm:text-7xl">Menos preocupação. Mais clareza para decidir.</h2>
+              <p className="mt-6 max-w-xl text-lg leading-8 text-[#556070]">O FINANZZI foi feito para virar hábito: você registra em segundos e recebe uma visão mais organizada do seu dinheiro todos os dias.</p>
+              <a href="#planos" className="mt-8 inline-flex h-13 items-center justify-center gap-2 rounded-full bg-[#19C96B] px-6 text-sm font-bold transition-[transform] duration-250 ease-in-out hover:-translate-y-0.5">VER PLANOS <ArrowRight className="size-4" /></a>
+            </Reveal>
+            <Reveal delay={100}>
+              <div className="rounded-[2.2rem] border border-[#E1E7E3] bg-white p-7 shadow-[0_18px_45px_rgba(17,24,39,.07)] sm:p-9">
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#556070]">Com o FINANZZI, você ganha</p>
+                <div className="mt-5 space-y-4">
+                  {[
+                    "registro rápido por texto ou voz",
+                    "organização de contas, cartões e metas",
+                    "insights baseados no que você realmente registrou",
+                    "uma margem prática para saber o que cabe hoje",
+                  ].map((benefit) => (
+                    <div key={benefit} className="flex items-start gap-3 border-b border-[#E1E7E3] pb-4 last:border-0 last:pb-0">
+                      <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-[#EAF9F0] text-[#0F9F52]"><Check className="size-3.5" /></span>
+                      <p className="text-sm font-semibold leading-6">{benefit}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
           </div>
         </section>
 
-        <section className="px-4 py-20 sm:px-6 sm:py-28">
-          <div className="mx-auto max-w-6xl">
-            <Reveal><p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#0F9F52]">Como visto em</p><h2 className="mt-4 max-w-4xl font-display text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">Em breve, aqui estarão as histórias do FINANZZI.</h2></Reveal>
-            <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {['LOGO', 'LOGO', 'LOGO', 'LOGO'].map((item, index) => <Reveal key={`${item}-${index}`} delay={index * 60}><div className="grid h-24 place-items-center rounded-2xl border border-dashed border-[#E1E7E3] bg-white text-xs font-bold tracking-[0.2em] text-[#556070] transition-[transform] duration-250 ease-in-out hover:-translate-y-0.5">{item}</div></Reveal>)}
-            </div>
+        <section className="border-y border-[#E1E7E3] bg-[#FCFCF8] px-4 py-20 sm:px-6 sm:py-28">
+          <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[.85fr_1.15fr] lg:items-center">
+            <Reveal><p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#0F9F52]">Decisão, não relatório</p><h2 className="mt-4 font-display text-5xl font-semibold leading-[.92] tracking-[-0.065em] sm:text-7xl">Quanto posso gastar hoje?</h2><p className="mt-6 max-w-xl text-lg leading-8 text-[#556070]">O FINANZZI considera o que você já registrou e os compromissos conhecidos para mostrar uma margem prática.</p></Reveal>
+            <Reveal delay={100}><div className="rounded-[2.2rem] border border-[#E1E7E3] bg-white p-7 shadow-[0_18px_45px_rgba(17,24,39,.07)] transition-[transform] duration-300 ease-in-out hover:-translate-y-1 sm:p-10"><p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#556070]">Sua margem de hoje</p><p className="mt-4 font-display text-7xl font-semibold leading-none tracking-[-0.08em] sm:text-8xl">R$ 327</p><p className="mt-3 text-sm font-semibold text-[#556070]">depois dos compromissos que já conhecemos</p></div></Reveal>
           </div>
         </section>
 
