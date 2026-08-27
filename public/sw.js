@@ -18,7 +18,6 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  // Never serve application HTML or private/API data from the static cache.
   if (
     request.mode === "navigate" ||
     url.pathname.startsWith("/api/") ||
