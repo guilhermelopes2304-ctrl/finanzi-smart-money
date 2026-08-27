@@ -1,14 +1,16 @@
 {
-  "name": "FINANZZI",
+  "name": "FINANZZI — inteligência para o seu dinheiro",
   "short_name": "FINANZZI",
-  "description": "Inteligência para o seu dinheiro: organize receitas, despesas, contas, cartões e metas.",
+  "description": "Registre, organize e entenda melhor o seu dinheiro — no celular, do seu jeito.",
   "start_url": "/dashboard",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "orientation": "portrait",
-  "background_color": "#ffffff",
-  "theme_color": "#1f7a4d",
+  "background_color": "#FCFCF8",
+  "theme_color": "#19C96B",
   "lang": "pt-BR",
+  "categories": ["finance", "productivity"],
   "icons": [
     {
       "src": "/icon-512.png",
@@ -17,10 +19,10 @@
       "purpose": "any"
     },
     {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "src": "/finanzzi-logo-oficial.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ]
 }
