@@ -1,6 +1,5 @@
 /* FINANZZI — ORANGE PRODUCT IDENTITY PREVIEW
-   Inspired by the clarity of major financial apps and the editorial rhythm of premium fintech landing pages.
-   Visual layer only: no business logic, auth, Supabase, billing or data changes. */
+   Visible preview layer. Does not change business logic. */
 :root {
   --fin-brand: #FF5A1F;
   --fin-brand-hover: #E84D16;
@@ -39,62 +38,33 @@
   --sidebar-ring: #FF5A1F;
 }
 
-html, body { background: #FFFFFF; color: #111111; }
+html, body { background: #FFFFFF !important; color: #111111 !important; }
 
-/* Brand migration for legacy Tailwind utilities and hard-coded FINANZZI colors. */
-[class*="text-green-"], [class*="text-emerald-"], [class*="text-teal-"] { color: #FF5A1F !important; }
-[class*="bg-green-"], [class*="bg-emerald-"], [class*="bg-teal-"] { background-color: #FF5A1F !important; }
-[class*="border-green-"], [class*="border-emerald-"], [class*="border-teal-"] { border-color: #FF5A1F !important; }
-[class*="ring-green-"], [class*="ring-emerald-"], [class*="ring-teal-"] { --tw-ring-color: #FF5A1F !important; }
-[class*="text-[#19C96B]"], [class*="text-[#0F9F52]"] { color: #FF5A1F !important; }
-[class*="bg-[#19C96B]"] { background-color: #FF5A1F !important; color: #FFFFFF !important; }
+/* Hard-coded legacy FINANZZI palette -> new orange identity. */
+[class*="text-[#19C96B]"], [class*="text-[#0F9F52]"], [class*="text-green-"], [class*="text-emerald-"], [class*="text-teal-"] { color: #FF5A1F !important; }
+[class*="bg-[#19C96B]"], [class*="bg-green-"], [class*="bg-emerald-"], [class*="bg-teal-"] { background-color: #FF5A1F !important; color: #FFFFFF !important; }
 [class*="bg-[#EAF9F0]"] { background-color: #FFF0EA !important; }
 [class*="bg-[#F4F6F5]"], [class*="bg-[#FCFCF8]"] { background-color: #F4F4F4 !important; }
 [class*="text-[#556070]"] { color: #5F5F5F !important; }
 [class*="text-[#111827]"] { color: #111111 !important; }
-[class*="border-[#E1E7E3]"] { border-color: #E5E5E5 !important; }
+[class*="border-[#E1E7E3]"], [class*="border-green-"], [class*="border-emerald-"], [class*="border-teal-"] { border-color: #E5E5E5 !important; }
 [class*="border-[#19C96B]"] { border-color: #FF5A1F !important; }
+[class*="ring-[#19C96B]"], [class*="ring-green-"], [class*="ring-emerald-"] { --tw-ring-color: #FF5A1F !important; }
 
-/* Premium product rhythm: cleaner surfaces, restrained depth, stronger hierarchy. */
-header { background: rgba(255,255,255,.94) !important; border-color: #E7E7E7 !important; }
-main section { scroll-margin-top: 76px; }
-main h1, main h2, main h3 { color: #111111; text-wrap: balance; }
-main p { text-wrap: pretty; }
+/* Explicit product actions — always orange in this preview. */
+a[href*="pay.hub.la"] { background-color: #FF5A1F !important; color: #FFFFFF !important; box-shadow: none !important; }
+a[href*="pay.hub.la"]:hover { background-color: #E84D16 !important; transform: translateY(-2px); }
 
-/* Orange becomes the single visual action color. */
-a[href*="pay.hub.la"], a[class*="bg-[#19C96B]"] {
-  background: #FF5A1F !important;
-  color: #FFFFFF !important;
-  box-shadow: none !important;
-}
-a[href*="pay.hub.la"]:hover, a[class*="bg-[#19C96B]"]:hover {
-  background: #E84D16 !important;
-  transform: translateY(-2px);
-}
-
-/* Landing surfaces feel intentional rather than card-heavy. */
-main article {
-  border-color: #E7E7E7 !important;
-  box-shadow: 0 10px 30px rgba(17,17,17,.045) !important;
-}
+/* Brand accents in the landing. */
+main section p[class*="text-[#0F9F52]"] { color: #FF5A1F !important; }
+main article { border-color: #E5E5E5 !important; box-shadow: 0 10px 30px rgba(17,17,17,.045) !important; }
 main article:hover { box-shadow: 0 14px 34px rgba(17,17,17,.07) !important; }
+header { background: rgba(255,255,255,.96) !important; border-color: #E5E5E5 !important; }
 
-/* Orange accent treatments for common active states. */
-button[data-state="active"], [data-state="active"] { border-color: #FF5A1F !important; }
-input:focus, textarea:focus, select:focus { border-color: #FF5A1F !important; outline-color: #FF5A1F !important; box-shadow: 0 0 0 3px rgba(255,90,31,.10) !important; }
-
-/* Subtle product motion — no glow, neon, gradients or infinite floating. */
 button, a, [role="button"] { transition: transform .25s ease-in-out, background-color .25s ease-in-out, border-color .25s ease-in-out, color .25s ease-in-out; }
 button:active, a:active, [role="button"]:active { transform: translateY(1px) scale(.99); }
-
-/* Preserve financial semantics while keeping the brand dominant. */
+input:focus, textarea:focus, select:focus { border-color: #FF5A1F !important; outline-color: #FF5A1F !important; box-shadow: 0 0 0 3px rgba(255,90,31,.10) !important; }
 .text-destructive, [class*="text-red-"] { color: #C93E2A !important; }
-
-@media (max-width: 767px) {
-  main h1 { letter-spacing: -.065em; }
-  main h2 { letter-spacing: -.055em; }
-  main section { padding-top: 72px; padding-bottom: 72px; }
-}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
