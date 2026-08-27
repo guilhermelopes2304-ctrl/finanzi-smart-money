@@ -1,1 +1,1 @@
-FINANZZI official PWA release: manifest and service worker finalized on feat/finanzzi-redesign-final.
+FINANZZI official PWA release: manifest and service worker finalized.
