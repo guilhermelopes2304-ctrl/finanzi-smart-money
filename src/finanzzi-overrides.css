@@ -6,7 +6,6 @@ body [class~="bg-primary\/10"], body [class~="bg-primary\/5"] { background-color
 body [class~="border-primary\/20"], body [class~="border-primary\/50"] { border-color: var(--fin-line) !important; }
 :focus-visible { outline: 3px solid var(--fin-brand) !important; outline-offset: 3px; }
 ::selection { background: var(--fin-brand-soft) !important; color: var(--fin-ink) !important; }
-
 [data-fin-app-shell] { min-height: 100vh; color: var(--fin-ink); background: var(--fin-canvas); }
 [data-fin-app-shell] aside { color: var(--sidebar-foreground); background: var(--sidebar); border-color: var(--sidebar-border); transition: width .2s ease, background-color .2s ease; }
 [data-fin-app-shell] aside .text-muted-foreground { color: var(--sidebar-foreground) !important; opacity: .76; }
@@ -34,7 +33,6 @@ body [class~="border-primary\/20"], body [class~="border-primary\/50"] { border-
 [data-fin-app-shell] .text-white { color: var(--fin-ink) !important; }
 [data-fin-app-shell] .bg-white { background: var(--fin-surface) !important; }
 [data-fin-app-shell] button, [data-fin-app-shell] a { -webkit-tap-highlight-color: transparent; }
-
 body:not(:has([data-fin-app-shell])) { background: var(--fin-canvas); color: var(--fin-ink); }
 body:not(:has([data-fin-app-shell])) header { backdrop-filter: blur(10px); background: rgb(252 252 248 / .92) !important; border-color: var(--fin-line) !important; }
 body:not(:has([data-fin-app-shell])) main > section { position: relative; }
@@ -53,23 +51,11 @@ body:not(:has([data-fin-app-shell])) [id="contas"] article { background: var(--f
 body:not(:has([data-fin-app-shell])) [id="oferta"] { scroll-margin-top: 80px; }
 body:not(:has([data-fin-app-shell])) [id="oferta"] article { background: var(--fin-surface) !important; border: 1px solid var(--fin-line) !important; border-radius: 24px !important; }
 body:not(:has([data-fin-app-shell])) footer { background: var(--fin-ink) !important; color: white !important; }
-
-/* Hero: app screen presented as the product, not a generic phone illustration. */
-body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] { position: relative; width: min(100%, 366px) !important; max-width: 366px !important; padding: 9px !important; border: 10px solid #111827 !important; border-radius: 44px !important; background: #111827 !important; box-shadow: 0 28px 70px rgb(17 24 39 / .18), 0 8px 24px rgb(25 201 107 / .10) !important; transform: rotate(1.2deg); isolation: isolate; }
-body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]::before { content: ""; position: absolute; z-index: 5; top: 10px; left: 50%; width: 86px; height: 19px; transform: translateX(-50%); border-radius: 999px; background: #111827; }
-body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]::after { content: ""; position: absolute; z-index: 6; right: -13px; top: 116px; width: 4px; height: 70px; border-radius: 0 4px 4px 0; background: #111827; box-shadow: 0 86px 0 #111827; }
-body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] > div { overflow: hidden !important; border: 0 !important; border-radius: 34px !important; background: #FCFCF8 !important; padding: 9px !important; box-shadow: none !important; }
-body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] > div > div { border-radius: 27px !important; }
-body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] button { cursor: pointer; transition: transform .18s ease, box-shadow .18s ease; }
-body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] button:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgb(17 24 39 / .16); }
-
-/* REAL iPhone photography — exact image uploaded to public/finanzi-iphone-hero.png. */
-body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] { width: min(100%, 470px) !important; max-width: 470px !important; padding: 0 !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; transform: none !important; animation: none !important; }
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] { position: relative; width: min(100%, 470px) !important; max-width: 470px !important; padding: 0 !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; transform: none !important; animation: none !important; isolation: isolate; }
 body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] > div { display: none !important; }
-body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]::before { content: ""; position: relative; inset: auto; display: block; width: 100%; aspect-ratio: 1024 / 1536; background: url('/finanzi-iphone-hero.png') center / contain no-repeat; transform: rotate(1deg); transform-origin: 50% 60%; animation: fin-real-phone-in .72s cubic-bezier(.2,.8,.2,1) both; will-change: transform, opacity; }
+body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]::before { content: ""; position: relative; display: block; width: 100%; aspect-ratio: 1024 / 1536; background: url('/finanzi-iphone-hero.png') center / contain no-repeat; transform: rotate(1deg); transform-origin: 50% 60%; animation: fin-real-phone-in .72s cubic-bezier(.2,.8,.2,1) both; will-change: transform, opacity; }
 body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]::after { display: none !important; }
 @keyframes fin-real-phone-in { from { opacity: 0; transform: perspective(1400px) rotateY(-7deg) rotateZ(1deg) translateY(32px) scale(.985); } to { opacity: 1; transform: perspective(1400px) rotateY(0deg) rotateZ(1deg) translateY(0) scale(1); } }
-
 @media (max-width:900px) { body:not(:has([data-fin-app-shell])) main > section:first-child { min-height: 0; } body:not(:has([data-fin-app-shell])) main > section:first-child h1 { font-size: clamp(3rem, 14vw, 5.5rem); } }
 @media (max-width:640px) { body:not(:has([data-fin-app-shell])) header { height: 62px; } body:not(:has([data-fin-app-shell])) main > section { scroll-margin-top: 70px; } body:not(:has([data-fin-app-shell])) main > section:first-child { padding-top: 32px; padding-bottom: 56px; } body:not(:has([data-fin-app-shell])) main > section:first-child .max-w-6xl { gap: 40px; } body:not(:has([data-fin-app-shell])) main > section article:hover { transform: none; box-shadow: none; } body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] { width: min(100%, 350px) !important; max-width: 350px !important; margin-inline: auto !important; } body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]::before { transform: rotate(0deg); } [data-fin-app-shell] main { padding-bottom: 88px; } [data-fin-app-shell] aside { display: none; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; } body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]::before { animation: none !important; } }
