@@ -1,0 +1,1 @@
+Official FINANZZI release: updated PWA manifest, official icon metadata, and refreshed service-worker cache version.
