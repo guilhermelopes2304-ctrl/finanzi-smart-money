@@ -60,3 +60,71 @@ body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[
 @media (max-width:900px) { body:not(:has([data-fin-app-shell])) main > section:first-child { min-height: 0; } body:not(:has([data-fin-app-shell])) main > section:first-child h1 { font-size: clamp(3rem, 14vw, 5.5rem); } }
 @media (max-width:640px) { body:not(:has([data-fin-app-shell])) header { height: 62px; } body:not(:has([data-fin-app-shell])) main > section { scroll-margin-top: 70px; } body:not(:has([data-fin-app-shell])) main > section:first-child { padding-top: 32px; padding-bottom: 56px; } body:not(:has([data-fin-app-shell])) main > section:first-child .max-w-6xl { gap: 40px; } body:not(:has([data-fin-app-shell])) main > section article:hover { transform: none; box-shadow: none; } body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"] { width: min(100%, 350px) !important; max-width: 350px !important; margin-inline: auto !important; } body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]::before { transform: rotate(0deg); } [data-fin-app-shell] main { padding-bottom: 88px; } [data-fin-app-shell] aside { display: none; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; } body:not(:has([data-fin-app-shell])) main > section:first-child [class~="max-w-[470px]"]::before { animation: none !important; } }
+
+/* PREMIUM PAID-APP PASS — restrained, polished, light-first. */
+body:not(:has([data-fin-app-shell])) header { box-shadow: 0 1px 0 rgb(17 24 39 / .03); }
+body:not(:has([data-fin-app-shell])) main > section:nth-child(2) { background: #FFFFFF !important; }
+body:not(:has([data-fin-app-shell])) main > section:nth-child(3) { background: #FCFCF8 !important; }
+body:not(:has([data-fin-app-shell])) main > section:nth-child(4) { background: #F4F6F5 !important; }
+body:not(:has([data-fin-app-shell])) main > section:nth-child(5) { background: #FCFCF8 !important; }
+body:not(:has([data-fin-app-shell])) main > section:nth-child(6) { background: #FFFFFF !important; }
+body:not(:has([data-fin-app-shell])) main > section:nth-child(7) { background: #F4F6F5 !important; }
+body:not(:has([data-fin-app-shell])) main > section:nth-child(8) { background: #FCFCF8 !important; }
+body:not(:has([data-fin-app-shell])) main > section:first-child { padding-top: 84px; padding-bottom: 96px; }
+body:not(:has([data-fin-app-shell])) main > section:first-child h1 { letter-spacing: -.085em; }
+body:not(:has([data-fin-app-shell])) main > section:first-child p { max-width: 58ch; }
+body:not(:has([data-fin-app-shell])) main > section:first-child .motion-safe\:animate-\[fin-hero-in_500ms_ease-out\] { will-change: transform, opacity; }
+body:not(:has([data-fin-app-shell])) main > section:not(:first-child) { padding-top: 104px; padding-bottom: 104px; }
+body:not(:has([data-fin-app-shell])) main > section:not(:first-child) > div { position: relative; z-index: 1; }
+body:not(:has([data-fin-app-shell])) main > section article { border-radius: 28px !important; }
+body:not(:has([data-fin-app-shell])) main > section article p { text-wrap: pretty; }
+body:not(:has([data-fin-app-shell])) main > section:nth-child(3) article,
+body:not(:has([data-fin-app-shell])) #compromissos article { background: rgba(255,255,255,.92) !important; box-shadow: 0 14px 40px rgb(17 24 39 / .055); }
+body:not(:has([data-fin-app-shell])) main > section:nth-child(5) > div > div > div:last-child,
+body:not(:has([data-fin-app-shell])) #planos article { box-shadow: 0 22px 60px rgb(17 24 39 / .07) !important; }
+body:not(:has([data-fin-app-shell])) #planos article { min-height: 100%; }
+body:not(:has([data-fin-app-shell])) #planos article:nth-child(1) { border-color: #D9E2DD !important; }
+body:not(:has([data-fin-app-shell])) #planos article:nth-child(2) { box-shadow: 0 24px 70px rgb(17 24 39 / .09) !important; }
+body:not(:has([data-fin-app-shell])) #planos a { min-height: 52px; }
+body:not(:has([data-fin-app-shell])) details summary { transition: transform .2s ease, color .2s ease; }
+body:not(:has([data-fin-app-shell])) details summary:hover { transform: translateX(2px); color: #0F9F52; }
+body:not(:has([data-fin-app-shell])) footer { background: #111827 !important; }
+body:not(:has([data-fin-app-shell])) footer a { filter: none !important; }
+
+/* Internal app: more composed surfaces, richer hierarchy, restrained movement. */
+[data-fin-app-shell] main { background: var(--fin-canvas); }
+[data-fin-app-shell] aside { box-shadow: 10px 0 30px rgb(17 24 39 / .035); }
+[data-fin-app-shell] aside > div:first-child { background: rgba(255,255,255,.72); }
+[data-fin-app-shell] aside nav a,
+[data-fin-app-shell] aside nav button { transition: transform .2s ease, background-color .2s ease, color .2s ease; }
+[data-fin-app-shell] aside nav a:hover,
+[data-fin-app-shell] aside nav button:hover { transform: translateX(2px); }
+[data-fin-app-shell] aside nav a > span:first-child,
+[data-fin-app-shell] aside nav button > span:first-child { transition: transform .2s ease; }
+[data-fin-app-shell] aside nav a:hover > span:first-child,
+[data-fin-app-shell] aside nav button:hover > span:first-child { transform: translateY(-1px); }
+[data-fin-app-shell] main > div > * { animation: fin-app-enter .36s ease-out both; }
+[data-fin-app-shell] .surface-card,
+[data-fin-app-shell] main article { box-shadow: 0 10px 30px rgb(17 24 39 / .045); }
+[data-fin-app-shell] .surface-card:hover,
+[data-fin-app-shell] main article:hover { border-color: rgb(25 201 107 / .28) !important; }
+[data-fin-app-shell] main button,
+[data-fin-app-shell] main a { transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease, border-color .2s ease; }
+[data-fin-app-shell] main button:hover:not(:disabled),
+[data-fin-app-shell] main a:hover { transform: translateY(-1px); }
+[data-fin-app-shell] main button:active:not(:disabled),
+[data-fin-app-shell] main a:active { transform: translateY(0); }
+[data-fin-app-shell] .fixed.inset-x-2.bottom-2 { border-radius: 22px !important; background: rgba(255,255,255,.96) !important; box-shadow: 0 18px 50px rgb(17 24 39 / .14), 0 2px 8px rgb(17 24 39 / .05) !important; border-color: #DCE4E0 !important; backdrop-filter: blur(12px); }
+[data-fin-app-shell] .fixed.inset-x-2.bottom-2 a,
+[data-fin-app-shell] .fixed.inset-x-2.bottom-2 button { border-radius: 16px; }
+[data-fin-app-shell] .fixed.inset-x-2.bottom-2 a:hover,
+[data-fin-app-shell] .fixed.inset-x-2.bottom-2 button:hover { transform: translateY(-2px); }
+@keyframes fin-app-enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { [data-fin-app-shell] main > div > * { animation: none !important; } }
+
+@media (max-width:640px) {
+  body:not(:has([data-fin-app-shell])) main > section:first-child { padding-top: 52px; padding-bottom: 64px; }
+  body:not(:has([data-fin-app-shell])) main > section:not(:first-child) { padding-top: 72px; padding-bottom: 72px; }
+  body:not(:has([data-fin-app-shell])) #planos article { border-radius: 24px !important; }
+  [data-fin-app-shell] main > div > * { animation-duration: .28s; }
+}
