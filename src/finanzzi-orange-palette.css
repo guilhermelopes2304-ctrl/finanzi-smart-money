@@ -1,4 +1,5 @@
-/* FINANZZI orange identity preview — visual-only, no business logic changes. */
+/* FINANZZI — ORANGE IDENTITY PREVIEW
+   Visual layer only. No business logic, auth, Supabase, billing or data changes. */
 :root {
   --fin-brand: #FF5A1F;
   --fin-brand-hover: #E94A12;
@@ -10,9 +11,6 @@
   --fin-copy: #5F5F5F;
   --fin-muted: #6B6B6B;
   --fin-line: #E5E5E5;
-  --fin-success: #FF5A1F;
-  --fin-success-soft: #FFF0EA;
-  --fin-success-foreground: #FFFFFF;
   --background: #FFFFFF;
   --foreground: #111111;
   --card: #FFFFFF;
@@ -30,11 +28,6 @@
   --border: #E5E5E5;
   --input: #E5E5E5;
   --ring: #FF5A1F;
-  --chart-1: #FF5A1F;
-  --chart-2: #111111;
-  --chart-3: #F4F4F4;
-  --chart-4: #E94A12;
-  --chart-5: #6B6B6B;
   --sidebar: #FFFFFF;
   --sidebar-foreground: #111111;
   --sidebar-primary: #FF5A1F;
@@ -47,21 +40,42 @@
 
 html, body { background: #FFFFFF; color: #111111; }
 
-/* Direct legacy green utilities are remapped so the preview is visibly orange even where components use hard-coded brand classes. */
+/* Legacy utility classes */
 [class*="text-green-"], [class*="text-emerald-"], [class*="text-teal-"] { color: #FF5A1F !important; }
 [class*="bg-green-"], [class*="bg-emerald-"], [class*="bg-teal-"] { background-color: #FF5A1F !important; }
 [class*="border-green-"], [class*="border-emerald-"], [class*="border-teal-"] { border-color: #FF5A1F !important; }
 [class*="ring-green-"], [class*="ring-emerald-"], [class*="ring-teal-"] { --tw-ring-color: #FF5A1F !important; }
-[class*="from-green-"], [class*="from-emerald-"], [class*="from-teal-"] { --tw-gradient-from: #FF5A1F !important; }
-[class*="to-green-"], [class*="to-emerald-"], [class*="to-teal-"] { --tw-gradient-to: #FF5A1F !important; }
 
-/* Preserve semantic success/error distinction: coral remains reserved for destructive/alert states. */
-.text-destructive, [class*="text-red-"] { color: #C93E2A; }
+/* Hard-coded legacy FINANZZI colors used by the current landing. */
+[class*="text-[#19C96B]"], [class*="text-[#0F9F52]"] { color: #FF5A1F !important; }
+[class*="bg-[#19C96B]"] { background-color: #FF5A1F !important; }
+[class*="bg-[#EAF9F0]"] { background-color: #FFF0EA !important; }
+[class*="bg-[#F4F6F5]"] { background-color: #F4F4F4 !important; }
+[class*="bg-[#FCFCF8]"] { background-color: #FFFFFF !important; }
+[class*="text-[#556070]"] { color: #5F5F5F !important; }
+[class*="text-[#111827]"] { color: #111111 !important; }
+[class*="border-[#E1E7E3]"] { border-color: #E5E5E5 !important; }
+[class*="border-2][class*="#19C96B"] { border-color: #FF5A1F !important; }
 
-button, a, [role="button"] { transition: transform .2s ease-out, background-color .2s ease-out, border-color .2s ease-out, color .2s ease-out; }
-button:hover, a:hover, [role="button"]:hover { }
+/* Make the new brand visibly own the UI without turning every surface orange. */
+header a[href*="pay.hub.la"], main a[href*="pay.hub.la"] {
+  background-color: #FF5A1F !important;
+  color: #FFFFFF !important;
+}
+
+/* Orange identity accent for native controls. */
+input:focus, textarea:focus, select:focus { border-color: #FF5A1F !important; outline-color: #FF5A1F !important; }
+
+button, a, [role="button"] {
+  transition: transform .22s ease-out, background-color .22s ease-out, border-color .22s ease-out, color .22s ease-out;
+}
 button:active, a:active, [role="button"]:active { transform: translateY(1px); }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
 }
