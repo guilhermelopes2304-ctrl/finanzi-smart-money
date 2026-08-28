@@ -49,7 +49,7 @@ function SettingsPage() {
   const [income, setIncome] = useState("");
   const [password, setPassword] = useState("");
   const [proOpen, setProOpen] = useState(false);
-  const { plan, isPro, subscription } = usePlan();
+  const { isPro, subscription } = usePlan();
   const billingStatus = subscription?.status ?? "free";
 
   useEffect(() => {
