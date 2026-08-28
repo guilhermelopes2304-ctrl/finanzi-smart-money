@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useState } from "react";
 import { Check, Copy, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
