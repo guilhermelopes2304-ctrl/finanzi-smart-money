@@ -40,7 +40,7 @@ function ResetPassword() {
   }
 
   return (
-    <div className="min-h-screen bg-[#111111] text-[#111827]">
+    <div className="min-h-screen bg-[#111111] text-[#FFFFFF]">
       <header className="flex items-center justify-between px-4 py-4 sm:px-6">
         <a href="/" aria-label="Voltar para o início">
           <Logo />
@@ -48,9 +48,9 @@ function ResetPassword() {
       </header>
       <main className="mx-auto grid min-h-[calc(100vh-81px)] w-full max-w-5xl items-center gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[.85fr_1.15fr] lg:gap-16">
         <section className="hidden lg:block">
-          <div className="rounded-[2rem] border border-[#E1E7E3] bg-[#181818] p-8 text-[#111827] shadow-[0_18px_55px_rgba(21,24,39,.08)]">
+          <div className="rounded-[2rem] border border-[#2D2D2D] bg-[#181818] p-8 text-[#FFFFFF] shadow-[0_18px_55px_rgba(21,24,39,.08)]">
             <div className="flex items-center gap-4">
-              <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-[#FF5A1F] text-[10px] font-black uppercase tracking-[0.16em] text-[#111827]">
+              <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-[#FF5A1F] text-[10px] font-black uppercase tracking-[0.16em] text-[#FFFFFF]">
                 FIN
               </span>
               <div>
@@ -62,8 +62,8 @@ function ResetPassword() {
                 </h2>
               </div>
             </div>
-            <div className="mt-8 rounded-2xl border border-[#E1E7E3] bg-white p-4">
-              <p className="text-sm text-[#556070]">
+            <div className="mt-8 rounded-2xl border border-[#2D2D2D] bg-white p-4">
+              <p className="text-sm text-[#B7B7B7]">
                 Depois de criar sua senha, você volta direto para o FINANZZI.
               </p>
             </div>
@@ -80,13 +80,13 @@ function ResetPassword() {
             <h1 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
               Criar nova senha
             </h1>
-            <p className="mt-2 text-sm leading-6 text-[#556070]">
+            <p className="mt-2 text-sm leading-6 text-[#B7B7B7]">
               Escolha uma nova senha para continuar acessando sua conta.
             </p>
           </div>
           <form
             onSubmit={handleSubmit}
-            className="rounded-[1.75rem] border border-[#E1E7E3] bg-white p-5 shadow-[0_18px_55px_rgba(21,24,39,.08)] sm:p-7"
+            className="rounded-[1.75rem] border border-[#2D2D2D] bg-white p-5 shadow-[0_18px_55px_rgba(21,24,39,.08)] sm:p-7"
           >
             <div className="space-y-2">
               <Label htmlFor="new-password">Nova senha</Label>
@@ -97,19 +97,19 @@ function ResetPassword() {
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 placeholder="Mínimo de 6 caracteres"
-                className="h-12 rounded-xl border-[#E1E7E3] bg-[#111111] text-[#111827] placeholder:text-[#556070] focus:border-[#FF5A1F] focus:ring-[#FF5A1F]"
+                className="h-12 rounded-xl border-[#2D2D2D] bg-[#111111] text-[#FFFFFF] placeholder:text-[#B7B7B7] focus:border-[#FF5A1F] focus:ring-[#FF5A1F]"
                 required
               />
             </div>
             <Button
               type="submit"
-              className="mt-6 h-12 w-full rounded-xl bg-[#FF5A1F] font-bold text-[#111827] hover:bg-[#FF5A1F]"
+              className="mt-6 h-12 w-full rounded-xl bg-[#FF5A1F] font-bold text-[#FFFFFF] hover:bg-[#FF5A1F]"
               disabled={busy}
             >
               {busy ? "Salvando..." : "Salvar nova senha"}
               <ArrowRight className="ml-auto size-4" />
             </Button>
-            <p className="mt-5 flex items-center justify-center gap-2 text-xs text-[#556070]">
+            <p className="mt-5 flex items-center justify-center gap-2 text-xs text-[#B7B7B7]">
               <ShieldCheck className="size-4 text-[#FF5A1F]" /> Você poderá voltar ao app com
               segurança.
             </p>
