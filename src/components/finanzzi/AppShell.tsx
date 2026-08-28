@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, useState, type ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   BarChart3,
@@ -23,8 +23,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { usePlan } from "@/hooks/usePlan";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/finanzzi/Logo";
-import { TransactionDialog } from "@/components/finanzzi/TransactionDialog";
-import { FinancialAssistant } from "@/components/finanzzi/FinancialAssistantV2";
+import { MotionPage } from "@/components/finanzzi/MotionPage";
+
+const TransactionDialog = lazy(() => import("@/components/finanzzi/TransactionDialog").then((module) => ({ default: module.TransactionDialog })));
+const FinancialAssistant = lazy(() => import("@/components/finanzzi/FinancialAssistantV2").then((module) => ({ default: module.FinancialAssistant })));
 import { NavigationLoading } from "@/components/finanzzi/NavigationLoading";
 import { cn } from "@/lib/utils";
 
@@ -419,7 +421,7 @@ export function AppShell({
           desktopSidebarWidth,
         )}
       >
-        <div className="mx-auto min-w-0 max-w-7xl">{children}</div>
+        <MotionPage className="mx-auto max-w-7xl">{children}</MotionPage>
       </main>
 
       <nav className="fixed inset-x-2 bottom-2 z-30 rounded-[1.4rem] border border-border bg-card pb-[env(safe-area-inset-bottom)] shadow-soft lg:hidden">
@@ -478,9 +480,13 @@ export function AppShell({
       )}
 
       {!visualReview && (
-        <TransactionDialog open={transactionOpen} onOpenChange={setTransactionOpen} />
+        <Suspense fallback={null}>
+          <TransactionDialog open={transactionOpen} onOpenChange={setTransactionOpen} />
+        </Suspense>
       )}
-      <FinancialAssistant />
+      <Suspense fallback={null}>
+        <FinancialAssistant />
+      </Suspense>
     </div>
   );
 }
