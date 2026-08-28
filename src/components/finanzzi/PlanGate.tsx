@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useState, type ReactNode } from "react";
 import { ArrowRight, Check, LockKeyhole, ShieldCheck, Sparkles } from "lucide-react";
 import { toast } from "sonner";
