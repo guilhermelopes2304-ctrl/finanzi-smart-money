@@ -5,42 +5,51 @@ const STORAGE_KEY = "finanzzi-theme";
 
 interface ThemeState {
   theme: Theme;
-  setTheme: (t: Theme) => void;
+  setTheme: (theme: Theme) => void;
   toggleTheme: () => void;
 }
 
-const LIGHT_THEME: Theme = "light";
+function getInitialTheme(): Theme {
+  if (typeof window === "undefined") return "light";
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored === "dark" || stored === "light") return stored;
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
 
 const ThemeContext = createContext<ThemeState>({
-  theme: LIGHT_THEME,
+  theme: "light",
   setTheme: () => {},
   toggleTheme: () => {},
 });
 
+function applyTheme(theme: Theme) {
+  const root = document.documentElement;
+  root.classList.toggle("dark", theme === "dark");
+  root.style.colorScheme = theme;
+}
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>(LIGHT_THEME);
+  const [theme, setThemeState] = useState<Theme>(getInitialTheme);
 
   useEffect(() => {
-    // A direção visual atual é clara em toda a experiência principal.
-    localStorage.setItem(STORAGE_KEY, LIGHT_THEME);
-    setThemeState(LIGHT_THEME);
-  }, []);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    root.classList.remove("dark");
-    root.style.colorScheme = "light";
+    applyTheme(theme);
+    localStorage.setItem(STORAGE_KEY, theme);
   }, [theme]);
 
-  const setTheme = useCallback((_next: Theme) => {
-    localStorage.setItem(STORAGE_KEY, LIGHT_THEME);
-    setThemeState(LIGHT_THEME);
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored === "dark" || stored === "light") return;
+    const handleChange = (event: MediaQueryListEvent) => {
+      setThemeState(event.matches ? "dark" : "light");
+    };
+    media.addEventListener("change", handleChange);
+    return () => media.removeEventListener("change", handleChange);
   }, []);
 
+  const setTheme = useCallback((next: Theme) => setThemeState(next), []);
   const toggleTheme = useCallback(() => {
-    // Mantém a assinatura pública do contexto sem criar uma segunda identidade visual.
-    localStorage.setItem(STORAGE_KEY, LIGHT_THEME);
-    setThemeState(LIGHT_THEME);
+    setThemeState((current) => (current === "dark" ? "light" : "dark"));
   }, []);
 
   return (
