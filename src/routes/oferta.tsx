@@ -143,10 +143,10 @@ function OfferPage() {
           </div>
         )}
 
-        <section className="relative isolate overflow-hidden bg-[#EAF9F0] text-[#111827]">
+        <section className="relative isolate overflow-hidden bg-[#181818] text-[#111827]">
           <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 sm:py-24 lg:grid-cols-[.86fr_1.14fr] lg:py-28">
             <div className="text-center lg:text-left">
-              <div className="mx-auto inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-2 text-xs font-semibold text-[#0F9F52] shadow-sm lg:mx-0">
+              <div className="mx-auto inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-2 text-xs font-semibold text-[#FF5A1F] shadow-sm lg:mx-0">
                 <Sparkles className="size-3.5" /> Acesso completo ao FINANZZI
               </div>
               <h1 className="mt-7 max-w-2xl font-display text-4xl font-semibold leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
@@ -160,7 +160,7 @@ function OfferPage() {
                 <Button
                   asChild
                   size="lg"
-                  className="h-13 rounded-full bg-[#19C96B] px-8 text-base text-[#111827] shadow-[0_12px_40px_rgba(25,201,107,.18)] hover:bg-[#19C96B]"
+                  className="h-13 rounded-full bg-[#FF5A1F] px-8 text-base text-[#111827] shadow-[0_12px_40px_rgba(25,201,107,.18)] hover:bg-[#FF5A1F]"
                 >
                   <a href="#oferta">
                     Assinar FINANZZI <ArrowRight className="ml-1 size-4" />
@@ -170,51 +170,51 @@ function OfferPage() {
                   asChild
                   size="lg"
                   variant="outline"
-                  className="h-13 rounded-full border-[#E1E7E3] bg-white px-8 text-base text-[#111827] hover:bg-[#F4F6F5]"
+                  className="h-13 rounded-full border-[#E1E7E3] bg-white px-8 text-base text-[#111827] hover:bg-[#F4F4F4]"
                 >
                   <a href="#como-funciona">Ver como funciona</a>
                 </Button>
               </div>
               <div className="mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-[#556070] lg:justify-start">
                 <span className="inline-flex items-center gap-1.5">
-                  <Check className="size-4 text-[#19C96B]" /> Texto e voz
+                  <Check className="size-4 text-[#FF5A1F]" /> Texto e voz
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <ShieldCheck className="size-4 text-[#19C96B]" /> Dados protegidos
+                  <ShieldCheck className="size-4 text-[#FF5A1F]" /> Dados protegidos
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <Mic className="size-4 text-[#19C96B]" /> Feito para o celular
+                  <Mic className="size-4 text-[#FF5A1F]" /> Feito para o celular
                 </span>
               </div>
             </div>
 
             <div className="relative mx-auto w-full max-w-xl">
               <div className="relative rounded-[2.25rem] border border-[#E1E7E3] bg-white p-3 shadow-[0_18px_55px_rgba(21,24,39,.08)]">
-                <div className="overflow-hidden rounded-[1.8rem] bg-[#F4F6F5] p-5 text-[#111827] sm:p-7">
+                <div className="overflow-hidden rounded-[1.8rem] bg-[#F4F4F4] p-5 text-[#111827] sm:p-7">
                   <div className="flex items-center justify-between gap-4">
                     <div>
-                      <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#19C96B]/70">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#FF5A1F]/70">
                         Demonstração simulada
                       </p>
                       <p className="mt-1 text-sm font-semibold">
                         Falar dos seus gastos ficou fácil.
                       </p>
                     </div>
-                    <span className="grid size-10 place-items-center rounded-xl bg-[#19C96B] text-[#111827]">
+                    <span className="grid size-10 place-items-center rounded-xl bg-[#FF5A1F] text-[#111827]">
                       <MessageCircle className="size-5" />
                     </span>
                   </div>
                   <div className="mt-8 space-y-3">
-                    <div className="ml-auto max-w-[82%] rounded-2xl rounded-br-md bg-[#19C96B] px-4 py-3 text-sm font-semibold text-[#111827]">
+                    <div className="ml-auto max-w-[82%] rounded-2xl rounded-br-md bg-[#FF5A1F] px-4 py-3 text-sm font-semibold text-[#111827]">
                       gastei 45 no mercado
                     </div>
                     <div className="max-w-[88%] rounded-2xl rounded-bl-md border border-[#E1E7E3] bg-white px-4 py-3 text-sm text-[#111827]">
                       Registrado ✓
                       <br />
-                      <span className="text-[#19C96B]">Alimentação · R$ 45,00</span>
+                      <span className="text-[#FF5A1F]">Alimentação · R$ 45,00</span>
                     </div>
-                    <div className="max-w-[88%] rounded-2xl rounded-bl-md border border-[#E1E7E3] bg-[#EAF9F0] px-4 py-3 text-sm text-[#111827]">
-                      Você ainda pode gastar <strong className="text-[#0F9F52]">R$ 327 hoje</strong>
+                    <div className="max-w-[88%] rounded-2xl rounded-bl-md border border-[#E1E7E3] bg-[#181818] px-4 py-3 text-sm text-[#111827]">
+                      Você ainda pode gastar <strong className="text-[#FF5A1F]">R$ 327 hoje</strong>
                       .
                     </div>
                   </div>
@@ -227,9 +227,9 @@ function OfferPage() {
                   ].map(([title, text]) => (
                     <div
                       key={title}
-                      className="rounded-2xl border border-[#E1E7E3] bg-[#F4F6F5] p-3 text-center"
+                      className="rounded-2xl border border-[#E1E7E3] bg-[#F4F4F4] p-3 text-center"
                     >
-                      <p className="text-xs font-semibold text-[#0F9F52]">{title}</p>
+                      <p className="text-xs font-semibold text-[#FF5A1F]">{title}</p>
                       <p className="mt-1 text-[11px] text-[#556070]">{text}</p>
                     </div>
                   ))}
@@ -356,10 +356,10 @@ function OfferPage() {
           </div>
         </section>
 
-        <section id="oferta" className="bg-[#EAF9F0] text-[#111827]">
+        <section id="oferta" className="bg-[#181818] text-[#111827]">
           <div className="mx-auto max-w-5xl px-4 py-20 sm:px-6 lg:py-28">
             <div className="mx-auto max-w-2xl text-center">
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#19C96B]">
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#FF5A1F]">
                 Oferta FINANZZI
               </p>
               <h2 className="mt-4 font-display text-3xl font-semibold leading-tight sm:text-5xl">
