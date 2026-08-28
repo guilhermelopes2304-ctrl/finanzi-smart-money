@@ -1,12 +1,13 @@
-import { describe, expect, test } from "bun:test";
+import { describe, it } from "node:test";
+import assert from "node:assert/strict";
 import { normalize } from "./quick-parse";
 
 describe("quick parser primitives", () => {
-  test("normalizes accents and casing", () => {
-    expect(normalize("Salário MENSAL")).toBe("salario mensal");
+  it("normalizes accents and casing", () => {
+    assert.equal(normalize("Salário MENSAL"), "salario mensal");
   });
 
-  test("keeps plain words stable", () => {
-    expect(normalize("mercado 82 reais")).toBe("mercado 82 reais");
+  it("keeps plain words stable", () => {
+    assert.equal(normalize("mercado 82 reais"), "mercado 82 reais");
   });
 });
