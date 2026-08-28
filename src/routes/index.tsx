@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Check, Mic, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight, Check, ShieldCheck, Sparkles } from "lucide-react";
 import { Logo } from "@/components/finanzzi/Logo";
 import { BILLING_PLANS, getHublaCheckoutUrl } from "@/lib/billing";
 import { trackProductEvent } from "@/lib/product-analytics";
@@ -53,8 +53,8 @@ function Landing() {
                 <div className="mt-7 flex flex-wrap gap-x-5 gap-y-3 text-xs font-semibold text-white/55">{points.map((point) => <span key={point} className="inline-flex items-center gap-2"><Check className="size-3.5 text-[#FF5A1F]" />{point}</span>)}</div>
               </div>
             </Reveal>
-            <Reveal delay={120} className="mx-auto w-full max-w-[470px]">
-              <img src="/finanzi-iphone-hero.png" alt="FINANZZI no iPhone" className="block h-auto w-full drop-shadow-2xl" />
+            <Reveal delay={120} className="mx-auto w-full max-w-[430px] lg:max-w-[470px]">
+              <img src="/finanzi-iphone-hero.png" alt="FINANZZI no iPhone" className="block h-auto w-full" />
             </Reveal>
           </div>
         </section>

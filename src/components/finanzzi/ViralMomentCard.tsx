@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useState } from "react";
 import { Check, Copy, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -68,7 +69,7 @@ async function buildMomentFile(
   context.arc(940, 160, 260, 0, Math.PI * 2);
   context.fill();
 
-  context.fillStyle = "#19C96B";
+  context.fillStyle = "#FF5A1F";
   context.font = "700 34px Arial, sans-serif";
   context.fillText("FINANZZI", 90, 130);
   context.fillStyle = "rgba(255,255,255,0.55)";
@@ -81,7 +82,7 @@ async function buildMomentFile(
   context.fillStyle = "#fcfcf8";
   context.font = "700 82px Arial, sans-serif";
   drawWrappedText(context, props.title, 90, 1335, 900, 98);
-  context.fillStyle = "#19C96B";
+  context.fillStyle = "#FF5A1F";
   context.font = "700 112px Arial, sans-serif";
   drawWrappedText(context, props.value, 90, 1600, 900, 125);
   context.fillStyle = "rgba(255,255,255,0.72)";
@@ -152,21 +153,21 @@ export function ViralMomentCard({
       <div className="grid gap-4 sm:grid-cols-[minmax(0,14rem)_1fr] sm:items-center">
         <div className="mx-auto w-full max-w-[14rem]">
           <div className="relative aspect-[9/16] overflow-hidden rounded-[1.35rem] bg-[#111827] p-5 text-white shadow-[0_18px_50px_rgba(2,32,20,0.22)]">
-            <div className="absolute -top-16 -right-16 size-40 rounded-full bg-[#19C96B]/20 blur-2xl" />
-            <div className="absolute -bottom-20 -left-14 size-44 rounded-full bg-[#19C96B]/10 blur-2xl" />
+            <div className="absolute -top-16 -right-16 size-40 rounded-full bg-[#FF5A1F]/20 blur-2xl" />
+            <div className="absolute -bottom-20 -left-14 size-44 rounded-full bg-[#FF5A1F]/10 blur-2xl" />
             <div className="relative flex h-full flex-col">
-              <div className="flex items-center justify-between text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[#19C96B]/80">
+              <div className="flex items-center justify-between text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[#FF5A1F]/80">
                 <span>FINANZZI</span>
                 <span>Descoberta</span>
               </div>
               <div className="mt-auto">
-                <p className="text-[0.68rem] font-medium uppercase tracking-[0.16em] text-[#19C96B]/80">
+                <p className="text-[0.68rem] font-medium uppercase tracking-[0.16em] text-[#FF5A1F]/80">
                   {eyebrow}
                 </p>
                 <h3 className="mt-3 text-[1.55rem] leading-[1.03] font-semibold tracking-[-0.05em]">
                   {title}
                 </h3>
-                <p className="mt-6 text-[2rem] leading-none font-semibold tracking-[-0.06em] text-[#19C96B]">
+                <p className="mt-6 text-[2rem] leading-none font-semibold tracking-[-0.06em] text-[#FF5A1F]">
                   {value}
                 </p>
                 <p className="mt-3 text-xs leading-relaxed text-[#F4F5F8]/70">{detail}</p>

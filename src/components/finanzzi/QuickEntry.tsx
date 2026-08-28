@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Check, Mic, Send, Sparkles, X } from "lucide-react";
@@ -62,7 +63,7 @@ function QuickEntryPreview({ data }: { data: QuickEntryPreviewData }) {
     <div className="surface-card overflow-hidden p-4 sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex items-start gap-3">
-          <span className="grid size-10 place-items-center rounded-2xl bg-[#19C96B]/15 text-[#19C96B]">
+          <span className="grid size-10 place-items-center rounded-2xl bg-[#FF5A1F]/15 text-[#FF5A1F]">
             <Sparkles className="size-4" />
           </span>
           <div>
@@ -315,7 +316,7 @@ function QuickEntryLive() {
     <div className="surface-card overflow-hidden p-4 sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex items-start gap-3">
-          <span className="grid size-10 place-items-center rounded-2xl bg-[#19C96B]/15 text-[#19C96B]">
+          <span className="grid size-10 place-items-center rounded-2xl bg-[#FF5A1F]/15 text-[#FF5A1F]">
             <Sparkles className="size-4" />
           </span>
           <div>

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { LogOut, Plus, Sparkles, ShieldCheck, Trash2 } from "lucide-react";
@@ -48,7 +49,7 @@ function SettingsPage() {
   const [income, setIncome] = useState("");
   const [password, setPassword] = useState("");
   const [proOpen, setProOpen] = useState(false);
-  const { plan, isPro, subscription } = usePlan();
+  const { isPro, subscription } = usePlan();
   const billingStatus = subscription?.status ?? "free";
 
   useEffect(() => {
@@ -203,7 +204,7 @@ function CategoriesSection() {
           e.preventDefault();
           if (!name.trim()) return;
           save.mutate(
-            { values: { name: name.trim(), kind, color: "#19C96B", is_default: false } },
+            { values: { name: name.trim(), kind, color: "#FF5A1F", is_default: false } },
             { onSuccess: () => setName("") },
           );
         }}

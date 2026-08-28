@@ -186,8 +186,8 @@
     outline-offset: 3px;
   }
   ::selection {
-    background: #eaf9f0;
-    color: #111827;
+    background: #ff5a1f;
+    color: #111111;
   }
 }
 
@@ -361,10 +361,10 @@
 
 /* FINANZZI premium decision system. */
 @utility surface-ink {
-  background: #151827;
-  color: #fcfbf7;
-  border: 1px solid #3f4658;
-  box-shadow: 0 20px 60px rgb(0 0 0 / 0.32);
+  background: #181818;
+  color: #ffffff;
+  border: 1px solid #2d2d2d;
+  box-shadow: none;
 }
 @utility text-balance {
   text-wrap: balance;
