@@ -19,19 +19,19 @@ function randomHex(bytes: number): string {
 }
 
 function configuredSampleRate(): number {
-  const raw = Number(import.meta.env.VITE_OTEL_SAMPLE_RATE ?? "1");
+  const raw = Number(import.meta.env["VITE_OTEL_SAMPLE_RATE"] ?? "1");
   if (!Number.isFinite(raw)) return 1;
   return Math.min(1, Math.max(0, raw));
 }
 
 function isEnabled(): boolean {
-  const configured = String(import.meta.env.VITE_OTEL_ENABLED ?? "true").toLowerCase();
+  const configured = String(import.meta.env["VITE_OTEL_ENABLED"] ?? "true").toLowerCase();
   return configured !== "false" && configured !== "0";
 }
 
 function endpoint(): string | null {
   if (!isEnabled()) return null;
-  const configured = import.meta.env.VITE_OTEL_EXPORTER_OTLP_ENDPOINT as string | undefined;
+  const configured = import.meta.env["VITE_OTEL_EXPORTER_OTLP_ENDPOINT"] as string | undefined;
   if (!configured) return null;
 
   try {
@@ -109,9 +109,9 @@ export function captureTelemetry(
     resourceSpans: [{
       resource: {
         attributes: toAttributes({
-          "service.name": (import.meta.env.VITE_OTEL_SERVICE_NAME as string | undefined) ?? "finanzzi-web",
+          "service.name": (import.meta.env["VITE_OTEL_SERVICE_NAME"] as string | undefined) ?? "finanzzi-web",
           "deployment.environment": import.meta.env.MODE ?? "production",
-          "service.version": import.meta.env.VITE_APP_VERSION as string | undefined,
+          "service.version": import.meta.env["VITE_APP_VERSION"] as string | undefined,
         }),
       },
       scopeSpans: [{
