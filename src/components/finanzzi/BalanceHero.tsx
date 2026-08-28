@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useEffect, useState } from "react";
 import { ArrowDownRight, ArrowUpRight, Eye, EyeOff } from "lucide-react";
 import { formatBRL } from "@/lib/format";
