@@ -400,11 +400,11 @@ export function FinancialAssistant({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "fixed bottom-24 right-3 z-50 w-[calc(100vw-1.5rem)] max-w-[430px] overflow-hidden rounded-[1.75rem] border border-[#556070]/20 bg-[#111827] text-white shadow-[0_24px_80px_rgba(0,0,0,.32)] sm:right-4",
+        "fixed bottom-24 right-3 z-50 w-[calc(100vw-1.5rem)] max-w-[430px] overflow-hidden rounded-[1.75rem] border border-[#B7B7B7]/20 bg-[#FFFFFF] text-white shadow-[0_24px_80px_rgba(0,0,0,.32)] sm:right-4",
         className,
       )}
     >
-      <div className="flex items-center justify-between border-b border-[#556070]/10 bg-gradient-to-r from-[#FF5A1F]/10 to-transparent p-4 sm:p-5">
+      <div className="flex items-center justify-between border-b border-[#B7B7B7]/10 bg-gradient-to-r from-[#FF5A1F]/10 to-transparent p-4 sm:p-5">
         <div className="flex items-center gap-3">
           <div className="grid size-10 place-items-center rounded-xl bg-[#FF5A1F]/10 text-[10px] font-black uppercase tracking-[0.14em] text-[#FF5A1F]">
             FIN
@@ -413,13 +413,13 @@ export function FinancialAssistant({ className }: { className?: string }) {
             <div className="flex items-center gap-1 text-sm font-bold">
               <Sparkles className="size-3.5 text-[#FF5A1F]" /> Fin
             </div>
-            <p className="text-xs text-[#F4F5F8]/50">Copiloto financeiro · online</p>
+            <p className="text-xs text-[#181818]/50">Copiloto financeiro · online</p>
           </div>
         </div>
         <button
           type="button"
           onClick={() => setOpen(false)}
-          className="rounded-full p-2 text-[#F4F5F8]/50 hover:bg-[#556070]/10"
+          className="rounded-full p-2 text-[#181818]/50 hover:bg-[#B7B7B7]/10"
           aria-label="Fechar"
         >
           <X className="size-4" />
@@ -433,8 +433,8 @@ export function FinancialAssistant({ className }: { className?: string }) {
             className={cn(
               "max-w-[92%] whitespace-pre-wrap rounded-2xl px-3.5 py-3 text-sm leading-5 shadow-sm",
               message.from === "user"
-                ? "ml-auto bg-[#FF5A1F] font-medium text-[#111827]"
-                : "bg-white/[0.07] text-[#F4F5F8]/85",
+                ? "ml-auto bg-[#FF5A1F] font-medium text-[#FFFFFF]"
+                : "bg-white/[0.07] text-[#181818]/85",
             )}
           >
             {message.text}
@@ -451,7 +451,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
                 key={suggestion}
                 type="button"
                 onClick={() => send(suggestion)}
-                className="rounded-full border border-[#556070]/15 bg-white/[0.05] px-3 py-2 text-left text-xs text-[#F4F5F8]/70 transition-colors hover:bg-[#FF5A1F]/15 hover:text-white"
+                className="rounded-full border border-[#B7B7B7]/15 bg-white/[0.05] px-3 py-2 text-left text-xs text-[#181818]/70 transition-colors hover:bg-[#FF5A1F]/15 hover:text-white"
               >
                 {suggestion}
               </button>
@@ -459,7 +459,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
           </div>
         )}
         {busy && (
-          <div className="flex items-center gap-2 rounded-2xl bg-white/[0.07] px-3 py-2 text-sm text-[#F4F5F8]/60">
+          <div className="flex items-center gap-2 rounded-2xl bg-white/[0.07] px-3 py-2 text-sm text-[#181818]/60">
             <Loader2 className="size-3.5 animate-spin" /> Pensando no seu dinheiro...
           </div>
         )}
@@ -472,7 +472,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
                   ? commitRecurring(pending)
                   : commit(pending))
               }
-              className="min-h-10 flex-1 rounded-xl bg-[#FF5A1F] px-3 text-sm font-semibold text-[#111827]"
+              className="min-h-10 flex-1 rounded-xl bg-[#FF5A1F] px-3 text-sm font-semibold text-[#FFFFFF]"
             >
               Confirmar
             </button>
@@ -482,7 +482,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
                 setPending(null);
                 push({ from: "fin", text: "Tudo bem, não registrei nada." });
               }}
-              className="min-h-10 rounded-xl border border-[#556070]/15 px-3 text-sm text-[#F4F5F8]/70"
+              className="min-h-10 rounded-xl border border-[#B7B7B7]/15 px-3 text-sm text-[#181818]/70"
             >
               Cancelar
             </button>
@@ -490,14 +490,14 @@ export function FinancialAssistant({ className }: { className?: string }) {
         )}
       </div>
 
-      <div className="border-t border-[#556070]/10 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-        <div className="flex gap-2 rounded-2xl border border-[#556070]/10 bg-white/[0.04] p-1">
+      <div className="border-t border-[#B7B7B7]/10 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+        <div className="flex gap-2 rounded-2xl border border-[#B7B7B7]/10 bg-white/[0.04] p-1">
           <button
             type="button"
             onClick={() => (listening ? stopListening() : listen())}
             className={cn(
               "grid size-10 shrink-0 place-items-center rounded-xl",
-              listening ? "bg-[#556070] text-[#111111]" : "bg-[#FF5A1F] text-[#111827]",
+              listening ? "bg-[#B7B7B7] text-[#111111]" : "bg-[#FF5A1F] text-[#FFFFFF]",
             )}
             aria-label={listening ? "Parar de ouvir" : "Falar com o Fin"}
           >
@@ -513,20 +513,20 @@ export function FinancialAssistant({ className }: { className?: string }) {
             placeholder={
               listening ? "Estou ouvindo..." : busy ? "Pensando..." : "Converse com o Fin..."
             }
-            className="min-w-0 flex-1 bg-transparent px-3 text-sm outline-none placeholder:text-[#F4F5F8]/30"
+            className="min-w-0 flex-1 bg-transparent px-3 text-sm outline-none placeholder:text-[#181818]/30"
             aria-label="Mensagem para o Fin"
           />
           <button
             type="button"
             onClick={() => send()}
             disabled={busy}
-            className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#FF5A1F] text-[#111827] disabled:opacity-50"
+            className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#FF5A1F] text-[#FFFFFF] disabled:opacity-50"
             aria-label="Enviar"
           >
             <Send className="size-4" />
           </button>
         </div>
-        <p className="mt-2 px-1 text-[10px] leading-4 text-[#F4F5F8]/35">
+        <p className="mt-2 px-1 text-[10px] leading-4 text-[#181818]/35">
           O Fin usa apenas os dados da sua conta autenticada. Você decide o que registrar.
         </p>
       </div>
