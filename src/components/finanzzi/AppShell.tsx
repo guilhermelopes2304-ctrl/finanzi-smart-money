@@ -25,8 +25,16 @@ import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/finanzzi/Logo";
 import { MotionPage } from "@/components/finanzzi/MotionPage";
 
-const TransactionDialog = lazy(() => import("@/components/finanzzi/TransactionDialog").then((module) => ({ default: module.TransactionDialog })));
-const FinancialAssistant = lazy(() => import("@/components/finanzzi/FinancialAssistantV2").then((module) => ({ default: module.FinancialAssistant })));
+const TransactionDialog = lazy(() =>
+  import("@/components/finanzzi/TransactionDialog").then((module) => ({
+    default: module.TransactionDialog,
+  })),
+);
+const FinancialAssistant = lazy(() =>
+  import("@/components/finanzzi/FinancialAssistantV2").then((module) => ({
+    default: module.FinancialAssistant,
+  })),
+);
 import { NavigationLoading } from "@/components/finanzzi/NavigationLoading";
 import { cn } from "@/lib/utils";
 
@@ -274,11 +282,7 @@ export function AppShell({
           )}
         >
           <Link to="/dashboard" aria-label="FINANZZI">
-            {sidebarCollapsed ? (
-              <Logo compact />
-            ) : (
-              <Logo />
-            )}
+            {sidebarCollapsed ? <Logo compact /> : <Logo />}
           </Link>
         </div>
 
