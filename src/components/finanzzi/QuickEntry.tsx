@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Check, Mic, Send, Sparkles, X } from "lucide-react";
