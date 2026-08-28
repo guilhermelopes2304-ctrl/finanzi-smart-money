@@ -184,7 +184,7 @@ function AuthPage() {
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
                   placeholder="voce@email.com"
-                  className="h-12 rounded-xl border-white/10 bg-[#111111] text-white placeholder:text-white/60 focus:border-[#19C96B] focus:ring-[#19C96B]"
+                  className="h-12 rounded-xl border-white/10 bg-[#111111] text-white placeholder:text-white/60 focus:border-[#FF5A1F] focus:ring-[#FF5A1F]"
                   required
                 />
               </div>
@@ -209,7 +209,7 @@ function AuthPage() {
                       onChange={(event) => setPassword(event.target.value)}
                       minLength={6}
                       placeholder="Mínimo de 6 caracteres"
-                      className="h-12 rounded-xl border-white/10 bg-[#111111] pr-12 text-white placeholder:text-white/60 focus:border-[#19C96B] focus:ring-[#19C96B]"
+                      className="h-12 rounded-xl border-white/10 bg-[#111111] pr-12 text-white placeholder:text-white/60 focus:border-[#FF5A1F] focus:ring-[#FF5A1F]"
                       required
                     />
                     <button
@@ -225,7 +225,7 @@ function AuthPage() {
               )}
               <Button
                 type="submit"
-                className="h-12 w-full rounded-xl bg-[#FF5A1F] text-base font-bold text-white shadow-[0_10px_24px_rgba(15,159,82,.18)] hover:bg-[#0F9F52]"
+                className="h-12 w-full rounded-xl bg-[#FF5A1F] text-base font-bold text-white shadow-[0_10px_24px_rgba(255,90,31,.18)] hover:bg-[#FF5A1F]"
                 disabled={busy}
               >
                 {busy
