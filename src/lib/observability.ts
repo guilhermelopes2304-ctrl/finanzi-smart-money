@@ -200,8 +200,7 @@ function instrumentRouteChanges() {
 
 function instrumentNavigationTiming() {
   const navigation = performance.getEntriesByType("navigation")[0] as
-    | PerformanceNavigationTiming
-    | undefined;
+    PerformanceNavigationTiming | undefined;
   if (!navigation) return;
 
   captureTelemetry("web.navigation", {
