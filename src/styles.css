@@ -136,68 +136,6 @@
   --sidebar-ring: #ff5a1f;
 }
 
-.dark {
-  --fin-brand: #19c96b;
-  --fin-brand-hover: #0f9f52;
-  --fin-brand-soft: #eaf9f0;
-  --fin-canvas: #111827;
-  --fin-surface: #556070;
-  --fin-surface-muted: #111827;
-  --fin-ink: #ffffff;
-  --fin-copy: #f4f6f5;
-  --fin-muted: #e1e7e3;
-  --fin-line: #556070;
-  --fin-success: #19c96b;
-  --fin-success-soft: #0f9f52;
-  --fin-success-foreground: #ffffff;
-  --fin-warning: #f59e0b;
-  --fin-warning-soft: #78350f;
-  --fin-warning-foreground: #ffffff;
-  --fin-danger: #ff6b6b;
-  --fin-danger-soft: #5b2430;
-  --fin-danger-foreground: #ffffff;
-
-  --background: #111827;
-  --foreground: #ffffff;
-  --card: #556070;
-  --card-foreground: #ffffff;
-  --popover: #556070;
-  --popover-foreground: #ffffff;
-  --primary: #19c96b;
-  --primary-foreground: #111827;
-  --secondary: #0f9f52;
-  --secondary-foreground: #ffffff;
-  --muted: #556070;
-  --muted-foreground: #e1e7e3;
-  --accent: #0f9f52;
-  --accent-foreground: #ffffff;
-  --destructive: #ff6b6b;
-  --destructive-foreground: #ffffff;
-  --success: var(--fin-success);
-  --success-foreground: var(--fin-success-foreground);
-  --warning: var(--fin-warning);
-  --warning-foreground: var(--fin-warning-foreground);
-  --danger: var(--fin-danger);
-  --danger-foreground: var(--fin-danger-foreground);
-  --gold: var(--fin-warning);
-  --gold-foreground: #ffffff;
-  --border: #556070;
-  --input: #556070;
-  --ring: #19c96b;
-  --chart-1: #19c96b;
-  --chart-2: #0f9f52;
-  --chart-3: #eaf9f0;
-  --chart-4: #ff6b6b;
-  --chart-5: #e1e7e3;
-  --sidebar: #111827;
-  --sidebar-foreground: #ffffff;
-  --sidebar-primary: #19c96b;
-  --sidebar-primary-foreground: #111827;
-  --sidebar-accent: #556070;
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #556070;
-  --sidebar-ring: #19c96b;
-}
 
 @layer base {
   * {
@@ -432,18 +370,6 @@
   text-wrap: balance;
 }
 
-.fin-grid {
-  background-image:
-    linear-gradient(rgb(91 92 226 / 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(91 92 226 / 0.1) 1px, transparent 1px);
-  background-size: 32px 32px;
-  mask-image: linear-gradient(to bottom, black, transparent 82%);
-}
-.fin-glow {
-  box-shadow:
-    0 0 0 1px rgb(91 92 226 / 0.18),
-    0 18px 60px rgb(91 92 226 / 0.16);
-}
 .fin-number {
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.045em;
