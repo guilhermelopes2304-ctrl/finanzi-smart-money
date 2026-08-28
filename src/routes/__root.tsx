@@ -44,7 +44,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
-// biome-ignore lint/security/noDangerouslySetInnerHtml: fixed boot scripts contain no user-controlled input.
+// biome-ignore-all lint/security/noDangerouslySetInnerHtml: fixed bootstrap scripts contain no user-controlled input.
 function RootShell({ children }: { children: ReactNode }) {
   return <html lang="pt-BR" className="dark" suppressHydrationWarning><head><HeadContent /><script dangerouslySetInnerHTML={{ __html: `try{document.documentElement.classList.add('dark');document.documentElement.style.colorScheme='dark';localStorage.setItem('finanzzi-theme','dark')}catch(e){}` }} /><script dangerouslySetInnerHTML={{ __html: `if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js?v=brand-orange-5').catch(function(){});});}` }} /></head><body>{children}<Scripts /></body></html>;
 }
