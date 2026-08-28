@@ -17,50 +17,40 @@ const BLOCKED_ATTRIBUTE_KEY =
 let initialized = false;
 let lastRoute: string | null = null;
 
+function envString(key: string): string | undefined {
+  const value = import.meta.env[key];
+  return typeof value === "string" ? value : undefined;
+}
+
 function randomHex(bytes: number): string {
   const values = new Uint8Array(bytes);
   crypto.getRandomValues(values);
-
-  return Array.from(values, (value) =>
-    value.toString(16).padStart(2, "0"),
-  ).join("");
+  return Array.from(values, (value) => value.toString(16).padStart(2, "0")).join("");
 }
 
 function configuredSampleRate(): number {
-  const raw = Number(import.meta.env["VITE_OTEL_SAMPLE_RATE"] ?? "1");
-
+  const raw = Number(envString("VITE_OTEL_SAMPLE_RATE") ?? "1");
   if (!Number.isFinite(raw)) return 1;
-
   return Math.min(1, Math.max(0, raw));
 }
 
 function isEnabled(): boolean {
-  const configured = String(
-    import.meta.env["VITE_OTEL_ENABLED"] ?? "true",
-  ).toLowerCase();
-
+  const configured = String(envString("VITE_OTEL_ENABLED") ?? "true").toLowerCase();
   return configured !== "false" && configured !== "0";
 }
 
 function endpoint(): string | null {
   if (!isEnabled()) return null;
 
-  const configured = import.meta.env[
-    "VITE_OTEL_EXPORTER_OTLP_ENDPOINT"
-  ] as string | undefined;
-
+  const configured = envString("VITE_OTEL_EXPORTER_OTLP_ENDPOINT");
   if (!configured) return null;
 
   try {
     const normalized = configured.replace(/\/$/, "");
     const url = new URL(
-      normalized.endsWith("/v1/traces")
-        ? normalized
-        : `${normalized}/v1/traces`,
+      normalized.endsWith("/v1/traces") ? normalized : `${normalized}/v1/traces`,
     );
-    const localHttp =
-      url.protocol === "http:" &&
-      /^(localhost|127\.0\.0\.1)$/i.test(url.hostname);
+    const localHttp = url.protocol === "http:" && /^(localhost|127\.0\.0\.1)$/i.test(url.hostname);
 
     if (url.protocol !== "https:" && !localHttp) return null;
 
@@ -87,43 +77,27 @@ export function sanitizeTelemetryAttributes(
     if (Object.keys(safe).length >= MAX_ATTRIBUTES) break;
     if (value === undefined || BLOCKED_ATTRIBUTE_KEY.test(key)) continue;
 
-    const normalizedKey = key
-      .replace(/[^a-zA-Z0-9._-]/g, "")
-      .slice(0, 80);
-
+    const normalizedKey = key.replace(/[^a-zA-Z0-9._-]/g, "").slice(0, 80);
     if (!normalizedKey) continue;
 
     if (typeof value === "string") {
       const sanitized = sanitizeString(value);
-
       if (!sanitized) continue;
-
       safe[normalizedKey] = sanitized;
-      continue;
+    } else {
+      safe[normalizedKey] = value;
     }
-
-    safe[normalizedKey] = value;
   }
 
   return safe;
 }
 
-function toAttributes(
-  input: Record<string, TelemetryValue | undefined>,
-): OtlpAttribute[] {
-  return Object.entries(sanitizeTelemetryAttributes(input)).map(
-    ([key, value]) => {
-      if (typeof value === "boolean") {
-        return { key, value: { boolValue: value } };
-      }
-
-      if (typeof value === "number") {
-        return { key, value: { intValue: String(value) } };
-      }
-
-      return { key, value: { stringValue: value } };
-    },
-  );
+function toAttributes(input: Record<string, TelemetryValue | undefined>): OtlpAttribute[] {
+  return Object.entries(sanitizeTelemetryAttributes(input)).map(([key, value]) => {
+    if (typeof value === "boolean") return { key, value: { boolValue: value } };
+    if (typeof value === "number") return { key, value: { intValue: String(value) } };
+    return { key, value: { stringValue: value } };
+  });
 }
 
 function shouldSample(): boolean {
@@ -132,7 +106,6 @@ function shouldSample(): boolean {
 
 function routePath(): string {
   if (typeof window === "undefined") return "/";
-
   return window.location.pathname.slice(0, 160) || "/";
 }
 
@@ -144,26 +117,18 @@ export function captureTelemetry(
   if (typeof window === "undefined" || !shouldSample()) return;
 
   const url = endpoint();
-
   if (!url) return;
 
   const now = Date.now();
-  const safeName =
-    name.replace(/[^a-zA-Z0-9._-]/g, "").slice(0, 120) || "app.event";
-
+  const safeName = name.replace(/[^a-zA-Z0-9._-]/g, "").slice(0, 120) || "app.event";
   const payload = {
     resourceSpans: [
       {
         resource: {
           attributes: toAttributes({
-            "service.name":
-              (import.meta.env["VITE_OTEL_SERVICE_NAME"] as
-                | string
-                | undefined) ?? "finanzzi-web",
+            "service.name": envString("VITE_OTEL_SERVICE_NAME") ?? "finanzzi-web",
             "deployment.environment": import.meta.env.MODE ?? "production",
-            "service.version": import.meta.env["VITE_APP_VERSION"] as
-              | string
-              | undefined,
+            "service.version": envString("VITE_APP_VERSION"),
           }),
         },
         scopeSpans: [
@@ -191,10 +156,7 @@ export function captureTelemetry(
     const body = JSON.stringify(payload);
 
     if (navigator.sendBeacon) {
-      navigator.sendBeacon(
-        url,
-        new Blob([body], { type: "application/json" }),
-      );
+      navigator.sendBeacon(url, new Blob([body], { type: "application/json" }));
       return;
     }
 
@@ -211,7 +173,6 @@ export function captureTelemetry(
 
 function captureRouteIfChanged() {
   const route = routePath();
-
   if (route === lastRoute) return;
 
   lastRoute = route;
@@ -221,12 +182,9 @@ function captureRouteIfChanged() {
 function instrumentRouteChanges() {
   captureRouteIfChanged();
 
-  const notify = () =>
-    window.dispatchEvent(new Event("finanzzi:route-change"));
+  const notify = () => window.dispatchEvent(new Event("finanzzi:route-change"));
   const originalPushState = window.history.pushState.bind(window.history);
-  const originalReplaceState = window.history.replaceState.bind(
-    window.history,
-  );
+  const originalReplaceState = window.history.replaceState.bind(window.history);
 
   window.history.pushState = (...args) => {
     originalPushState(...args);
@@ -243,10 +201,7 @@ function instrumentRouteChanges() {
 }
 
 function instrumentNavigationTiming() {
-  const navigation = performance.getEntriesByType(
-    "navigation",
-  )[0] as PerformanceNavigationTiming | undefined;
-
+  const navigation = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
   if (!navigation) return;
 
   captureTelemetry("web.navigation", {
@@ -264,8 +219,7 @@ export function initObservability() {
   instrumentRouteChanges();
 
   window.addEventListener("error", (event) => {
-    const errorType =
-      event.error instanceof Error ? event.error.name : typeof event.error;
+    const errorType = event.error instanceof Error ? event.error.name : typeof event.error;
 
     captureTelemetry(
       "browser.error",
@@ -279,14 +233,11 @@ export function initObservability() {
   });
 
   window.addEventListener("unhandledrejection", (event) => {
-    const reasonType =
-      event.reason instanceof Error ? event.reason.name : typeof event.reason;
+    const reasonType = event.reason instanceof Error ? event.reason.name : typeof event.reason;
 
     captureTelemetry(
       "browser.unhandled_rejection",
-      {
-        reasonType: String(reasonType).slice(0, 80),
-      },
+      { reasonType: String(reasonType).slice(0, 80) },
       "error",
     );
   });
