@@ -5,10 +5,14 @@ export function Reveal({
   children,
   delay = 0,
   className,
+  threshold = 0.12,
+  distance = 16,
 }: {
   children: ReactNode;
   delay?: number;
   className?: string;
+  threshold?: number;
+  distance?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -16,31 +20,37 @@ export function Reveal({
   useEffect(() => {
     const node = ref.current;
     if (!node) return;
+
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce) {
       setVisible(true);
       return;
     }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry?.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
+        if (!entry?.isIntersecting) return;
+        setVisible(true);
+        observer.disconnect();
       },
-      { threshold: 0.12, rootMargin: "0px 0px -6% 0px" },
+      { threshold, rootMargin: "0px 0px -6% 0px" },
     );
+
     observer.observe(node);
     return () => observer.disconnect();
-  }, []);
+  }, [threshold]);
 
   return (
     <div
       ref={ref}
-      style={{ transitionDelay: visible ? `${delay}ms` : "0ms" }}
+      data-reveal-visible={visible ? "true" : "false"}
+      style={{
+        transitionDelay: visible ? `${delay}ms` : "0ms",
+        transform: visible ? "translate3d(0, 0, 0)" : `translate3d(0, ${distance}px, 0)`,
+      }}
       className={cn(
-        "transition-[transform,opacity] duration-300 ease-out motion-reduce:transition-none",
-        visible ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0 motion-reduce:translate-y-0 motion-reduce:opacity-100",
+        "will-change-[transform,opacity] transition-[transform,opacity] duration-[280ms] ease-out motion-reduce:transition-none motion-reduce:transform-none",
+        visible ? "opacity-100" : "opacity-0 motion-reduce:opacity-100",
         className,
       )}
     >
