@@ -5,6 +5,7 @@ import { Logo } from "@/components/finanzzi/Logo";
 import { BILLING_PLANS, getHublaCheckoutUrl } from "@/lib/billing";
 import { trackProductEvent } from "@/lib/product-analytics";
 import { Reveal } from "@/components/finanzzi/Reveal";
+import { LazyImage } from "@/components/finanzzi/LazyImage";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -70,7 +71,7 @@ function Landing() {
 
             <Reveal delay={120} className="mx-auto w-full max-w-[470px] lg:justify-self-end">
               <div className="transition-transform duration-400 hover:-translate-y-1">
-                <img src="/finanzi-iphone-hero.png" alt="FINANZZI no iPhone" className="block h-auto w-full" />
+                <LazyImage src="/finanzi-iphone-hero.png" alt="FINANZZI no iPhone" eager className="h-auto w-full" />
               </div>
             </Reveal>
           </div>
