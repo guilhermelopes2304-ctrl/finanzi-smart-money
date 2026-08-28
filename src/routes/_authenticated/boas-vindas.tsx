@@ -48,7 +48,7 @@ function Onboarding() {
   const [firstEntry, setFirstEntry] = useState("");
   const [income, setIncome] = useState("");
   const [balance, setBalance] = useState("");
-  const [goal, setGoal] = useState(GOALS[0]!);
+  const [goal, setGoal] = useState(GOALS[0] ?? "Organizar minhas finanças");
   const displayName = name || profile?.name || "";
 
   async function handleSubmit(event: React.FormEvent) {
