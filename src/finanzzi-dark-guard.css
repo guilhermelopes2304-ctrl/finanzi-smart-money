@@ -68,3 +68,5 @@ body:has(#oferta) [class*="text-[#0F9F52]"] {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Loaded after the application stylesheet so legacy utility classes cannot win the cascade. */
