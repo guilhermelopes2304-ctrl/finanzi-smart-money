@@ -378,7 +378,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
     };
     window.addEventListener("finanzzi:open-assistant", handler);
     return () => window.removeEventListener("finanzzi:open-assistant", handler);
-  }, [listen]);
+  }, []);
 
   useEffect(() => {
     if (open && messages.length === 0) {
