@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Check, Mic, ShieldCheck, Sparkles } from "lucide-react";
 import { Logo } from "@/components/finanzzi/Logo";
