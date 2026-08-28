@@ -45,10 +45,10 @@ export function PlanGate({
 export function ProUpsell({ feature, onOpen }: { feature: ProFeature; onOpen?: () => void }) {
   const copy = PRO_FEATURE_LABELS[feature];
   return (
-    <div className="relative overflow-hidden rounded-[1.5rem] border border-primary/20 bg-[#111827] p-5 text-white shadow-soft sm:p-6">
+    <div className="relative overflow-hidden rounded-[1.5rem] border border-primary/20 bg-[#FFFFFF] p-5 text-white shadow-soft sm:p-6">
       <div className="pointer-events-none absolute -right-12 -top-12 size-40 rounded-full bg-[#FF5A1F]/15 blur-3xl" />
       <div className="relative flex items-start gap-3">
-        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#FF5A1F] text-[#111827]">
+        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#FF5A1F] text-[#FFFFFF]">
           <LockKeyhole className="size-4" />
         </span>
         <div className="min-w-0">
@@ -56,16 +56,16 @@ export function ProUpsell({ feature, onOpen }: { feature: ProFeature; onOpen?: (
             Acesso completo
           </p>
           <h3 className="mt-1 text-lg font-semibold">{copy.title}</h3>
-          <p className="mt-2 text-sm leading-6 text-[#F4F5F8]/65">{copy.benefit}</p>
+          <p className="mt-2 text-sm leading-6 text-[#181818]/65">{copy.benefit}</p>
         </div>
       </div>
-      <div className="relative mt-5 rounded-2xl border border-[#556070]/10 bg-white/[0.06] p-3 text-sm text-[#F4F5F8]/75">
+      <div className="relative mt-5 rounded-2xl border border-[#B7B7B7]/10 bg-white/[0.06] p-3 text-sm text-[#181818]/75">
         <span className="text-[#FF5A1F]">Exemplo:</span> {copy.example}
       </div>
       <Button
         type="button"
         onClick={onOpen}
-        className="relative mt-5 h-11 rounded-xl bg-[#FF5A1F] px-4 font-bold text-[#111827] hover:bg-[#FF5A1F]"
+        className="relative mt-5 h-11 rounded-xl bg-[#FF5A1F] px-4 font-bold text-[#FFFFFF] hover:bg-[#FF5A1F]"
       >
         Ver oferta <ArrowRight className="ml-auto size-4" />
       </Button>
@@ -87,16 +87,16 @@ export function ProModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[92vh] overflow-y-auto rounded-[1.75rem] p-0 sm:max-w-3xl">
         <div className="overflow-hidden rounded-[1.75rem]">
-          <div className="relative bg-[#111827] p-6 text-white sm:p-8">
+          <div className="relative bg-[#FFFFFF] p-6 text-white sm:p-8">
             <div className="pointer-events-none absolute -right-16 -top-16 size-56 rounded-full bg-[#FF5A1F]/15 blur-3xl" />
             <DialogHeader className="relative">
-              <div className="mb-3 inline-flex w-fit items-center gap-2 rounded-full border border-[#556070]/20 bg-[#FF5A1F]/10 px-3 py-1.5 text-xs font-bold text-[#FF5A1F]">
+              <div className="mb-3 inline-flex w-fit items-center gap-2 rounded-full border border-[#B7B7B7]/20 bg-[#FF5A1F]/10 px-3 py-1.5 text-xs font-bold text-[#FF5A1F]">
                 <Sparkles className="size-3.5" /> Acesso completo FINANZZI
               </div>
               <DialogTitle className="font-display text-3xl font-semibold text-white">
                 Seu dinheiro pode trabalhar melhor.
               </DialogTitle>
-              <DialogDescription className="mt-3 text-sm leading-6 text-[#F4F5F8]/65">
+              <DialogDescription className="mt-3 text-sm leading-6 text-[#181818]/65">
                 {focus
                   ? `${focus.title} faz parte do acesso completo ao FINANZZI.`
                   : "Registro, organização, lembretes e orientação num único acesso."}
