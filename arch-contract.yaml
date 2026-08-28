@@ -1,0 +1,32 @@
+version: 1
+project:
+  name: finanzzi
+
+layers:
+  - name: domain
+    match: [src/types/**/*.ts]
+  - name: core
+    match: [src/lib/**/*.ts]
+  - name: services
+    match: [src/services/**/*.ts]
+  - name: ui
+    match: [src/components/**/*.tsx, src/components/**/*.ts]
+  - name: routes
+    match: [src/routes/**/*.tsx, src/routes/**/*.ts]
+
+ruleset:
+  domain:
+    mayDependOn: []
+  core:
+    mayDependOn: [domain]
+  services:
+    mayDependOn: [core, domain]
+  ui:
+    mayDependOn: [core, domain]
+  routes:
+    mayDependOn: [ui, services, core, domain]
+
+agent:
+  instructions: |
+    Keep financial/domain types dependency-free. Keep route orchestration out of core and services.
+    Do not introduce routes -> domain inversion or UI -> services coupling.
