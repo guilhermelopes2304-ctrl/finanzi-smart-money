@@ -19,7 +19,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/oferta")({
   validateSearch: (search: Record<string, unknown>): { reason?: string } => {
-    const reason = search["reason"];
+    const reason = search.reason;
     return typeof reason === "string" ? { reason } : {};
   },
   head: () => ({
