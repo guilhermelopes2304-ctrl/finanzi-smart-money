@@ -2,7 +2,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Outlet, Link, createRootRouteWithContext, useRouter, HeadContent, Scripts } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
-import visualOverridesCss from "../finanzzi-overrides.css?url";
 
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { initObservability, captureTelemetry } from "../lib/observability";
@@ -34,7 +33,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
     { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" },
     { rel: "stylesheet", href: appCss },
-    { rel: "stylesheet", href: visualOverridesCss },
     { rel: "icon", href: "/brand/logo/finanzzi-logo.svg?v=brand-orange-5", type: "image/svg+xml" },
     { rel: "apple-touch-icon", sizes: "180x180", href: "/brand/logo/finanzzi-logo.png?v=brand-orange-5" },
     { rel: "manifest", href: "/manifest.webmanifest?v=brand-orange-5" },
