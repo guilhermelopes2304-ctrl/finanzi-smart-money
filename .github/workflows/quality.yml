@@ -12,7 +12,7 @@ permissions:
 jobs:
   quality:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -52,12 +52,21 @@ jobs:
             echo "No Biome-supported files changed."
           fi
 
+      - name: ArchContract architecture gate
+        run: bunx arch-contract@0.1.0 check --format github
+
       - name: Knip baseline report
         continue-on-error: true
         run: bunx knip@6 --production --reporter github-actions
 
       - name: Unit tests
         run: bun test src
+
+      - name: Focused mutation test
+        run: |
+          npx --yes -p @stryker-mutator/core@10.0.0 \
+            -p @stryker-mutator/typescript-checker@10.0.0 \
+            stryker run stryker.config.json
 
       - name: Build
         run: bun run build
