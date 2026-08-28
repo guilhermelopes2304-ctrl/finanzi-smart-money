@@ -247,13 +247,13 @@ export function AppShell({
   const moreActive = MORE_NAV.some((item) => item.to === activePathname);
 
   useEffect(() => {
-    window.dispatchEvent(new CustomEvent("finanzzi:navigation-end"));
+    window.dispatchEvent(new CustomEvent("finanzzi:navigation-end", { detail: pathname }));
   }, [pathname]);
   useEffect(() => {
     if (!isLoading && profile && !profile.onboarded && pathname !== "/boas-vindas")
       void navigate({ to: "/boas-vindas" });
   }, [profile, isLoading, pathname, navigate]);
-  useEffect(() => setMoreOpen(false), [pathname]);
+  useEffect(() => {\n    if (pathname) setMoreOpen(false);\n  }, [pathname]);
 
   async function signOut() {
     await supabase.auth.signOut();
@@ -370,6 +370,7 @@ export function AppShell({
           </Button>
           {!sidebarCollapsed && (
             <button
+              type="button"
               onClick={signOut}
               className="flex min-h-10 w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             >
@@ -428,9 +429,9 @@ export function AppShell({
 
       <nav className="fixed inset-x-2 bottom-2 z-30 rounded-[1.4rem] border border-border bg-card pb-[env(safe-area-inset-bottom)] shadow-soft lg:hidden">
         <div className="grid grid-cols-5 items-end px-1.5 py-1">
-          <NavItem item={NAV[0]!} active={activePathname === NAV[0]!.to} mobile />
-          <NavItem item={NAV[1]!} active={activePathname === NAV[1]!.to} mobile />
-          <NavItem item={NAV[2]!} active={activePathname === NAV[2]!.to} mobile />
+          <NavItem item={NAV[0]} active={activePathname === NAV[0].to} mobile />
+          <NavItem item={NAV[1]} active={activePathname === NAV[1].to} mobile />
+          <NavItem item={NAV[2]} active={activePathname === NAV[2].to} mobile />
           <button
             type="button"
             onClick={() => {
