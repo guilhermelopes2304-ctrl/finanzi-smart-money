@@ -5,15 +5,16 @@ import { Button } from "@/components/ui/button";
 export function ThemeToggle({ className }: { className?: string }) {
   const { theme, toggleTheme } = useTheme();
   const dark = theme === "dark";
+
   return (
     <Button
       type="button"
       variant="ghost"
       size="icon"
-      className={className}
+      className={`fin-theme-toggle ${className ?? ""}`}
       onClick={toggleTheme}
-      aria-label={dark ? "Ativar modo claro" : "Ativar modo escuro"}
-      title={dark ? "Modo claro" : "Modo escuro"}
+      aria-label={dark ? "Ativar modo claro" : "Ativar modo noturno"}
+      title={dark ? "Modo claro" : "Modo noturno"}
     >
       {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
     </Button>

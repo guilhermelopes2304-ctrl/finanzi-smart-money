@@ -7,22 +7,12 @@
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone"],
   "orientation": "portrait",
-  "background_color": "#FCFCF8",
-  "theme_color": "#19C96B",
+  "background_color": "#111111",
+  "theme_color": "#111111",
   "lang": "pt-BR",
   "categories": ["finance", "productivity"],
   "icons": [
-    {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/finanzzi-logo-oficial.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any"
-    }
+    {"src":"/brand/logo/finanzzi-logo.svg?v=brand-orange-5","sizes":"any","type":"image/svg+xml","purpose":"any maskable"},
+    {"src":"/brand/logo/finanzzi-logo.png?v=brand-orange-5","sizes":"any","type":"image/png","purpose":"any maskable"}
   ]
 }
