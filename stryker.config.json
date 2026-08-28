@@ -1,0 +1,15 @@
+{
+  "$schema": "https://raw.githubusercontent.com/stryker-mutator/stryker-js/master/packages/core/schema/stryker-schema.json",
+  "packageManager": "bun",
+  "testRunner": "command",
+  "commandRunner": {"command": "bun test src/lib/quick-parse.test.ts"},
+  "mutate": ["src/lib/quick-parse.ts"],
+  "testFiles": ["src/lib/quick-parse.test.ts"],
+  "coverageAnalysis": "off",
+  "concurrency": 1,
+  "timeoutMS": 10000,
+  "reporters": ["clear-text", "progress"],
+  "thresholds": {"high": 80, "low": 60, "break": 0},
+  "tsconfigFile": "tsconfig.json",
+  "allowEmpty": false
+}
