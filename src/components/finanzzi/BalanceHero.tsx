@@ -33,7 +33,7 @@ export function BalanceHero({
     <div className="gradient-hero relative animate-in fade-in zoom-in-95 overflow-hidden rounded-3xl p-5 text-white shadow-[var(--shadow-lift)] duration-500 sm:p-6">
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-16 -right-16 size-56 rounded-full bg-[#19C96B]/15 blur-2xl"
+        className="pointer-events-none absolute -top-16 -right-16 size-56 rounded-full bg-[#FF5A1F]/15 blur-2xl"
       />
       <div
         aria-hidden
@@ -41,7 +41,7 @@ export function BalanceHero({
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#19C96B] to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#FF5A1F] to-transparent"
       />
 
       <div className="relative">
@@ -62,7 +62,7 @@ export function BalanceHero({
           {hidden ? "R$ ••••••" : formatBRL(balance)}
         </p>
 
-        <div className="mt-5 h-px bg-gradient-to-r from-[#111827] via-[#556070] to-[#19C96B]" />
+        <div className="mt-5 h-px bg-gradient-to-r from-[#111827] via-[#556070] to-[#FF5A1F]" />
 
         <div className="mt-5 grid grid-cols-2 gap-3">
           <div className="rounded-2xl bg-[#556070]/10 p-3 backdrop-blur-sm">
