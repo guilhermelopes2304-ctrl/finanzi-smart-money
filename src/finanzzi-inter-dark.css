@@ -1,0 +1,141 @@
+/* FINANZZI Night — inspired by the visual discipline of modern Brazilian fintechs, with its own brand language. */
+.dark {
+  --fin-brand: #ff5a1f;
+  --fin-brand-hover: #ff7a4a;
+  --fin-brand-soft: #2a1710;
+  --fin-canvas: #0b0d0c;
+  --fin-surface: #111412;
+  --fin-surface-muted: #171b18;
+  --fin-ink: #ffffff;
+  --fin-copy: #aeb7b1;
+  --fin-muted: #8f9992;
+  --fin-line: #29302b;
+
+  --background: #0b0d0c;
+  --foreground: #ffffff;
+  --card: #111412;
+  --card-foreground: #ffffff;
+  --popover: #111412;
+  --popover-foreground: #ffffff;
+  --primary: #ff5a1f;
+  --primary-foreground: #111111;
+  --secondary: #171b18;
+  --secondary-foreground: #ffffff;
+  --muted: #171b18;
+  --muted-foreground: #aeb7b1;
+  --accent: #2a1710;
+  --accent-foreground: #ff8a63;
+  --destructive: #ff6b6b;
+  --destructive-foreground: #ffffff;
+  --border: #29302b;
+  --input: #29302b;
+  --ring: #ff5a1f;
+  --sidebar: #0e110f;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #ff5a1f;
+  --sidebar-primary-foreground: #111111;
+  --sidebar-accent: #171b18;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #29302b;
+  --sidebar-ring: #ff5a1f;
+  --chart-1: #ff5a1f;
+  --chart-2: #ff8a63;
+  --chart-3: #5d6861;
+  --chart-4: #ff6b6b;
+  --chart-5: #cbd2cd;
+}
+
+.dark body {
+  background: #0b0d0c;
+}
+
+/* Neutralize old green utility classes in night mode so the orange identity remains consistent. */
+.dark [class*="text-green-"],
+.dark [class*="text-emerald-"],
+.dark [class*="text-teal-"] {
+  color: #ff7a4a !important;
+}
+.dark [class*="bg-green-"],
+.dark [class*="bg-emerald-"],
+.dark [class*="bg-teal-"] {
+  background-color: #2a1710 !important;
+}
+.dark [class*="border-green-"],
+.dark [class*="border-emerald-"],
+.dark [class*="border-teal-"] {
+  border-color: #493027 !important;
+}
+.dark [class*="from-green-"],
+.dark [class*="from-emerald-"],
+.dark [class*="to-green-"],
+.dark [class*="to-emerald-"] {
+  --tw-gradient-from: #ff5a1f !important;
+  --tw-gradient-to: transparent !important;
+}
+
+/* Inter-like hierarchy: black surfaces, quiet borders, white typography and orange actions. */
+.dark [class*="bg-white"] {
+  background-color: #111412 !important;
+}
+.dark [class*="bg-gray-50"],
+.dark [class*="bg-slate-50"] {
+  background-color: #171b18 !important;
+}
+.dark [class*="bg-gray-100"],
+.dark [class*="bg-slate-100"] {
+  background-color: #1d231f !important;
+}
+.dark [class*="text-gray-900"],
+.dark [class*="text-gray-800"],
+.dark [class*="text-slate-900"],
+.dark [class*="text-slate-800"] {
+  color: #ffffff !important;
+}
+.dark [class*="text-gray-600"],
+.dark [class*="text-gray-500"],
+.dark [class*="text-slate-600"],
+.dark [class*="text-slate-500"] {
+  color: #aeb7b1 !important;
+}
+.dark [class*="border-gray-200"],
+.dark [class*="border-gray-100"],
+.dark [class*="border-slate-200"],
+.dark [class*="border-slate-100"] {
+  border-color: #29302b !important;
+}
+
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #111412;
+  color: #ffffff;
+  border-color: #29302b;
+}
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #707a73;
+}
+
+.dark [class*="shadow-"] {
+  --tw-shadow-color: rgb(0 0 0 / 0.32);
+}
+
+.dark .surface-card {
+  background: #111412;
+  border-color: #29302b;
+}
+
+.dark ::selection {
+  background: #ff5a1f;
+  color: #111111;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dark,
+  .dark * {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
