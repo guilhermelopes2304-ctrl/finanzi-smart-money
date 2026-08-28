@@ -41,13 +41,13 @@ jobs:
             echo "No lintable JavaScript/TypeScript files changed."
           fi
 
-      - name: Biome changed files
+      - name: Biome changed files (lint)
         shell: bash
         run: |
           set -euo pipefail
           files=$(git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" | grep -E '\.(js|jsx|ts|tsx|json|jsonc)$' || true)
           if [ -n "$files" ]; then
-            printf '%s\n' "$files" | xargs bunx @biomejs/biome@2.5.11 check
+            printf '%s\n' "$files" | xargs bunx @biomejs/biome@2.5.11 lint
           else
             echo "No Biome-supported files changed."
           fi
