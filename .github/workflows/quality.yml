@@ -1,0 +1,126 @@
+name: FINANZZI Quality
+
+on:
+  pull_request:
+    branches:
+      - main
+      - feat/finanzzi-redesign-final
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Typecheck
+        run: bunx tsc -p tsconfig.json --noEmit
+
+      - name: ESLint changed files
+        shell: bash
+        run: |
+          set -euo pipefail
+          files=$(git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" | grep -E '\.(js|jsx|ts|tsx|mjs|cjs)$' || true)
+          if [ -n "$files" ]; then
+            printf '%s\n' "$files" | xargs bunx eslint
+          else
+            echo "No lintable JavaScript/TypeScript files changed."
+          fi
+
+      - name: Biome changed files
+        shell: bash
+        run: |
+          set -euo pipefail
+          files=$(git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" | grep -E '\.(js|jsx|ts|tsx|json|jsonc)$' || true)
+          if [ -n "$files" ]; then
+            printf '%s\n' "$files" | xargs bunx @biomejs/biome@2.5.11 check
+          else
+            echo "No Biome-supported files changed."
+          fi
+
+      - name: Knip baseline report
+        continue-on-error: true
+        run: bunx knip@6 --production --reporter github-actions
+
+      - name: Unit tests
+        run: bun test src
+
+      - name: Build
+        run: bun run build
+
+      - name: Commitlint gate
+        run: |
+          npx --yes @commitlint/cli@21.2.1 --default-config \
+            --from "${{ github.event.pull_request.base.sha }}" \
+            --to "${{ github.event.pull_request.head.sha }}" \
+            --verbose
+
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Install Playwright test runner
+        run: npm install --no-save @playwright/test@1.62.0
+
+      - name: Install Playwright browsers
+        run: npx playwright@1.62.0 install --with-deps chromium
+
+      - name: Run Playwright
+        run: npx playwright@1.62.0 test
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          if-no-files-found: ignore
+
+  coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Unit tests with coverage
+        run: bun test src --coverage --coverage-reporter=lcov
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage/lcov.info
+          fail_ci_if_error: false
