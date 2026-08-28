@@ -253,7 +253,9 @@ export function AppShell({
     if (!isLoading && profile && !profile.onboarded && pathname !== "/boas-vindas")
       void navigate({ to: "/boas-vindas" });
   }, [profile, isLoading, pathname, navigate]);
-  useEffect(() => {\n    if (pathname) setMoreOpen(false);\n  }, [pathname]);
+  useEffect(() => {
+    if (pathname) setMoreOpen(false);
+  }, [pathname]);
 
   async function signOut() {
     await supabase.auth.signOut();
