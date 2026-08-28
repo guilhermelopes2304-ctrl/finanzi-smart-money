@@ -73,67 +73,67 @@
 :root {
   --radius: 1.1rem;
 
-  /* FINANZZI brand tokens — green is identity; coral is reserved for alerts. */
-  --fin-brand: #19c96b;
-  --fin-brand-hover: #0f9f52;
-  --fin-brand-soft: #eaf9f0;
-  --fin-canvas: #fcfcf8;
-  --fin-surface: #ffffff;
-  --fin-surface-muted: #f4f6f5;
-  --fin-ink: #111827;
-  --fin-copy: #556070;
-  --fin-muted: #556070;
-  --fin-line: #e1e7e3;
-  --fin-success: #19c96b;
-  --fin-success-soft: #eaf9f0;
+  /* Official FINANZZI system: dark-first, orange, black and neutral white. */
+  --fin-brand: #ff5a1f;
+  --fin-brand-hover: #ff6a35;
+  --fin-brand-soft: #2a1710;
+  --fin-canvas: #111111;
+  --fin-surface: #181818;
+  --fin-surface-muted: #202020;
+  --fin-ink: #ffffff;
+  --fin-copy: #b7b7b7;
+  --fin-muted: #8e8e8e;
+  --fin-line: #2d2d2d;
+  --fin-success: #ff5a1f;
+  --fin-success-soft: #2a1710;
   --fin-success-foreground: #ffffff;
   --fin-warning: #f59e0b;
-  --fin-warning-soft: #fef3c7;
-  --fin-warning-foreground: #111827;
+  --fin-warning-soft: #3a2a12;
+  --fin-warning-foreground: #ffffff;
   --fin-danger: #ff6b6b;
-  --fin-danger-soft: #fff1f2;
-  --fin-danger-foreground: #111827;
+  --fin-danger-soft: #4a2027;
+  --fin-danger-foreground: #ffffff;
 
-  --background: #fcfcf8;
-  --foreground: #111827;
-  --card: #ffffff;
-  --card-foreground: #111827;
-  --popover: #ffffff;
-  --popover-foreground: #111827;
-  --primary: #19c96b;
-  --primary-foreground: #111827;
-  --secondary: #f4f6f5;
-  --secondary-foreground: #111827;
-  --muted: #f4f6f5;
-  --muted-foreground: #556070;
-  --accent: #eaf9f0;
-  --accent-foreground: #0f9f52;
+  --background: #111111;
+  --foreground: #ffffff;
+  --card: #181818;
+  --card-foreground: #ffffff;
+  --popover: #181818;
+  --popover-foreground: #ffffff;
+  --primary: #ff5a1f;
+  --primary-foreground: #111111;
+  --secondary: #202020;
+  --secondary-foreground: #ffffff;
+  --muted: #202020;
+  --muted-foreground: #b7b7b7;
+  --accent: #2a1710;
+  --accent-foreground: #ff9a78;
   --destructive: #ff6b6b;
-  --destructive-foreground: #111827;
+  --destructive-foreground: #ffffff;
   --success: var(--fin-success);
   --success-foreground: var(--fin-success-foreground);
   --warning: var(--fin-warning);
   --warning-foreground: var(--fin-warning-foreground);
   --danger: var(--fin-danger);
   --danger-foreground: var(--fin-danger-foreground);
-  --gold: var(--fin-warning);
-  --gold-foreground: var(--fin-warning-foreground);
-  --border: #e1e7e3;
-  --input: #e1e7e3;
-  --ring: #19c96b;
-  --chart-1: #19c96b;
-  --chart-2: #0f9f52;
-  --chart-3: #eaf9f0;
+  --gold: #f59e0b;
+  --gold-foreground: #111111;
+  --border: #2d2d2d;
+  --input: #343434;
+  --ring: #ff5a1f;
+  --chart-1: #ff5a1f;
+  --chart-2: #ff8a63;
+  --chart-3: #8e8e8e;
   --chart-4: #ff6b6b;
-  --chart-5: #556070;
-  --sidebar: #ffffff;
-  --sidebar-foreground: #111827;
-  --sidebar-primary: #19c96b;
-  --sidebar-primary-foreground: #111827;
-  --sidebar-accent: #eaf9f0;
-  --sidebar-accent-foreground: #111827;
-  --sidebar-border: #e1e7e3;
-  --sidebar-ring: #19c96b;
+  --chart-5: #d7d7d7;
+  --sidebar: #151515;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #ff5a1f;
+  --sidebar-primary-foreground: #111111;
+  --sidebar-accent: #202020;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #2d2d2d;
+  --sidebar-ring: #ff5a1f;
 }
 
 .dark {
@@ -244,7 +244,7 @@
     letter-spacing: -0.025em;
   }
   :focus-visible {
-    outline: 3px solid #19c96b;
+    outline: 3px solid #ff5a1f;
     outline-offset: 3px;
   }
   ::selection {
@@ -260,32 +260,14 @@
   box-shadow: var(--shadow-soft);
 }
 @utility gradient-brand {
-  background-color: #19c96b;
+  background-color: #ff5a1f;
   background-image: none;
 }
 @utility gradient-hero {
-  background-color: #eaf9f0;
+  background-color: #181818;
   background-image: none;
 }
 
-@keyframes float-slow {
-  0%,
-  100% {
-    transform: translate(0, 0);
-  }
-  50% {
-    transform: translate(10px, -18px);
-  }
-}
-@keyframes float-slower {
-  0%,
-  100% {
-    transform: translate(0, 0);
-  }
-  50% {
-    transform: translate(-14px, 14px);
-  }
-}
 @keyframes fin-fade-up {
   from {
     opacity: 0;
@@ -322,12 +304,6 @@
   100% {
     background-position: -200% 0;
   }
-}
-@utility animate-float-slow {
-  animation: float-slow 7s ease-in-out infinite;
-}
-@utility animate-float-slower {
-  animation: float-slower 9s ease-in-out infinite;
 }
 @utility animate-fin-fade-up {
   animation: fin-fade-up 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -503,5 +479,31 @@ button:active:not(:disabled),
   }
   .fin-stagger > *:nth-child(4) {
     animation-delay: 180ms;
+  }
+}
+
+
+/* Product-wide motion system: route changes and state feedback stay quiet and short. */
+@keyframes fin-page-enter {
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+.fin-page-enter {
+  animation: fin-page-enter 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: transform, opacity;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .surface-card,
+  [data-slot="card"] {
+    transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), border-color 180ms ease, background-color 180ms ease;
+  }
+  .surface-card:hover {
+    transform: translate3d(0, -1px, 0);
+    border-color: color-mix(in srgb, #ff5a1f 32%, var(--border));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fin-page-enter {
+    animation: none;
   }
 }
