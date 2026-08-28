@@ -379,7 +379,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
     window.addEventListener("finanzzi:open-assistant", handler);
     return () => window.removeEventListener("finanzzi:open-assistant", handler);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [listen]);
 
   useEffect(() => {
     if (open && messages.length === 0) {
@@ -394,7 +394,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-  }, [messages, busy]);
+  }, [messages.length]);
 
   if (!open) return null;
 
@@ -428,9 +428,9 @@ export function FinancialAssistant({ className }: { className?: string }) {
       </div>
 
       <div ref={scrollRef} className="max-h-[55vh] space-y-3 overflow-y-auto p-4 sm:p-5">
-        {messages.map((message, index) => (
+        {messages.map((message) => (
           <div
-            key={`${message.from}-${index}`}
+            key={`${message.from}-${message.text}`}
             className={cn(
               "max-w-[92%] whitespace-pre-wrap rounded-2xl px-3.5 py-3 text-sm leading-5 shadow-sm",
               message.from === "user"
