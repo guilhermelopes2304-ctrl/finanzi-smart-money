@@ -1,4 +1,4 @@
-const CACHE_NAME = "finanzzi-static-v3";
+const CACHE_NAME = "finanzzi-static-v4-brand-orange";
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (event) => {
   event.waitUntil(
