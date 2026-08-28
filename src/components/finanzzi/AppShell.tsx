@@ -275,9 +275,7 @@ export function AppShell({
         >
           <Link to="/dashboard" aria-label="FINANZZI">
             {sidebarCollapsed ? (
-              <span className="grid size-10 place-items-center rounded-xl bg-primary text-primary-foreground font-display text-sm font-bold shadow-sm">
-                F
-              </span>
+              <Logo compact />
             ) : (
               <Logo />
             )}
