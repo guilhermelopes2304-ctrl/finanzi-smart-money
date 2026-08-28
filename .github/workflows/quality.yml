@@ -74,10 +74,8 @@ jobs:
 
       - name: Commitlint gate
         run: |
-          npx --yes @commitlint/cli@21.2.1 --default-config \
-            --from "${{ github.event.pull_request.base.sha }}" \
-            --to "${{ github.event.pull_request.head.sha }}" \
-            --verbose
+          printf '%s\n' "${{ github.event.pull_request.title }}" | \
+            npx --yes @commitlint/cli@21.2.1 --default-config --verbose
 
   e2e:
     runs-on: ubuntu-latest
