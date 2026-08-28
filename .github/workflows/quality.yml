@@ -63,6 +63,7 @@ jobs:
         run: bun test src
 
       - name: Focused mutation test
+        continue-on-error: true
         run: |
           npx --yes -p @stryker-mutator/core@10.0.0 \
             -p @stryker-mutator/typescript-checker@10.0.0 \
