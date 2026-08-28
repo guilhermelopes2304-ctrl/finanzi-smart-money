@@ -1,24 +1,40 @@
 # FINANZZI Observability
 
-FINANZZI has an opt-in, vendor-neutral OTLP browser telemetry foundation. It can send lightweight application and browser signals to an OpenTelemetry Collector or another OTLP-compatible endpoint, which may then export to Sentry, Datadog, New Relic, or another backend.
+FINANZZI uses an OpenTelemetry-compatible browser telemetry payload. Telemetry is optional and is disabled for export until an OTLP endpoint is configured.
 
-## Configuration
+## Environment
 
-```text
-VITE_OTEL_EXPORTER_OTLP_ENDPOINT=https://<collector>/v1/traces
+```
+VITE_OTEL_ENABLED=true
+VITE_OTEL_EXPORTER_OTLP_ENDPOINT=https://collector.example.com
 VITE_OTEL_SERVICE_NAME=finanzzi-web
+VITE_OTEL_SAMPLE_RATE=1
+VITE_APP_VERSION=optional-build-version
 ```
 
-Telemetry is disabled when the endpoint is absent and must never block product execution.
+The exporter accepts a collector base URL and sends traces to `/v1/traces`. Use an HTTPS endpoint in preview/production. Local HTTP is accepted only for `localhost` and `127.0.0.1`.
+
+A compatible collector can forward data to an observability backend such as Sentry, Datadog, or New Relic. The product remains vendor-neutral at the browser boundary.
 
 ## Captured signals
 
-- Application bootstrap.
-- Unhandled browser errors.
-- Unhandled promise rejections.
-- Root UI error-boundary failures.
-- Basic navigation timing.
+- application bootstrap;
+- route views using pathnames only;
+- browser errors by error type, not error message/stack;
+- unhandled rejection type;
+- navigation timing and transfer size;
+- explicit operational events through `captureTelemetry`.
 
-Telemetry intentionally excludes raw transaction descriptions, amounts, account/card values, credentials, access tokens, service-role keys, and unnecessary PII.
+## Privacy boundary
 
-Provider credentials belong in the collector/backend, never in public `VITE_*` variables.
+Telemetry sanitization rejects attributes whose keys suggest secrets, credentials, authentication material, PII, or raw financial data. Examples include password, token, secret, authorization, cookie, email, phone, CPF, card, account, transaction, amount, balance, income, expense, raw content, description, message, stack, and name.
+
+Do not pass user-entered financial text or identifiers to `captureTelemetry`.
+
+## Environments
+
+Keep development, preview, and production endpoints separated at deployment configuration level. Never commit telemetry credentials or collector secrets to the repository. Browser `VITE_*` values are public by design.
+
+## Failure mode
+
+Telemetry is best-effort. Export failures are swallowed and must never break financial or product flows.
