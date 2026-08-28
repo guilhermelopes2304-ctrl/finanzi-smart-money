@@ -23,8 +23,8 @@ type Mode = "login" | "recover";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>): { mode?: Mode; returnTo?: string } => {
-    const mode = search["mode"];
-    const returnTo = typeof search["returnTo"] === "string" ? search["returnTo"] : undefined;
+    const mode = search.mode;
+    const returnTo = typeof search.returnTo === "string" ? search.returnTo : undefined;
     return {
       ...(mode === "recover" || mode === "login" ? { mode } : {}),
       ...(returnTo?.startsWith("/") ? { returnTo } : {}),
