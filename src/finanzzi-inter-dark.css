@@ -116,7 +116,6 @@
   color: #ffffff !important;
 }
 .dark [class*="text-[#556070]"],
-.dark [class*="text-[#556070]"],
 .dark [class*="text-gray-600"],
 .dark [class*="text-gray-500"],
 .dark [class*="text-slate-600"],
@@ -195,14 +194,29 @@
 }
 
 /* The night mode remains restrained: no neon, no glow, no animated gradients. */
-.dark [class*="blur-"],
-.dark [class*="backdrop-blur-"] {
-  /* Keep backdrop blur only where the existing component explicitly needs it. */
-}
 .dark [class*="shadow-[0_0_"],
 .dark [class*="shadow-[0_20px_"],
 .dark [class*="shadow-[0_18px_"] {
   box-shadow: 0 12px 32px rgb(0 0 0 / 0.28) !important;
+}
+
+/* Clear, compact theme control inspired by fintech utility controls. */
+.fin-theme-toggle {
+  border-color: #2b322d !important;
+  background: #111412 !important;
+  color: #111111 !important;
+}
+.fin-theme-toggle:hover {
+  background: #f4f4f4 !important;
+}
+.dark .fin-theme-toggle {
+  border-color: #3a433d !important;
+  background: #111412 !important;
+  color: #ff5a1f !important;
+}
+.dark .fin-theme-toggle:hover {
+  background: #1d221f !important;
+  color: #ff7a4a !important;
 }
 
 .dark ::selection {
