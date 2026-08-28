@@ -31,7 +31,7 @@ describe("telemetry privacy boundary", () => {
       route: "/lancamentos#sensitive",
     });
 
-    assert.equal(safe.source, "/dashboard");
-    assert.equal(safe.route, "/lancamentos");
+    assert.equal(safe["source"], "/dashboard");
+    assert.equal(safe["route"], "/lancamentos");
   });
 });
