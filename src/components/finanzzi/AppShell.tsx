@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, useState, type ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   BarChart3,
@@ -23,8 +23,18 @@ import { supabase } from "@/integrations/supabase/client";
 import { usePlan } from "@/hooks/usePlan";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/finanzzi/Logo";
-import { TransactionDialog } from "@/components/finanzzi/TransactionDialog";
-import { FinancialAssistant } from "@/components/finanzzi/FinancialAssistantV2";
+import { MotionPage } from "@/components/finanzzi/MotionPage";
+
+const TransactionDialog = lazy(() =>
+  import("@/components/finanzzi/TransactionDialog").then((module) => ({
+    default: module.TransactionDialog,
+  })),
+);
+const FinancialAssistant = lazy(() =>
+  import("@/components/finanzzi/FinancialAssistantV2").then((module) => ({
+    default: module.FinancialAssistant,
+  })),
+);
 import { NavigationLoading } from "@/components/finanzzi/NavigationLoading";
 import { cn } from "@/lib/utils";
 
@@ -41,6 +51,11 @@ const NAV: readonly NavItemDefinition[] = [
   { to: "/cartoes", label: "Cartões", icon: CreditCard },
   { to: "/metas", label: "Objetivos", icon: Target },
   { to: "/inteligencia", label: "FIN", icon: Brain },
+];
+const MOBILE_NAV: readonly [NavItemDefinition, NavItemDefinition, NavItemDefinition] = [
+  NAV[0] as NavItemDefinition,
+  NAV[1] as NavItemDefinition,
+  NAV[2] as NavItemDefinition,
 ];
 
 const MORE_NAV: readonly NavItemDefinition[] = [
@@ -237,13 +252,15 @@ export function AppShell({
   const moreActive = MORE_NAV.some((item) => item.to === activePathname);
 
   useEffect(() => {
-    window.dispatchEvent(new CustomEvent("finanzzi:navigation-end"));
+    window.dispatchEvent(new CustomEvent("finanzzi:navigation-end", { detail: pathname }));
   }, [pathname]);
   useEffect(() => {
     if (!isLoading && profile && !profile.onboarded && pathname !== "/boas-vindas")
       void navigate({ to: "/boas-vindas" });
   }, [profile, isLoading, pathname, navigate]);
-  useEffect(() => setMoreOpen(false), [pathname]);
+  useEffect(() => {
+    if (pathname) setMoreOpen(false);
+  }, [pathname]);
 
   async function signOut() {
     await supabase.auth.signOut();
@@ -272,13 +289,7 @@ export function AppShell({
           )}
         >
           <Link to="/dashboard" aria-label="FINANZZI">
-            {sidebarCollapsed ? (
-              <span className="grid size-10 place-items-center rounded-xl bg-primary text-primary-foreground font-display text-sm font-bold shadow-sm">
-                F
-              </span>
-            ) : (
-              <Logo />
-            )}
+            {sidebarCollapsed ? <Logo compact /> : <Logo />}
           </Link>
         </div>
 
@@ -366,6 +377,7 @@ export function AppShell({
           </Button>
           {!sidebarCollapsed && (
             <button
+              type="button"
               onClick={signOut}
               className="flex min-h-10 w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             >
@@ -419,14 +431,14 @@ export function AppShell({
           desktopSidebarWidth,
         )}
       >
-        <div className="mx-auto min-w-0 max-w-7xl">{children}</div>
+        <MotionPage className="mx-auto max-w-7xl">{children}</MotionPage>
       </main>
 
       <nav className="fixed inset-x-2 bottom-2 z-30 rounded-[1.4rem] border border-border bg-card pb-[env(safe-area-inset-bottom)] shadow-soft lg:hidden">
         <div className="grid grid-cols-5 items-end px-1.5 py-1">
-          <NavItem item={NAV[0]!} active={activePathname === NAV[0]!.to} mobile />
-          <NavItem item={NAV[1]!} active={activePathname === NAV[1]!.to} mobile />
-          <NavItem item={NAV[2]!} active={activePathname === NAV[2]!.to} mobile />
+          <NavItem item={MOBILE_NAV[0]} active={activePathname === MOBILE_NAV[0].to} mobile />
+          <NavItem item={MOBILE_NAV[1]} active={activePathname === MOBILE_NAV[1].to} mobile />
+          <NavItem item={MOBILE_NAV[2]} active={activePathname === MOBILE_NAV[2].to} mobile />
           <button
             type="button"
             onClick={() => {
@@ -478,9 +490,13 @@ export function AppShell({
       )}
 
       {!visualReview && (
-        <TransactionDialog open={transactionOpen} onOpenChange={setTransactionOpen} />
+        <Suspense fallback={null}>
+          <TransactionDialog open={transactionOpen} onOpenChange={setTransactionOpen} />
+        </Suspense>
       )}
-      <FinancialAssistant />
+      <Suspense fallback={null}>
+        <FinancialAssistant />
+      </Suspense>
     </div>
   );
 }
