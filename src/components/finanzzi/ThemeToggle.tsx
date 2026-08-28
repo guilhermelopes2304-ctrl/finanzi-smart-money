@@ -11,7 +11,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       type="button"
       variant="ghost"
       size="icon"
-      className={className}
+      className={`fin-theme-toggle ${className ?? ""}`}
       onClick={toggleTheme}
       aria-label={dark ? "Ativar modo claro" : "Ativar modo noturno"}
       title={dark ? "Modo claro" : "Modo noturno"}
