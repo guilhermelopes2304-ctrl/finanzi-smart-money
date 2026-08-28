@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/stryker-mutator/stryker-js/master/packages/core/schema/stryker-schema.json",
-  "packageManager": "bun",
+  "packageManager": "npm",
   "testRunner": "command",
   "commandRunner": {"command": "bun test src/lib/quick-parse.test.ts"},
   "mutate": ["src/lib/quick-parse.ts"],
