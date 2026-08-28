@@ -12,7 +12,6 @@
   "lang": "pt-BR",
   "categories": ["finance", "productivity"],
   "icons": [
-    {"src":"/icon-512.png?v=brand-orange-1","sizes":"512x512","type":"image/png","purpose":"any maskable"},
-    {"src":"/finanzzi-logo-oficial.svg?v=brand-orange-1","sizes":"any","type":"image/svg+xml","purpose":"any"}
+    {"src":"/brand/logo/finanzzi-logo.svg?v=brand-orange-2","sizes":"1054x1008","type":"image/svg+xml","purpose":"any maskable"}
   ]
 }
