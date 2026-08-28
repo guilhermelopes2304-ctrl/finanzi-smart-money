@@ -47,9 +47,7 @@ function endpoint(): string | null {
 
   try {
     const normalized = configured.replace(/\/$/, "");
-    const url = new URL(
-      normalized.endsWith("/v1/traces") ? normalized : `${normalized}/v1/traces`,
-    );
+    const url = new URL(normalized.endsWith("/v1/traces") ? normalized : `${normalized}/v1/traces`);
     const localHttp = url.protocol === "http:" && /^(localhost|127\.0\.0\.1)$/i.test(url.hostname);
 
     if (url.protocol !== "https:" && !localHttp) return null;
@@ -201,7 +199,9 @@ function instrumentRouteChanges() {
 }
 
 function instrumentNavigationTiming() {
-  const navigation = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+  const navigation = performance.getEntriesByType(
+    "navigation",
+  )[0] as PerformanceNavigationTiming | undefined;
   if (!navigation) return;
 
   captureTelemetry("web.navigation", {
