@@ -1,0 +1,70 @@
+/* FINANZZI official dark-first runtime guard. This file exists only to neutralize legacy light/green utility classes that remain in older screens. */
+body:has(#oferta),
+body:has(#oferta) main,
+body:has(#oferta) footer {
+  background: #111111 !important;
+  color: #ffffff;
+}
+body:has(#oferta) main > section {
+  background: #111111 !important;
+  color: #ffffff !important;
+}
+body:has(#oferta) [class*="bg-[#EAF9F0]"],
+body:has(#oferta) [class*="bg-[#FCFCF8]"],
+body:has(#oferta) [class*="bg-[#F4F6F5]"],
+body:has(#oferta) [class*="bg-white"] {
+  background-color: #181818 !important;
+}
+body:has(#oferta) [class*="text-[#111827]"],
+body:has(#oferta) [class*="text-[#556070]"],
+body:has(#oferta) [class*="text-[#0F9F52]"] {
+  color: #ffffff !important;
+}
+body:has(#oferta) [class*="border-[#E1E7E3]"] {
+  border-color: #2d2d2d !important;
+}
+body:has(#oferta) [class*="bg-[#19C96B]"] {
+  background-color: #ff5a1f !important;
+  color: #ffffff !important;
+}
+body:has(#oferta) [class*="text-[#19C96B]"] {
+  color: #ff5a1f !important;
+}
+body:has(#oferta) [class*="bg-[#EAF9F0]"] {
+  background-color: #181818 !important;
+}
+body:has(#oferta) [class*="text-[#0F9F52]"] {
+  color: #ff5a1f !important;
+}
+
+[data-fin-app-shell] [class*="bg-[#EAF9F0]"],
+[data-fin-app-shell] [class*="bg-[#FCFCF8]"],
+[data-fin-app-shell] [class*="bg-[#F4F6F5]"],
+[data-fin-app-shell] [class*="bg-white"] {
+  background-color: #181818 !important;
+}
+[data-fin-app-shell] [class*="text-[#111827]"],
+[data-fin-app-shell] [class*="text-[#556070]"],
+[data-fin-app-shell] [class*="text-[#0F9F52]"] {
+  color: #ffffff !important;
+}
+[data-fin-app-shell] [class*="border-[#E1E7E3]"] {
+  border-color: #2d2d2d !important;
+}
+[data-fin-app-shell] [class*="bg-[#19C96B]"] {
+  background-color: #ff5a1f !important;
+  color: #ffffff !important;
+}
+[data-fin-app-shell] [class*="text-[#19C96B]"] {
+  color: #ff5a1f !important;
+}
+[data-fin-app-shell] [class*="shadow-[0_10px_24px_rgba(15,159,82,.18)]"] {
+  box-shadow: 0 10px 24px rgb(255 90 31 / 18%) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
