@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
   ArrowRight,
