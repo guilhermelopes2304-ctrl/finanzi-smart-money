@@ -52,6 +52,11 @@ const NAV: readonly NavItemDefinition[] = [
   { to: "/metas", label: "Objetivos", icon: Target },
   { to: "/inteligencia", label: "FIN", icon: Brain },
 ];
+const MOBILE_NAV: readonly [NavItemDefinition, NavItemDefinition, NavItemDefinition] = [
+  MOBILE_NAV[0] as NavItemDefinition,
+  MOBILE_NAV[1] as NavItemDefinition,
+  MOBILE_NAV[2] as NavItemDefinition,
+];
 
 const MORE_NAV: readonly NavItemDefinition[] = [
   { to: "/relatorios", label: "Finanças", icon: BarChart3 },
@@ -431,9 +436,9 @@ export function AppShell({
 
       <nav className="fixed inset-x-2 bottom-2 z-30 rounded-[1.4rem] border border-border bg-card pb-[env(safe-area-inset-bottom)] shadow-soft lg:hidden">
         <div className="grid grid-cols-5 items-end px-1.5 py-1">
-          <NavItem item={NAV[0]} active={activePathname === NAV[0].to} mobile />
-          <NavItem item={NAV[1]} active={activePathname === NAV[1].to} mobile />
-          <NavItem item={NAV[2]} active={activePathname === NAV[2].to} mobile />
+          <NavItem item={MOBILE_NAV[0]} active={activePathname === MOBILE_NAV[0].to} mobile />
+          <NavItem item={MOBILE_NAV[1]} active={activePathname === MOBILE_NAV[1].to} mobile />
+          <NavItem item={MOBILE_NAV[2]} active={activePathname === MOBILE_NAV[2].to} mobile />
           <button
             type="button"
             onClick={() => {
