@@ -1,10 +1,10 @@
+// biome-ignore-all lint/security/noDangerouslySetInnerHtml: fixed bootstrap scripts contain no user-controlled input.
 /* eslint-disable prettier/prettier */
 import { type QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Outlet, Link, createRootRouteWithContext, useRouter, HeadContent, Scripts } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
-import darkGuardCss from "../finanzzi-dark-guard.css?url";
-
+import darkGuardCss from "../finanzi-dark-guard.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { initObservability, captureTelemetry } from "../lib/observability";
 import { AuthProvider } from "@/hooks/useAuth";
@@ -46,7 +46,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
-// biome-ignore-all lint/security/noDangerouslySetInnerHtml: fixed bootstrap scripts contain no user-controlled input.
 function RootShell({ children }: { children: ReactNode }) {
   return <html lang="pt-BR" className="dark" suppressHydrationWarning><head><HeadContent /><script dangerouslySetInnerHTML={{ __html: `try{document.documentElement.classList.add('dark');document.documentElement.style.colorScheme='dark';localStorage.setItem('finanzzi-theme','dark')}catch(e){}` }} /><script dangerouslySetInnerHTML={{ __html: `if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js?v=brand-orange-5').catch(function(){});});}` }} /></head><body>{children}<Scripts /></body></html>;
 }
