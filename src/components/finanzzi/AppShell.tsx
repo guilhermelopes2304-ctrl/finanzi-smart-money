@@ -53,9 +53,9 @@ const NAV: readonly NavItemDefinition[] = [
   { to: "/inteligencia", label: "FIN", icon: Brain },
 ];
 const MOBILE_NAV: readonly [NavItemDefinition, NavItemDefinition, NavItemDefinition] = [
-  MOBILE_NAV[0] as NavItemDefinition,
-  MOBILE_NAV[1] as NavItemDefinition,
-  MOBILE_NAV[2] as NavItemDefinition,
+  NAV[0] as NavItemDefinition,
+  NAV[1] as NavItemDefinition,
+  NAV[2] as NavItemDefinition,
 ];
 
 const MORE_NAV: readonly NavItemDefinition[] = [
