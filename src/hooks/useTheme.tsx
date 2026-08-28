@@ -4,52 +4,41 @@ type Theme = "light" | "dark";
 const STORAGE_KEY = "finanzzi-theme";
 
 interface ThemeState {
-  theme: Theme;
+  theme: "dark";
   setTheme: (theme: Theme) => void;
   toggleTheme: () => void;
 }
 
-function getInitialTheme(): Theme {
-  if (typeof window === "undefined") return "light";
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored === "dark" || stored === "light") return stored;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+function getInitialTheme(): "dark" {
+  return "dark";
 }
 
 const ThemeContext = createContext<ThemeState>({
-  theme: "light",
+  theme: "dark",
   setTheme: () => {},
   toggleTheme: () => {},
 });
 
-function applyTheme(theme: Theme) {
+function applyTheme() {
   const root = document.documentElement;
-  root.classList.toggle("dark", theme === "dark");
-  root.style.colorScheme = theme;
+  root.classList.add("dark");
+  root.style.colorScheme = "dark";
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>(getInitialTheme);
+  const [theme, setThemeState] = useState<"dark">(getInitialTheme);
 
   useEffect(() => {
-    applyTheme(theme);
-    localStorage.setItem(STORAGE_KEY, theme);
+    applyTheme();
+    localStorage.setItem(STORAGE_KEY, "dark");
   }, [theme]);
 
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-color-scheme: dark)");
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === "dark" || stored === "light") return;
-    const handleChange = (event: MediaQueryListEvent) => {
-      setThemeState(event.matches ? "dark" : "light");
-    };
-    media.addEventListener("change", handleChange);
-    return () => media.removeEventListener("change", handleChange);
+  const setTheme = useCallback((_next: Theme) => {
+    setThemeState("dark");
   }, []);
 
-  const setTheme = useCallback((next: Theme) => setThemeState(next), []);
   const toggleTheme = useCallback(() => {
-    setThemeState((current) => (current === "dark" ? "light" : "dark"));
+    setThemeState("dark");
   }, []);
 
   return (

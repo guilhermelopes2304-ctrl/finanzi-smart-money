@@ -1,79 +1,94 @@
-/* FINANZZI Night — Inter-inspired fintech hierarchy, adapted to FINANZZI orange identity. */
+/* FINANZZI — official dark-first visual system.
+   Visual direction: Inter-style fintech clarity + Pierre-style product/editorial rhythm.
+   Identity: orange #FF5A1F + black #111111. No green/cream light islands. */
+
 .dark {
   --fin-brand: #ff5a1f;
-  --fin-brand-hover: #ff7a4a;
+  --fin-brand-hover: #ff6a35;
   --fin-brand-soft: #2a1710;
-  --fin-canvas: #080a09;
-  --fin-surface: #111412;
-  --fin-surface-muted: #181c19;
-  --fin-surface-elevated: #1d221f;
+  --fin-canvas: #111111;
+  --fin-surface: #181818;
+  --fin-surface-muted: #202020;
+  --fin-surface-elevated: #262626;
   --fin-ink: #ffffff;
-  --fin-copy: #aeb7b1;
-  --fin-muted: #8f9992;
-  --fin-line: #2b322d;
+  --fin-copy: #b7b7b7;
+  --fin-muted: #8e8e8e;
+  --fin-line: #2d2d2d;
 
-  --background: #080a09;
+  --background: #111111;
   --foreground: #ffffff;
-  --card: #111412;
+  --card: #181818;
   --card-foreground: #ffffff;
-  --popover: #111412;
+  --popover: #181818;
   --popover-foreground: #ffffff;
   --primary: #ff5a1f;
   --primary-foreground: #111111;
-  --secondary: #181c19;
+  --secondary: #202020;
   --secondary-foreground: #ffffff;
-  --muted: #181c19;
-  --muted-foreground: #aeb7b1;
+  --muted: #202020;
+  --muted-foreground: #b7b7b7;
   --accent: #2a1710;
   --accent-foreground: #ff9a78;
   --destructive: #ff6b6b;
   --destructive-foreground: #ffffff;
-  --border: #2b322d;
-  --input: #2b322d;
+  --border: #2d2d2d;
+  --input: #343434;
   --ring: #ff5a1f;
-  --sidebar: #0d100e;
+  --sidebar: #151515;
   --sidebar-foreground: #ffffff;
   --sidebar-primary: #ff5a1f;
   --sidebar-primary-foreground: #111111;
-  --sidebar-accent: #181c19;
+  --sidebar-accent: #202020;
   --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #2b322d;
+  --sidebar-border: #2d2d2d;
   --sidebar-ring: #ff5a1f;
   --chart-1: #ff5a1f;
   --chart-2: #ff8a63;
-  --chart-3: #66716a;
+  --chart-3: #8e8e8e;
   --chart-4: #ff6b6b;
-  --chart-5: #d7ddd9;
+  --chart-5: #d7d7d7;
 }
 
 .dark,
-.dark body {
-  background: #080a09;
+.dark body,
+.dark #root {
+  background: #111111 !important;
   color: #ffffff;
 }
 
-/* Complete dark conversion for legacy Tailwind color utilities. */
-.dark [class*="bg-white"],
+/* Legacy light palette → official dark palette. */
 .dark [class*="bg-[#FCFCF8]"],
+.dark [class*="bg-[#fcfcf8]"],
 .dark [class*="bg-[#FFFFFF]"],
-.dark [class*="bg-[#fff"],
+.dark [class*="bg-[#ffffff]"],
+.dark [class*="bg-white"],
 .dark [class*="bg-white/"] {
-  background-color: #111412 !important;
-}
-.dark [class*="bg-[#F4F6F5]"],
-.dark [class*="bg-[#F4F4F4]"],
-.dark [class*="bg-gray-50"],
-.dark [class*="bg-slate-50"] {
-  background-color: #181c19 !important;
-}
-.dark [class*="bg-[#EAF9F0]"] {
-  background-color: #2a1710 !important;
-}
-.dark [class*="bg-[#111827]"] {
-  background-color: #080a09 !important;
+  background-color: #181818 !important;
 }
 
-/* FINANZZI orange replaces every old green accent in night mode. */
+.dark [class*="bg-[#F4F6F5]"],
+.dark [class*="bg-[#f4f6f5]"],
+.dark [class*="bg-[#F4F4F4]"],
+.dark [class*="bg-[#f4f4f4]"],
+.dark [class*="bg-gray-50"],
+.dark [class*="bg-slate-50"] {
+  background-color: #202020 !important;
+}
+
+.dark [class*="bg-[#EAF9F0]"],
+.dark [class*="bg-[#eaf9f0]"],
+.dark [class*="bg-green-50"],
+.dark [class*="bg-emerald-50"] {
+  background-color: #2a1710 !important;
+}
+
+.dark [class*="bg-[#111827]"],
+.dark [class*="bg-gray-900"],
+.dark [class*="bg-slate-900"] {
+  background-color: #0b0b0b !important;
+}
+
+/* Old green brand tokens become FINANZZI orange. */
 .dark [class*="text-[#19C96B]"],
 .dark [class*="text-[#19c96b]"],
 .dark [class*="text-[#0F9F52]"],
@@ -81,8 +96,9 @@
 .dark [class*="text-green-"],
 .dark [class*="text-emerald-"],
 .dark [class*="text-teal-"] {
-  color: #ff7a4a !important;
+  color: #ff5a1f !important;
 }
+
 .dark [class*="bg-[#19C96B]"],
 .dark [class*="bg-[#19c96b]"],
 .dark [class*="bg-[#0F9F52]"],
@@ -92,6 +108,7 @@
 .dark [class*="bg-teal-"] {
   background-color: #ff5a1f !important;
 }
+
 .dark [class*="border-[#19C96B]"],
 .dark [class*="border-[#19c96b]"],
 .dark [class*="border-[#0F9F52]"],
@@ -101,12 +118,8 @@
 .dark [class*="border-teal-"] {
   border-color: #5a3020 !important;
 }
-.dark [class*="bg-[#EAF9F0]"],
-.dark [class*="bg-[#eaf9f0]"] {
-  background-color: #2a1710 !important;
-}
 
-/* FINANZZI light-palette text becomes white/muted in night mode. */
+/* Light text → white / neutral gray. */
 .dark [class*="text-[#111827]"],
 .dark [class*="text-[#111111]"],
 .dark [class*="text-gray-900"],
@@ -115,108 +128,111 @@
 .dark [class*="text-slate-800"] {
   color: #ffffff !important;
 }
+
 .dark [class*="text-[#556070]"],
+.dark [class*="text-gray-700"],
 .dark [class*="text-gray-600"],
 .dark [class*="text-gray-500"],
+.dark [class*="text-slate-700"],
 .dark [class*="text-slate-600"],
 .dark [class*="text-slate-500"] {
-  color: #aeb7b1 !important;
+  color: #b7b7b7 !important;
 }
 
-/* Light borders become quiet charcoal separators. */
+/* Light borders → charcoal. */
 .dark [class*="border-[#E1E7E3]"],
 .dark [class*="border-[#e1e7e3]"],
 .dark [class*="border-gray-200"],
 .dark [class*="border-gray-100"],
 .dark [class*="border-slate-200"],
 .dark [class*="border-slate-100"] {
-  border-color: #2b322d !important;
+  border-color: #2d2d2d !important;
 }
 
-/* Inter-style surface hierarchy: canvas → surface → elevated surface. */
-.dark [class*="rounded-[1.8rem]"],
-.dark [class*="rounded-[2rem]"],
-.dark [class*="rounded-3xl"],
-.dark [class*="rounded-2xl"] {
-  border-color: #2b322d;
-}
+/* Remove colored/glowing legacy shadows. Keep depth through neutral black only. */
 .dark [class*="shadow-"] {
-  --tw-shadow-color: rgb(0 0 0 / 0.38);
+  --tw-shadow-color: rgb(0 0 0 / 0.42);
 }
-.dark .surface-card {
-  background: #111412;
-  border-color: #2b322d;
-  box-shadow: 0 12px 32px rgb(0 0 0 / 0.24);
-}
-
-/* Landing-specific sections: no white islands left behind. */
-.dark header,
-.dark footer,
-.dark main > section,
-.dark main > div,
-.dark nav {
-  color: #ffffff;
-}
-.dark main > section[class*="bg-white"],
-.dark main > section[class*="bg-[#FCFCF8]"],
-.dark main > section[class*="bg-[#F4F6F5]"] {
-  background-color: #080a09 !important;
-}
-.dark main > section[class*="bg-white"]:nth-child(even),
-.dark main > section[class*="bg-[#F4F6F5]"] {
-  background-color: #111412 !important;
-}
-.dark [class*="bg-white/95"] {
-  background-color: rgb(8 10 9 / 0.96) !important;
+.dark [class*="shadow-[0_0_"],
+.dark [class*="shadow-[0_20px_"],
+.dark [class*="shadow-[0_18px_"],
+.dark [class*="shadow-[0_14px_"] {
+  box-shadow: 0 14px 36px rgb(0 0 0 / 0.34) !important;
 }
 
-/* Hero/CTA controls use the brand orange, never the old green. */
+/* Buttons and primary actions. */
+.dark [class*="bg-primary"],
 .dark a[class*="bg-[#19C96B]"],
 .dark a[class*="bg-[#19c96b]"],
 .dark button[class*="bg-[#19C96B]"],
-.dark button[class*="bg-[#19c96b]"],
-.dark [class*="bg-primary"] {
+.dark button[class*="bg-[#19c96b]"] {
   background-color: #ff5a1f !important;
   color: #111111 !important;
 }
 
-/* Forms and interactive surfaces. */
+/* Explicitly styled CTA/active controls using the old ink color. */
+.dark a[class*="bg-[#111827]"],
+.dark button[class*="bg-[#111827]"] {
+  background-color: #ff5a1f !important;
+  color: #111111 !important;
+}
+
+/* Form surfaces. */
 .dark input,
 .dark textarea,
-.dark select {
-  background-color: #111412 !important;
+.dark select,
+.dark [role="combobox"] {
+  background-color: #181818 !important;
   color: #ffffff !important;
-  border-color: #2b322d !important;
+  border-color: #343434 !important;
 }
 .dark input::placeholder,
 .dark textarea::placeholder {
-  color: #707a73;
+  color: #777777 !important;
 }
 
-/* The night mode remains restrained: no neon, no glow, no animated gradients. */
-.dark [class*="shadow-[0_0_"],
-.dark [class*="shadow-[0_20px_"],
-.dark [class*="shadow-[0_18px_"] {
+/* Landing sections: canvas and elevated rhythm, never white islands. */
+.dark main,
+.dark main > section,
+.dark header,
+.dark footer {
+  background-color: #111111;
+}
+.dark main > section:nth-of-type(even) {
+  background-color: #181818;
+}
+.dark header {
+  background-color: rgb(17 17 17 / 0.96) !important;
+  border-color: #2d2d2d !important;
+}
+.dark footer {
+  border-color: #2d2d2d !important;
+}
+
+/* Product cards: quiet elevation, strong typography, orange only for action. */
+.dark [class*="rounded-[1.8rem]"],
+.dark [class*="rounded-[2rem]"],
+.dark [class*="rounded-3xl"],
+.dark [class*="rounded-2xl"] {
+  border-color: #2d2d2d;
+}
+.dark .surface-card {
+  background: #181818 !important;
+  border-color: #2d2d2d !important;
   box-shadow: 0 12px 32px rgb(0 0 0 / 0.28) !important;
 }
 
-/* Clear, compact theme control inspired by fintech utility controls. */
-.fin-theme-toggle {
-  border-color: #2b322d !important;
-  background: #111412 !important;
-  color: #111111 !important;
+/* Motion: short, purposeful, transform/opacity-first. */
+.dark [class*="transition-"] {
+  transition-property: transform, opacity, background-color, border-color, color !important;
+  transition-duration: 260ms !important;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
 }
-.fin-theme-toggle:hover {
-  background: #f4f4f4 !important;
+.dark [class*="hover:-translate"]:hover {
+  transform: translateY(-2px);
 }
-.dark .fin-theme-toggle {
-  border-color: #3a433d !important;
-  background: #111412 !important;
-  color: #ff5a1f !important;
-}
-.dark .fin-theme-toggle:hover {
-  background: #1d221f !important;
-  color: #ff7a4a !important;
+.dark [class*="hover:scale-"]:hover {
+  transform: scale(1.01);
 }
 
 .dark ::selection {
@@ -224,7 +240,15 @@
   color: #111111;
 }
 .dark :focus-visible {
-  outline-color: #ff5a1f !important;
+  outline: 2px solid #ff5a1f !important;
+  outline-offset: 3px;
+}
+
+/* Skeleton/loading surfaces remain visible and neutral in dark mode. */
+.dark [data-slot="skeleton"],
+.dark .skeleton,
+.dark [class*="animate-pulse"] {
+  background: #292929 !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
