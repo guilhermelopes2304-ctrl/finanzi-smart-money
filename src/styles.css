@@ -153,6 +153,11 @@
   body {
     margin: 0;
     min-width: 320px;
+    min-height: 100dvh;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
@@ -312,9 +317,6 @@
 }
 
 @media (max-width: 640px) {
-  body {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
   button,
   [role="button"] {
     min-height: 44px;
@@ -436,4 +438,4 @@ button:active:not(:disabled),
 
 /* Native shell safe areas */
 html[data-platform="ios"], html[data-platform="android"] { background: #111111; }
-html[data-platform="ios"] body, html[data-platform="android"] body { min-height: 100dvh; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+html[data-platform="ios"] body, html[data-platform="android"] body { min-height: 100dvh; }
