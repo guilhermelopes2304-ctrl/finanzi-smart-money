@@ -51,6 +51,22 @@ function Onboarding() {
   const [goal, setGoal] = useState(GOALS[0] ?? "Organizar minhas finanças");
   const displayName = name || profile?.name || "";
 
+  async function startWithoutDetails() {
+    if (!user) return;
+    try {
+      await update.mutateAsync({
+        name: displayName,
+        monthly_income: parseBRL(income),
+        current_balance: parseBRL(balance),
+        main_goal: goal,
+        onboarded: true,
+      });
+      await navigate({ to: "/dashboard" });
+    } catch {
+      // The shared mutation already surfaces its error.
+    }
+  }
+
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (!user) return;
@@ -117,14 +133,13 @@ function Onboarding() {
               FIN
             </span>
             <div className="inline-flex items-center gap-2 rounded-full border border-[#B7B7B7]/10 bg-white/[0.07] px-3 py-2 text-xs font-semibold text-[#FF5A1F]">
-              <Sparkles className="size-3.5" /> Vamos descobrir o seu momento
+              <Sparkles className="size-3.5" /> Vamos começar pelo básico
             </div>
             <h1 className="mt-6 font-display text-4xl font-semibold leading-tight xl:text-5xl">
-              Seu FINANZZI começa com contexto.
+              Comece simples. O restante vem depois.
             </h1>
             <p className="mt-5 text-base leading-7 text-[#181818]/60">
-              Com três respostas, o Fin consegue organizar a primeira leitura da sua vida financeira
-              e mostrar o que merece atenção.
+              Você pode começar com o básico agora. O restante pode ser informado depois, quando fizer sentido.
             </p>
             <div className="mt-9 space-y-4 text-sm text-[#181818]/75">
               <p className="flex items-center gap-3">
@@ -149,8 +164,8 @@ function Onboarding() {
           </div>
         </div>
         <div className="relative p-10 xl:p-14">
-          <p className="text-xs text-[#181818]/40">Primeira leitura</p>
-          <p className="mt-1 font-display text-lg font-semibold">Entender antes de agir.</p>
+          <p className="text-xs text-[#181818]/40">Primeiros passos</p>
+          <p className="mt-1 font-display text-lg font-semibold">Começar sem complicação.</p>
           <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#B7B7B7]/10">
             <div className="h-full w-1/3 rounded-full bg-[#FF5A1F]" />
           </div>
@@ -173,11 +188,10 @@ function Onboarding() {
               </span>
               <div>
                 <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-                  Me conta o básico. Eu organizo o resto.
+                  Vamos começar pelo básico.
                 </h2>
                 <p className="mt-3 max-w-lg text-sm leading-6 text-muted-foreground">
-                  São três respostas rápidas. Depois, o Fin prepara uma primeira leitura feita para
-                  você.
+                  Nada aqui precisa ser perfeito. Informe apenas o que você souber agora e ajuste depois.
                 </p>
               </div>
             </div>
@@ -185,16 +199,16 @@ function Onboarding() {
           <form onSubmit={handleSubmit} className="surface-card space-y-6 p-5 shadow-lift sm:p-7">
             <div className="rounded-[1.5rem] bg-primary p-4 text-primary-foreground sm:p-5">
               <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-primary-foreground/60">
-                Primeiro momento de valor
+                Se quiser, registre algo agora
               </p>
               <Label
                 htmlFor="ob-first-entry"
                 className="mt-2 block text-base font-semibold text-primary-foreground"
               >
-                Conte seu primeiro gasto
+                Registre seu primeiro gasto ou recebimento
               </Label>
               <p className="mt-1 text-xs leading-5 text-primary-foreground/65">
-                Escreva como falaria com o Fin. Por exemplo: mercado 82.
+                Por exemplo: mercado 82 ou recebi 2.500. Se preferir, você pode deixar isso para depois.
               </p>
               <Input
                 id="ob-first-entry"
@@ -205,7 +219,7 @@ function Onboarding() {
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="ob-name">Como podemos te chamar?</Label>
+              <Label htmlFor="ob-name">Como você prefere ser chamado?</Label>
               <Input
                 id="ob-name"
                 value={displayName}
@@ -223,16 +237,16 @@ function Onboarding() {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="ob-balance">
-                Quanto você possui atualmente?{" "}
+                Quanto você tem disponível hoje?{" "}
                 <span className="font-normal text-muted-foreground">(opcional)</span>
               </Label>
               <MoneyInput id="ob-balance" value={balance} onChange={setBalance} />
             </div>
             <div className="space-y-3">
               <div>
-                <Label>Qual seu principal objetivo?</Label>
+                <Label>O que você quer melhorar primeiro?</Label>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Isso ajuda o Fin a priorizar o que importa agora.
+                  Isso ajuda o FINANZZI a mostrar informações mais úteis para você.
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -254,17 +268,26 @@ function Onboarding() {
               </div>
             </div>
             <div className="flex items-start gap-2 rounded-2xl bg-muted/45 p-3 text-xs leading-5 text-muted-foreground">
-              <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" /> Você pode atualizar
-              essas informações depois em Configurações.
+              <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" /> Você pode mudar qualquer informação depois. Não precisa acertar tudo agora.
             </div>
-            <Button
-              type="submit"
-              className="h-12 w-full rounded-xl text-base shadow-soft"
-              disabled={update.isPending}
-            >
-              {update.isPending ? "Preparando seu espaço..." : "Ver meu ponto de partida"}
-              <ArrowRight className="ml-auto size-4" />
-            </Button>
+            <div className="space-y-3">
+              <Button
+                type="submit"
+                className="h-12 w-full rounded-xl text-base shadow-soft"
+                disabled={update.isPending}
+              >
+                {update.isPending ? "Preparando seu espaço..." : "Começar a usar o FINANZZI"}
+                <ArrowRight className="ml-auto size-4" />
+              </Button>
+              <button
+                type="button"
+                onClick={() => void startWithoutDetails()}
+                disabled={update.isPending}
+                className="min-h-11 w-full rounded-xl text-sm font-semibold text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
+              >
+                Começar agora e preencher depois
+              </button>
+            </div>
           </form>
         </div>
       </main>
