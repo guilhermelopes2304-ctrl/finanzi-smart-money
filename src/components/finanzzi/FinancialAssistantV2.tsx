@@ -369,6 +369,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
   }
 
   // `listen` intentionally stays bound to the browser event handler for the lifetime of this widget.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: browser event listener intentionally captures the current listen handler.
   useEffect(() => {
     const handler = (event: Event) => {
       const detail = (event as CustomEvent<{ listen?: boolean }>).detail;
@@ -391,9 +392,10 @@ export function FinancialAssistant({ className }: { className?: string }) {
     }
   }, [open, messages.length, profile?.name]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: scroll only when the conversation content changes.
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-  }, [messages, busy]);
+  }, [messages]);
 
   if (!open) return null;
 
@@ -427,9 +429,9 @@ export function FinancialAssistant({ className }: { className?: string }) {
       </div>
 
       <div ref={scrollRef} className="max-h-[55vh] space-y-3 overflow-y-auto p-4 sm:p-5">
-        {messages.map((message, index) => (
+        {messages.map((message) => (
           <div
-            key={`${message.from}-${index}`}
+            key={`${message.from}-${message.text}`}
             className={cn(
               "max-w-[92%] whitespace-pre-wrap rounded-2xl px-3.5 py-3 text-sm leading-5 shadow-sm",
               message.from === "user"
