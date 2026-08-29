@@ -159,7 +159,6 @@ function BillsTab() {
             </p>
             <p className="mt-2 text-sm text-fin-copy">para os próximos 7 dias.</p>
           </div>
-          
         </div>
       </section>
 
