@@ -75,13 +75,13 @@ function GoalsPage() {
   return (
     <div>
       <PageHeader
-        title="Objetivos"
-        subtitle="O que você quer construir, com um ritmo que cabe na sua vida."
+        title="Meus objetivos"
+        subtitle="Escolha algo importante e acompanhe seu progresso sem fazer contas."
         action={
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button>
-                <Plus className="size-4" /> Novo objetivo
+                <Plus className="size-4" /> Criar objetivo
               </Button>
             </DialogTrigger>
             <DialogContent className="max-h-[92vh] overflow-y-auto">
@@ -148,8 +148,8 @@ function GoalsPage() {
 
       {goals.length === 0 ? (
         <EmptyState
-          title="Você ainda não criou objetivos."
-          description="Defina algo que importa e acompanhe o quanto falta para chegar lá."
+          title="Ainda não há nenhum objetivo por aqui."
+          description="Escolha algo que você quer conquistar e acompanhe o caminho aos poucos."
         />
       ) : (
         <div className="grid gap-4 lg:grid-cols-2">
@@ -199,7 +199,7 @@ function GoalsPage() {
                 </div>
                 <div className="mt-6 flex items-end justify-between gap-3">
                   <div>
-                    <p className="text-xs text-fin-copy">Quanto você já tem</p>
+                    <p className="text-xs text-fin-copy">Você já juntou</p>
                     <p className="mt-1 font-display text-3xl font-semibold">{formatBRL(current)}</p>
                   </div>
                   <p className="text-right text-sm text-fin-copy">
@@ -210,7 +210,7 @@ function GoalsPage() {
                 </div>
                 <Progress value={pct} className="mt-4" />
                 <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-fin-copy">
-                  <span>{formatBRL(Math.max(0, target - current))} restantes</span>
+                  <span>{formatBRL(Math.max(0, target - current))} faltam</span>
                   {goal.deadline && (
                     <span className="inline-flex items-center gap-1">
                       <CalendarDays className="size-3" /> até {formatDateBR(goal.deadline)}
@@ -219,7 +219,7 @@ function GoalsPage() {
                 </div>
                 {monthly !== null && monthly > 0 && (
                   <p className="mt-4 text-sm text-fin-copy">
-                    Cerca de <strong className="text-foreground">{formatBRL(monthly)}</strong> por
+                    Para chegar até o prazo, tente guardar cerca de <strong className="text-foreground">{formatBRL(monthly)}</strong> por
                     mês até o prazo.
                   </p>
                 )}
