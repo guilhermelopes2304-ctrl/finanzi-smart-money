@@ -421,9 +421,9 @@ function QuickEntryLive() {
             variant="ghost"
             onClick={startInlineVoice}
             className="size-11 shrink-0 rounded-xl px-0"
-            aria-label="Registrar falando"
+            aria-label={listening ? "Parar gravação" : "Registrar falando"}
           >
-            <Mic className="size-5" />
+            {listening ? <MicOff className="size-5" /> : <Mic className="size-5" />}
           </Button>
           <Button
             type="submit"
@@ -441,7 +441,7 @@ function QuickEntryLive() {
             onClick={startInlineVoice}
             className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 text-sm font-semibold text-primary transition-colors hover:bg-primary/10 active:scale-[0.99]"
           >
-            <Mic className="size-4" /> Falar
+            {listening ? <MicOff className="size-4" /> : <Mic className="size-4" />} {listening ? "Parar" : "Falar"}
           </button>
         </div>
       </form>
