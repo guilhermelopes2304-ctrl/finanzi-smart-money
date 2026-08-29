@@ -87,8 +87,8 @@ function TransactionsPage() {
   return (
     <div>
       <PageHeader
-        title="Lançar"
-        subtitle="Registre do seu jeito. O FINANZZI organiza o resto."
+        title="Meu histórico"
+        subtitle="Veja o que entrou e saiu. Para registrar algo novo, toque em Registrar."
         action={
           <Button
             onClick={() => {
@@ -115,7 +115,7 @@ function TransactionsPage() {
 
       <div className="mb-4 flex items-center justify-between gap-3">
         <p className="text-sm text-muted-foreground">
-          {rows.length} lançamento(s) no seu histórico.
+          {rows.length === 1 ? "1 registro no seu histórico." : `${rows.length} registros no seu histórico.`}
         </p>
         <button
           type="button"
@@ -127,7 +127,7 @@ function TransactionsPage() {
               : "border-border text-muted-foreground hover:bg-muted",
           )}
         >
-          <Filter className="size-4" /> Filtrar
+          <Filter className="size-4" /> Encontrar
         </button>
       </div>
       {filtersOpen && (
@@ -136,7 +136,7 @@ function TransactionsPage() {
             <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               className="pl-9"
-              placeholder="Pesquisar"
+              placeholder="Pesquisar por nome"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -146,9 +146,9 @@ function TransactionsPage() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todos os tipos</SelectItem>
-              <SelectItem value="income">Receitas</SelectItem>
-              <SelectItem value="expense">Despesas</SelectItem>
+              <SelectItem value="all">Tudo</SelectItem>
+              <SelectItem value="income">Entradas</SelectItem>
+              <SelectItem value="expense">Saídas</SelectItem>
             </SelectContent>
           </Select>
           <Select value={category} onValueChange={setCategory}>
@@ -169,10 +169,10 @@ function TransactionsPage() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="date-desc">Mais recentes</SelectItem>
-              <SelectItem value="date-asc">Mais antigos</SelectItem>
-              <SelectItem value="amount-desc">Maior valor</SelectItem>
-              <SelectItem value="amount-asc">Menor valor</SelectItem>
+              <SelectItem value="date-desc">Mais novos primeiro</SelectItem>
+              <SelectItem value="date-asc">Mais antigos primeiro</SelectItem>
+              <SelectItem value="amount-desc">Maior valor primeiro</SelectItem>
+              <SelectItem value="amount-asc">Menor valor primeiro</SelectItem>
             </SelectContent>
           </Select>
         </div>
