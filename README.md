@@ -1202,7 +1202,7 @@ Um organizador financeiro pessoal moderno, seguro, responsivo e preparado para s
 
 This project was built with [Lovable](https://lovable.dev).
 
-**Live app**: https://finanzi-smart-money.lovable.app
+**Live app**: https://finanzzi.vercel.app
 
 ## Build with Lovable
 
