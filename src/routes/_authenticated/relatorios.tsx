@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useCategories, useTransactions } from "@/hooks/useFinanceData";
