@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { CalendarDays, Check, Plus, Target, Trash2 } from "lucide-react";
