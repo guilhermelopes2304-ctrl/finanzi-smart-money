@@ -42,12 +42,12 @@ export function DashboardView({ profile, transactions, categories, accounts, bil
         <Reveal className="pb-5 sm:pb-7">
           <p className="text-sm font-semibold text-muted-foreground">{getGreeting()}, {firstName}</p>
           <h1 className="mt-1 max-w-xl font-display text-3xl font-semibold leading-tight tracking-[-0.055em] sm:text-5xl">Como está seu dinheiro hoje?</h1>
-          <p className="mt-2 max-w-lg text-sm leading-6 text-muted-foreground">Registre um gasto ou um recebimento. O FINANZZI organiza os detalhes.</p>
+          <p className="mt-2 max-w-lg text-sm leading-6 text-muted-foreground">Registre algo quando quiser. O FINANZZI organiza o restante.</p>
         </Reveal>
 
         <Reveal delay={50}>
-          <section aria-labelledby="quick-entry-title" className="surface-card p-3 sm:p-4">
-            <div className="mb-2 flex items-center justify-between gap-3 px-1"><h2 id="quick-entry-title" className="text-base font-semibold tracking-[-0.02em]">Registrar algo</h2><span className="rounded-full bg-fin-brand-soft px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-fin-brand-hover">escrever · falar</span></div>
+          <section aria-labelledby="quick-entry-title">
+            <h2 id="quick-entry-title" className="sr-only">Registrar algo</h2>
             <QuickEntry previewMode={previewMode} previewData={quickEntryPreviewData ?? {}} />
           </section>
         </Reveal>
