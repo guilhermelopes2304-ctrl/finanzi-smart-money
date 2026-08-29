@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { CheckCircle2, Plus, Trash2 } from "lucide-react";
@@ -206,6 +205,7 @@ function BillsTab() {
             {(["upcoming", "recurring", "subscription", "paid", "late"] as const).map((f) => (
               <button
                 key={f}
+                type="button"
                 onClick={() => setFilter(f)}
                 className={cn(
                   "rounded-full border px-3 py-1.5 text-sm transition-colors",
