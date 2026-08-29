@@ -47,10 +47,10 @@ export type NavItemDefinition = {
 const NAV: readonly NavItemDefinition[] = [
   { to: "/dashboard", label: "Início", icon: Home },
   { to: "/lancamentos", label: "Lançar", icon: Wallet },
-  { to: "/contas", label: "Compromissos", icon: CalendarClock },
+  { to: "/contas", label: "Contas", icon: CalendarClock },
   { to: "/cartoes", label: "Cartões", icon: CreditCard },
   { to: "/metas", label: "Objetivos", icon: Target },
-  { to: "/inteligencia", label: "FIN", icon: Brain },
+  { to: "/inteligencia", label: "Ajuda", icon: Brain },
 ];
 const MOBILE_NAV: readonly [NavItemDefinition, NavItemDefinition, NavItemDefinition] = [
   NAV[0] as NavItemDefinition,
@@ -59,7 +59,7 @@ const MOBILE_NAV: readonly [NavItemDefinition, NavItemDefinition, NavItemDefinit
 ];
 
 const MORE_NAV: readonly NavItemDefinition[] = [
-  { to: "/relatorios", label: "Finanças", icon: BarChart3 },
+  { to: "/relatorios", label: "Resumo", icon: BarChart3 },
   { to: "/posso-comprar", label: "Posso gastar", icon: ShoppingBag },
   { to: "/configuracoes", label: "Configurações", icon: Settings },
 ];
@@ -314,7 +314,7 @@ export function AppShell({
                 </Link>
               </div>
               <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                Minha situação. Minha próxima decisão.
+                Veja como está seu dinheiro e decida o próximo passo.
               </p>
             </>
           )}
@@ -454,7 +454,7 @@ export function AppShell({
             <span className="grid size-9 place-items-center rounded-xl bg-fin-brand-soft text-fin-brand-hover group-hover:bg-primary group-hover:text-primary-foreground">
               <MessageCircle className="size-[18px]" />
             </span>
-            <span>FIN</span>
+            <span>Ajuda</span>
           </button>
           <button
             type="button"

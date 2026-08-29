@@ -71,10 +71,10 @@ function QuickEntryPreview({ data }: { data: QuickEntryPreviewData }) {
               Registro rápido
             </p>
             <h2 className="mt-1 text-base font-semibold leading-tight sm:text-lg">
-              Fale ou escreva. Eu organizo.
+              Escreva ou fale. Eu organizo.
             </h2>
             <p className="mt-1 text-xs text-muted-foreground">
-              Mercado 82, Uber 27 ou Netflix 39,90 todo mês. É só falar.
+              Mercado 82, Uber 27 ou Netflix 39,90 todo mês. Pode escrever ou falar do seu jeito.
             </p>
           </div>
         </div>
@@ -83,7 +83,7 @@ function QuickEntryPreview({ data }: { data: QuickEntryPreviewData }) {
           disabled
           className="hidden min-h-10 items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-3 text-xs font-bold text-primary opacity-70 sm:inline-flex"
         >
-          <Mic className="size-3.5" /> Falar com o Fin
+          <Mic className="size-3.5" /> Registrar falando
         </button>
       </div>
       <div className="mt-4 space-y-2">
@@ -99,7 +99,7 @@ function QuickEntryPreview({ data }: { data: QuickEntryPreviewData }) {
             variant="ghost"
             disabled
             className="size-11 shrink-0 rounded-xl px-0"
-            aria-label="Falar com o Fin"
+            aria-label="Registrar falando"
           >
             <Mic className="size-5" />
           </Button>
@@ -140,7 +140,7 @@ function QuickEntryPreview({ data }: { data: QuickEntryPreviewData }) {
             Entendi assim
           </p>
           <p className="mt-1 text-sm text-muted-foreground">
-            Assim o FINANZZI entendeu o que aconteceu.
+            Confira os detalhes antes de registrar.
           </p>
           <div className="mt-4 grid gap-3 rounded-2xl bg-card p-4 sm:grid-cols-[auto_1fr] sm:items-center">
             <div className="grid size-14 place-items-center rounded-2xl bg-primary/10 text-lg font-bold">
@@ -218,7 +218,7 @@ function QuickEntryLive() {
       setManualText(result.raw);
       setManualOpen(true);
       setText("");
-      toast("Abri o formulário completo para você conferir os detalhes.");
+      toast("Não consegui entender todos os detalhes. Abri uma tela simples para você conferir antes de salvar.");
       return;
     }
     setDraft(result);
