@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { LogOut, Plus, Sparkles, ShieldCheck, Trash2 } from "lucide-react";
