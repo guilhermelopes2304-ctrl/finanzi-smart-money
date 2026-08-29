@@ -1,0 +1,37 @@
+name: Sync Bun lock
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+
+permissions:
+  contents: write
+
+jobs:
+  sync-lock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/mobile-capacitor-foundation
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Regenerate lockfile
+        run: bun install
+
+      - name: Commit lockfile and remove one-shot workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/sync-bun-lock.yml
+          git add bun.lock
+          git diff --cached --quiet || git commit -m "chore: sync Bun lockfile for mobile foundation"
+          git push origin HEAD:feat/mobile-capacitor-foundation
