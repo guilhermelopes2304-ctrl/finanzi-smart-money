@@ -9,7 +9,10 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "cap:sync": "npm run build && npx cap sync",
+    "cap:android": "npx cap open android",
+    "cap:ios": "npx cap open ios"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -64,7 +67,14 @@
     "tw-animate-css": "^1.3.4",
     "vaul": "^1.1.2",
     "vite-tsconfig-paths": "^6.0.2",
-    "zod": "^3.24.2"
+    "zod": "^3.24.2",
+    "@capacitor/android": "^8.1.0",
+    "@capacitor/app": "^8.0.0",
+    "@capacitor/core": "^8.1.0",
+    "@capacitor/haptics": "^8.0.0",
+    "@capacitor/ios": "^8.1.0",
+    "@capacitor/keyboard": "^8.0.0",
+    "@capacitor/status-bar": "^8.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
@@ -83,6 +93,7 @@
     "prettier": "^3.7.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",
-    "vite": "^8.2.0"
+    "vite": "^8.2.0",
+    "@capacitor/cli": "^8.1.0"
   }
 }
