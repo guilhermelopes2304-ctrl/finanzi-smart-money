@@ -74,7 +74,7 @@ function CanIBuyPage() {
     <div>
       <PageHeader
         title="Quanto posso gastar?"
-        subtitle="Pergunte antes de gastar. O FINANZZI cruza sua margem com os compromissos que já conhece."
+        subtitle="Informe uma compra e veja, de forma simples, como ela pode afetar seu dinheiro."
       />
 
       <div className="mb-4">
@@ -98,7 +98,7 @@ function CanIBuyPage() {
             <MoneyInput id="buy-price" value={price} onChange={setPrice} />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="buy-parts">Parcelas</Label>
+            <Label htmlFor="buy-parts">Vai parcelar?</Label>
             <Input
               id="buy-parts"
               type="number"
@@ -110,7 +110,7 @@ function CanIBuyPage() {
           </div>
         </div>
         <Button type="submit">
-          <ShoppingBag className="size-4" /> Ver se cabe
+          <ShoppingBag className="size-4" /> Analisar esta compra
         </Button>
       </form>
 
@@ -130,7 +130,7 @@ function CanIBuyPage() {
             <h2 className="text-lg font-semibold">{result.title}</h2>
           </div>
           <p className="mt-2 text-sm text-muted-foreground">
-            Análise para <strong>{item}</strong>.
+            Veja como esta compra pode afetar o seu dinheiro: <strong>{item}</strong>.
           </p>
           <ul className="mt-3 space-y-1.5 text-sm text-muted-foreground">
             {result.reasons.map((r) => (
@@ -138,7 +138,7 @@ function CanIBuyPage() {
             ))}
           </ul>
           <p className="mt-4 text-xs text-muted-foreground">
-            Esta é uma ferramenta educativa: a decisão final é sempre sua.
+            Use esta análise como apoio. A decisão final continua sendo sua.
           </p>
         </div>
       )}
