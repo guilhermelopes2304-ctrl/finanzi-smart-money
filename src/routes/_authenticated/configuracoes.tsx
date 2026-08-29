@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { LogOut, Plus, Sparkles, ShieldCheck, Trash2 } from "lucide-react";
@@ -72,7 +71,7 @@ function SettingsPage() {
 
   return (
     <div>
-      <PageHeader title="Configurações" subtitle="Sua conta e suas preferências." />
+      <PageHeader title="Minha conta" subtitle="Sua conta e suas preferências." />
 
       <section className="surface-card relative mb-4 overflow-hidden p-5 sm:p-6">
         <div className="pointer-events-none absolute -right-10 -top-12 size-40 rounded-full bg-primary/8 blur-3xl" />
@@ -132,7 +131,7 @@ function SettingsPage() {
             update.mutate({ name, monthly_income: parseBRL(income) });
           }}
         >
-          <h2 className="text-base font-semibold">Minha conta</h2>
+          <h2 className="text-base font-semibold">Seus dados</h2>
           <div className="space-y-1.5">
             <Label htmlFor="set-name">Nome</Label>
             <Input id="set-name" value={name} onChange={(e) => setName(e.target.value)} required />
@@ -151,7 +150,7 @@ function SettingsPage() {
         </form>
 
         <form className="surface-card space-y-4 p-5" onSubmit={changePassword}>
-          <h2 className="text-base font-semibold">Segurança</h2>
+          <h2 className="text-base font-semibold">Senha e acesso</h2>
           <div className="space-y-1.5">
             <Label htmlFor="set-pass">Nova senha</Label>
             <Input
