@@ -33,7 +33,6 @@ import { trackProductEvent } from "@/lib/product-analytics";
 import type { TransactionType } from "@/types/finance";
 
 const NONE = "__none__";
-const EXAMPLES = ["mercado 82", "uber 27", "recebi 2.500", "netflix 39,90", "aluguel 1200"];
 
 export function recurrenceLabel(value: QuickParseResult["recurrence"]) {
   return value === "monthly" ? "todo mês" : value === "yearly" ? "todo ano" : "toda semana";
@@ -58,7 +57,7 @@ export function QuickEntry({ previewMode = false, previewData }: QuickEntryProps
 }
 
 function QuickEntryPreview({ data }: { data: QuickEntryPreviewData }) {
-  const text = data?.text ?? "mercado 82";
+  const text = data?.text ?? "";
   return (
     <div className="surface-card overflow-hidden p-4 sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -74,7 +73,7 @@ function QuickEntryPreview({ data }: { data: QuickEntryPreviewData }) {
               Escreva ou fale. Eu organizo.
             </h2>
             <p className="mt-1 text-xs text-muted-foreground">
-              Mercado 82, Uber 27 ou Netflix 39,90 todo mês. Pode escrever ou falar do seu jeito.
+              Conte o que aconteceu do seu jeito.
             </p>
           </div>
         </div>
@@ -90,6 +89,7 @@ function QuickEntryPreview({ data }: { data: QuickEntryPreviewData }) {
         <div className="flex items-center gap-2 rounded-2xl border border-border bg-background p-1.5 shadow-sm">
           <Input
             value={text}
+            placeholder="Ex.: paguei 50 no almoço"
             readOnly
             aria-label="Exemplo de registro rápido"
             className="h-12 min-w-0 flex-1 border-0 bg-transparent px-3 text-base shadow-none focus-visible:ring-0"
@@ -112,17 +112,6 @@ function QuickEntryPreview({ data }: { data: QuickEntryPreviewData }) {
             <Send className="size-4 sm:hidden" />
             <span className="hidden sm:inline">Registrar</span>
           </Button>
-        </div>
-        <div className="flex flex-wrap items-center gap-2 px-1">
-          <span className="text-[11px] font-semibold text-muted-foreground">Experimente:</span>
-          {EXAMPLES.map((example) => (
-            <span
-              key={example}
-              className="rounded-full bg-muted px-2.5 py-1.5 text-[11px] text-muted-foreground"
-            >
-              {example}
-            </span>
-          ))}
         </div>
         <div className="sm:hidden">
           <button
@@ -184,15 +173,7 @@ function QuickEntryLive() {
   const [busy, setBusy] = useState(false);
   const [manualOpen, setManualOpen] = useState(false);
   const [manualText, setManualText] = useState("");
-  const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [paidBillId, setPaidBillId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setPlaceholderIndex((current) => (current + 1) % EXAMPLES.length);
-    }, 3200);
-    return () => window.clearInterval(timer);
-  }, []);
 
   function openFinVoice() {
     window.dispatchEvent(new CustomEvent("finanzzi:open-assistant", { detail: { listen: true } }));
@@ -327,7 +308,7 @@ function QuickEntryLive() {
               Fale ou escreva. Eu organizo.
             </h2>
             <p className="mt-1 text-xs text-muted-foreground">
-              Mercado 82, Uber 27 ou Netflix 39,90 todo mês. É só falar.
+              Conte o que aconteceu. Eu cuido da organização.
             </p>
           </div>
         </div>
@@ -344,7 +325,7 @@ function QuickEntryLive() {
           <Input
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder={EXAMPLES[placeholderIndex]}
+            placeholder="O que aconteceu?"
             className="h-12 min-w-0 flex-1 border-0 bg-transparent px-3 text-base shadow-none focus-visible:ring-0"
             aria-label="Registro rápido por texto"
           />
@@ -366,19 +347,6 @@ function QuickEntryLive() {
             <Send className="size-4 sm:hidden" />
             <span className="hidden sm:inline">Registrar</span>
           </Button>
-        </div>
-        <div className="flex flex-wrap items-center gap-2 px-1">
-          <span className="text-[11px] font-semibold text-muted-foreground">Experimente:</span>
-          {EXAMPLES.map((example) => (
-            <button
-              key={example}
-              type="button"
-              onClick={() => setText(example)}
-              className="rounded-full bg-muted px-2.5 py-1.5 text-[11px] text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary"
-            >
-              {example}
-            </button>
-          ))}
         </div>
         <div className="sm:hidden">
           <button
