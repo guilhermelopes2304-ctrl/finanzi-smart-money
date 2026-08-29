@@ -267,7 +267,7 @@ export function AppShell({
     await navigate({ to: "/" });
   }
 
-  if (pathname === "/boas-vindas") return <>{children}</>;
+  if (pathname === "/boas-vindas") return children;
 
   const desktopSidebarWidth = sidebarCollapsed ? "lg:ml-[88px]" : "lg:ml-[256px]";
   const desktopBannerPadding = sidebarCollapsed ? "lg:pl-[88px]" : "lg:pl-[256px]";
