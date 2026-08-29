@@ -385,7 +385,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
       setMessages([
         {
           from: "fin",
-          text: `Olá${profile?.name ? `, ${profile.name.split(" ")[0]}` : ""}. Eu sou o Fin. Posso analisar seu momento, explicar o que está acontecendo e registrar lançamentos — escreva ou fale comigo como falaria com alguém de confiança.`,
+          text: `Olá${profile?.name ? `, ${profile.name.split(" ")[0]}` : ""}. Posso ajudar você a entender seu dinheiro ou registrar algo. Escreva ou fale do seu jeito.`,
         },
       ]);
     }
@@ -404,16 +404,16 @@ export function FinancialAssistant({ className }: { className?: string }) {
         className,
       )}
     >
-      <div className="flex items-center justify-between border-b border-[#556070]/10 bg-gradient-to-r from-[#19C96B]/10 to-transparent p-4 sm:p-5">
+      <div className="flex items-center justify-between border-b border-[#556070]/10 bg-[#FF5A1F]/10 p-4 sm:p-5">
         <div className="flex items-center gap-3">
-          <div className="grid size-10 place-items-center rounded-xl bg-[#19C96B]/10 text-[10px] font-black uppercase tracking-[0.14em] text-[#19C96B]">
+          <div className="grid size-10 place-items-center rounded-xl bg-[#FF5A1F]/10 text-[10px] font-black uppercase tracking-[0.14em] text-[#FF5A1F]">
             FIN
           </div>
           <div>
             <div className="flex items-center gap-1 text-sm font-bold">
-              <Sparkles className="size-3.5 text-[#19C96B]" /> Fin
+              <Sparkles className="size-3.5 text-[#FF5A1F]" /> Fin
             </div>
-            <p className="text-xs text-[#F4F5F8]/50">Copiloto financeiro · online</p>
+            <p className="text-xs text-[#F4F5F8]/50">Ajuda para entender e registrar</p>
           </div>
         </div>
         <button
@@ -433,7 +433,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
             className={cn(
               "max-w-[92%] whitespace-pre-wrap rounded-2xl px-3.5 py-3 text-sm leading-5 shadow-sm",
               message.from === "user"
-                ? "ml-auto bg-[#19C96B] font-medium text-[#111827]"
+                ? "ml-auto bg-[#FF5A1F] font-medium text-[#111827]"
                 : "bg-white/[0.07] text-[#F4F5F8]/85",
             )}
           >
@@ -442,16 +442,12 @@ export function FinancialAssistant({ className }: { className?: string }) {
         ))}
         {messages.length === 1 && !busy && !pending && (
           <div className="flex flex-wrap gap-2">
-            {[
-              "Posso gastar 200 hoje?",
-              "O que vence essa semana?",
-              "Quanto pago em assinaturas?",
-            ].map((suggestion) => (
+            {["Como está meu mês?", "O que vence esta semana?"].map((suggestion) => (
               <button
                 key={suggestion}
                 type="button"
                 onClick={() => send(suggestion)}
-                className="rounded-full border border-[#556070]/15 bg-white/[0.05] px-3 py-2 text-left text-xs text-[#F4F5F8]/70 transition-colors hover:bg-[#19C96B]/15 hover:text-white"
+                className="rounded-full border border-[#556070]/15 bg-white/[0.05] px-3 py-2 text-left text-xs text-[#F4F5F8]/70 transition-colors hover:bg-[#FF5A1F]/15 hover:text-white"
               >
                 {suggestion}
               </button>
@@ -472,7 +468,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
                   ? commitRecurring(pending)
                   : commit(pending))
               }
-              className="min-h-10 flex-1 rounded-xl bg-[#19C96B] px-3 text-sm font-semibold text-[#111827]"
+              className="min-h-10 flex-1 rounded-xl bg-[#FF5A1F] px-3 text-sm font-semibold text-[#111827]"
             >
               Confirmar
             </button>
@@ -497,7 +493,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
             onClick={() => (listening ? stopListening() : listen())}
             className={cn(
               "grid size-10 shrink-0 place-items-center rounded-xl",
-              listening ? "bg-[#556070] text-[#FCFCF8]" : "bg-[#19C96B] text-[#111827]",
+              listening ? "bg-[#556070] text-[#FCFCF8]" : "bg-[#FF5A1F] text-[#111827]",
             )}
             aria-label={listening ? "Parar de ouvir" : "Falar com o Fin"}
           >
@@ -520,7 +516,7 @@ export function FinancialAssistant({ className }: { className?: string }) {
             type="button"
             onClick={() => send()}
             disabled={busy}
-            className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#19C96B] text-[#111827] disabled:opacity-50"
+            className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#FF5A1F] text-[#111827] disabled:opacity-50"
             aria-label="Enviar"
           >
             <Send className="size-4" />
