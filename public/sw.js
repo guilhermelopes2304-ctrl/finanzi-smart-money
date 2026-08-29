@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 const CACHE_NAME = "finanzzi-static-v5-pwa";
 const OFFLINE_URL = "/offline.html";
 
