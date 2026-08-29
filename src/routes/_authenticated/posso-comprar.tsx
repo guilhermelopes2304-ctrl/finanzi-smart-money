@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { ShoppingBag } from "lucide-react";
