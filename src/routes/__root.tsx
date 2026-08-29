@@ -7,6 +7,7 @@ import appCss from "../styles.css?url";
 import darkGuardCss from "../finanzi-dark-guard.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { initObservability, captureTelemetry } from "../lib/observability";
+import { initNativeShell } from "../lib/native-shell";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { Toaster } from "@/components/ui/sonner";
@@ -52,6 +53,6 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  useEffect(() => { initObservability(); }, []);
+  useEffect(() => { initObservability(); void initNativeShell(); }, []);
   return <QueryClientProvider client={queryClient}><ThemeProvider><AuthProvider><Outlet /><Toaster position="top-center" richColors /></AuthProvider></ThemeProvider></QueryClientProvider>;
 }
