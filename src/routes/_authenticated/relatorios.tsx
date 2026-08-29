@@ -73,7 +73,7 @@ function ReportsPage() {
 
   return (
     <div>
-      <PageHeader title="Relatórios" subtitle="Analise seus números com profundidade." />
+      <PageHeader title="Resumo" subtitle="Veja o que entrou, o que saiu e onde seu dinheiro foi parar." />
 
       <div className="surface-card mb-4 flex flex-wrap gap-3 p-4">
         <PeriodSelect
@@ -88,8 +88,8 @@ function ReportsPage() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Todos os tipos</SelectItem>
-            <SelectItem value="income">Receitas</SelectItem>
-            <SelectItem value="expense">Despesas</SelectItem>
+            <SelectItem value="income">Entrou</SelectItem>
+            <SelectItem value="expense">Saiu</SelectItem>
           </SelectContent>
         </Select>
         <Select value={category} onValueChange={setCategory}>
@@ -113,7 +113,7 @@ function ReportsPage() {
           <p className="font-display text-xl font-semibold text-success">
             {formatBRL(totals.income)}
           </p>
-          <p className="text-xs text-muted-foreground">Antes: {formatBRL(prev.income)}</p>
+          <p className="text-xs text-muted-foreground">No período anterior: {formatBRL(prev.income)}</p>
         </div>
         <div className="surface-card p-5">
           <p className="text-sm text-muted-foreground">Despesas</p>
@@ -123,7 +123,7 @@ function ReportsPage() {
           <p className="text-xs text-muted-foreground">Antes: {formatBRL(prev.expense)}</p>
         </div>
         <div className="surface-card p-5">
-          <p className="text-sm text-muted-foreground">Saldo do período</p>
+          <p className="text-sm text-muted-foreground">Resultado do período</p>
           <p className="font-display text-xl font-semibold">{formatBRL(totals.balance)}</p>
           <p className="text-xs text-muted-foreground">Antes: {formatBRL(prev.balance)}</p>
         </div>
@@ -132,7 +132,7 @@ function ReportsPage() {
       {slices[0] && (
         <ViralMomentCard
           className="mt-4"
-          eyebrow="Gastos por categoria"
+          eyebrow="Para onde o dinheiro foi"
           title="Descobri para onde meu dinheiro vai."
           value={`${Math.round(slices[0].share)}%`}
           detail={`${slices[0].name} representa ${formatBRL(slices[0].value)} das despesas no período`}
@@ -144,11 +144,11 @@ function ReportsPage() {
       <PlanGate feature="advanced_reports" className="mt-4">
         <div className="grid gap-4 lg:grid-cols-2">
           <div className="surface-card p-5">
-            <h2 className="mb-3 text-base font-semibold">Evolução mensal</h2>
+            <h2 className="mb-3 text-base font-semibold">Como seu dinheiro mudou</h2>
             {filtered.length > 0 ? (
               <IncomeExpenseChart data={series} />
             ) : (
-              <EmptyState title="Sem dados no filtro atual" />
+              <EmptyState title="Ainda não há dados para mostrar aqui" />
             )}
           </div>
           <div className="surface-card p-5">
@@ -156,11 +156,11 @@ function ReportsPage() {
             {slices.length > 0 ? (
               <CategoryPieChart data={slices} />
             ) : (
-              <EmptyState title="Sem despesas no período" />
+              <EmptyState title="Ainda não há gastos neste período" />
             )}
           </div>
           <div className="surface-card p-5">
-            <h2 className="mb-3 text-base font-semibold">Evolução do saldo</h2>
+            <h2 className="mb-3 text-base font-semibold">Seu saldo ao longo do tempo</h2>
             {filtered.length > 0 ? (
               <BalanceEvolutionChart data={series} />
             ) : (
@@ -168,7 +168,7 @@ function ReportsPage() {
             )}
           </div>
           <div className="surface-card p-5">
-            <h2 className="mb-3 text-base font-semibold">Maiores gastos do período</h2>
+            <h2 className="mb-3 text-base font-semibold">Onde você mais gastou</h2>
             {biggest.length === 0 ? (
               <EmptyState title="Nenhuma despesa registrada" />
             ) : (
