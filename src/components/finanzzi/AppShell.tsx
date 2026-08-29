@@ -46,7 +46,7 @@ export type NavItemDefinition = {
 
 const NAV: readonly NavItemDefinition[] = [
   { to: "/dashboard", label: "Início", icon: Home },
-  { to: "/lancamentos", label: "Lançar", icon: Wallet },
+  { to: "/lancamentos", label: "Histórico", icon: Wallet },
   { to: "/contas", label: "Contas", icon: CalendarClock },
   { to: "/cartoes", label: "Cartões", icon: CreditCard },
   { to: "/metas", label: "Objetivos", icon: Target },
@@ -304,7 +304,7 @@ export function AppShell({
             <>
               <div className="flex items-center justify-between gap-2">
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-fin-brand-hover">
-                  Seu dinheiro
+                  FINANZZI
                 </p>
                 <Link
                   to="/configuracoes"
@@ -313,9 +313,6 @@ export function AppShell({
                   {isInternalTest ? "Teste interno" : isPro ? "Acesso ativo" : "Acesso pago"}
                 </Link>
               </div>
-              <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                Veja como está seu dinheiro e decida o próximo passo.
-              </p>
             </>
           )}
         </div>
@@ -370,10 +367,10 @@ export function AppShell({
             onClick={() => {
               if (!visualReview) setTransactionOpen(true);
             }}
-            title={sidebarCollapsed ? "Lançar agora" : undefined}
+            title={sidebarCollapsed ? "Registrar" : undefined}
           >
             <Plus className="size-4" />
-            {!sidebarCollapsed && "Lançar agora"}
+            {!sidebarCollapsed && "Registrar"}
           </Button>
           {!sidebarCollapsed && (
             <button
