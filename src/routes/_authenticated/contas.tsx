@@ -60,7 +60,7 @@ function BillsPage() {
     <div>
       <PageHeader
         title="Contas e pagamentos"
-        subtitle="Veja o que precisa pagar e acompanhe suas contas em um só lugar."
+        subtitle="Veja o que está próximo e organize seus pagamentos."
       />
       <Tabs defaultValue="bills">
         <TabsList className="mb-4">
@@ -157,11 +157,9 @@ function BillsTab() {
             <p className="font-display text-4xl font-semibold tracking-[-0.05em] sm:text-6xl">
               {formatBRL(next7.reduce((s, b) => s + Number(b.amount), 0))}
             </p>
-            <p className="mt-2 text-sm text-fin-copy">em compromissos próximos.</p>
+            <p className="mt-2 text-sm text-fin-copy">para os próximos 7 dias.</p>
           </div>
-          <p className="max-w-[15rem] text-sm leading-6 text-fin-copy">
-            O que chegar nos próximos dias, organizado sem tabela pesada.
-          </p>
+          
         </div>
       </section>
 
@@ -172,7 +170,7 @@ function BillsTab() {
               <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">
                 Assinaturas
               </p>
-              <h2 className="mt-1 text-xl font-semibold">O que se repete no seu mês.</h2>
+              <h2 className="mt-1 text-xl font-semibold">Assinaturas</h2>
             </div>
             <p className="text-right text-sm text-fin-copy">
               {formatBRL(subscriptions.monthly)}/mês
@@ -199,7 +197,7 @@ function BillsTab() {
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <details className="group">
           <summary className="cursor-pointer list-none rounded-full border border-border bg-card px-3 py-1.5 text-sm font-semibold text-muted-foreground hover:bg-muted">
-            Ver outros compromissos
+            Mais opções
           </summary>
           <div className="mt-2 flex flex-wrap gap-2 rounded-2xl border border-border bg-card p-2 shadow-soft">
             {(["upcoming", "recurring", "subscription", "paid", "late"] as const).map((f) => (
@@ -230,7 +228,7 @@ function BillsTab() {
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button className="ml-auto">
-              <Plus className="size-4" /> Adicionar compromisso
+              <Plus className="size-4" /> Adicionar conta
             </Button>
           </DialogTrigger>
           <DialogContent className="max-h-[92vh] overflow-y-auto">
