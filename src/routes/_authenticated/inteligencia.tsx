@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { ArrowRight, MessageCircle, Sparkles } from "lucide-react";
@@ -56,7 +55,10 @@ function IntelligencePage() {
   if (transactions.length === 0) {
     return (
       <div>
-        <PageHeader title="Entenda seu dinheiro" subtitle="Informações simples para ajudar você a perceber o que merece atenção." />
+        <PageHeader
+          title="Entenda seu dinheiro"
+          subtitle="Informações simples para ajudar você a perceber o que merece atenção."
+        />
         <EmptyState
           title="Ainda estou conhecendo seu dinheiro."
           description="Registre alguns gastos ou recebimentos. Quando houver dados suficientes, vou mostrar o que merece sua atenção."
@@ -67,7 +69,10 @@ function IntelligencePage() {
 
   return (
     <div>
-      <PageHeader title="Entenda seu dinheiro" subtitle="Informações simples para ajudar você a perceber o que merece atenção." />
+      <PageHeader
+        title="Entenda seu dinheiro"
+        subtitle="Informações simples para ajudar você a perceber o que merece atenção."
+      />
 
       <section className="mb-5 rounded-2xl border border-fin-line bg-fin-brand-soft p-4 sm:p-5">
         <div className="flex items-start gap-3">
@@ -78,9 +83,12 @@ function IntelligencePage() {
             <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">
               Vale a pena olhar isto
             </p>
-            <h2 className="mt-1 text-lg font-semibold">Uma informação que pode ajudar você agora.</h2>
+            <h2 className="mt-1 text-lg font-semibold">
+              Uma informação que pode ajudar você agora.
+            </h2>
             <p className="mt-1 text-sm leading-6 text-fin-copy">
-              Explicações curtas para você entender sua situação sem precisar interpretar gráficos ou termos financeiros.
+              Explicações curtas para você entender sua situação sem precisar interpretar gráficos
+              ou termos financeiros.
             </p>
           </div>
           <button
@@ -179,7 +187,9 @@ function IntelligencePage() {
               <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">
                 Acesso completo
               </p>
-              <h2 className="mt-1 text-lg font-semibold">O FINANZZI pode continuar ajudando você.</h2>
+              <h2 className="mt-1 text-lg font-semibold">
+                O FINANZZI pode continuar ajudando você.
+              </h2>
             </div>
             <span className="rounded-full bg-fin-brand-soft px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-fin-brand-hover">
               Ativo
@@ -200,7 +210,8 @@ function IntelligencePage() {
       </PlanGate>
 
       <p className="mt-4 text-xs text-fin-copy">
-        Estas orientações servem para ajudar você a entender seus próprios registros. Elas não substituem uma decisão financeira profissional quando ela for necessária.
+        Estas orientações servem para ajudar você a entender seus próprios registros. Elas não
+        substituem uma decisão financeira profissional quando ela for necessária.
       </p>
     </div>
   );
