@@ -1,18 +1,60 @@
 {
   "name": "FINANZZI — inteligência para o seu dinheiro",
   "short_name": "FINANZZI",
+  "id": "/",
   "description": "Registre, organize e entenda melhor o seu dinheiro — no celular, do seu jeito.",
   "start_url": "/dashboard",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone"],
+  "display_override": [
+    "window-controls-overlay",
+    "standalone"
+  ],
   "orientation": "portrait",
   "background_color": "#111111",
   "theme_color": "#111111",
   "lang": "pt-BR",
-  "categories": ["finance", "productivity"],
+  "dir": "ltr",
+  "categories": [
+    "finance",
+    "productivity"
+  ],
+  "prefer_related_applications": false,
   "icons": [
-    {"src":"/brand/logo/finanzzi-logo.svg?v=brand-orange-5","sizes":"any","type":"image/svg+xml","purpose":"any maskable"},
-    {"src":"/brand/logo/finanzzi-logo.png?v=brand-orange-5","sizes":"any","type":"image/png","purpose":"any maskable"}
+    {
+      "src": "/brand/logo/finanzzi-logo.svg?v=brand-orange-6",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/brand/logo/finanzzi-logo.png?v=brand-orange-6",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/brand/logo/finanzzi-logo.png?v=brand-orange-6",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Visão geral",
+      "short_name": "Início",
+      "url": "/dashboard"
+    },
+    {
+      "name": "Lançamentos",
+      "short_name": "Lançar",
+      "url": "/lancamentos"
+    },
+    {
+      "name": "Metas",
+      "short_name": "Metas",
+      "url": "/metas"
+    }
   ]
 }
