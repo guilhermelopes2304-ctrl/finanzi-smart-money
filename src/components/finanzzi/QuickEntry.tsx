@@ -112,9 +112,9 @@ function QuickEntryPreview({ data }: { data: QuickEntryPreviewData }) {
             variant="ghost"
             disabled
             className="size-11 shrink-0 rounded-xl px-0"
-            aria-label={listening ? "Parar gravação" : "Registrar falando"}
+            aria-label="Registrar falando"
           >
-            {listening ? <MicOff className="size-5" /> : <Mic className="size-5" />}
+            <Mic className="size-5" />
           </Button>
           <Button
             type="button"
@@ -132,7 +132,7 @@ function QuickEntryPreview({ data }: { data: QuickEntryPreviewData }) {
             disabled
             className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 text-sm font-semibold text-primary opacity-70"
           >
-            {listening ? <MicOff className="size-4" /> : <Mic className="size-4" />} {listening ? "Parar" : "Falar"}
+            <Mic className="size-4" /> Falar
           </button>
         </div>
       </div>
