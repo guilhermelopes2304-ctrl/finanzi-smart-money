@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { ArrowRight, MessageCircle, Sparkles } from "lucide-react";
@@ -15,12 +14,12 @@ import { trackProductEvent } from "@/lib/product-analytics";
 export const Route = createFileRoute("/_authenticated/inteligencia")({
   head: () => ({
     meta: [
-      { title: "FIN — FINANZZI" },
+      { title: "Ajuda e orientações — FINANZZI" },
       {
         name: "description",
-        content: "Insights do FIN baseados nos seus próprios dados financeiros.",
+        content: "Explicações simples baseadas nos seus próprios dados financeiros.",
       },
-      { property: "og:title", content: "FIN — FINANZZI" },
+      { property: "og:title", content: "Ajuda e orientações — FINANZZI" },
       { property: "og:description", content: "O que seus dados estão tentando te contar." },
     ],
   }),
@@ -56,10 +55,10 @@ function IntelligencePage() {
   if (transactions.length === 0) {
     return (
       <div>
-        <PageHeader title="FIN" subtitle="O que seus dados estão tentando te contar." />
+        <PageHeader title="Entenda seu dinheiro" subtitle="Informações simples para ajudar você a perceber o que merece atenção." />
         <EmptyState
-          title="O FIN ainda está conhecendo seu jeito."
-          description="Registre alguns lançamentos e ele encontra um padrão útil para você."
+          title="Ainda estou conhecendo seu dinheiro."
+          description="Registre alguns gastos ou recebimentos. Quando houver dados suficientes, vou mostrar o que merece sua atenção."
         />
       </div>
     );
@@ -67,7 +66,7 @@ function IntelligencePage() {
 
   return (
     <div>
-      <PageHeader title="FIN" subtitle="O que seus dados estão tentando te contar." />
+      <PageHeader title="Entenda seu dinheiro" subtitle="Informações simples para ajudar você a perceber o que merece atenção." />
 
       <section className="mb-5 rounded-2xl border border-fin-line bg-fin-brand-soft p-4 sm:p-5">
         <div className="flex items-start gap-3">
@@ -76,11 +75,11 @@ function IntelligencePage() {
           </span>
           <div className="min-w-0 flex-1">
             <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">
-              O FIN percebeu
+              Vale a pena olhar isto
             </p>
-            <h2 className="mt-1 text-lg font-semibold">Uma coisa importante sobre este período.</h2>
+            <h2 className="mt-1 text-lg font-semibold">Uma informação que pode ajudar você agora.</h2>
             <p className="mt-1 text-sm leading-6 text-fin-copy">
-              Insights curtos para ajudar você a entender e decidir, sem precisar estudar finanças.
+              Explicações curtas para você entender sua situação sem precisar interpretar gráficos ou termos financeiros.
             </p>
           </div>
           <button
@@ -89,7 +88,7 @@ function IntelligencePage() {
             className="inline-flex min-h-10 shrink-0 items-center gap-2 rounded-xl border border-fin-line bg-white px-3 text-xs font-bold text-fin-brand-hover transition-colors hover:bg-fin-brand-soft"
           >
             <MessageCircle className="size-3.5" />{" "}
-            <span className="hidden sm:inline">Perguntar</span>
+            <span className="hidden sm:inline">Tirar dúvida</span>
           </button>
         </div>
       </section>
@@ -179,7 +178,7 @@ function IntelligencePage() {
               <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">
                 Acesso completo
               </p>
-              <h2 className="mt-1 text-lg font-semibold">O FIN pode continuar te orientando.</h2>
+              <h2 className="mt-1 text-lg font-semibold">O FINANZZI pode continuar ajudando você.</h2>
             </div>
             <span className="rounded-full bg-fin-brand-soft px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-fin-brand-hover">
               Ativo
@@ -200,7 +199,7 @@ function IntelligencePage() {
       </PlanGate>
 
       <p className="mt-4 text-xs text-fin-copy">
-        As orientações do FINANZZI são educativas e baseadas apenas nos dados que você registrou.
+        Estas orientações servem para ajudar você a entender seus próprios registros. Elas não substituem uma decisão financeira profissional quando ela for necessária.
       </p>
     </div>
   );
