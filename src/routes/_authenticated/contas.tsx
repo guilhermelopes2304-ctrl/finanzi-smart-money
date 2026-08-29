@@ -59,13 +59,13 @@ function BillsPage() {
   return (
     <div>
       <PageHeader
-        title="Compromissos"
-        subtitle="O que já está no caminho e o que você precisa lembrar."
+        title="Contas e pagamentos"
+        subtitle="Veja o que precisa pagar e acompanhe suas contas em um só lugar."
       />
       <Tabs defaultValue="bills">
         <TabsList className="mb-4">
-          <TabsTrigger value="bills">Compromissos</TabsTrigger>
-          <TabsTrigger value="accounts">Contas financeiras</TabsTrigger>
+          <TabsTrigger value="bills">Contas a pagar</TabsTrigger>
+          <TabsTrigger value="accounts">Minhas contas</TabsTrigger>
         </TabsList>
         <TabsContent value="bills">
           <BillsTab />
