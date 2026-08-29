@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useMemo } from "react";
 import { ArrowRight, CalendarClock, CircleHelp, Sparkles } from "lucide-react";
 import { Link } from "@tanstack/react-router";
