@@ -433,3 +433,7 @@ button:active:not(:disabled),
     animation: none;
   }
 }
+
+/* Native shell safe areas */
+html[data-platform="ios"], html[data-platform="android"] { background: #111111; }
+html[data-platform="ios"] body, html[data-platform="android"] body { min-height: 100dvh; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
