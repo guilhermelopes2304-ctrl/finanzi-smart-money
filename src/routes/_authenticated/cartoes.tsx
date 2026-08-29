@@ -119,14 +119,14 @@ function CardsPage() {
     <div>
       <PageHeader
         title="Cartões"
-        subtitle="O que está disponível, o que já está na fatura e o que vem depois."
+        subtitle="Veja seus cartões e o que já foi usado."
         action={
           <div className="flex gap-2">
             {cards.length > 0 && (
               <Dialog open={openPurchase} onOpenChange={setOpenPurchase}>
                 <DialogTrigger asChild>
                   <Button variant="outline">
-                    <Plus className="size-4" /> Lançar compra
+                    <Plus className="size-4" /> Registrar compra
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-h-[92vh] overflow-y-auto">
