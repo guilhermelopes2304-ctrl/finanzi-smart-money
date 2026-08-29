@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Check, Mic, Send, Sparkles, X } from "lucide-react";
+import { Check, Mic, MicOff, Send, Sparkles, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import {
   useAccounts,
@@ -33,6 +33,19 @@ import { trackProductEvent } from "@/lib/product-analytics";
 import type { TransactionType } from "@/types/finance";
 
 const NONE = "__none__";
+
+type SpeechResultLike = { isFinal: boolean; 0?: { transcript?: string } };
+type SpeechRecognitionLike = {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  onresult: ((event: { resultIndex?: number; results: SpeechResultLike[] }) => void) | null;
+  onerror: ((event?: { error?: string }) => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+};
+type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
 
 export function recurrenceLabel(value: QuickParseResult["recurrence"]) {
   return value === "monthly" ? "todo mês" : value === "yearly" ? "todo ano" : "toda semana";
@@ -99,9 +112,9 @@ function QuickEntryPreview({ data }: { data: QuickEntryPreviewData }) {
             variant="ghost"
             disabled
             className="size-11 shrink-0 rounded-xl px-0"
-            aria-label="Registrar falando"
+            aria-label={listening ? "Parar gravação" : "Registrar falando"}
           >
-            <Mic className="size-5" />
+            {listening ? <MicOff className="size-5" /> : <Mic className="size-5" />}
           </Button>
           <Button
             type="button"
@@ -119,7 +132,7 @@ function QuickEntryPreview({ data }: { data: QuickEntryPreviewData }) {
             disabled
             className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 text-sm font-semibold text-primary opacity-70"
           >
-            <Mic className="size-4" /> Falar
+            {listening ? <MicOff className="size-4" /> : <Mic className="size-4" />} {listening ? "Parar" : "Falar"}
           </button>
         </div>
       </div>
@@ -174,18 +187,16 @@ function QuickEntryLive() {
   const [manualOpen, setManualOpen] = useState(false);
   const [manualText, setManualText] = useState("");
   const [paidBillId, setPaidBillId] = useState<string | null>(null);
+  const [listening, setListening] = useState(false);
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
 
-  function openFinVoice() {
-    window.dispatchEvent(new CustomEvent("finanzzi:open-assistant", { detail: { listen: true } }));
-  }
-
-  function handleParse(event: React.FormEvent) {
-    event.preventDefault();
-    if (!text.trim()) return;
+  function parseText(rawText: string) {
+    const nextText = rawText.trim();
+    if (!nextText) return;
     trackProductEvent("quick_entry_used");
     const interpretation = interpretFinanceMessage({
       channel: "app",
-      text,
+      text: nextText,
       categories,
       accounts,
       cards,
@@ -198,8 +209,8 @@ function QuickEntryLive() {
     if (result.confidence === "low") {
       setManualText(result.raw);
       setManualOpen(true);
-      setText("");
-      toast("Não consegui entender todos os detalhes. Abri uma tela simples para você conferir antes de salvar.");
+      setText(nextText);
+      toast("Não consegui entender todos os detalhes. Confira antes de salvar.");
       return;
     }
     setDraft(result);
@@ -210,6 +221,82 @@ function QuickEntryLive() {
     setCardId(result.cardId ?? NONE);
     setAccountId(result.accountId ?? NONE);
   }
+
+  function handleParse(event: React.FormEvent) {
+    event.preventDefault();
+    parseText(text);
+  }
+
+  function stopListening() {
+    recognitionRef.current?.stop();
+    recognitionRef.current = null;
+    setListening(false);
+  }
+
+  function startInlineVoice() {
+    const voiceWindow = window as typeof window & {
+      SpeechRecognition?: SpeechRecognitionConstructor;
+      webkitSpeechRecognition?: SpeechRecognitionConstructor;
+    };
+    const Ctor = voiceWindow.SpeechRecognition ?? voiceWindow.webkitSpeechRecognition;
+
+    if (!Ctor) {
+      toast.error("O reconhecimento de voz não está disponível neste navegador.");
+      return;
+    }
+
+    if (listening) {
+      stopListening();
+      return;
+    }
+
+    const recognition = new Ctor();
+    recognition.lang = "pt-BR";
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.onresult = (event) => {
+      let finalText = "";
+      let interimText = "";
+
+      for (let index = event.resultIndex ?? 0; index < event.results.length; index += 1) {
+        const result = event.results[index];
+        const transcript = result?.[0]?.transcript ?? "";
+        if (result?.isFinal) finalText += transcript;
+        else interimText += transcript;
+      }
+
+      if (finalText.trim()) {
+        recognitionRef.current = null;
+        setListening(false);
+        setText(finalText.trim());
+        parseText(finalText.trim());
+      } else if (interimText.trim()) {
+        setText(interimText.trim());
+      }
+    };
+    recognition.onerror = (event) => {
+      recognitionRef.current = null;
+      setListening(false);
+      if (event?.error === "not-allowed" || event?.error === "service-not-allowed") {
+        toast.error("Permita o acesso ao microfone para registrar falando.");
+      }
+    };
+    recognition.onend = () => {
+      recognitionRef.current = null;
+      setListening(false);
+    };
+
+    recognitionRef.current = recognition;
+    setListening(true);
+    try {
+      recognition.start();
+    } catch {
+      recognitionRef.current = null;
+      setListening(false);
+    }
+  }
+
+  useEffect(() => () => recognitionRef.current?.stop(), []);
 
   async function confirm() {
     if (!user || !draft) return;
@@ -314,10 +401,10 @@ function QuickEntryLive() {
         </div>
         <button
           type="button"
-          onClick={openFinVoice}
+          onClick={startInlineVoice}
           className="hidden min-h-10 items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-3 text-xs font-bold text-primary transition-colors hover:bg-primary/10 sm:inline-flex"
         >
-          <Mic className="size-3.5" /> Falar com o Fin
+          <Mic className="size-3.5" /> Registrar falando
         </button>
       </div>
       <form onSubmit={handleParse} className="mt-4 space-y-2">
@@ -332,9 +419,9 @@ function QuickEntryLive() {
           <Button
             type="button"
             variant="ghost"
-            onClick={openFinVoice}
+            onClick={startInlineVoice}
             className="size-11 shrink-0 rounded-xl px-0"
-            aria-label="Falar com o Fin"
+            aria-label="Registrar falando"
           >
             <Mic className="size-5" />
           </Button>
@@ -351,7 +438,7 @@ function QuickEntryLive() {
         <div className="sm:hidden">
           <button
             type="button"
-            onClick={openFinVoice}
+            onClick={startInlineVoice}
             className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 text-sm font-semibold text-primary transition-colors hover:bg-primary/10 active:scale-[0.99]"
           >
             <Mic className="size-4" /> Falar
