@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { lazy, Suspense, useEffect, useState, type ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
