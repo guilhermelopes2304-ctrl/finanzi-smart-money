@@ -189,7 +189,6 @@ function QuickEntryLive() {
   const [paidBillId, setPaidBillId] = useState<string | null>(null);
   const [listening, setListening] = useState(false);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
-  const quickEntryRef = useRef<HTMLDivElement | null>(null);
 
   function parseText(rawText: string) {
     const nextText = rawText.trim();
