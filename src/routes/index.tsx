@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ArrowRight, Check, ChevronDown, Mic, ShieldCheck } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/finanzzi/Logo";
 import { BILLING_PLANS, getHublaCheckoutUrl } from "@/lib/billing";
 import { trackProductEvent } from "@/lib/product-analytics";
@@ -23,15 +22,23 @@ const PRINTS = {
 };
 
 function Reveal({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  const reduced = useReducedMotion();
-  return <motion.div className={className} initial={{ opacity: 0, y: reduced ? 0 : 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: reduced ? 0.01 : 0.55, ease: [0.22, 1, 0.36, 1] }}>{children}</motion.div>;
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setVisible(true); return; }
+    const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect(); } }, { threshold: 0.16 });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+  return <div ref={ref} className={`fin-reveal ${visible ? "is-visible" : ""} ${className}`}>{children}</div>;
 }
 
 function PhoneMockup({ prints, alt }: { prints: string[]; alt: string }) {
   const [index, setIndex] = useState(0);
-  const reduced = useReducedMotion();
   useEffect(() => {
-    if (prints.length < 2 || reduced) return;
+    if (prints.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const timer = window.setInterval(() => setIndex((current) => (current + 1) % prints.length), 3400);
     return () => window.clearInterval(timer);
   }, [prints.length, reduced]);
@@ -39,9 +46,7 @@ function PhoneMockup({ prints, alt }: { prints: string[]; alt: string }) {
     <div className="relative mx-auto w-full max-w-[320px]">
       <div className="rounded-[38px] border-[8px] border-[#333333] bg-[#18181A] p-[3px]">
         <div className="relative aspect-[9/19] overflow-hidden rounded-[28px] bg-[#262626]">
-          <AnimatePresence mode="sync">
-            <motion.img key={prints[index]} src={prints[index]} alt={alt} loading="lazy" decoding="async" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduced ? 0.01 : 0.6 }} className="absolute inset-0 h-full w-full object-cover" />
-          </AnimatePresence>
+          <img src={prints[index]} alt={alt} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover fin-print-fade" />
           <div className="pointer-events-none absolute inset-x-0 top-0 h-7 bg-[#0A0A0A]" />
         </div>
       </div>
@@ -82,7 +87,7 @@ function Landing() {
 
       <section id="planos" className="border-y border-[#333333] bg-[#18181A] px-4 py-24 sm:px-6 sm:py-32"><div className="mx-auto max-w-5xl"><Reveal><p className="text-[11px] font-bold uppercase tracking-[.22em] text-[#F3612D]">Planos</p><h2 className="mt-5 max-w-3xl text-5xl font-bold leading-[.94] tracking-[-.06em] sm:text-7xl">Menos uma coisa para pensar.</h2></Reveal><div className="mt-12 grid gap-5 lg:grid-cols-2"><Reveal><article className="rounded-[24px] border border-[#333333] bg-[#18181A] p-8"><p className="text-xs font-bold uppercase tracking-[.16em] text-[#A3A3A3]">Mensal</p><h3 className="mt-3 text-3xl font-bold">{BILLING_PLANS.pro_monthly.name}</h3><p className="mt-8 text-5xl font-bold tracking-[-.07em]">{BILLING_PLANS.pro_monthly.priceLabel}</p><a href={monthlyCheckout} onClick={beginCheckout} className="mt-8 flex h-14 items-center justify-center rounded-full bg-[#262626] text-sm font-bold">ASSINAR MENSAL</a></article></Reveal><Reveal><article className="rounded-[24px] border border-[#F3612D] bg-[#18181A] p-8"><span className="inline-flex rounded-[8px] bg-[#F3612D] px-3 py-1 text-[10px] font-bold uppercase tracking-[.16em]">melhor valor</span><p className="mt-6 text-xs font-bold uppercase tracking-[.16em] text-[#A3A3A3]">Anual</p><h3 className="mt-3 text-3xl font-bold">{BILLING_PLANS.pro_annual.name}</h3><p className="mt-8 text-5xl font-bold tracking-[-.07em]">{BILLING_PLANS.pro_annual.priceLabel}</p><p className="mt-2 text-sm text-[#F3612D]">{BILLING_PLANS.pro_annual.monthlyEquivalentLabel}</p><a href={annualCheckout} onClick={beginCheckout} className="mt-8 flex h-14 items-center justify-center gap-2 rounded-full bg-[#F3612D] text-sm font-bold">ASSINAR ANUAL <ArrowRight className="size-4" /></a></article></Reveal></div></div></section>
 
-      <section id="faq" className="px-4 py-24 sm:px-6 sm:py-32"><div className="mx-auto max-w-3xl"><Reveal><p className="text-[11px] font-bold uppercase tracking-[.22em] text-[#F3612D]">Dúvidas</p><h2 className="mt-5 text-5xl font-bold leading-[.94] tracking-[-.06em] sm:text-7xl">Sem letra miúda.</h2></Reveal><div className="mt-10 divide-y divide-[#333333] border-y border-[#333333]">{faqs.map(([question, answer], index) => <div key={question}><button onClick={() => setOpenFaq(openFaq === index ? null : index)} className="flex w-full items-center justify-between gap-6 py-6 text-left text-lg font-bold"><span>{question}</span><ChevronDown className={openFaq === index ? "size-5 rotate-180 text-[#F3612D]" : "size-5 text-[#A3A3A3]"} /></button><AnimatePresence>{openFaq === index && <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden"><p className="max-w-2xl pb-6 leading-7 text-[#A3A3A3]">{answer}</p></motion.div>}</AnimatePresence></div>)}</div></div></section>
+      <section id="faq" className="px-4 py-24 sm:px-6 sm:py-32"><div className="mx-auto max-w-3xl"><Reveal><p className="text-[11px] font-bold uppercase tracking-[.22em] text-[#F3612D]">Dúvidas</p><h2 className="mt-5 text-5xl font-bold leading-[.94] tracking-[-.06em] sm:text-7xl">Sem letra miúda.</h2></Reveal><div className="mt-10 divide-y divide-[#333333] border-y border-[#333333]">{faqs.map(([question, answer], index) => <div key={question}><button onClick={() => setOpenFaq(openFaq === index ? null : index)} className="flex w-full items-center justify-between gap-6 py-6 text-left text-lg font-bold"><span>{question}</span><ChevronDown className={openFaq === index ? "size-5 rotate-180 text-[#F3612D]" : "size-5 text-[#A3A3A3]"} /></button>{openFaq === index && <div className="fin-faq-open"><p className="max-w-2xl pb-6 leading-7 text-[#A3A3A3]">{answer}</p></div>}</div>)}</div></div></section>
 
       <section className="border-t border-[#333333] bg-[#18181A] px-4 py-24 text-center sm:px-6 sm:py-32"><Reveal><h2 className="mx-auto max-w-4xl text-5xl font-bold leading-[.92] tracking-[-.07em] sm:text-7xl">Pare de organizar tudo.<br />Comece a entender.</h2><p className="mx-auto mt-6 max-w-xl text-lg text-[#A3A3A3]">Seu dinheiro não precisa de mais uma planilha.</p><a href={annualCheckout} onClick={beginCheckout} className="mt-9 inline-flex h-14 items-center gap-2 rounded-full bg-[#F3612D] px-8 text-sm font-bold">COMEÇAR AGORA <ArrowRight className="size-4" /></a></Reveal></section>
     </main>
