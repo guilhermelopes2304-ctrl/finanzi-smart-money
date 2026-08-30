@@ -235,7 +235,7 @@ const STOP_WORDS = new Set([
 
 function buildDescription(raw: string): string {
   const textWithoutAmount = raw
-    .replace(/(?:r\$\s*)?\d{1,3}(?:\.\d{3})*(?:[,\.]\d{1,2})?\s*(?:reais?|r\$)?/gi, " ")
+    .replace(/(?:r\$\s*)?\d{1,3}(?:\.\d{3})*(?:[,.]\d{1,2})?\s*(?:reais?|r\$)?/gi, " ")
     .replace(/\s+/g, " ")
     .trim();
 
