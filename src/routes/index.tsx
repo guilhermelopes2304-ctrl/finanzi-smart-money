@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Check, ChevronDown, Mic, ShieldCheck } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
