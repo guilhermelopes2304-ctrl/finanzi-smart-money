@@ -223,6 +223,8 @@ const STOP_WORDS = new Set([
   "reais",
   "real",
   "r$",
+  "reais",
+  "real",
   "meu",
   "minha",
   "hoje",
