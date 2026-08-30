@@ -190,6 +190,22 @@ function QuickEntryLive() {
   const [listening, setListening] = useState(false);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
 
+  function returnToDashboardTop() {
+    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const behavior: ScrollBehavior = reduceMotion ? "auto" : "smooth";
+    const scrollTop = () => {
+      window.scrollTo({ top: 0, left: 0, behavior });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    };
+
+    // Wait for the save state and dashboard queries to finish changing the layout.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(scrollTop);
+    });
+    window.setTimeout(scrollTop, 120);
+  }
+
   function parseText(rawText: string) {
     const nextText = rawText.trim();
     if (!nextText) return;
@@ -317,7 +333,7 @@ function QuickEntryLive() {
         setDraft(null);
         setPaidBillId(null);
         setText("");
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        returnToDashboardTop();
         return;
       }
       const category = categoryId === NONE ? null : categoryId;
@@ -366,7 +382,7 @@ function QuickEntryLive() {
       invalidate();
       setDraft(null);
       setText("");
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      returnToDashboardTop();
     } catch {
       toast.error("Não foi possível salvar", {
         description: "Verifique sua conexão e tente novamente.",
