@@ -271,6 +271,7 @@ export type Database = {
           created_at: string;
           current_balance: number;
           email: string;
+          avatar_url: string | null;
           id: string;
           main_goal: string | null;
           monthly_income: number;
@@ -283,6 +284,7 @@ export type Database = {
           created_at?: string;
           current_balance?: number;
           email?: string;
+          avatar_url?: string | null;
           id: string;
           main_goal?: string | null;
           monthly_income?: number;
