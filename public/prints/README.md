@@ -7,8 +7,8 @@ Adicione os prints reais do produto com estes nomes:
 - registro-2.png
 - registro-3.png
 - clareza-1.png
-- fin-1.png
-- fin-2.png
+- insight-1.png
+- insight-2.png
 - compromissos-1.png
 - compromissos-2.png
 
