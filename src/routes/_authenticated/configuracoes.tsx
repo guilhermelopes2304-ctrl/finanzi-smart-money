@@ -181,7 +181,11 @@ function SettingsPage() {
                 profile?.name?.slice(0, 1).toUpperCase() || "F"
               )}
               <span className="absolute inset-x-0 bottom-0 grid h-7 place-items-center bg-black/55 text-white">
-                {avatarUploading ? <Loader2 className="size-4 animate-spin" /> : <Camera className="size-4" />}
+                {avatarUploading ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <Camera className="size-4" />
+                )}
               </span>
             </button>
             <div>
@@ -240,7 +244,6 @@ function SettingsPage() {
           <Button type="submit" variant="outline">
             Alterar senha
           </Button>
-
         </form>
       </div>
 
