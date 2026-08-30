@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { LogOut, Plus, Sparkles, ShieldCheck, Trash2 } from "lucide-react";
+import { Camera, Loader2, LogOut, Plus, Sparkles, ShieldCheck, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -48,6 +48,8 @@ function SettingsPage() {
   const [income, setIncome] = useState("");
   const [password, setPassword] = useState("");
   const [proOpen, setProOpen] = useState(false);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
   const { isPro, subscription } = usePlan();
   const billingStatus = subscription?.status ?? "free";
 
@@ -57,6 +59,39 @@ function SettingsPage() {
       setIncome(String(Number(profile.monthly_income).toFixed(2)).replace(".", ","));
     }
   }, [profile]);
+
+  async function handleAvatarChange(file?: File) {
+    if (!file || !profile) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Escolha uma imagem da galeria");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("A foto deve ter no máximo 5 MB");
+      return;
+    }
+
+    setAvatarUploading(true);
+    try {
+      const extension = file.type === "image/png" ? "png" : "jpg";
+      const path = `${profile.id}/avatar.${extension}`;
+      const { error: uploadError } = await supabase.storage
+        .from("profile-avatars")
+        .upload(path, file, { upsert: true, contentType: file.type, cacheControl: "3600" });
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from("profile-avatars").getPublicUrl(path);
+      await update.mutateAsync({ avatar_url: `${data.publicUrl}?v=${Date.now()}` });
+      toast.success("Foto de perfil atualizada");
+    } catch (error) {
+      toast.error("Não foi possível atualizar a foto", {
+        description: error instanceof Error ? error.message : undefined,
+      });
+    } finally {
+      setAvatarUploading(false);
+      if (avatarInputRef.current) avatarInputRef.current.value = "";
+    }
+  }
 
   async function changePassword(event: React.FormEvent) {
     event.preventDefault();
@@ -131,7 +166,47 @@ function SettingsPage() {
             update.mutate({ name, monthly_income: parseBRL(income) });
           }}
         >
-          <h2 className="text-base font-semibold">Seus dados</h2>
+          <h2 className="text-base font-semibold">Seu perfil</h2>
+          <div className="flex items-center gap-4 rounded-2xl border border-border bg-muted/25 p-4">
+            <button
+              type="button"
+              onClick={() => avatarInputRef.current?.click()}
+              disabled={avatarUploading}
+              className="relative grid size-20 shrink-0 place-items-center overflow-hidden rounded-full border border-border bg-fin-brand-soft text-lg font-bold text-fin-brand-hover transition-transform active:scale-95 disabled:opacity-60"
+              aria-label="Alterar foto de perfil"
+            >
+              {profile?.avatar_url ? (
+                <img src={profile.avatar_url} alt="" className="size-full object-cover" />
+              ) : (
+                profile?.name?.slice(0, 1).toUpperCase() || "F"
+              )}
+              <span className="absolute inset-x-0 bottom-0 grid h-7 place-items-center bg-black/55 text-white">
+                {avatarUploading ? <Loader2 className="size-4 animate-spin" /> : <Camera className="size-4" />}
+              </span>
+            </button>
+            <div>
+              <p className="font-semibold">Foto de perfil</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Escolha uma foto diretamente da galeria do seu celular.
+              </p>
+              <Button
+                type="button"
+                variant="outline"
+                className="mt-3 rounded-xl"
+                disabled={avatarUploading}
+                onClick={() => avatarInputRef.current?.click()}
+              >
+                {avatarUploading ? "Enviando..." : "Escolher foto"}
+              </Button>
+              <input
+                ref={avatarInputRef}
+                type="file"
+                accept="image/*"
+                className="sr-only"
+                onChange={(event) => void handleAvatarChange(event.target.files?.[0])}
+              />
+            </div>
+          </div>
           <div className="space-y-1.5">
             <Label htmlFor="set-name">Nome</Label>
             <Input id="set-name" value={name} onChange={(e) => setName(e.target.value)} required />
@@ -165,22 +240,33 @@ function SettingsPage() {
           <Button type="submit" variant="outline">
             Alterar senha
           </Button>
-          <div className="border-t border-border pt-4">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={async () => {
-                await supabase.auth.signOut();
-                await navigate({ to: "/" });
-              }}
-            >
-              <LogOut className="size-4" /> Sair da conta
-            </Button>
-          </div>
+
         </form>
       </div>
 
       <CategoriesSection />
+
+      <footer className="mt-10 border-t border-border pt-6 pb-4">
+        <div className="flex flex-col items-start justify-between gap-4 rounded-2xl border border-border bg-muted/20 p-5 sm:flex-row sm:items-center">
+          <div>
+            <h2 className="font-semibold">Encerrar sessão</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Você poderá entrar novamente quando quiser.
+            </p>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            className="rounded-xl"
+            onClick={async () => {
+              await supabase.auth.signOut();
+              await navigate({ to: "/" });
+            }}
+          >
+            <LogOut className="size-4" /> Sair da conta
+          </Button>
+        </div>
+      </footer>
     </div>
   );
 }
