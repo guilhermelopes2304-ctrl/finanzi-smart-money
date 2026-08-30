@@ -7,7 +7,6 @@ import {
   ChevronRight,
   CreditCard,
   Home,
-  LogOut,
   MoreHorizontal,
   Plus,
   Settings,
@@ -17,7 +16,6 @@ import {
   X,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { usePlan } from "@/hooks/usePlan";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/finanzzi/Logo";
@@ -251,11 +249,6 @@ export function AppShell({
     if (pathname) setMoreOpen(false);
   }, [pathname]);
 
-  async function signOut() {
-    await supabase.auth.signOut();
-    await navigate({ to: "/" });
-  }
-
   if (pathname === "/boas-vindas") return children;
 
   const desktopSidebarWidth = sidebarCollapsed ? "lg:ml-[88px]" : "lg:ml-[256px]";
@@ -361,15 +354,6 @@ export function AppShell({
             <Plus className="size-4" />
             {!sidebarCollapsed && "Registrar"}
           </Button>
-          {!sidebarCollapsed && (
-            <button
-              type="button"
-              onClick={signOut}
-              className="flex min-h-10 w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            >
-              <LogOut className="size-4" /> Sair
-            </button>
-          )}
         </div>
 
         <button
@@ -393,9 +377,13 @@ export function AppShell({
           <Link
             to="/configuracoes"
             aria-label="Abrir configurações"
-            className="grid size-10 place-items-center rounded-full border border-border bg-card text-xs font-bold text-fin-brand-hover shadow-sm transition-transform active:scale-95"
+            className="grid size-10 overflow-hidden place-items-center rounded-full border border-border bg-card text-xs font-bold text-fin-brand-hover shadow-sm transition-transform active:scale-95"
           >
-            {initials(profile?.name)}
+            {profile?.avatar_url ? (
+              <img src={profile.avatar_url} alt="" className="size-full object-cover" />
+            ) : (
+              initials(profile?.name)
+            )}
           </Link>
         </div>
       </header>
