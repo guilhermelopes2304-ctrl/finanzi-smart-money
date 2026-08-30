@@ -46,6 +46,7 @@ export interface Profile {
   main_goal: string | null;
   onboarded: boolean;
   plan: string;
+  avatar_url?: string | null;
 }
 
 export interface Account {
