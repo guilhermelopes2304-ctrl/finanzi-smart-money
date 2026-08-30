@@ -73,12 +73,17 @@ function SettingsPage() {
 
     setAvatarUploading(true);
     try {
-      const extension = file.type === "image/png" ? "png" : "jpg";
-      const path = `${profile.id}/avatar.${extension}`;
+      const extension = file.name.split(".").pop()?.toLowerCase() || "jpg";
+      const safeExtension = ["jpg", "jpeg", "png", "webp", "heic", "heif"].includes(extension)
+        ? extension
+        : "jpg";
+      const path = `${profile.id}/avatar.${safeExtension}`;
       const { error: uploadError } = await supabase.storage
         .from("profile-avatars")
         .upload(path, file, { upsert: true, contentType: file.type, cacheControl: "3600" });
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        throw new Error(uploadError.message);
+      }
 
       const { data } = supabase.storage.from("profile-avatars").getPublicUrl(path);
       await update.mutateAsync({ avatar_url: `${data.publicUrl}?v=${Date.now()}` });
