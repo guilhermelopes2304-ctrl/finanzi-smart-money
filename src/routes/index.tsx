@@ -41,7 +41,7 @@ function PhoneMockup({ prints, alt }: { prints: string[]; alt: string }) {
     if (prints.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const timer = window.setInterval(() => setIndex((current) => (current + 1) % prints.length), 3400);
     return () => window.clearInterval(timer);
-  }, [prints.length, reduced]);
+  }, [prints.length]);
   return (
     <div className="relative mx-auto w-full max-w-[320px]">
       <div className="rounded-[38px] border-[8px] border-[#333333] bg-[#18181A] p-[3px]">
