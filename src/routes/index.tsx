@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ArrowRight, Check, ChevronDown, Mic, ShieldCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Logo } from "@/components/finanzzi/Logo";
