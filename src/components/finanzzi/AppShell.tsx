@@ -425,7 +425,11 @@ export function AppShell({
           <NavItem item={MOBILE_NAV[0]} active={activePathname === MOBILE_NAV[0].to} mobile />
           <NavItem item={MOBILE_NAV[1]} active={activePathname === MOBILE_NAV[1].to} mobile />
           <NavItem item={MOBILE_NAV[2]} active={activePathname === MOBILE_NAV[2].to} mobile />
-          <NavItem item={{ to: "/metas", label: "Metas", icon: Target }} active={activePathname === "/metas"} mobile />
+          <NavItem
+            item={{ to: "/metas", label: "Metas", icon: Target }}
+            active={activePathname === "/metas"}
+            mobile
+          />
           <button
             type="button"
             onClick={() => {
