@@ -1,12 +1,7 @@
 export type TransactionType = "income" | "expense";
 
 export type PaymentMethod =
-  | "dinheiro"
-  | "pix"
-  | "debito"
-  | "credito"
-  | "transferencia"
-  | "outro";
+  "dinheiro" | "pix" | "debito" | "credito" | "transferencia" | "outro";
 
 export const PAYMENT_METHODS: { value: PaymentMethod; label: string }[] = [
   { value: "dinheiro", label: "Dinheiro" },
