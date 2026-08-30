@@ -223,6 +223,8 @@ const STOP_WORDS = new Set([
   "reais",
   "real",
   "r$",
+  "reais",
+  "real",
   "meu",
   "minha",
   "hoje",
@@ -232,7 +234,12 @@ const STOP_WORDS = new Set([
 ]);
 
 function buildDescription(raw: string): string {
-  const words = raw
+  const textWithoutAmount = raw
+    .replace(/(?:r\$\s*)?\d{1,3}(?:\.\d{3})*(?:[,.]\d{1,2})?\s*(?:reais?|r\$)?/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const words = textWithoutAmount
     .split(/\s+/)
     .filter((w) => {
       const n = normalize(w).replace(/[^\wçã]/g, "");
@@ -242,7 +249,7 @@ function buildDescription(raw: string): string {
     })
     .slice(0, 5);
   const text = words.join(" ").trim();
-  if (!text) return raw.trim().slice(0, 60);
+  if (!text) return textWithoutAmount || raw.trim().slice(0, 60);
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
 

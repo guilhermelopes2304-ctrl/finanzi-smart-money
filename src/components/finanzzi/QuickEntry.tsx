@@ -317,6 +317,7 @@ function QuickEntryLive() {
         setDraft(null);
         setPaidBillId(null);
         setText("");
+        window.scrollTo({ top: 0, behavior: "smooth" });
         return;
       }
       const category = categoryId === NONE ? null : categoryId;
@@ -365,6 +366,7 @@ function QuickEntryLive() {
       invalidate();
       setDraft(null);
       setText("");
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch {
       toast.error("Não foi possível salvar", {
         description: "Verifique sua conexão e tente novamente.",
