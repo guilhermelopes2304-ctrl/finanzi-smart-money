@@ -18,7 +18,7 @@ const PRINTS = {
   hero: ["/prints/hero.png"],
   registro: ["/prints/registro-1.png", "/prints/registro-2.png", "/prints/registro-3.png"],
   clareza: ["/prints/clareza-1.png"],
-  fin: ["/prints/fin-1.png", "/prints/fin-2.png"],
+  insights: ["/prints/insight-1.png", "/prints/insight-2.png"],
   compromissos: ["/prints/compromissos-1.png", "/prints/compromissos-2.png"],
 };
 
@@ -76,7 +76,7 @@ function Landing() {
       <div id="produto">
         <Scene number="01" eyebrow="Registro" title="Você não preenche. Você conta." side={<div><PhoneMockup prints={PRINTS.registro} alt="Registro rápido de uma movimentação" /><div className="mx-auto mt-8 flex max-w-md items-center gap-3 rounded-full bg-[#262626] px-5 py-4 text-sm text-[#A3A3A3]"><Mic className="size-5 text-[#F3612D]" /><span>“30 reais Uber”</span><span className="ml-auto size-8 rounded-full bg-[#F3612D]" /></div></div>} />
         <Scene number="02" eyebrow="Clareza" title="Você vê para onde o dinheiro vai." reverse side={<PhoneMockup prints={PRINTS.clareza} alt="Resumo financeiro por categoria" />} />
-        <Scene number="03" eyebrow="FIN percebeu" title="O FINANZZI chama sua atenção na hora certa." side={<PhoneMockup prints={PRINTS.fin} alt="Insight proativo do FINANZZI" />} />
+        <Scene number="03" eyebrow="Insights" title="Você percebe o que merece atenção." side={<PhoneMockup prints={PRINTS.insights} alt="Insight financeiro direto no aplicativo" />} />
         <Scene number="04" eyebrow="Compromissos" title="Nada te pega de surpresa." reverse side={<PhoneMockup prints={PRINTS.compromissos} alt="Compromissos dos próximos dias" />} />
       </div>
 
