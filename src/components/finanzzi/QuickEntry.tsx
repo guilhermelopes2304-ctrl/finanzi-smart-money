@@ -189,6 +189,7 @@ function QuickEntryLive() {
   const [paidBillId, setPaidBillId] = useState<string | null>(null);
   const [listening, setListening] = useState(false);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
+  const quickEntryRef = useRef<HTMLDivElement | null>(null);
 
   function parseText(rawText: string) {
     const nextText = rawText.trim();
@@ -317,6 +318,7 @@ function QuickEntryLive() {
         setDraft(null);
         setPaidBillId(null);
         setText("");
+        window.scrollTo({ top: 0, behavior: "smooth" });
         return;
       }
       const category = categoryId === NONE ? null : categoryId;
@@ -365,6 +367,7 @@ function QuickEntryLive() {
       invalidate();
       setDraft(null);
       setText("");
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch {
       toast.error("Não foi possível salvar", {
         description: "Verifique sua conexão e tente novamente.",
