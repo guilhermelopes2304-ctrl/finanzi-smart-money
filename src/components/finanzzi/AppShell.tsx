@@ -2,14 +2,12 @@ import { lazy, Suspense, useEffect, useState, type ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   BarChart3,
-  Brain,
   CalendarClock,
   ChevronLeft,
   ChevronRight,
   CreditCard,
   Home,
   LogOut,
-  MessageCircle,
   MoreHorizontal,
   Plus,
   Settings,
@@ -30,11 +28,6 @@ const TransactionDialog = lazy(() =>
     default: module.TransactionDialog,
   })),
 );
-const FinancialAssistant = lazy(() =>
-  import("@/components/finanzzi/FinancialAssistantV2").then((module) => ({
-    default: module.FinancialAssistant,
-  })),
-);
 import { NavigationLoading } from "@/components/finanzzi/NavigationLoading";
 import { cn } from "@/lib/utils";
 
@@ -49,8 +42,7 @@ const NAV: readonly NavItemDefinition[] = [
   { to: "/lancamentos", label: "Histórico", icon: Wallet },
   { to: "/contas", label: "Contas", icon: CalendarClock },
   { to: "/cartoes", label: "Cartões", icon: CreditCard },
-  { to: "/metas", label: "Objetivos", icon: Target },
-  { to: "/inteligencia", label: "Ajuda", icon: Brain },
+  { to: "/metas", label: "Metas", icon: Target },
 ];
 const MOBILE_NAV: readonly [NavItemDefinition, NavItemDefinition, NavItemDefinition] = [
   NAV[0] as NavItemDefinition,
@@ -64,9 +56,6 @@ const MORE_NAV: readonly NavItemDefinition[] = [
   { to: "/configuracoes", label: "Configurações", icon: Settings },
 ];
 
-function openAssistant() {
-  window.dispatchEvent(new CustomEvent("finanzzi:open-assistant"));
-}
 function beginNavigation() {
   window.dispatchEvent(new CustomEvent("finanzzi:navigation-start"));
 }
@@ -436,23 +425,7 @@ export function AppShell({
           <NavItem item={MOBILE_NAV[0]} active={activePathname === MOBILE_NAV[0].to} mobile />
           <NavItem item={MOBILE_NAV[1]} active={activePathname === MOBILE_NAV[1].to} mobile />
           <NavItem item={MOBILE_NAV[2]} active={activePathname === MOBILE_NAV[2].to} mobile />
-          <button
-            type="button"
-            onClick={() => {
-              if (!visualReview) openAssistant();
-            }}
-            className={cn(
-              "group flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[10px] font-semibold transition-colors active:scale-[0.97]",
-              activePathname === "/inteligencia"
-                ? "bg-fin-brand-soft text-fin-brand-hover"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground",
-            )}
-          >
-            <span className="grid size-9 place-items-center rounded-xl bg-fin-brand-soft text-fin-brand-hover group-hover:bg-primary group-hover:text-primary-foreground">
-              <MessageCircle className="size-[18px]" />
-            </span>
-            <span>Ajuda</span>
-          </button>
+          <NavItem item={NAV[4]} active={activePathname === NAV[4].to} mobile />
           <button
             type="button"
             onClick={() => {
@@ -491,9 +464,6 @@ export function AppShell({
           <TransactionDialog open={transactionOpen} onOpenChange={setTransactionOpen} />
         </Suspense>
       )}
-      <Suspense fallback={null}>
-        <FinancialAssistant />
-      </Suspense>
     </div>
   );
 }
