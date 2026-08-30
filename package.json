@@ -75,7 +75,7 @@
     "@capacitor/ios": "^8.1.0",
     "@capacitor/keyboard": "^8.0.0",
     "@capacitor/status-bar": "^8.0.0",
-    "framer-motion": "^12.23.24"
+    "motion": "^12.23.24"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
