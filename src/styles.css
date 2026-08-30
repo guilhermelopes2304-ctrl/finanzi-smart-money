@@ -439,3 +439,12 @@ button:active:not(:disabled),
 /* Native shell safe areas */
 html[data-platform="ios"], html[data-platform="android"] { background: #111111; }
 html[data-platform="ios"] body, html[data-platform="android"] body { min-height: 100dvh; }
+
+/* Landing viewport and state transitions */
+.fin-reveal { opacity: 0; transform: translate3d(0, 24px, 0); transition: opacity 550ms cubic-bezier(.22,1,.36,1), transform 550ms cubic-bezier(.22,1,.36,1); }
+.fin-reveal.is-visible { opacity: 1; transform: translate3d(0,0,0); }
+.fin-print-fade { animation: fin-print-crossfade 600ms ease both; }
+@keyframes fin-print-crossfade { from { opacity: 0; } to { opacity: 1; } }
+.fin-faq-open { animation: fin-faq-open 220ms ease both; }
+@keyframes fin-faq-open { from { opacity: 0; transform: translate3d(0,-4px,0); } to { opacity: 1; transform: translate3d(0,0,0); } }
+@media (prefers-reduced-motion: reduce) { .fin-reveal, .fin-reveal.is-visible, .fin-print-fade, .fin-faq-open { animation: none; transition: none; opacity: 1; transform: none; } }
