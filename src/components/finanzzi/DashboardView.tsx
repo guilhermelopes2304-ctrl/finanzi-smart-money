@@ -91,7 +91,7 @@ export function DashboardView({ profile, transactions, categories, accounts, bil
                 <p className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">Movimentação</p>
                 <h2 id="recent-title" className="mt-1 text-xl font-semibold tracking-[-0.04em]">Últimos lançamentos</h2>
               </div>
-              <Link to="/historico" className="inline-flex min-h-9 items-center gap-1 rounded-full px-2.5 text-xs font-bold text-fin-brand-hover transition-transform duration-200 hover:-translate-y-0.5">Ver histórico <ArrowRight className="size-3.5" /></Link>
+              <Link to="/lancamentos" className="inline-flex min-h-9 items-center gap-1 rounded-full px-2.5 text-xs font-bold text-fin-brand-hover transition-transform duration-200 hover:-translate-y-0.5">Ver histórico <ArrowRight className="size-3.5" /></Link>
             </div>
             {recentTransactions.length === 0 ? (
               <div className="rounded-[24px] border border-dashed border-border bg-card/70">
