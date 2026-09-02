@@ -90,7 +90,7 @@ function NavItem({
           onNavigate?.();
         }}
         className={cn(
-          "group flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-2xl px-1 py-2 text-[10px] font-semibold transition-colors active:scale-[0.97]",
+          "group flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-2xl px-1 py-2 text-[10px] font-semibold fin-interactive fin-pressable",
           active
             ? "bg-fin-brand-soft text-fin-brand-hover"
             : "text-muted-foreground hover:bg-muted hover:text-foreground",
@@ -151,7 +151,7 @@ function MoreMenu({
 }) {
   if (mobile) {
     return (
-      <section className="absolute inset-x-0 bottom-0 rounded-t-[2rem] border-t border-border bg-card p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-2xl animate-fin-fade-up">
+      <section className="absolute inset-x-0 bottom-0 rounded-t-[2rem] border-t border-border bg-card p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-2xl animate-fin-enter">
         <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-muted-foreground/25" />
         <div className="mb-5 flex items-center justify-between">
           <div>
@@ -179,7 +179,7 @@ function MoreMenu({
                 onClose?.();
               }}
               className={cn(
-                "flex min-h-[88px] flex-col items-center justify-center gap-2 rounded-2xl border border-border bg-background px-2 text-center text-xs font-semibold transition-colors active:scale-[0.97]",
+                "flex min-h-[88px] flex-col items-center justify-center gap-2 rounded-2xl border border-border bg-background px-2 text-center text-xs font-semibold fin-interactive fin-pressable",
                 activePathname === item.to
                   ? "border-primary bg-fin-brand-soft text-fin-brand-hover"
                   : "text-foreground hover:bg-muted",
@@ -260,7 +260,7 @@ export function AppShell({
       <aside
         className={cn(
           "fixed inset-y-0 left-0 z-30 hidden flex-col border-r border-border bg-card lg:flex",
-          "transition-[width] duration-200 ease-out",
+          "fin-layout-transition",
           sidebarCollapsed ? "w-[88px]" : "w-[256px]",
         )}
       >
@@ -343,7 +343,7 @@ export function AppShell({
         <div className="space-y-2 border-t border-border p-4">
           <Button
             className={cn(
-              "h-11 rounded-xl shadow-sm transition-transform active:scale-[0.98]",
+              "h-11 rounded-xl shadow-sm fin-interactive fin-pressable",
               sidebarCollapsed ? "w-11 justify-center px-0" : "w-full",
             )}
             onClick={() => {
@@ -424,7 +424,7 @@ export function AppShell({
               if (!visualReview) setMoreOpen(true);
             }}
             className={cn(
-              "group flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[10px] font-semibold transition-colors active:scale-[0.97]",
+              "group flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[10px] font-semibold fin-interactive fin-pressable",
               moreOpen || moreActive
                 ? "bg-fin-brand-soft text-fin-brand-hover"
                 : "text-muted-foreground hover:bg-muted hover:text-foreground",
