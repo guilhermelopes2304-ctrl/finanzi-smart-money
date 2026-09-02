@@ -1,4 +1,5 @@
-import { CheckCircle2, Toaster as Sonner } from "sonner";
+import { CheckCircle2 } from "lucide-react";
+import { Toaster as Sonner } from "sonner";
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
 
