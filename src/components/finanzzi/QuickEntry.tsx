@@ -531,7 +531,7 @@ function QuickEntryLive() {
                 {calculatedItems.map((item, index) => (
                   <div key={`${item.quantity}-${item.unitPrice}-${index}`} className="flex items-center justify-between gap-4 px-4 py-3">
                     <p className="min-w-0 text-sm text-muted-foreground">
-                      <span className="font-semibold text-foreground">{item.quantity} × {formatBRL(item.unitPrice)}</span>
+                      <span className="font-semibold text-foreground">{item.quantity} {item.description} × {formatBRL(item.unitPrice)}</span>
                       <span className="ml-1">=</span>
                     </p>
                     <p className="shrink-0 text-sm font-semibold">{formatBRL(item.total)}</p>
