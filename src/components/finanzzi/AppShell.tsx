@@ -90,21 +90,23 @@ function NavItem({
           onNavigate?.();
         }}
         className={cn(
-          "group flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 rounded-2xl px-1 py-2 text-[10px] font-semibold fin-interactive fin-pressable",
+          "group relative flex h-[58px] min-w-0 flex-col items-center justify-center gap-0.5 rounded-2xl px-1 text-[10px] font-semibold transition-all duration-200 fin-interactive fin-pressable",
           active
-            ? "bg-fin-brand-soft text-fin-brand-hover"
-            : "text-muted-foreground hover:bg-muted hover:text-foreground",
+            ? "text-fin-brand-hover"
+            : "text-muted-foreground hover:text-foreground",
         )}
       >
         <span
           className={cn(
-            "fin-interactive grid size-9 place-items-center rounded-xl",
-            active ? "bg-primary text-primary-foreground shadow-sm" : "group-hover:bg-background",
+            "grid size-9 place-items-center rounded-xl transition-all duration-200",
+            active
+              ? "bg-primary text-primary-foreground shadow-md shadow-primary/20 -translate-y-0.5"
+              : "bg-transparent group-hover:bg-muted",
           )}
         >
           <item.icon className="size-[18px]" strokeWidth={active ? 2.3 : 1.9} />
         </span>
-        <span className="max-w-[78px] truncate">{item.label}</span>
+        <span className={cn("max-w-[78px] truncate transition-all duration-200", active ? "font-bold" : "")}>{item.label}</span>
       </Link>
     );
   }
@@ -408,8 +410,8 @@ export function AppShell({
         <MotionPage className="mx-auto max-w-7xl">{children}</MotionPage>
       </main>
 
-      <nav className="fixed inset-x-2 bottom-2 z-30 rounded-[1.4rem] border border-border bg-card pb-[env(safe-area-inset-bottom)] shadow-soft lg:hidden">
-        <div className="grid grid-cols-5 items-end px-1.5 py-1">
+      <nav className="fixed inset-x-3 bottom-[max(0.65rem,env(safe-area-inset-bottom))] z-30 rounded-[1.5rem] border border-border/80 bg-card/95 shadow-[0_12px_40px_rgba(0,0,0,0.14)] backdrop-blur-xl lg:hidden">
+        <div className="grid h-[66px] grid-cols-5 items-center gap-0.5 px-1.5 py-1">
           <NavItem item={MOBILE_NAV[0]} active={activePathname === MOBILE_NAV[0].to} mobile />
           <NavItem item={MOBILE_NAV[1]} active={activePathname === MOBILE_NAV[1].to} mobile />
           <NavItem item={MOBILE_NAV[2]} active={activePathname === MOBILE_NAV[2].to} mobile />
@@ -424,14 +426,21 @@ export function AppShell({
               if (!visualReview) setMoreOpen(true);
             }}
             className={cn(
-              "group flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[10px] font-semibold fin-interactive fin-pressable",
+              "group flex h-[58px] flex-col items-center justify-center gap-0.5 rounded-2xl text-[10px] font-semibold transition-all duration-200 fin-interactive fin-pressable",
               moreOpen || moreActive
-                ? "bg-fin-brand-soft text-fin-brand-hover"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                ? "text-fin-brand-hover"
+                : "text-muted-foreground hover:text-foreground",
             )}
             aria-expanded={moreOpen}
           >
-            <span className="grid size-9 place-items-center rounded-xl group-hover:bg-muted">
+            <span
+              className={cn(
+                "grid size-9 place-items-center rounded-xl transition-all duration-200",
+                moreOpen || moreActive
+                  ? "bg-primary text-primary-foreground shadow-md shadow-primary/20 -translate-y-0.5"
+                  : "group-hover:bg-muted",
+              )}
+            >
               <MoreHorizontal className="size-[18px]" />
             </span>
             <span>Mais</span>
