@@ -63,7 +63,7 @@ function AuthPage() {
       if (mode === "login") {
         const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
         if (error) throw error;
-        toast.success("Bem-vindo de volta!");
+        toast.success("Bem-vindo de volta!", { duration: 1800 });
         await navigate({ to: returnTo === "/oferta" ? "/oferta" : "/dashboard" });
       } else if (mode === "signup") {
         const { data, error } = await supabase.auth.signUp({
