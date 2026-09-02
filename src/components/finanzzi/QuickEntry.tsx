@@ -72,7 +72,7 @@ export function QuickEntry({ previewMode = false, previewData }: QuickEntryProps
 function QuickEntryPreview({ data }: { data: QuickEntryPreviewData }) {
   const text = data?.text ?? "";
   return (
-    <div className="surface-card overflow-hidden p-4 sm:p-5">
+    <div className="surface-card fin-layout-transition overflow-hidden p-4 sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex items-start gap-3">
           <span className="grid size-10 place-items-center rounded-2xl bg-[#FF5A1F]/15 text-[#FF5A1F]">
@@ -137,7 +137,7 @@ function QuickEntryPreview({ data }: { data: QuickEntryPreviewData }) {
         </div>
       </div>
       {(data?.amount || data?.description || data?.category || data?.account) && (
-        <div className="mt-5 rounded-[1.5rem] border border-primary/20 bg-primary/[0.035] p-4 sm:p-5">
+        <div className="fin-layout-transition mt-5 rounded-[1.5rem] border border-primary/20 bg-primary/[0.035] p-4 animate-fin-enter sm:p-5">
           <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-primary">
             Entendi assim
           </p>
@@ -397,6 +397,7 @@ function QuickEntryLive() {
     ? categories.find((c) => c.id === draft.categoryId)?.name
     : null;
   const cardName = draft?.cardId ? cards.find((c) => c.id === draft.cardId)?.name : null;
+  const calculatedItems = draft?.items ?? [];
 
   return (
     <div className="surface-card overflow-hidden p-4 sm:p-5">
@@ -420,13 +421,13 @@ function QuickEntryLive() {
         <button
           type="button"
           onClick={startInlineVoice}
-          className="hidden min-h-10 items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-3 text-xs font-bold text-primary transition-colors hover:bg-primary/10 sm:inline-flex"
+          className="hidden min-h-10 items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-3 text-xs font-bold text-primary fin-interactive fin-pressable hover:bg-primary/10 sm:inline-flex"
         >
           <Mic className="size-3.5" /> Registrar falando
         </button>
       </div>
       <form onSubmit={handleParse} className="mt-4 space-y-2">
-        <div className="flex items-center gap-2 rounded-2xl border border-border bg-background p-1.5 shadow-sm transition-all focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/10">
+        <div className="flex items-center gap-2 rounded-2xl border border-border bg-background p-1.5 shadow-sm fin-layout-transition focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/10">
           <Input
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -457,14 +458,14 @@ function QuickEntryLive() {
           <button
             type="button"
             onClick={startInlineVoice}
-            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 text-sm font-semibold text-primary transition-colors hover:bg-primary/10 active:scale-[0.99]"
+            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 text-sm font-semibold text-primary fin-interactive fin-pressable hover:bg-primary/10"
           >
             {listening ? <MicOff className="size-4" /> : <Mic className="size-4" />} {listening ? "Parar" : "Falar"}
           </button>
         </div>
       </form>
       {draft && (
-        <div className="mt-5 rounded-[1.5rem] border border-primary/20 bg-primary/[0.035] p-4 animate-fin-fade-up sm:p-5">
+        <div className="mt-5 rounded-[1.5rem] border border-primary/20 bg-primary/[0.035] p-4 animate-fin-enter fin-layout-transition sm:p-5">
           <div className="mb-4 flex items-start justify-between gap-3">
             <div>
               <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-primary">
@@ -491,7 +492,7 @@ function QuickEntryLive() {
                   : "Confira os campos"}
             </span>
           </div>
-          <div className="mb-4 grid gap-3 rounded-2xl bg-card p-4 sm:grid-cols-[auto_1fr] sm:items-center">
+          <div className="mb-4 grid gap-3 rounded-2xl bg-card p-4 fin-layout-transition sm:grid-cols-[auto_1fr] sm:items-center">
             <div
               className={cn(
                 "grid size-14 place-items-center rounded-2xl text-lg font-bold",
@@ -517,6 +518,32 @@ function QuickEntryLive() {
               </div>
             </div>
           </div>
+          {calculatedItems.length > 0 && !paidBillId && (
+            <div className="mb-4 overflow-hidden rounded-2xl border border-border bg-background animate-fin-enter">
+              <div className="flex items-center justify-between border-b border-border px-4 py-3">
+                <div>
+                  <p className="text-sm font-semibold">Itens identificados</p>
+                  <p className="text-xs text-muted-foreground">Confira como o total foi calculado.</p>
+                </div>
+                <span className="text-xs font-semibold text-primary">{calculatedItems.length} {calculatedItems.length === 1 ? "item" : "itens"}</span>
+              </div>
+              <div className="divide-y divide-border">
+                {calculatedItems.map((item, index) => (
+                  <div key={`${item.quantity}-${item.unitPrice}-${index}`} className="flex items-center justify-between gap-4 px-4 py-3">
+                    <p className="min-w-0 text-sm text-muted-foreground">
+                      <span className="font-semibold text-foreground">{item.quantity} {item.description} × {formatBRL(item.unitPrice)}</span>
+                      <span className="ml-1">=</span>
+                    </p>
+                    <p className="shrink-0 text-sm font-semibold">{formatBRL(item.total)}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center justify-between bg-muted/35 px-4 py-3">
+                <span className="text-sm font-semibold">Total calculado</span>
+                <span className="font-display text-lg font-semibold tracking-tight">{formatBRL(draft.amount)}</span>
+              </div>
+            </div>
+          )}
           {!paidBillId && (
             <>
               <div className="mb-4 grid grid-cols-2 gap-2 rounded-xl bg-background p-1">

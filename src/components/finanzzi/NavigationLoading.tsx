@@ -33,7 +33,7 @@ export function NavigationLoading() {
 
   return (
     <div className="pointer-events-none fixed inset-x-0 top-0 z-[100] h-[3px] overflow-hidden bg-primary/10" aria-live="polite" aria-label="Carregando página">
-      <div className="h-full w-1/3 animate-[finanzzi-progress_900ms_ease-in-out_infinite] rounded-full bg-primary" />
+      <div className="h-full w-1/3 animate-[finanzzi-progress_900ms_ease-in-out_infinite] rounded-full bg-primary motion-reduce:animate-none" />
     </div>
   );
 }

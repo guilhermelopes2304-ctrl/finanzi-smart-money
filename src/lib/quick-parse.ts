@@ -2,9 +2,17 @@ import type { Account, Category, CreditCard, Recurrence, TransactionType } from 
 
 export type Confidence = "high" | "medium" | "low";
 
+export interface QuickParseItem {
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  total: number;
+}
+
 export interface QuickParseResult {
   type: TransactionType;
   amount: number;
+  items: QuickParseItem[];
   description: string;
   categoryId: string | null;
   accountId: string | null;
@@ -100,15 +108,69 @@ export function normalize(text: string): string {
     .replace(/[\u0300-\u036f]/g, "");
 }
 
-function extractAmount(text: string): number | null {
-  const match = normalize(text).match(/(\d{1,3}(?:\.\d{3})+(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)/);
-  if (!match) return null;
-  const raw = match[1] ?? "";
+function parseMoney(raw: string): number | null {
   let normalized = raw;
   if (raw.includes(",")) normalized = raw.replace(/\./g, "").replace(",", ".");
   else if (/\.\d{3}$/.test(raw)) normalized = raw.replace(/\./g, "");
   const n = Number.parseFloat(normalized);
   return Number.isFinite(n) && n > 0 ? n : null;
+}
+
+function extractAmount(text: string): number | null {
+  const match = normalize(text).match(/(\d{1,3}(?:\.\d{3})+(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)/);
+  return match ? parseMoney(match[1] ?? "") : null;
+}
+
+/**
+ * Detects natural-language quantity × unit-price expressions before the
+ * generic amount parser sees the first number.
+ *
+ * Examples:
+ * - "comprei 3 oleos de motor de 15 reais" -> 45
+ * - "4 camisetas a 30 reais cada" -> 120
+ * - "2 pizzas por 40 cada" -> 80
+ *
+ * Phrases such as "3 oleos por 45 reais" are intentionally not multiplied:
+ * without "cada", "a" or an explicit product-price construction, the value
+ * is treated as the total.
+ */
+type QuantityPricedItem = QuickParseItem;
+
+function extractQuantityPricedItems(text: string): QuantityPricedItem[] {
+  const normalized = normalize(text);
+  const itemPattern =
+    /(?:^|\b(?:e|mais)\s+|\b(?:comprei|paguei|peguei|adquiri)\s+)?(\d{1,3})\s+(.+?)\s+(?:a\s+|de\s+)(?:r\$\s*)?(\d{1,3}(?:\.\d{3})*(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)\s*(?:reais?|r\$)\b(?:\s*cada\b)?(?=\s*(?:e|mais)\s+\d+\s|$)/g;
+
+  const explicitEachPattern =
+    /(?:^|\b(?:e|mais)\s+|\b(?:comprei|paguei|peguei|adquiri)\s+)?(\d{1,3})\s+(.+?)\s+(?:por\s+)?(?:r\$\s*)?(\d{1,3}(?:\.\d{3})*(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)\s*(?:reais?|r\$)?\s+cada\b(?=\s*(?:e|mais)\s+\d+\s|$)/g;
+
+  const matches = [
+    ...Array.from(normalized.matchAll(itemPattern)),
+    ...Array.from(normalized.matchAll(explicitEachPattern)),
+  ].sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
+
+  const seen = new Set<string>();
+  return matches.flatMap((match) => {
+    const quantity = Number(match[1]);
+    const description = (match[2] ?? "")
+      .replace(/^(?:de\s+)+/, "")
+      .replace(/\s+/g, " ")
+      .trim();
+    const unitPrice = parseMoney(match[3] ?? "");
+    const key = `${match.index}:${quantity}:${description}:${unitPrice}`;
+    if (seen.has(key)) return [];
+    seen.add(key);
+    if (!Number.isInteger(quantity) || quantity < 2 || quantity > 999 || !description || !unitPrice) return [];
+    const total = Number((quantity * unitPrice).toFixed(2));
+    return Number.isFinite(total) && total > 0
+      ? [{ description, quantity, unitPrice, total }]
+      : [];
+  });
+}
+function extractQuantityTimesUnitPrice(text: string): number | null {
+  const items = extractQuantityPricedItems(text);
+  if (items.length === 0) return null;
+  return Number(items.reduce((sum, item) => sum + item.total, 0).toFixed(2));
 }
 
 function detectRecurrence(
@@ -261,7 +323,8 @@ export function parseQuickEntry(
 ): QuickParseResult {
   const text = normalize(raw);
   const words = text.split(/[^a-z0-9]+/).filter(Boolean);
-  const amount = extractAmount(raw);
+  const multipliedAmount = extractQuantityTimesUnitPrice(raw);
+  const amount = multipliedAmount ?? extractAmount(raw);
   const detected = detectType(words);
   const type: TransactionType = detected ?? "expense";
   const categoryId = amount ? matchCategory(words, categories, type) : null;

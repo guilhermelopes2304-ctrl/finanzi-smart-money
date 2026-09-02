@@ -20,9 +20,9 @@ export function PeriodSelect({
   onCustomChange: (custom: { from: string; to: string }) => void;
 }) {
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="fin-layout-transition flex min-w-0 flex-col items-stretch gap-2 sm:flex-row sm:flex-wrap sm:items-center">
       <Select value={preset} onValueChange={(v) => onPresetChange(v as PeriodPreset)}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-full sm:w-[180px]">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -33,14 +33,14 @@ export function PeriodSelect({
         </SelectContent>
       </Select>
       {preset === "custom" && (
-        <div className="flex items-center gap-2">
+        <div className="animate-fin-enter grid min-w-0 grid-cols-1 gap-2 sm:flex sm:items-center">
           <Input
             type="date"
-            className="w-[150px]"
+            className="w-full sm:w-[150px]"
             value={custom.from}
             onChange={(e) => onCustomChange({ ...custom, from: e.target.value })}
           />
-          <span className="text-sm text-muted-foreground">até</span>
+          <span className="hidden text-sm text-muted-foreground sm:inline">até</span>
           <Input
             type="date"
             className="w-[150px]"

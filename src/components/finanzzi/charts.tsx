@@ -43,8 +43,8 @@ export function IncomeExpenseChart({ data }: { data: MonthlyPoint[] }) {
           formatter={(value: number, name) => [formatBRL(value), name]}
         />
         <Legend wrapperStyle={{ fontSize: 12 }} />
-        <Bar dataKey="income" name="Receitas" fill="var(--color-success)" radius={[6, 6, 0, 0]} />
-        <Bar dataKey="expense" name="Despesas" fill="var(--color-danger)" radius={[6, 6, 0, 0]} />
+        <Bar dataKey="income" name="Receitas" fill="var(--color-success)" radius={[6, 6, 0, 0]} animationDuration={420} animationEasing="ease-out" isAnimationActive />
+        <Bar dataKey="expense" name="Despesas" fill="var(--color-danger)" radius={[6, 6, 0, 0]} animationDuration={420} animationEasing="ease-out" isAnimationActive />
       </BarChart>
     </ResponsiveContainer>
   );
@@ -54,7 +54,7 @@ export function CategoryPieChart({ data }: { data: CategorySlice[] }) {
   return (
     <ResponsiveContainer width="100%" height={260}>
       <PieChart>
-        <Pie data={data} dataKey="value" nameKey="name" innerRadius={55} outerRadius={90} paddingAngle={2}>
+        <Pie data={data} dataKey="value" nameKey="name" innerRadius={55} outerRadius={90} paddingAngle={2} animationDuration={420} animationEasing="ease-out" isAnimationActive>
           {data.map((slice) => (
             <Cell key={slice.id} fill={slice.color} />
           ))}
@@ -87,6 +87,9 @@ export function BalanceEvolutionChart({ data }: { data: MonthlyPoint[] }) {
           stroke="var(--color-primary)"
           strokeWidth={2.5}
           fill="url(#balanceFill)"
+          animationDuration={420}
+          animationEasing="ease-out"
+          isAnimationActive
         />
       </AreaChart>
     </ResponsiveContainer>
