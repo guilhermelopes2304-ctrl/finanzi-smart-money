@@ -30,4 +30,24 @@ describe("quick parser primitives", () => {
     const parsed = parseQuickEntry("comprei celular por 1200 reais em 12x", [], [], []);
     assert.equal(parsed.amount, 1200);
   });
+
+  it("sums multiple quantity and unit-price items", () => {
+    const parsed = parseQuickEntry(
+      "comprei 3 óleos de 15 reais e 2 filtros de 30 reais",
+      [],
+      [],
+      [],
+    );
+    assert.equal(parsed.amount, 105);
+  });
+
+  it("sums natural-language items with each pricing", () => {
+    const parsed = parseQuickEntry(
+      "peguei 2 pizzas a 40 reais cada e 3 refrigerantes de 8 reais",
+      [],
+      [],
+      [],
+    );
+    assert.equal(parsed.amount, 104);
+  });
 });
