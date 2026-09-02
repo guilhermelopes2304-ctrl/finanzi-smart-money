@@ -20,7 +20,7 @@ export function PeriodSelect({
   onCustomChange: (custom: { from: string; to: string }) => void;
 }) {
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="fin-layout-transition flex flex-wrap items-center gap-2">
       <Select value={preset} onValueChange={(v) => onPresetChange(v as PeriodPreset)}>
         <SelectTrigger className="w-[180px]">
           <SelectValue />
@@ -33,7 +33,7 @@ export function PeriodSelect({
         </SelectContent>
       </Select>
       {preset === "custom" && (
-        <div className="flex items-center gap-2">
+        <div className="animate-fin-enter flex items-center gap-2">
           <Input
             type="date"
             className="w-[150px]"
