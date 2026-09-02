@@ -397,6 +397,7 @@ function QuickEntryLive() {
     ? categories.find((c) => c.id === draft.categoryId)?.name
     : null;
   const cardName = draft?.cardId ? cards.find((c) => c.id === draft.cardId)?.name : null;
+  const calculatedItems = draft?.items ?? [];
 
   return (
     <div className="surface-card overflow-hidden p-4 sm:p-5">
@@ -517,6 +518,32 @@ function QuickEntryLive() {
               </div>
             </div>
           </div>
+          {calculatedItems.length > 0 && !paidBillId && (
+            <div className="mb-4 overflow-hidden rounded-2xl border border-border bg-background animate-fin-enter">
+              <div className="flex items-center justify-between border-b border-border px-4 py-3">
+                <div>
+                  <p className="text-sm font-semibold">Itens identificados</p>
+                  <p className="text-xs text-muted-foreground">Confira como o total foi calculado.</p>
+                </div>
+                <span className="text-xs font-semibold text-primary">{calculatedItems.length} {calculatedItems.length === 1 ? "item" : "itens"}</span>
+              </div>
+              <div className="divide-y divide-border">
+                {calculatedItems.map((item, index) => (
+                  <div key={`${item.quantity}-${item.unitPrice}-${index}`} className="flex items-center justify-between gap-4 px-4 py-3">
+                    <p className="min-w-0 text-sm text-muted-foreground">
+                      <span className="font-semibold text-foreground">{item.quantity} × {formatBRL(item.unitPrice)}</span>
+                      <span className="ml-1">=</span>
+                    </p>
+                    <p className="shrink-0 text-sm font-semibold">{formatBRL(item.total)}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center justify-between bg-muted/35 px-4 py-3">
+                <span className="text-sm font-semibold">Total calculado</span>
+                <span className="font-display text-lg font-semibold tracking-tight">{formatBRL(draft.amount)}</span>
+              </div>
+            </div>
+          )}
           {!paidBillId && (
             <>
               <div className="mb-4 grid grid-cols-2 gap-2 rounded-xl bg-background p-1">
