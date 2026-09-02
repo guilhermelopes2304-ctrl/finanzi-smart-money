@@ -122,7 +122,7 @@ function TransactionsPage() {
           type="button"
           onClick={() => setFiltersOpen((value) => !value)}
           className={cn(
-            "inline-flex min-h-10 items-center gap-2 rounded-xl border px-3 text-sm font-semibold transition-colors",
+            "fin-interactive fin-pressable inline-flex min-h-10 items-center gap-2 rounded-xl border px-3 text-sm font-semibold",
             filtersOpen
               ? "border-primary bg-primary/10 text-primary"
               : "border-border text-muted-foreground hover:bg-muted",
@@ -132,7 +132,7 @@ function TransactionsPage() {
         </button>
       </div>
       {filtersOpen && (
-        <div className="surface-card mb-4 grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="surface-card fin-layout-transition mb-4 grid gap-3 p-4 animate-fin-enter sm:grid-cols-2 lg:grid-cols-4">
           <div className="relative min-w-0 sm:col-span-2 lg:col-span-1">
             <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
@@ -205,7 +205,7 @@ function TransactionsPage() {
           {rows.map((tx) => (
             <div
               key={tx.id}
-              className="flex flex-wrap items-center gap-3 px-4 py-4 transition-colors hover:bg-muted/40 sm:px-5"
+              className="fin-interactive flex flex-wrap items-center gap-3 px-4 py-4 hover:bg-muted/40 sm:px-5"
             >
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold">{tx.description}</p>
