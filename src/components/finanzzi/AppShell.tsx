@@ -98,7 +98,7 @@ function NavItem({
       >
         <span
           className={cn(
-            "grid size-9 place-items-center rounded-xl transition-colors",
+            "fin-interactive grid size-9 place-items-center rounded-xl",
             active ? "bg-primary text-primary-foreground shadow-sm" : "group-hover:bg-background",
           )}
         >
@@ -118,7 +118,7 @@ function NavItem({
       }}
       title={collapsed ? item.label : undefined}
       className={cn(
-        "group flex min-h-11 items-center rounded-xl py-2.5 text-sm font-semibold transition-colors",
+        "fin-interactive fin-pressable group flex min-h-11 items-center rounded-xl py-2.5 text-sm font-semibold",
         collapsed ? "justify-center px-2" : "gap-3 px-3",
         active
           ? "bg-fin-brand-soft text-fin-brand-hover"
@@ -151,7 +151,7 @@ function MoreMenu({
 }) {
   if (mobile) {
     return (
-      <section className="absolute inset-x-0 bottom-0 rounded-t-[2rem] border-t border-border bg-card p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-2xl animate-fin-enter">
+      <section className="absolute inset-x-0 bottom-0 max-h-[calc(100dvh-0.75rem)] overflow-y-auto overscroll-contain rounded-t-[2rem] border-t border-border bg-card p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-2xl animate-fin-enter">
         <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-muted-foreground/25" />
         <div className="mb-5 flex items-center justify-between">
           <div>
@@ -207,7 +207,7 @@ function MoreMenu({
             onClose?.();
           }}
           className={cn(
-            "flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold transition-colors",
+            "fin-interactive fin-pressable flex min-h-10 items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold",
             activePathname === item.to
               ? "bg-fin-brand-soft text-fin-brand-hover"
               : "text-muted-foreground hover:bg-muted hover:text-foreground",
@@ -315,7 +315,7 @@ export function AppShell({
               title={sidebarCollapsed ? "Mais" : undefined}
               aria-expanded={moreOpen}
               className={cn(
-                "group flex min-h-11 w-full items-center rounded-xl py-2.5 text-sm font-semibold transition-colors",
+                "fin-interactive fin-pressable group flex min-h-11 w-full items-center rounded-xl py-2.5 text-sm font-semibold",
                 sidebarCollapsed ? "justify-center px-2" : "gap-3 px-3",
                 moreActive || moreOpen
                   ? "bg-fin-brand-soft text-fin-brand-hover"
@@ -359,7 +359,7 @@ export function AppShell({
         <button
           type="button"
           onClick={() => setSidebarCollapsed((value) => !value)}
-          className="absolute -right-3 top-[86px] grid size-7 place-items-center rounded-full border border-border bg-card text-muted-foreground shadow-sm transition-colors hover:bg-muted hover:text-foreground"
+          className="fin-interactive fin-pressable absolute -right-3 top-[86px] grid size-7 place-items-center rounded-full border border-border bg-card text-muted-foreground shadow-sm hover:bg-muted hover:text-foreground"
           aria-label={sidebarCollapsed ? "Mostrar menu lateral" : "Esconder menu lateral"}
           title={sidebarCollapsed ? "Mostrar menu lateral" : "Esconder menu lateral"}
         >
@@ -377,7 +377,7 @@ export function AppShell({
           <Link
             to="/configuracoes"
             aria-label="Abrir configurações"
-            className="grid size-10 overflow-hidden place-items-center rounded-full border border-border bg-card text-xs font-bold text-fin-brand-hover shadow-sm transition-transform active:scale-95"
+            className="fin-interactive fin-pressable grid size-10 overflow-hidden place-items-center rounded-full border border-border bg-card text-xs font-bold text-fin-brand-hover shadow-sm"
           >
             {profile?.avatar_url ? (
               <img src={profile.avatar_url} alt="" className="size-full object-cover" />
@@ -444,7 +444,7 @@ export function AppShell({
           <button
             type="button"
             aria-label="Fechar menu"
-            className="absolute inset-0 bg-[#111827]/25"
+            className="absolute inset-0 bg-black/60 backdrop-blur-[2px] animate-in fade-in-0 duration-150"
             onClick={() => setMoreOpen(false)}
           />
           <MoreMenu activePathname={activePathname} mobile onClose={() => setMoreOpen(false)} />
