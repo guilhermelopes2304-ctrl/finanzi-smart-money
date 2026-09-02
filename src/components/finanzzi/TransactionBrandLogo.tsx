@@ -1,9 +1,14 @@
 import { useState } from "react";
 import { Store } from "lucide-react";
+import { useEffect } from "react";
 import { getBrandLogo } from "@/lib/brand-logos";
 
 export function TransactionBrandLogo({ description }: { description: string }) {
   const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    setFailed(false);
+  }, [description]);
   const brand = getBrandLogo(description);
 
   if (!brand || failed) {
@@ -20,7 +25,8 @@ export function TransactionBrandLogo({ description }: { description: string }) {
         src={brand.logoUrl}
         alt={brand.name}
         className="size-full object-contain"
-        loading="lazy"
+        loading="eager"
+        referrerPolicy="no-referrer"
         onError={() => setFailed(true)}
       />
     </span>
