@@ -126,26 +126,42 @@ function extractAmount(text: string): number | null {
  * without "cada", "a" or an explicit product-price construction, the value
  * is treated as the total.
  */
-function extractQuantityTimesUnitPrice(text: string): number | null {
+type QuantityPricedItem = {
+  quantity: number;
+  unitPrice: number;
+  total: number;
+};
+
+function extractQuantityPricedItems(text: string): QuantityPricedItem[] {
   const normalized = normalize(text);
+  const itemPattern =
+    /(?:^|\b(?:e|mais)\s+|\b(?:comprei|paguei|peguei|adquiri)\s+)?(\d{1,3})\s+[^\d]+?\s+(?:a\s+|de\s+)(?:r\$\s*)?(\d{1,3}(?:\.\d{3})*(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)\s*(?:reais?|r\$)\b(?:\s*cada\b)?/g;
 
-  const quantityFirst = normalized.match(
-    /(?:^|\b)(\d{1,3})\s+[^\d]+?\s+(?:a\s+|de\s+)(?:r\$\s*)?(\d{1,3}(?:\.\d{3})*(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)\s*(?:reais?|r\$)\b(?:\s*cada\b)?/,
-  );
+  const explicitEachPattern =
+    /(?:^|\b(?:e|mais)\s+|\b(?:comprei|paguei|peguei|adquiri)\s+)?(\d{1,3})\s+[^\d]+?\s+(?:por\s+)?(?:r\$\s*)?(\d{1,3}(?:\.\d{3})*(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)\s*(?:reais?|r\$)?\s+cada\b/g;
 
-  const explicitEach = normalized.match(
-    /(?:^|\b)(\d{1,3})\s+[^\d]+?\s+(?:por\s+)?(?:r\$\s*)?(\d{1,3}(?:\.\d{3})*(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)\s*(?:reais?|r\$)?\s+cada\b/,
-  );
+  const matches = [
+    ...Array.from(normalized.matchAll(itemPattern)),
+    ...Array.from(normalized.matchAll(explicitEachPattern)),
+  ].sort((a, b) => a.index - b.index);
 
-  const match = explicitEach ?? quantityFirst;
-  if (!match) return null;
+  const seen = new Set<string>();
+  return matches.flatMap((match) => {
+    const quantity = Number(match[1]);
+    const unitPrice = parseMoney(match[2] ?? "");
+    const key = `${match.index}:${quantity}:${unitPrice}`;
+    if (seen.has(key)) return [];
+    seen.add(key);
+    if (!Number.isInteger(quantity) || quantity < 2 || quantity > 999 || !unitPrice) return [];
+    const total = Number((quantity * unitPrice).toFixed(2));
+    return Number.isFinite(total) && total > 0 ? [{ quantity, unitPrice, total }] : [];
+  });
+}
 
-  const quantity = Number(match[1]);
-  const unitPrice = parseMoney(match[2] ?? "");
-  if (!Number.isInteger(quantity) || quantity < 2 || quantity > 999 || !unitPrice) return null;
-
-  const total = quantity * unitPrice;
-  return Number.isFinite(total) && total > 0 ? Number(total.toFixed(2)) : null;
+function extractQuantityTimesUnitPrice(text: string): number | null {
+  const items = extractQuantityPricedItems(text);
+  if (items.length === 0) return null;
+  return Number(items.reduce((sum, item) => sum + item.total, 0).toFixed(2));
 }
 
 function detectRecurrence(
