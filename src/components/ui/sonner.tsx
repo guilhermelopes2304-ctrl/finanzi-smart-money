@@ -1,13 +1,13 @@
-import { Check, Toaster as Sonner } from "sonner";
+import { CheckCircle2, Toaster as Sonner } from "sonner";
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
 
 const Toaster = ({ ...props }: ToasterProps) => {
   return (
     <Sonner
-      className="toaster group"
+      className="toaster group finanzzi-toaster"
       icons={{
-        success: <span className="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground shadow-sm"><Check className="size-4" strokeWidth={3} /></span>,
+        success: <span className="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground shadow-sm"><CheckCircle2 className="size-5" strokeWidth={2.5} /></span>,
       }}
       toastOptions={{
         classNames: {
