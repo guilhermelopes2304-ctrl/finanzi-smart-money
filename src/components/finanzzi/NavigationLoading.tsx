@@ -20,7 +20,7 @@ export function NavigationLoading() {
     };
     const fallback = () => {
       clear();
-      timer.current = setTimeout(() => setLoading(false), 2200);
+      setLoading(false);
     };
 
     window.addEventListener("finanzzi:navigation-start", start);
