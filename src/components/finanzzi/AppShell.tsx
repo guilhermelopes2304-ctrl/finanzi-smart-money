@@ -416,7 +416,7 @@ export function AppShell({
 
       <main
         className={cn(
-          "min-w-0 px-3 pb-32 pt-4 sm:px-5 lg:px-8 lg:pb-10 lg:pt-8",
+          "min-w-0 px-3 pb-[96px] pt-4 sm:px-5 lg:px-8 lg:pb-10 lg:pt-8",
           desktopSidebarWidth,
         )}
       >
