@@ -8,12 +8,12 @@ const Toaster = ({ ...props }: ToasterProps) => {
     <Sonner
       className="toaster group finanzzi-toaster"
       icons={{
-        success: <span className="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground shadow-sm"><CheckCircle2 className="size-5" strokeWidth={2.5} /></span>,
+        success: <span className="relative grid size-9 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 ring-4 ring-primary/10"><CheckCircle2 className="size-[18px]" strokeWidth={2.75} /></span>,
       }}
       toastOptions={{
         classNames: {
           toast:
-            "group toast group-[.toaster]:rounded-2xl group-[.toaster]:border-0 group-[.toaster]:shadow-[var(--shadow-lift)] group-[.toaster]:px-4 group-[.toaster]:py-3.5 group-[.toaster]:font-medium",
+            "group toast group-[.toaster]:min-w-[min(360px,calc(100vw-32px))] group-[.toaster]:rounded-[22px] group-[.toaster]:border group-[.toaster]:border-primary/10 group-[.toaster]:bg-card/90 group-[.toaster]:shadow-[0_16px_50px_rgba(0,0,0,0.22)] group-[.toaster]:px-4 group-[.toaster]:py-3.5 group-[.toaster]:font-medium group-[.toaster]:backdrop-blur-2xl",
           title: "group-[.toast]:text-[13.5px] group-[.toast]:font-semibold",
           description: "group-[.toast]:text-muted-foreground group-[.toast]:text-xs",
           actionButton:
