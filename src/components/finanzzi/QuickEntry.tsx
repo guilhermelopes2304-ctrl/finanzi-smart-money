@@ -72,7 +72,7 @@ export function QuickEntry({ previewMode = false, previewData }: QuickEntryProps
 function QuickEntryPreview({ data }: { data: QuickEntryPreviewData }) {
   const text = data?.text ?? "";
   return (
-    <div className="surface-card overflow-hidden p-4 sm:p-5">
+    <div className="surface-card fin-layout-transition overflow-hidden p-4 sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex items-start gap-3">
           <span className="grid size-10 place-items-center rounded-2xl bg-[#FF5A1F]/15 text-[#FF5A1F]">
@@ -137,7 +137,7 @@ function QuickEntryPreview({ data }: { data: QuickEntryPreviewData }) {
         </div>
       </div>
       {(data?.amount || data?.description || data?.category || data?.account) && (
-        <div className="mt-5 rounded-[1.5rem] border border-primary/20 bg-primary/[0.035] p-4 sm:p-5">
+        <div className="fin-layout-transition mt-5 rounded-[1.5rem] border border-primary/20 bg-primary/[0.035] p-4 animate-fin-enter sm:p-5">
           <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-primary">
             Entendi assim
           </p>
