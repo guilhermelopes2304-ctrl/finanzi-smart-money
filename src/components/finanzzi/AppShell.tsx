@@ -57,6 +57,18 @@ const MORE_NAV: readonly NavItemDefinition[] = [
 function beginNavigation() {
   window.dispatchEvent(new CustomEvent("finanzzi:navigation-start"));
 }
+
+function navigateWithFeedback(
+  navigate: ReturnType<typeof useNavigate>,
+  to: string,
+  onComplete?: () => void,
+) {
+  beginNavigation();
+  void Promise.resolve(navigate({ to })).finally(() => {
+    onComplete?.();
+    window.dispatchEvent(new CustomEvent("finanzzi:navigation-fallback"));
+  });
+}
 function initials(name?: string | null) {
   if (!name) return "F";
   return name
@@ -376,8 +388,9 @@ export function AppShell({
       <header className="sticky top-0 z-20 border-b border-border bg-background px-4 py-2.5 lg:hidden">
         <div className="flex min-h-11 items-center justify-between gap-3">
           <Logo />
-          <Link
-            to="/configuracoes"
+          <button
+            type="button"
+            onClick={() => navigateWithFeedback(navigate, "/configuracoes")}
             aria-label="Abrir configurações"
             className="fin-interactive fin-pressable grid size-10 overflow-hidden place-items-center rounded-full border border-border bg-card text-xs font-bold text-fin-brand-hover shadow-sm"
           >
@@ -386,7 +399,7 @@ export function AppShell({
             ) : (
               initials(profile?.name)
             )}
-          </Link>
+          </button>
         </div>
       </header>
 
