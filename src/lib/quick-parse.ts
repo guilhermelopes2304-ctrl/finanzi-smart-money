@@ -100,15 +100,52 @@ export function normalize(text: string): string {
     .replace(/[\u0300-\u036f]/g, "");
 }
 
-function extractAmount(text: string): number | null {
-  const match = normalize(text).match(/(\d{1,3}(?:\.\d{3})+(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)/);
-  if (!match) return null;
-  const raw = match[1] ?? "";
+function parseMoney(raw: string): number | null {
   let normalized = raw;
   if (raw.includes(",")) normalized = raw.replace(/\./g, "").replace(",", ".");
   else if (/\.\d{3}$/.test(raw)) normalized = raw.replace(/\./g, "");
   const n = Number.parseFloat(normalized);
   return Number.isFinite(n) && n > 0 ? n : null;
+}
+
+function extractAmount(text: string): number | null {
+  const match = normalize(text).match(/(\d{1,3}(?:\.\d{3})+(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)/);
+  return match ? parseMoney(match[1] ?? "") : null;
+}
+
+/**
+ * Detects natural-language quantity × unit-price expressions before the
+ * generic amount parser sees the first number.
+ *
+ * Examples:
+ * - "comprei 3 oleos de motor de 15 reais" -> 45
+ * - "4 camisetas a 30 reais cada" -> 120
+ * - "2 pizzas por 40 cada" -> 80
+ *
+ * Phrases such as "3 oleos por 45 reais" are intentionally not multiplied:
+ * without "cada", "a" or an explicit product-price construction, the value
+ * is treated as the total.
+ */
+function extractQuantityTimesUnitPrice(text: string): number | null {
+  const normalized = normalize(text);
+
+  const quantityFirst = normalized.match(
+    /(?:^|\b)(\d{1,3})\s+[^\d]+?\s+(?:a\s+|de\s+)(?:r\$\s*)?(\d{1,3}(?:\.\d{3})*(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)\s*(?:reais?|r\$)\b(?:\s*cada\b)?/,
+  );
+
+  const explicitEach = normalized.match(
+    /(?:^|\b)(\d{1,3})\s+[^\d]+?\s+(?:por\s+)?(?:r\$\s*)?(\d{1,3}(?:\.\d{3})*(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)\s*(?:reais?|r\$)?\s+cada\b/,
+  );
+
+  const match = explicitEach ?? quantityFirst;
+  if (!match) return null;
+
+  const quantity = Number(match[1]);
+  const unitPrice = parseMoney(match[2] ?? "");
+  if (!Number.isInteger(quantity) || quantity < 2 || quantity > 999 || !unitPrice) return null;
+
+  const total = quantity * unitPrice;
+  return Number.isFinite(total) && total > 0 ? Number(total.toFixed(2)) : null;
 }
 
 function detectRecurrence(
@@ -261,7 +298,8 @@ export function parseQuickEntry(
 ): QuickParseResult {
   const text = normalize(raw);
   const words = text.split(/[^a-z0-9]+/).filter(Boolean);
-  const amount = extractAmount(raw);
+  const multipliedAmount = extractQuantityTimesUnitPrice(raw);
+  const amount = multipliedAmount ?? extractAmount(raw);
   const detected = detectType(words);
   const type: TransactionType = detected ?? "expense";
   const categoryId = amount ? matchCategory(words, categories, type) : null;
