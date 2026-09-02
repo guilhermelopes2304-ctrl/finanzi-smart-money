@@ -2,9 +2,16 @@ import type { Account, Category, CreditCard, Recurrence, TransactionType } from 
 
 export type Confidence = "high" | "medium" | "low";
 
+export interface QuickParseItem {
+  quantity: number;
+  unitPrice: number;
+  total: number;
+}
+
 export interface QuickParseResult {
   type: TransactionType;
   amount: number;
+  items: QuickParseItem[];
   description: string;
   categoryId: string | null;
   accountId: string | null;
@@ -126,11 +133,7 @@ function extractAmount(text: string): number | null {
  * without "cada", "a" or an explicit product-price construction, the value
  * is treated as the total.
  */
-type QuantityPricedItem = {
-  quantity: number;
-  unitPrice: number;
-  total: number;
-};
+type QuantityPricedItem = QuickParseItem;
 
 function extractQuantityPricedItems(text: string): QuantityPricedItem[] {
   const normalized = normalize(text);
