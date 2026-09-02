@@ -3,6 +3,7 @@ import type { Account, Category, CreditCard, Recurrence, TransactionType } from 
 export type Confidence = "high" | "medium" | "low";
 
 export interface QuickParseItem {
+  description: string;
   quantity: number;
   unitPrice: number;
   total: number;
@@ -138,29 +139,34 @@ type QuantityPricedItem = QuickParseItem;
 function extractQuantityPricedItems(text: string): QuantityPricedItem[] {
   const normalized = normalize(text);
   const itemPattern =
-    /(?:^|\b(?:e|mais)\s+|\b(?:comprei|paguei|peguei|adquiri)\s+)?(\d{1,3})\s+[^\d]+?\s+(?:a\s+|de\s+)(?:r\$\s*)?(\d{1,3}(?:\.\d{3})*(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)\s*(?:reais?|r\$)\b(?:\s*cada\b)?/g;
+    /(?:^|\b(?:e|mais)\s+|\b(?:comprei|paguei|peguei|adquiri)\s+)?(\d{1,3})\s+(.+?)\s+(?:a\s+|de\s+)(?:r\$\s*)?(\d{1,3}(?:\.\d{3})*(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)\s*(?:reais?|r\$)\b(?:\s*cada\b)?(?=\s*(?:e|mais)\s+\d+\s|$)/g;
 
   const explicitEachPattern =
-    /(?:^|\b(?:e|mais)\s+|\b(?:comprei|paguei|peguei|adquiri)\s+)?(\d{1,3})\s+[^\d]+?\s+(?:por\s+)?(?:r\$\s*)?(\d{1,3}(?:\.\d{3})*(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)\s*(?:reais?|r\$)?\s+cada\b/g;
+    /(?:^|\b(?:e|mais)\s+|\b(?:comprei|paguei|peguei|adquiri)\s+)?(\d{1,3})\s+(.+?)\s+(?:por\s+)?(?:r\$\s*)?(\d{1,3}(?:\.\d{3})*(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)\s*(?:reais?|r\$)?\s+cada\b(?=\s*(?:e|mais)\s+\d+\s|$)/g;
 
   const matches = [
     ...Array.from(normalized.matchAll(itemPattern)),
     ...Array.from(normalized.matchAll(explicitEachPattern)),
-  ].sort((a, b) => a.index - b.index);
+  ].sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
 
   const seen = new Set<string>();
   return matches.flatMap((match) => {
     const quantity = Number(match[1]);
-    const unitPrice = parseMoney(match[2] ?? "");
-    const key = `${match.index}:${quantity}:${unitPrice}`;
+    const description = (match[2] ?? "")
+      .replace(/^(?:de\s+)+/, "")
+      .replace(/\s+/g, " ")
+      .trim();
+    const unitPrice = parseMoney(match[3] ?? "");
+    const key = `${match.index}:${quantity}:${description}:${unitPrice}`;
     if (seen.has(key)) return [];
     seen.add(key);
-    if (!Number.isInteger(quantity) || quantity < 2 || quantity > 999 || !unitPrice) return [];
+    if (!Number.isInteger(quantity) || quantity < 2 || quantity > 999 || !description || !unitPrice) return [];
     const total = Number((quantity * unitPrice).toFixed(2));
-    return Number.isFinite(total) && total > 0 ? [{ quantity, unitPrice, total }] : [];
+    return Number.isFinite(total) && total > 0
+      ? [{ description, quantity, unitPrice, total }]
+      : [];
   });
 }
-
 function extractQuantityTimesUnitPrice(text: string): number | null {
   const items = extractQuantityPricedItems(text);
   if (items.length === 0) return null;
