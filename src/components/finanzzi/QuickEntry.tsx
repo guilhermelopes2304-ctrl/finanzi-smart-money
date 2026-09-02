@@ -420,13 +420,13 @@ function QuickEntryLive() {
         <button
           type="button"
           onClick={startInlineVoice}
-          className="hidden min-h-10 items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-3 text-xs font-bold text-primary transition-colors hover:bg-primary/10 sm:inline-flex"
+          className="hidden min-h-10 items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-3 text-xs font-bold text-primary fin-interactive fin-pressable hover:bg-primary/10 sm:inline-flex"
         >
           <Mic className="size-3.5" /> Registrar falando
         </button>
       </div>
       <form onSubmit={handleParse} className="mt-4 space-y-2">
-        <div className="flex items-center gap-2 rounded-2xl border border-border bg-background p-1.5 shadow-sm transition-all focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/10">
+        <div className="flex items-center gap-2 rounded-2xl border border-border bg-background p-1.5 shadow-sm fin-layout-transition focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/10">
           <Input
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -457,14 +457,14 @@ function QuickEntryLive() {
           <button
             type="button"
             onClick={startInlineVoice}
-            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 text-sm font-semibold text-primary transition-colors hover:bg-primary/10 active:scale-[0.99]"
+            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 text-sm font-semibold text-primary fin-interactive fin-pressable hover:bg-primary/10"
           >
             {listening ? <MicOff className="size-4" /> : <Mic className="size-4" />} {listening ? "Parar" : "Falar"}
           </button>
         </div>
       </form>
       {draft && (
-        <div className="mt-5 rounded-[1.5rem] border border-primary/20 bg-primary/[0.035] p-4 animate-fin-fade-up sm:p-5">
+        <div className="mt-5 rounded-[1.5rem] border border-primary/20 bg-primary/[0.035] p-4 animate-fin-enter fin-layout-transition sm:p-5">
           <div className="mb-4 flex items-start justify-between gap-3">
             <div>
               <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-primary">
@@ -491,7 +491,7 @@ function QuickEntryLive() {
                   : "Confira os campos"}
             </span>
           </div>
-          <div className="mb-4 grid gap-3 rounded-2xl bg-card p-4 sm:grid-cols-[auto_1fr] sm:items-center">
+          <div className="mb-4 grid gap-3 rounded-2xl bg-card p-4 fin-layout-transition sm:grid-cols-[auto_1fr] sm:items-center">
             <div
               className={cn(
                 "grid size-14 place-items-center rounded-2xl text-lg font-bold",
