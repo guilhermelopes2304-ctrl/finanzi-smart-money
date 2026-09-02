@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { TransactionBrandLogo } from "@/components/finanzzi/TransactionBrandLogo";
 
 export const Route = createFileRoute("/_authenticated/lancamentos")({
   head: () => ({
@@ -207,6 +208,7 @@ function TransactionsPage() {
               key={tx.id}
               className="fin-interactive flex flex-wrap items-center gap-3 px-4 py-4 hover:bg-muted/40 sm:px-5"
             >
+              <TransactionBrandLogo description={tx.description} />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold">{tx.description}</p>
                 <p className="mt-0.5 text-xs text-muted-foreground">
