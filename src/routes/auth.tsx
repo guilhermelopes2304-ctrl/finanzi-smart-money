@@ -56,10 +56,6 @@ function AuthPage() {
     if (initialMode) setMode(initialMode);
   }, [initialMode]);
 
-  useEffect(() => {
-    if (initialMode) setMode(initialMode);
-  }, [initialMode]);
-
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     setBusy(true);
