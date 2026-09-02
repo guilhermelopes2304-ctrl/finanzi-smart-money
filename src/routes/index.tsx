@@ -14,7 +14,7 @@ import {
   WalletCards,
   Zap,
 } from "lucide-react";
-import { useState } from "react";
+import { createElement, useState } from "react";
 import { Logo } from "@/components/finanzzi/Logo";
 import { BILLING_PLANS, getHublaCheckoutUrl } from "@/lib/billing";
 import { trackProductEvent } from "@/lib/product-analytics";
@@ -168,7 +168,7 @@ function Landing() {
               <h2 className="mt-5 font-display text-5xl font-semibold leading-[.94] tracking-[-.065em] sm:text-6xl">Seu dinheiro acontece rápido. Registrar também deveria.</h2>
               <p className="mt-6 max-w-xl text-base leading-7 text-white/55">Não é sobre montar uma planilha perfeita. É sobre conseguir registrar algo no momento em que aconteceu e voltar para sua vida.</p>
               <div className="mt-8 space-y-3">
-                {[[Mic, "Texto e voz", "Registre da forma que for mais rápida para você."], [BellRing, "Compromissos à vista", "Não deixe contas e assinaturas dependerem só da memória."], [WalletCards, "Tudo com contexto", "Veja movimentações e compromissos como partes da mesma história."]].map(([Icon, title, text]) => <div key={String(title)} className="flex gap-4 rounded-2xl border border-white/[.07] bg-[#181818] p-4"><span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#FF5A1F]/10 text-[#FF7A4A]">{typeof Icon === "function" ? <Icon className="size-4.5" /> : null}</span><div><p className="font-semibold">{title as string}</p><p className="mt-1 text-sm leading-6 text-white/45">{text as string}</p></div></div>)}
+                {[[Mic, "Texto e voz", "Registre da forma que for mais rápida para você."], [BellRing, "Compromissos à vista", "Não deixe contas e assinaturas dependerem só da memória."], [WalletCards, "Tudo com contexto", "Veja movimentações e compromissos como partes da mesma história."]].map(([Icon, title, text]) => <div key={String(title)} className="flex gap-4 rounded-2xl border border-white/[.07] bg-[#181818] p-4"><span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#FF5A1F]/10 text-[#FF7A4A]">{createElement(Icon as React.ElementType, { className: "size-4.5" })}</span><div><p className="font-semibold">{title as string}</p><p className="mt-1 text-sm leading-6 text-white/45">{text as string}</p></div></div>)}
               </div>
             </SectionReveal>
 
