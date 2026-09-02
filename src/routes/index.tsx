@@ -60,3 +60,19 @@ function PhoneMockup({ prints, alt, emphasis = false, focus = "center" }: { prin
   );
 }
 
+
+function Landing() {
+  return (
+    <main className="min-h-screen bg-background text-foreground">
+      <section className="mx-auto flex min-h-screen max-w-6xl flex-col items-center justify-center px-6 py-16 text-center">
+        <Logo />
+        <h1 className="mt-8 max-w-3xl text-4xl font-bold tracking-tight sm:text-6xl">Pare de organizar tudo. Comece a entender.</h1>
+        <p className="mt-5 max-w-xl text-base text-muted-foreground sm:text-lg">Controle financeiro simples: você conta o que aconteceu e o FINANZZI organiza.</p>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <Link to="/login" className="rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground">Entrar</Link>
+          <a href={getHublaCheckoutUrl(BILLING_PLANS[0])} className="rounded-full border border-border px-6 py-3 font-semibold">Começar</a>
+        </div>
+      </section>
+    </main>
+  );
+}
