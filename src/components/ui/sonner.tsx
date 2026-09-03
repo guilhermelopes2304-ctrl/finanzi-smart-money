@@ -22,7 +22,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
         duration: 2200,
         classNames: {
           toast:
-            "group toast group-[.toaster]:w-[min(340px,calc(100vw-32px))] group-[.toaster]:rounded-[18px] group-[.toaster]:border group-[.toaster]:border-primary/20 group-[.toaster]:bg-[#171719]/95 group-[.toaster]:px-3.5 group-[.toaster]:py-3 group-[.toaster]:text-white group-[.toaster]:shadow-[0_18px_55px_rgba(0,0,0,0.38)] group-[.toaster]:backdrop-blur-2xl group-[.toaster]:gap-3",
+            "group toast group-[.toaster]:w-[min(340px,calc(100vw-32px))] group-[.toaster]:rounded-[18px] group-[.toaster]:border group-[.toaster]:border-primary/20 group-[.toaster]:bg-[#171719]/95 group-[.toaster]:px-3.5 group-[.toaster]:py-3 group-[.toaster]:text-white group-[.toaster]:shadow-[0_18px_55px_rgba(0,0,0,0.38)] group-[.toaster]:backdrop-blur-2xl group-[.toaster]:gap-2.5",
           title:
             "group-[.toast]:min-w-0 group-[.toast]:pr-1 group-[.toast]:text-[14px] group-[.toast]:font-semibold group-[.toast]:leading-5 group-[.toast]:text-white",
           description:
