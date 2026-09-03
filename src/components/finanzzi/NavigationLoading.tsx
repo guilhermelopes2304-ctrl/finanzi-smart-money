@@ -8,7 +8,6 @@ export function NavigationLoading() {
   const [loading, setLoading] = useState(false);
   const loadingRef = useRef(false);
   const startedAt = useRef(0);
-  const loadingRef = useRef(false);
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const safetyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const showTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -33,7 +32,6 @@ export function NavigationLoading() {
       clearTimers();
       startedAt.current = Date.now();
       showTimer.current = setTimeout(() => {
-        loadingRef.current = true;
         loadingRef.current = true;
         setLoading(true);
         safetyTimer.current = setTimeout(hide, MAX_VISIBLE_MS);
