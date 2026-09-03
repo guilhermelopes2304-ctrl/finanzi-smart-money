@@ -328,7 +328,6 @@ function QuickEntryLive() {
           id: paidBillId,
           values: { status: "paid", paid_at: todayISO() },
         });
-        toast.success("Compromisso marcado como pago");
         invalidate();
         setDraft(null);
         setPaidBillId(null);
