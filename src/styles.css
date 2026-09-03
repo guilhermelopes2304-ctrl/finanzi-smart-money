@@ -777,3 +777,36 @@ html[data-platform="ios"] body, html[data-platform="android"] body { min-height:
   .fin-product-home .fin-home-intro { border-radius: 26px; padding-top: 24px; }
   .fin-product-home .fin-home-entry-card { border-radius: 24px; }
 }
+
+
+/* React Bits-inspired product primitives: local, dependency-free adaptations. */
+.fin-radial-lines {
+  background:
+    repeating-radial-gradient(circle at 78% 8%, rgba(255,90,31,.08) 0 1px, transparent 1px 24px),
+    radial-gradient(circle at 78% 8%, rgba(255,90,31,.14), transparent 22rem);
+  mask-image: linear-gradient(135deg, transparent 5%, black 35%, transparent 92%);
+  opacity: .55;
+}
+.fin-shimmer {
+  overflow: hidden;
+}
+.fin-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: -20% -60%;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 42%, rgba(255,255,255,.055) 50%, transparent 58%);
+  transform: translateX(-32%);
+  animation: fin-product-sheen 9s ease-in-out infinite;
+}
+.fin-ambient-glow {
+  box-shadow: 0 0 0 1px rgba(255,90,31,.05), 0 30px 100px rgba(0,0,0,.32), 0 0 90px rgba(255,90,31,.045);
+}
+@keyframes fin-product-sheen {
+  0%,62% { transform: translateX(-38%); opacity: 0; }
+  70% { opacity: 1; }
+  88%,100% { transform: translateX(38%); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fin-shimmer::after { animation: none; }
+}
