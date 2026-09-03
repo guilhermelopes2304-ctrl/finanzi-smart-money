@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-const CACHE_NAME = "finanzzi-static-v5-pwa";
+const CACHE_NAME = "finanzzi-static-v6-pwa";
 const OFFLINE_URL = "/offline.html";
 
 self.addEventListener("install", (event) => {
@@ -47,19 +47,20 @@ self.addEventListener("fetch", (event) => {
   const staticAsset = ["script", "style", "image", "font"].includes(request.destination);
   if (!staticAsset) return;
 
+  // Network-first prevents an installed iOS PWA from staying on stale CSS/JS
+  // after a production deploy, while still preserving cached assets offline.
   event.respondWith(
-    caches.match(request).then(async (cached) => {
-      const network = fetch(request)
-        .then(async (response) => {
-          if (response.ok) {
-            const cache = await caches.open(CACHE_NAME);
-            void cache.put(request, response.clone());
-          }
-          return response;
-        })
-        .catch(() => cached || Response.error());
-
-      return cached || network;
-    }),
+    fetch(request)
+      .then(async (response) => {
+        if (response.ok) {
+          const cache = await caches.open(CACHE_NAME);
+          void cache.put(request, response.clone());
+        }
+        return response;
+      })
+      .catch(async () => {
+        const cached = await caches.match(request);
+        return cached || Response.error();
+      }),
   );
 });
