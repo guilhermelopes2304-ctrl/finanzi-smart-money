@@ -146,17 +146,32 @@ function Landing() {
           </div>
         </section>
 
-        <section id="como-funciona" className="px-4 py-24 sm:px-6 sm:py-32">
+        <section id="como-funciona" className="fin-editorial relative px-4 py-24 sm:px-6 sm:py-32">
           <div className="mx-auto max-w-6xl">
-            <SectionReveal className="max-w-3xl">
-              <p className="text-[11px] font-bold uppercase tracking-[.2em] text-[#FF7A4A]">Um jeito diferente de cuidar do dinheiro</p>
-              <h2 className="mt-5 font-display text-5xl font-semibold leading-[.94] tracking-[-.065em] sm:text-7xl">Menos controle manual. Mais clareza.</h2>
-              <p className="mt-6 max-w-2xl text-base leading-7 text-white/55">O FINANZZI foi pensado para reduzir o atrito entre viver a vida e acompanhar o próprio dinheiro.</p>
-            </SectionReveal>
-            <div className="mt-12 grid gap-4 md:grid-cols-3">
+            <div className="grid items-end gap-10 lg:grid-cols-[1.15fr_.85fr] lg:gap-16">
+              <SectionReveal>
+                <p className="text-[11px] font-bold uppercase tracking-[.2em] text-[#FF7A4A]">Um jeito diferente de cuidar do dinheiro</p>
+                <div className="mt-6 flex items-start gap-5 sm:gap-8">
+                  <span className="fin-editorial-number font-display text-7xl font-semibold leading-none text-[#FF5A1F]/30 sm:text-9xl">01</span>
+                  <div className="min-w-0">
+                    <h2 className="font-display text-5xl font-semibold leading-[.94] tracking-[-.065em] sm:text-7xl">Menos controle manual.<br /><span className="text-white/45">Mais clareza.</span></h2>
+                    <p className="mt-7 max-w-xl text-base leading-7 text-white/55">O FINANZZI reduz o atrito entre viver a vida e acompanhar o próprio dinheiro.</p>
+                  </div>
+                </div>
+              </SectionReveal>
+
+              <SectionReveal className="lg:pb-2">
+                <div className="fin-editorial-note rounded-[28px] border border-white/8 bg-white/[.025] p-6 sm:p-7">
+                  <p className="text-sm leading-7 text-white/65">Você não precisa parar tudo para organizar uma planilha.</p>
+                  <p className="mt-5 font-display text-2xl font-semibold tracking-[-.04em]">Conta o que aconteceu.<br />O resto começa a fazer sentido.</p>
+                </div>
+              </SectionReveal>
+            </div>
+
+            <div className="mt-14 grid gap-4 lg:grid-cols-12">
               <FeatureCard number="01" icon={MessageCircle} title="Conte o que aconteceu." text="“Uber 32”, “paguei a academia”, “recebi meu salário”. Comece pela forma mais natural." />
-              <FeatureCard number="02" icon={BrainCircuit} title="Deixe o FINANZZI organizar." text="O lançamento ganha contexto para sua vida financeira ficar menos espalhada." />
-              <FeatureCard number="03" icon={ChartNoAxesCombined} title="Veja o que importa agora." text="Entenda sua movimentação, seus compromissos e a margem disponível sem procurar em várias telas." />
+              <FeatureCard number="02" icon={BrainCircuit} title="O FINANZZI conecta." text="O lançamento ganha contexto e deixa sua vida financeira menos espalhada." />
+              <FeatureCard number="03" icon={ChartNoAxesCombined} title="Você vê o momento." text="Entenda movimentações, compromissos e margem disponível sem procurar em várias telas." />
             </div>
           </div>
         </section>
@@ -173,10 +188,10 @@ function Landing() {
             </SectionReveal>
 
             <SectionReveal>
-              <div className="relative overflow-hidden rounded-[32px] border border-white/8 bg-[#181818] p-5 sm:p-7">
+              <div className="fin-depth-panel relative overflow-hidden rounded-[32px] border border-white/8 bg-[#181818] p-5 sm:p-7">
                 <div className="absolute inset-x-0 top-0 h-32 bg-[radial-gradient(circle_at_80%_0%,rgba(255,90,31,.18),transparent_55%)]" />
                 <div className="relative flex items-center justify-between"><div><p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#FF8B62]">Uma visão de verdade</p><h3 className="mt-2 font-display text-2xl font-semibold">O que está acontecendo agora.</h3></div><span className="grid size-11 place-items-center rounded-2xl bg-[#FF5A1F]"><Zap className="size-5" /></span></div>
-                <div className="relative mt-7 grid gap-3 sm:grid-cols-[1.15fr_.85fr]">
+                <div className="fin-depth-chips pointer-events-none absolute -right-3 bottom-7 hidden sm:block"><span>Prime Video · R$ 19,90</span><span>Uber · R$ 32,00</span></div><div className="relative mt-7 grid gap-3 sm:grid-cols-[1.15fr_.85fr]">
                   <div className="rounded-[24px] border border-white/8 bg-[#111111] p-5"><p className="text-xs font-bold text-white/45">Gastos recentes</p><div className="mt-5 space-y-4">{[["Uber", "R$ 32,00"], ["Prime Video", "R$ 19,90"], ["Academia", "R$ 119,90"]].map(([name, value], index) => <div key={name} className="flex items-center gap-3"><span className="grid size-9 place-items-center rounded-xl bg-white/[.06] text-[11px] font-black">{index === 0 ? "U" : index === 1 ? "P" : "A"}</span><span className="flex-1 text-sm font-semibold">{name}</span><span className="text-sm font-bold text-white/70">{value}</span></div>)}</div></div>
                   <div className="rounded-[24px] border border-[#FF5A1F]/15 bg-[#2A1710] p-5"><p className="text-[10px] font-bold uppercase tracking-[.14em] text-[#FF9A78]">Leitura rápida</p><p className="mt-4 text-sm leading-6 text-white/70">Você já tem <strong className="text-white">R$ 327</strong> comprometidos nos próximos dias.</p><div className="mt-5 h-2 overflow-hidden rounded-full bg-white/8"><div className="h-full w-[72%] rounded-full bg-[#FF5A1F]" /></div></div>
                 </div>
@@ -193,19 +208,25 @@ function Landing() {
               <p className="mx-auto mt-6 max-w-xl text-base leading-7 text-white/55">A primeira decisão não precisa ser uma cobrança. Conheça o FINANZZI e escolha um plano pago quando fizer sentido.</p>
             </SectionReveal>
             <div className="mt-12 grid gap-4 lg:grid-cols-3">
-              <article className="rounded-[28px] border border-white/8 bg-[#181818] p-7"><p className="text-[10px] font-bold uppercase tracking-[.16em] text-white/45">Começar</p><h3 className="mt-4 font-display text-3xl font-semibold">Grátis</h3><p className="mt-3 text-sm leading-6 text-white/50">Crie sua conta e conheça o FINANZZI sem compromisso.</p><Link to="/auth" search={{ mode: "signup" }} className="mt-8 flex h-12 items-center justify-center rounded-full bg-white text-sm font-bold text-black transition hover:bg-white/90">Começar grátis</Link></article>
-              <article className="rounded-[28px] border border-white/8 bg-[#181818] p-7"><p className="text-[10px] font-bold uppercase tracking-[.16em] text-white/45">Mensal</p><h3 className="mt-4 font-display text-3xl font-semibold">{BILLING_PLANS.pro_monthly.name}</h3><p className="mt-5 text-4xl font-bold tracking-[-.06em]">{BILLING_PLANS.pro_monthly.priceLabel}</p><p className="mt-2 text-sm text-white/45">Mais flexibilidade para você.</p><a href={monthlyCheckout} onClick={startCheckout} className="mt-8 flex h-12 items-center justify-center rounded-full border border-white/10 bg-white/[.04] text-sm font-bold transition hover:bg-white/[.08]">Ver plano mensal</a></article>
-              <article className="relative overflow-hidden rounded-[28px] border border-[#FF5A1F]/55 bg-[#21120D] p-7"><div className="absolute -right-10 -top-10 size-32 rounded-full bg-[#FF5A1F]/15 blur-3xl" /><span className="relative inline-flex rounded-full bg-[#FF5A1F] px-3 py-1 text-[10px] font-black uppercase tracking-[.14em]">Melhor valor</span><p className="relative mt-5 text-[10px] font-bold uppercase tracking-[.16em] text-white/45">Anual</p><h3 className="relative mt-4 font-display text-3xl font-semibold">{BILLING_PLANS.pro_annual.name}</h3><p className="relative mt-5 text-4xl font-bold tracking-[-.06em]">{BILLING_PLANS.pro_annual.priceLabel}</p><p className="relative mt-2 text-sm text-[#FF9A78]">{BILLING_PLANS.pro_annual.monthlyEquivalentLabel}</p><a href={annualCheckout} onClick={startCheckout} className="relative mt-8 flex h-12 items-center justify-center gap-2 rounded-full bg-[#FF5A1F] text-sm font-bold transition hover:bg-[#FF6A35]">Ver plano anual <ArrowRight className="size-4" /></a></article>
+              <article className="fin-price-card fin-price-free rounded-[28px] border border-white/8 bg-[#181818] p-7"><p className="text-[10px] font-bold uppercase tracking-[.16em] text-white/45">Começar</p><h3 className="mt-4 font-display text-3xl font-semibold">Grátis</h3><p className="mt-3 text-sm leading-6 text-white/50">Crie sua conta e conheça o FINANZZI sem compromisso.</p><Link to="/auth" search={{ mode: "signup" }} className="mt-8 flex h-12 items-center justify-center rounded-full bg-white text-sm font-bold text-black transition hover:bg-white/90">Começar grátis</Link></article>
+              <article className="fin-price-card fin-price-monthly rounded-[28px] border border-white/8 bg-[#181818] p-7"><p className="text-[10px] font-bold uppercase tracking-[.16em] text-white/45">Mensal</p><h3 className="mt-4 font-display text-3xl font-semibold">{BILLING_PLANS.pro_monthly.name}</h3><p className="mt-5 text-4xl font-bold tracking-[-.06em]">{BILLING_PLANS.pro_monthly.priceLabel}</p><p className="mt-2 text-sm text-white/45">Mais flexibilidade para você.</p><a href={monthlyCheckout} onClick={startCheckout} className="mt-8 flex h-12 items-center justify-center rounded-full border border-white/10 bg-white/[.04] text-sm font-bold transition hover:bg-white/[.08]">Ver plano mensal</a></article>
+              <article className="fin-price-card fin-price-annual relative overflow-hidden rounded-[28px] border border-[#FF5A1F]/55 bg-[#21120D] p-7"><div className="absolute -right-10 -top-10 size-32 rounded-full bg-[#FF5A1F]/15 blur-3xl" /><span className="relative inline-flex rounded-full bg-[#FF5A1F] px-3 py-1 text-[10px] font-black uppercase tracking-[.14em]">Melhor valor</span><p className="relative mt-5 text-[10px] font-bold uppercase tracking-[.16em] text-white/45">Anual</p><h3 className="relative mt-4 font-display text-3xl font-semibold">{BILLING_PLANS.pro_annual.name}</h3><p className="relative mt-5 text-4xl font-bold tracking-[-.06em]">{BILLING_PLANS.pro_annual.priceLabel}</p><p className="relative mt-2 text-sm text-[#FF9A78]">{BILLING_PLANS.pro_annual.monthlyEquivalentLabel}</p><a href={annualCheckout} onClick={startCheckout} className="relative mt-8 flex h-12 items-center justify-center gap-2 rounded-full bg-[#FF5A1F] text-sm font-bold transition hover:bg-[#FF6A35]">Ver plano anual <ArrowRight className="size-4" /></a></article>
             </div>
           </div>
         </section>
 
         <section id="faq" className="border-t border-white/[.07] bg-[#111111] px-4 py-24 sm:px-6 sm:py-32">
-          <div className="mx-auto max-w-3xl">
-            <SectionReveal><p className="text-[11px] font-bold uppercase tracking-[.2em] text-[#FF7A4A]">Sem esconder o jogo</p><h2 className="mt-5 font-display text-5xl font-semibold leading-[.94] tracking-[-.065em] sm:text-6xl">Antes de começar, as dúvidas mais comuns.</h2></SectionReveal>
-            <div className="mt-10 divide-y divide-white/[.08] border-y border-white/[.08]">
-              {faqs.map(([question, answer], index) => <div key={question}><button type="button" onClick={() => setOpenFaq(openFaq === index ? null : index)} className="flex w-full items-center justify-between gap-6 py-6 text-left text-base font-bold sm:text-lg"><span>{question}</span><ChevronDown className={`size-5 shrink-0 text-[#FF7A4A] transition-transform ${openFaq === index ? "rotate-180" : ""}`} /></button>{openFaq === index && <p className="animate-fin-fade-up max-w-2xl pb-6 text-sm leading-7 text-white/55">{answer}</p>}</div>)}
-            </div>
+          <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[.78fr_1.22fr] lg:gap-20">
+            <SectionReveal className="lg:sticky lg:top-28 lg:self-start">
+              <p className="text-[11px] font-bold uppercase tracking-[.2em] text-[#FF7A4A]">Sem esconder o jogo</p>
+              <h2 className="mt-5 font-display text-5xl font-semibold leading-[.94] tracking-[-.065em] sm:text-6xl">As dúvidas antes de você decidir.</h2>
+              <p className="mt-6 max-w-sm text-sm leading-7 text-white/50">Respostas diretas para você entender como o FINANZZI funciona antes de começar.</p>
+            </SectionReveal>
+            <SectionReveal>
+              <div className="fin-faq-stack divide-y divide-white/[.08] overflow-hidden rounded-[30px] border border-white/[.08] bg-[#0E0E0E]">
+                {faqs.map(([question, answer], index) => <div key={question} className="px-5 sm:px-7"><button type="button" onClick={() => setOpenFaq(openFaq === index ? null : index)} className="flex w-full items-center justify-between gap-6 py-6 text-left text-base font-bold sm:text-lg"><span>{question}</span><span className="grid size-9 shrink-0 place-items-center rounded-full border border-white/8 bg-white/[.03]"><ChevronDown className={`size-4 text-[#FF7A4A] transition-transform ${openFaq === index ? "rotate-180" : ""}`} /></span></button>{openFaq === index && <p className="animate-fin-fade-up max-w-2xl pb-6 text-sm leading-7 text-white/55">{answer}</p>}</div>)}
+              </div>
+            </SectionReveal>
           </div>
         </section>
 
