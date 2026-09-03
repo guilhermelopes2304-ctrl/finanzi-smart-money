@@ -378,3 +378,109 @@ html[data-platform="ios"] body, html[data-platform="android"] body { min-height:
 @media (prefers-reduced-motion: reduce) {
   .fin-gradient-text,.fin-beam,.fin-orb,.fin-live-stage::before,.fin-live-stage::after,.fin-live-panel::before { animation: none !important; }
 }
+
+
+/* Landing composition: break repeated card rhythms */
+.fin-editorial::before {
+  content: "";
+  position: absolute;
+  left: -12rem;
+  top: 22%;
+  width: 32rem;
+  height: 32rem;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255,90,31,.09), transparent 68%);
+  pointer-events: none;
+}
+.fin-editorial-number {
+  text-shadow: 0 0 48px rgba(255,90,31,.12);
+}
+.fin-editorial-note {
+  position: relative;
+  background:
+    linear-gradient(135deg, rgba(255,90,31,.08), transparent 55%),
+    rgba(255,255,255,.018);
+}
+.fin-editorial .grid.lg\:grid-cols-12 > article:nth-child(1) {
+  grid-column: span 5 / span 5;
+}
+.fin-editorial .grid.lg\:grid-cols-12 > article:nth-child(2) {
+  grid-column: span 3 / span 3;
+  margin-top: 44px;
+}
+.fin-editorial .grid.lg\:grid-cols-12 > article:nth-child(3) {
+  grid-column: span 4 / span 4;
+  margin-top: 16px;
+}
+.fin-editorial .grid.lg\:grid-cols-12 > article:nth-child(2) h3 {
+  font-size: 1.45rem;
+}
+.fin-depth-panel {
+  box-shadow: 0 28px 90px rgba(0,0,0,.28);
+  transform: perspective(1100px) rotateY(-1deg) rotateX(1deg);
+}
+.fin-depth-panel::after {
+  content: "";
+  position: absolute;
+  inset: auto -20% -50% 15%;
+  height: 12rem;
+  background: radial-gradient(ellipse, rgba(255,90,31,.18), transparent 66%);
+  filter: blur(20px);
+  pointer-events: none;
+}
+.fin-depth-chips {
+  z-index: 3;
+  transform: rotate(-5deg);
+}
+.fin-depth-chips span {
+  display: block;
+  width: max-content;
+  margin-top: 8px;
+  padding: 8px 12px;
+  border: 1px solid rgba(255,255,255,.11);
+  border-radius: 999px;
+  background: rgba(15,15,15,.88);
+  color: rgba(255,255,255,.75);
+  font-size: 11px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.25);
+  backdrop-filter: blur(14px);
+}
+.fin-depth-chips span:nth-child(2) {
+  margin-left: 42px;
+  color: #ff9a78;
+}
+.fin-price-card {
+  transition: transform .35s var(--ease-enter), border-color .35s var(--ease-standard), box-shadow .35s var(--ease-standard);
+}
+.fin-price-free { transform: translateY(20px); }
+.fin-price-monthly { transform: translateY(42px); }
+.fin-price-annual {
+  transform: translateY(0);
+  box-shadow: 0 24px 70px rgba(255,90,31,.10);
+}
+@media (hover:hover) {
+  .fin-price-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255,90,31,.42);
+    box-shadow: 0 24px 70px rgba(0,0,0,.24);
+  }
+}
+.fin-faq-stack {
+  box-shadow: 0 22px 70px rgba(0,0,0,.18);
+}
+.fin-faq-stack > div {
+  transition: background-color .22s var(--ease-standard);
+}
+.fin-faq-stack > div:hover {
+  background: rgba(255,255,255,.018);
+}
+@media (max-width: 1023px) {
+  .fin-editorial .grid.lg\:grid-cols-12 > article:nth-child(n) {
+    grid-column: auto;
+    margin-top: 0;
+  }
+  .fin-price-free,
+  .fin-price-monthly,
+  .fin-price-annual { transform: none; }
+  .fin-depth-panel { transform: none; }
+}
