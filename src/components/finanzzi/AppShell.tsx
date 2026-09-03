@@ -127,7 +127,7 @@ function NavItem({
     <Link
       to={item.to}
       onClick={() => {
-        beginNavigation();
+        if (!active) beginNavigation();
         onNavigate?.();
       }}
       title={collapsed ? item.label : undefined}
@@ -189,7 +189,7 @@ function MoreMenu({
               key={item.to}
               to={item.to}
               onClick={() => {
-                beginNavigation();
+                if (activePathname !== item.to) beginNavigation();
                 onClose?.();
               }}
               className={cn(
@@ -284,7 +284,7 @@ export function AppShell({
             sidebarCollapsed ? "justify-center px-3" : "px-5",
           )}
         >
-          <Link to="/dashboard" aria-label="FINANZZI">
+          <Link to="/dashboard" aria-label="FINANZZI" onClick={() => { if (activePathname !== "/dashboard") beginNavigation(); }}>
             {sidebarCollapsed ? <Logo compact /> : <Logo />}
           </Link>
         </div>
