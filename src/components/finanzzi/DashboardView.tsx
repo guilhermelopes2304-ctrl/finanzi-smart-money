@@ -41,7 +41,7 @@ export function DashboardView({ profile, transactions, categories, accounts, bil
     .slice(0, 4);
 
   return (
-    <div className="min-h-full bg-background text-foreground">
+    <div className="fin-screen fin-dashboard min-h-full bg-background text-foreground">
       <div className="mx-auto w-full max-w-3xl px-4 pb-28 pt-4 sm:px-6 sm:pb-10 sm:pt-7">
         <Reveal className="pb-2 sm:pb-4">
           <section className="relative overflow-hidden rounded-[26px] border border-border/70 bg-card px-5 py-5 shadow-[0_10px_32px_rgba(0,0,0,0.045)] sm:px-7 sm:py-6">
