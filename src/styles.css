@@ -684,3 +684,28 @@ html[data-platform="ios"] body, html[data-platform="android"] body { min-height:
   .fin-screen .surface-card,
   .fin-screen [class*="rounded-[28px]"] { border-radius: 24px; }
 }
+
+
+/* Contas: denser mobile-first financial workflow */
+.fin-accounts-tabs [data-slot="tabs-trigger"] {
+  white-space: nowrap;
+}
+.fin-bill-row {
+  transition: background-color .18s ease, transform .18s ease;
+}
+.fin-bill-row:active {
+  background: hsl(var(--muted)/.55);
+}
+@media (max-width: 639px) {
+  .fin-accounts-tabs {
+    position: sticky;
+    top: max(8px, env(safe-area-inset-top));
+    z-index: 20;
+  }
+  .fin-accounts .surface-card {
+    min-height: 148px;
+  }
+  .fin-bill-row > :nth-child(3) {
+    align-self: flex-start;
+  }
+}
