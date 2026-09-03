@@ -11,20 +11,20 @@ const Toaster = ({ ...props }: ToasterProps) => {
       className="toaster group finanzzi-toaster"
       icons={{
         success: (
-          <span className="grid size-8 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground shadow-[0_8px_24px_hsl(var(--primary)/0.35)]">
-            <Check className="size-4" strokeWidth={3} />
+          <span className="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground shadow-[0_6px_18px_hsl(var(--primary)/0.28)]">
+            <Check className="size-3.5" strokeWidth={3} />
           </span>
         ),
       }}
-      offset="max(12px, env(safe-area-inset-top))"
-      mobileOffset="max(12px, env(safe-area-inset-top))"
+      offset="max(14px, env(safe-area-inset-top))"
+      mobileOffset="max(14px, env(safe-area-inset-top))"
       toastOptions={{
-        duration: 2200,
+        duration: 1600,
         classNames: {
           toast:
-            "group toast group-[.toaster]:w-[min(340px,calc(100vw-32px))] group-[.toaster]:rounded-[18px] group-[.toaster]:border group-[.toaster]:border-primary/20 group-[.toaster]:bg-[#171719]/95 group-[.toaster]:px-3.5 group-[.toaster]:py-3 group-[.toaster]:text-white group-[.toaster]:shadow-[0_18px_55px_rgba(0,0,0,0.38)] group-[.toaster]:backdrop-blur-2xl group-[.toaster]:gap-2.5",
+            "group toast group-[.toaster]:w-[min(340px,calc(100vw-32px))] group-[.toaster]:rounded-[18px] group-[.toaster]:border group-[.toaster]:border-primary/20 group-[.toaster]:bg-[#171719]/95 group-[.toaster]:px-4 group-[.toaster]:py-3.5 group-[.toaster]:text-white group-[.toaster]:shadow-[0_18px_55px_rgba(0,0,0,0.38)] group-[.toaster]:backdrop-blur-2xl group-[.toaster]:gap-3 group-[.toaster]:items-center",
           title:
-            "group-[.toast]:min-w-0 group-[.toast]:pr-1 group-[.toast]:text-[14px] group-[.toast]:font-semibold group-[.toast]:leading-5 group-[.toast]:text-white",
+            "group-[.toast]:min-w-0 group-[.toast]:pr-1 group-[.toast]:text-[14px] group-[.toast]:font-semibold group-[.toast]:leading-5 group-[.toast]:pt-0.5 group-[.toast]:text-white",
           description:
             "group-[.toast]:text-[12px] group-[.toast]:leading-4 group-[.toast]:text-white/60",
           actionButton:
