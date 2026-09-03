@@ -260,3 +260,121 @@ html[data-platform="ios"] body, html[data-platform="android"] body { min-height:
     animation: none; transition: none; opacity: 1; transform: none;
   }
 }
+
+/* FINANZZI landing motion system */
+.fin-landing {
+  background:
+    radial-gradient(circle at 50% -10%, rgba(255,90,31,.12), transparent 32rem),
+    #0A0A0A;
+}
+.fin-hero-grid {
+  opacity: .34;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(to bottom, black, transparent 72%);
+}
+.fin-beam {
+  background: conic-gradient(from 190deg at 50% 0%, transparent 0deg, rgba(255,90,31,.20) 26deg, rgba(255,177,140,.10) 50deg, transparent 84deg);
+  filter: blur(16px);
+  opacity: .9;
+  animation: fin-beam-drift 9s ease-in-out infinite alternate;
+}
+.fin-gradient-text {
+  background: linear-gradient(110deg, #fff 8%, #ff8a61 46%, #ff5a1f 78%);
+  background-size: 180% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: fin-gradient-shift 7s ease-in-out infinite;
+}
+.fin-orb { will-change: transform; }
+.fin-orb-a { animation: fin-orbit-a 11s ease-in-out infinite alternate; }
+.fin-orb-b { animation: fin-orbit-b 13s ease-in-out infinite alternate; }
+.fin-live-stage::before,
+.fin-live-stage::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+  filter: blur(18px);
+  opacity: .55;
+}
+.fin-live-stage::before {
+  width: 140px; height: 140px; left: 3%; bottom: -25px;
+  background: rgba(255,90,31,.18);
+  animation: fin-float 7s ease-in-out infinite;
+}
+.fin-live-stage::after {
+  width: 110px; height: 110px; right: 4%; top: 8%;
+  background: rgba(255,170,110,.12);
+  animation: fin-float 9s ease-in-out infinite reverse;
+}
+.fin-live-panel::before {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background: linear-gradient(115deg, transparent 42%, rgba(255,255,255,.045) 49%, transparent 56%);
+  transform: translateX(-48%);
+  animation: fin-sheen 8s ease-in-out infinite;
+  pointer-events: none;
+}
+.fin-live-panel > * { position: relative; }
+.fin-final-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 100%, rgba(255,90,31,.23), transparent 40%),
+    linear-gradient(180deg, transparent, rgba(255,90,31,.035));
+  pointer-events: none;
+}
+.fin-landing a,
+.fin-landing button {
+  transition:
+    transform 180ms var(--ease-enter),
+    box-shadow 220ms var(--ease-standard),
+    background-color 180ms var(--ease-standard),
+    border-color 180ms var(--ease-standard);
+}
+@media (hover:hover) and (prefers-reduced-motion:no-preference) {
+  .fin-landing a:hover,
+  .fin-landing button:hover { transform: translateY(-1px); }
+  .fin-live-canvas:hover .fin-live-panel {
+    transform: translateY(-3px) rotateX(1deg);
+    box-shadow: 0 38px 120px rgba(0,0,0,.5), 0 0 0 1px rgba(255,90,31,.08);
+  }
+}
+.fin-live-panel {
+  transition: transform 400ms var(--ease-enter), box-shadow 400ms var(--ease-standard);
+  transform-style: preserve-3d;
+}
+@keyframes fin-gradient-shift {
+  0%,100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes fin-beam-drift {
+  from { transform: translateX(-8%) rotate(-4deg) scale(1); opacity: .55; }
+  to { transform: translateX(8%) rotate(4deg) scale(1.08); opacity: .95; }
+}
+@keyframes fin-orbit-a {
+  from { transform: translate3d(0,0,0) scale(1); }
+  to { transform: translate3d(70px,-30px,0) scale(1.18); }
+}
+@keyframes fin-orbit-b {
+  from { transform: translate3d(0,0,0) scale(1.05); }
+  to { transform: translate3d(-65px,45px,0) scale(.88); }
+}
+@keyframes fin-float {
+  0%,100% { transform: translate3d(0,0,0) scale(1); }
+  50% { transform: translate3d(0,-14px,0) scale(1.08); }
+}
+@keyframes fin-sheen {
+  0%,55% { transform: translateX(-58%) rotate(8deg); opacity: 0; }
+  65% { opacity: 1; }
+  85%,100% { transform: translateX(58%) rotate(8deg); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fin-gradient-text,.fin-beam,.fin-orb,.fin-live-stage::before,.fin-live-stage::after,.fin-live-panel::before { animation: none !important; }
+}
