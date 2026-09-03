@@ -484,3 +484,70 @@ html[data-platform="ios"] body, html[data-platform="android"] body { min-height:
   .fin-price-annual { transform: none; }
   .fin-depth-panel { transform: none; }
 }
+
+
+/* Landing header and footer refinement */
+.fin-site-header {
+  background: linear-gradient(180deg, rgba(10,10,10,.82), rgba(10,10,10,.30) 72%, transparent);
+  backdrop-filter: blur(12px);
+}
+.fin-site-nav {
+  background: rgba(15,15,16,.72);
+  backdrop-filter: blur(24px);
+}
+.fin-brand { transition: background-color .2s ease; }
+.fin-brand:hover { background: rgba(255,255,255,.045); }
+.fin-nav-link {
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255,255,255,.48);
+  transition: color .2s ease, background-color .2s ease;
+}
+.fin-nav-link:hover {
+  color: rgba(255,255,255,.92);
+  background: rgba(255,255,255,.055);
+}
+.fin-login-button {
+  border: 1px solid transparent;
+  transition: color .2s ease, background-color .2s ease, border-color .2s ease;
+}
+.fin-login-button:hover {
+  color: #fff;
+  border-color: rgba(255,255,255,.08);
+  background: rgba(255,255,255,.045);
+}
+.fin-start-button {
+  box-shadow: 0 10px 26px rgba(255,90,31,.24);
+  transition: transform .2s var(--ease-enter), box-shadow .2s ease, background-color .2s ease;
+}
+.fin-start-button:hover {
+  transform: translateY(-1px);
+  background: #ff6a35;
+  box-shadow: 0 14px 32px rgba(255,90,31,.32);
+}
+.fin-footer {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 14% 120%, rgba(255,90,31,.13), transparent 34rem),
+    linear-gradient(180deg, #0d0d0e, #080808);
+}
+.fin-footer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: .16;
+  pointer-events: none;
+  background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 100% 36px;
+  mask-image: linear-gradient(to bottom, transparent, black 35%, transparent);
+}
+.fin-footer > div { position: relative; }
+@media (max-width: 639px) {
+  .fin-site-header .mx-auto { padding-left: 10px; padding-right: 10px; }
+  .fin-site-nav { height: 54px; border-radius: 17px; padding-left: 8px; padding-right: 8px; }
+  .fin-login-button { padding-left: 10px; padding-right: 10px; font-size: 13px; }
+  .fin-start-button { padding-left: 11px; padding-right: 11px; }
+}
