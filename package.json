@@ -74,7 +74,9 @@
     "@capacitor/haptics": "^8.0.0",
     "@capacitor/ios": "^8.1.0",
     "@capacitor/keyboard": "^8.0.0",
-    "@capacitor/status-bar": "^8.0.0"
+    "@capacitor/status-bar": "^8.0.0",
+    "gsap": "^3.15.0",
+    "@gsap/react": "^2.1.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
