@@ -810,3 +810,5 @@ html[data-platform="ios"] body, html[data-platform="android"] body { min-height:
 @media (prefers-reduced-motion: reduce) {
   .fin-shimmer::after { animation: none; }
 }
+
+/* deployment sync: restore stable GSAP product foundation */
