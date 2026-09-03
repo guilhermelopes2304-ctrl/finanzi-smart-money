@@ -1,5 +1,7 @@
 /* eslint-disable prettier/prettier */
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { gsap } from "gsap";
+import { useGSAP } from "@gsap/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Filter, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { useCategories, useDeleteRow, useTransactions } from "@/hooks/useFinanceData";
@@ -22,6 +24,8 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { TransactionBrandLogo } from "@/components/finanzzi/TransactionBrandLogo";
+
+gsap.registerPlugin(useGSAP);
 
 export const Route = createFileRoute("/_authenticated/lancamentos")({
   head: () => ({
@@ -49,6 +53,7 @@ function TransactionsPage() {
   const [editing, setEditing] = useState<Transaction | null>(null);
   const [open, setOpen] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   const categoryName = useMemo(() => new Map(categories.map((c) => [c.id, c.name])), [categories]);
 
@@ -86,9 +91,21 @@ function TransactionsPage() {
     return sorted;
   }, [transactions, type, category, search, sort]);
 
+  useGSAP(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    gsap.from("[data-fin-history-item]", {
+      y: 12,
+      opacity: 0,
+      duration: 0.38,
+      ease: "power3.out",
+      stagger: 0.045,
+      clearProps: "transform,opacity",
+    });
+  }, { scope: rootRef, dependencies: [rows.length, filtersOpen] });
+
   return (
-    <div className="fin-screen fin-transactions">
-      <PageHeader
+    <div ref={rootRef} className="fin-screen fin-transactions">
+      <div data-fin-history-item><PageHeader
         title="Meu histórico"
         subtitle="Veja o que entrou e saiu. Para registrar algo novo, toque em Registrar."
         action={
@@ -102,9 +119,10 @@ function TransactionsPage() {
           </Button>
         }
       />
+      </div>
 
       {installmentSummary.amount > 0 && (
-        <ViralMomentCard
+        <div data-fin-history-item><ViralMomentCard
           className="mb-4"
           eyebrow="Parcelas futuras"
           title="Descobri quanto minhas parcelas vão consumir."
@@ -113,9 +131,10 @@ function TransactionsPage() {
           shareText={`Descobri que minhas parcelas futuras vão consumir ${formatBRL(installmentSummary.amount)}. São ${installmentSummary.count} parcelas organizadas pelo FINANZZI.`}
           event="installment_moment_shared"
         />
+        </div>
       )}
 
-      <div className="mb-4 flex items-center justify-between gap-3 rounded-2xl border border-border/70 bg-card/70 px-4 py-3 shadow-sm">
+      <div data-fin-history-item className="mb-4 flex items-center justify-between gap-3 rounded-2xl border border-border/70 bg-card/70 px-4 py-3 shadow-sm">
         <p className="text-sm text-muted-foreground">
           {rows.length === 1 ? "1 registro no seu histórico." : `${rows.length} registros no seu histórico.`}
         </p>
@@ -133,7 +152,7 @@ function TransactionsPage() {
         </button>
       </div>
       {filtersOpen && (
-        <div className="surface-card fin-layout-transition mb-4 grid gap-3 p-4 animate-fin-enter sm:grid-cols-2 lg:grid-cols-4">
+        <div data-fin-history-item className="surface-card fin-layout-transition mb-4 grid gap-3 p-4 animate-fin-enter sm:grid-cols-2 lg:grid-cols-4">
           <div className="relative min-w-0 sm:col-span-2 lg:col-span-1">
             <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
@@ -202,7 +221,7 @@ function TransactionsPage() {
           }
         />
       ) : (
-        <div className="divide-y divide-border/70 overflow-hidden rounded-[28px] border border-border/70 bg-card shadow-[0_12px_36px_rgba(0,0,0,0.045)]">
+        <div data-fin-history-item className="divide-y divide-border/70 overflow-hidden rounded-[28px] border border-border/70 bg-card shadow-[0_12px_36px_rgba(0,0,0,0.045)]">
           {rows.map((tx) => (
             <div
               key={tx.id}
