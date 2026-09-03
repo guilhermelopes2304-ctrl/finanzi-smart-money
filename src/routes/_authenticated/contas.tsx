@@ -148,7 +148,7 @@ function BillsTab() {
 
   return (
     <div>
-      <section className="mb-5 overflow-hidden rounded-[1.7rem] border border-primary/15 bg-fin-brand-soft p-5 text-foreground shadow-soft sm:mb-6 sm:p-7">
+      <section className="fin-shimmer fin-ambient-glow mb-5 overflow-hidden rounded-[1.7rem] border border-primary/15 bg-fin-brand-soft p-5 text-foreground shadow-soft sm:mb-6 sm:p-7">
         <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-fin-brand-hover">
           Próximos 7 dias
         </p>
@@ -163,7 +163,7 @@ function BillsTab() {
       </section>
 
       {subscriptions.subscriptions.length > 0 && (
-        <section className="mb-6 rounded-2xl border border-fin-line bg-card p-4 shadow-soft sm:p-5">
+        <section className="fin-shimmer mb-6 rounded-2xl border border-fin-line bg-card p-4 shadow-soft sm:p-5">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">
@@ -193,7 +193,7 @@ function BillsTab() {
         </section>
       )}
 
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+      <div className="mb-4 flex flex-col gap-3 fin-accounts-toolbar sm:flex-row sm:items-center">
         <div className="scrollbar-none -mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
             {(["upcoming", "recurring", "subscription", "paid", "late"] as const).map((f) => (
               <button
@@ -333,7 +333,7 @@ function BillsTab() {
           description="Conte ao FINANZZI o que precisa lembrar e ele organiza os próximos compromissos."
         />
       ) : (
-        <div className="divide-y divide-border overflow-hidden rounded-[1.5rem] border border-border bg-card">
+        <div className="fin-ambient-glow divide-y divide-border overflow-hidden rounded-[1.5rem] border border-border bg-card">
           {rows.map((bill) => {
             const status = billStatus(bill);
             return (
