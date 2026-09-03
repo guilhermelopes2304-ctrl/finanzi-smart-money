@@ -1,4 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { gsap } from "gsap";
+import { useGSAP } from "@gsap/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { ArrowRight, MessageCircle, Sparkles } from "lucide-react";
 import { useBills, useCategories, useProfile, useTransactions } from "@/hooks/useFinanceData";
@@ -10,6 +12,8 @@ import { EmptyState } from "@/components/finanzzi/EmptyState";
 import { PlanGate } from "@/components/finanzzi/PlanGate";
 import { cn } from "@/lib/utils";
 import { trackProductEvent } from "@/lib/product-analytics";
+
+gsap.registerPlugin(useGSAP);
 
 export const Route = createFileRoute("/_authenticated/inteligencia")({
   head: () => ({
@@ -33,6 +37,7 @@ function IntelligencePage() {
   const { data: profile } = useProfile();
   const [preset, setPreset] = useState<PeriodPreset>("current");
   const [custom, setCustom] = useState(monthRange());
+  const rootRef = useRef<HTMLDivElement>(null);
   const period = useMemo(() => buildPeriod(preset, custom), [preset, custom]);
 
   const insights = useMemo(
@@ -47,6 +52,11 @@ function IntelligencePage() {
     [transactions, categories, bills, period, profile],
   );
   const slices = expensesByCategory(transactions, categories, period);
+
+  useGSAP(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    gsap.from("[data-fin-insight]", { y: 14, opacity: 0, duration: 0.42, ease: "power3.out", stagger: 0.06, clearProps: "transform,opacity" });
+  }, { scope: rootRef, dependencies: [transactions.length, preset, slices.length] });
 
   useEffect(() => {
     if (transactions.length > 0) trackProductEvent("insight_viewed");
@@ -68,13 +78,14 @@ function IntelligencePage() {
   }
 
   return (
-    <div className="fin-screen fin-insights">
-      <PageHeader
+    <div ref={rootRef} className="fin-screen fin-insights">
+      <div data-fin-insight><PageHeader
         title="Entenda seu dinheiro"
         subtitle="Informações simples para ajudar você a perceber o que merece atenção."
       />
+      </div>
 
-      <section className="relative mb-5 overflow-hidden rounded-[28px] border border-primary/15 bg-[linear-gradient(135deg,hsl(var(--primary)/0.14),hsl(var(--card))_55%,hsl(var(--primary)/0.05))] p-5 shadow-[0_14px_45px_rgba(0,0,0,0.07)] sm:p-6">
+      <section data-fin-insight className="fin-shimmer fin-ambient-glow relative mb-5 overflow-hidden rounded-[28px] border border-primary/15 bg-[linear-gradient(135deg,hsl(var(--primary)/0.14),hsl(var(--card))_55%,hsl(var(--primary)/0.05))] p-5 shadow-[0_14px_45px_rgba(0,0,0,0.07)] sm:p-6">
         <div className="pointer-events-none absolute -right-12 -top-12 size-40 rounded-full bg-primary/10 blur-3xl" />
         <div className="relative flex items-start gap-3">
           <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary text-[10px] font-black uppercase tracking-[0.16em] text-primary-foreground">
@@ -103,7 +114,7 @@ function IntelligencePage() {
         </div>
       </section>
 
-      <div className="mb-5">
+      <div data-fin-insight className="mb-5">
         <PeriodSelect
           preset={preset}
           onPresetChange={setPreset}
@@ -112,7 +123,7 @@ function IntelligencePage() {
         />
       </div>
 
-      <section aria-labelledby="fin-feed-title">
+      <section data-fin-insight aria-labelledby="fin-feed-title">
         <div className="mb-3 flex items-end justify-between gap-3">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">
@@ -127,7 +138,7 @@ function IntelligencePage() {
 
         <div className="space-y-3">
           {insights.opportunities.slice(0, 3).map((insight) => (
-            <article key={insight.title} className="surface-card p-5 transition-transform duration-200 hover:-translate-y-0.5 sm:p-6">
+            <article data-fin-insight key={insight.title} className="surface-card fin-ambient-glow p-5 transition-transform duration-200 hover:-translate-y-0.5 sm:p-6">
               <div className="flex items-start gap-3">
                 <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-xl bg-fin-brand-soft text-fin-brand-hover">
                   <Sparkles className="size-4" />
@@ -152,7 +163,7 @@ function IntelligencePage() {
           ))}
 
           {insights.diagnosis.slice(0, 3).map((line) => (
-            <article key={line} className="rounded-2xl border border-fin-line bg-card p-4 sm:p-5">
+            <article data-fin-insight key={line} className="rounded-2xl border border-fin-line bg-card p-4 sm:p-5">
               <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">
                 O FIN entende
               </p>
@@ -163,7 +174,7 @@ function IntelligencePage() {
       </section>
 
       {slices[0] && (
-        <section className="mt-6 overflow-hidden rounded-[28px] border border-primary/15 bg-card p-5 shadow-[0_12px_36px_rgba(0,0,0,0.05)] sm:p-6">
+        <section data-fin-insight className="fin-shimmer fin-ambient-glow mt-6 overflow-hidden rounded-[28px] border border-primary/15 bg-card p-5 shadow-[0_12px_36px_rgba(0,0,0,0.05)] sm:p-6">
           <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">
             Uma descoberta do período
           </p>
@@ -182,7 +193,7 @@ function IntelligencePage() {
       )}
 
       <PlanGate feature="advanced_insights" className="mt-6">
-        <section className="surface-card p-4 sm:p-5">
+        <section data-fin-insight className="surface-card fin-ambient-glow p-4 sm:p-5">
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">
