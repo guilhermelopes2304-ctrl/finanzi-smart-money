@@ -11,21 +11,21 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="fin-empty-state flex flex-col items-center justify-center rounded-[1.75rem] border border-dashed border-border bg-muted/30 px-6 py-10 text-center sm:py-12">
+    <div className="fin-empty-state fin-shimmer fin-ambient-glow relative overflow-hidden flex flex-col items-center justify-center rounded-[1.75rem] border border-dashed border-border bg-muted/30 px-6 py-10 text-center sm:py-12">
       {icon ? (
         <div className="mb-3 grid size-14 place-items-center rounded-2xl bg-accent text-accent-foreground">
           {icon}
         </div>
       ) : (
-        <span className="mb-4 grid size-14 place-items-center rounded-2xl bg-fin-brand-soft text-[10px] font-black uppercase tracking-[0.16em] text-fin-brand-hover shadow-[0_12px_30px_hsl(var(--primary)/0.10)]">
+        <span className="mb-4 grid size-14 relative z-[1] place-items-center rounded-2xl bg-fin-brand-soft text-[10px] font-black uppercase tracking-[0.16em] text-fin-brand-hover shadow-[0_12px_30px_hsl(var(--primary)/0.10)]">
           FIN
         </span>
       )}
-      <p className="font-display text-lg font-semibold tracking-[-0.03em] text-foreground">{title}</p>
+      <p className="relative z-[1] font-display text-lg font-semibold tracking-[-0.03em] text-foreground">{title}</p>
       {description && (
-        <p className="mt-1 max-w-sm text-sm leading-6 text-muted-foreground">{description}</p>
+        <p className="relative z-[1] mt-1 max-w-sm text-sm leading-6 text-muted-foreground">{description}</p>
       )}
-      {action && <div className="mt-5">{action}</div>}
+      {action && <div className="relative z-[1] mt-5">{action}</div>}
     </div>
   );
 }
