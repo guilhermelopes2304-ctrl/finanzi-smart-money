@@ -63,7 +63,7 @@ function BillsPage() {
         subtitle="Veja o que está próximo e organize seus pagamentos."
       />
       <Tabs defaultValue="bills" className="fin-accounts-tabs">
-        <TabsList className="mb-5 grid h-auto w-full grid-cols-2 rounded-2xl bg-muted/60 p-1.5">
+        <TabsList className="mb-3 grid h-auto w-full grid-cols-2 rounded-2xl bg-muted/60 p-1.5">
           <TabsTrigger value="bills" className="min-h-11 rounded-xl px-3 text-xs sm:text-sm">Contas a pagar</TabsTrigger>
           <TabsTrigger value="accounts" className="min-h-11 rounded-xl px-3 text-xs sm:text-sm">Minhas contas</TabsTrigger>
         </TabsList>
