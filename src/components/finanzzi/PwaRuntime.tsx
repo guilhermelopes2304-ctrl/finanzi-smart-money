@@ -79,7 +79,7 @@ export function PwaRuntime() {
     const onControllerChange = () => window.location.reload();
 
     const register = async () => {
-      registration = await navigator.serviceWorker.register("/sw.js?v=pwa-20260829", {
+      registration = await navigator.serviceWorker.register("/sw.js?v=pwa-20260903-2", {
         updateViaCache: "none",
       });
 
