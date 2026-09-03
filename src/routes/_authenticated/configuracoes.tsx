@@ -47,6 +47,7 @@ function SettingsPage() {
   const [name, setName] = useState("");
   const [income, setIncome] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordBusy, setPasswordBusy] = useState(false);
   const [proOpen, setProOpen] = useState(false);
   const [avatarUploading, setAvatarUploading] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
@@ -100,13 +101,18 @@ function SettingsPage() {
 
   async function changePassword(event: React.FormEvent) {
     event.preventDefault();
-    const { error } = await supabase.auth.updateUser({ password });
-    if (error) {
-      toast.error("Não foi possível alterar a senha", { description: error.message });
-      return;
+    if (passwordBusy) return;
+    setPasswordBusy(true);
+    try {
+      const { error } = await supabase.auth.updateUser({ password });
+      if (error) throw error;
+      setPassword("");
+      toast.success("Senha alterada com sucesso");
+    } catch (error) {
+      toast.error("Não foi possível alterar a senha", { description: error instanceof Error ? error.message : undefined });
+    } finally {
+      setPasswordBusy(false);
     }
-    setPassword("");
-    toast.success("Senha alterada com sucesso");
   }
 
   return (
@@ -246,8 +252,8 @@ function SettingsPage() {
               required
             />
           </div>
-          <Button type="submit" variant="outline">
-            Alterar senha
+          <Button type="submit" variant="outline" disabled={passwordBusy}>
+            {passwordBusy ? "Alterando..." : "Alterar senha"}
           </Button>
         </form>
       </div>
