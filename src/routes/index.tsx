@@ -105,24 +105,29 @@ function Landing() {
 
   return (
     <div className="fin-landing min-h-screen overflow-x-hidden bg-[#0A0A0A] font-sans text-white">
-      <header className="sticky top-0 z-50 border-b border-white/[.07] bg-[#0A0A0A]/80 backdrop-blur-xl">
-        <div className="mx-auto flex h-[72px] max-w-6xl items-center justify-between px-4 sm:px-6">
-          <Link to="/" aria-label="FINANZZI — início"><Logo /></Link>
-          <nav className="hidden items-center gap-7 text-sm font-semibold text-white/50 lg:flex">
-            <a className="transition-colors hover:text-white" href="#como-funciona">Como funciona</a>
-            <a className="transition-colors hover:text-white" href="#planos">Planos</a>
-            <a className="transition-colors hover:text-white" href="#faq">Dúvidas</a>
-          </nav>
-          <div className="flex items-center gap-2">
-            <Link to="/auth" search={{ mode: "login" }} className="inline-flex h-10 items-center justify-center rounded-full px-3.5 text-sm font-bold text-white/80 transition hover:bg-white/[.06] hover:text-white sm:px-4">Entrar</Link>
-            <Link to="/auth" search={{ mode: "signup" }} className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-[#FF5A1F] px-4 text-xs font-black uppercase tracking-[.08em] text-white shadow-[0_10px_28px_rgba(255,90,31,.22)] transition hover:-translate-y-0.5 hover:bg-[#FF6A35] sm:px-5">Começar grátis <ArrowRight className="size-3.5" /></Link>
+      <header className="fin-site-header sticky top-0 z-50">
+        <div className="mx-auto max-w-6xl px-3 py-3 sm:px-6 sm:py-4">
+          <div className="fin-site-nav flex h-[58px] items-center justify-between rounded-[20px] border border-white/[.09] px-3 shadow-[0_12px_45px_rgba(0,0,0,.18)] sm:px-4">
+            <Link to="/" aria-label="FINANZZI — início" className="fin-brand inline-flex h-10 items-center rounded-xl px-1.5"><Logo /></Link>
+            <nav className="hidden items-center gap-1 rounded-full border border-white/[.07] bg-white/[.025] p-1 lg:flex">
+              <a className="fin-nav-link" href="#como-funciona">Como funciona</a>
+              <a className="fin-nav-link" href="#planos">Planos</a>
+              <a className="fin-nav-link" href="#faq">Dúvidas</a>
+            </nav>
+            <div className="flex items-center gap-1.5">
+              <Link to="/auth" search={{ mode: "login" }} className="fin-login-button inline-flex h-10 items-center justify-center rounded-xl px-3 text-sm font-bold text-white/75 sm:px-4">Entrar</Link>
+              <Link to="/auth" search={{ mode: "signup" }} className="fin-start-button inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#FF5A1F] px-3.5 text-[11px] font-black uppercase tracking-[.07em] text-white sm:px-4">Começar <ArrowRight className="size-3.5" /></Link>
+            </div>
           </div>
         </div>
       </header>
 
       <main>
         <section className="fin-hero relative isolate overflow-hidden px-4 pb-20 pt-16 sm:px-6 sm:pb-28 sm:pt-24">
-          <div className="fin-hero-grid pointer-events-none absolute inset-0 -z-10" />\n          <div className="fin-orb fin-orb-a pointer-events-none absolute -left-24 top-24 -z-10 size-72 rounded-full bg-[#FF5A1F]/15 blur-[90px]" />\n          <div className="fin-orb fin-orb-b pointer-events-none absolute right-0 top-0 -z-10 size-80 rounded-full bg-orange-400/10 blur-[110px]" />\n          <div className="fin-beam pointer-events-none absolute left-1/2 top-0 -z-10 h-[560px] w-[760px] -translate-x-1/2" />
+          <div className="fin-hero-grid pointer-events-none absolute inset-0 -z-10" />
+          <div className="fin-orb fin-orb-a pointer-events-none absolute -left-24 top-24 -z-10 size-72 rounded-full bg-[#FF5A1F]/15 blur-[90px]" />
+          <div className="fin-orb fin-orb-b pointer-events-none absolute right-0 top-0 -z-10 size-80 rounded-full bg-orange-400/10 blur-[110px]" />
+          <div className="fin-beam pointer-events-none absolute left-1/2 top-0 -z-10 h-[560px] w-[760px] -translate-x-1/2" />
           <div className="mx-auto max-w-6xl">
             <div className="mx-auto max-w-4xl text-center">
               <SectionReveal>
@@ -241,11 +246,23 @@ function Landing() {
         </section>
       </main>
 
-      <footer className="border-t border-white/[.07] px-4 py-8 sm:px-6">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-center text-xs text-white/35 sm:flex-row sm:text-left">
-          <Logo />
-          <span>FINANZZI — inteligência para o seu dinheiro.</span>
-          <span className="inline-flex items-center gap-1.5"><ShieldCheck className="size-3.5 text-[#FF7A4A]" /> Feito para decidir com mais clareza</span>
+      <footer className="fin-footer border-t border-white/[.07] px-4 py-10 sm:px-6 sm:py-12">
+        <div className="mx-auto max-w-6xl">
+          <div className="grid gap-9 sm:grid-cols-[1.2fr_.8fr] sm:items-end">
+            <div>
+              <div className="inline-flex rounded-xl border border-white/[.08] bg-white/[.025] p-2.5"><Logo /></div>
+              <p className="mt-5 max-w-sm text-sm leading-6 text-white/45">Inteligência para o seu dinheiro. Menos esforço para registrar, mais clareza para decidir.</p>
+            </div>
+            <div className="sm:justify-self-end sm:text-right">
+              <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#FF7A4A]">FINANZZI</p>
+              <p className="mt-3 text-sm font-semibold text-white/70">Seu dinheiro acompanha seu ritmo.</p>
+              <span className="mt-3 inline-flex items-center gap-1.5 text-xs text-white/38"><ShieldCheck className="size-3.5 text-[#FF7A4A]" /> Feito para decidir com mais clareza</span>
+            </div>
+          </div>
+          <div className="mt-9 flex flex-col gap-3 border-t border-white/[.07] pt-5 text-[11px] text-white/28 sm:flex-row sm:items-center sm:justify-between">
+            <span>© {new Date().getFullYear()} FINANZZI</span>
+            <span>Organização financeira, do seu jeito.</span>
+          </div>
         </div>
       </footer>
     </div>
