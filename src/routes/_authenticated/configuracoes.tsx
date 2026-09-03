@@ -119,7 +119,7 @@ function SettingsPage() {
     <div className="fin-screen fin-settings">
       <PageHeader title="Minha conta" subtitle="Perfil, preferências e tudo que mantém o FINANZZI do seu jeito." />
 
-      <section className="surface-card relative mb-5 overflow-hidden rounded-[28px] border-primary/15 bg-[linear-gradient(135deg,hsl(var(--primary)/0.12),hsl(var(--card))_55%,hsl(var(--primary)/0.04))] p-5 shadow-[0_14px_45px_rgba(0,0,0,0.07)] sm:p-6">
+      <section className="surface-card fin-shimmer fin-ambient-glow relative mb-5 overflow-hidden rounded-[28px] border-primary/15 bg-[linear-gradient(135deg,hsl(var(--primary)/0.12),hsl(var(--card))_55%,hsl(var(--primary)/0.04))] p-5 shadow-[0_14px_45px_rgba(0,0,0,0.07)] sm:p-6">
         <div className="pointer-events-none absolute -right-10 -top-12 size-40 rounded-full bg-primary/8 blur-3xl" />
         <div className="relative flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-start gap-3">
@@ -171,7 +171,7 @@ function SettingsPage() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <form
-          className="surface-card space-y-4 rounded-[28px] p-5 shadow-[0_10px_32px_rgba(0,0,0,0.04)]"
+          className="surface-card fin-ambient-glow space-y-4 rounded-[28px] p-5 shadow-[0_10px_32px_rgba(0,0,0,0.04)]"
           onSubmit={(e) => {
             e.preventDefault();
             update.mutate({ name, monthly_income: parseBRL(income) });
@@ -239,7 +239,7 @@ function SettingsPage() {
           </Button>
         </form>
 
-        <form className="surface-card space-y-4 p-5" onSubmit={changePassword}>
+        <form className="surface-card fin-ambient-glow space-y-4 p-5" onSubmit={changePassword}>
           <h2 className="text-base font-semibold">Senha e acesso</h2>
           <div className="space-y-1.5">
             <Label htmlFor="set-pass">Nova senha</Label>
@@ -295,7 +295,7 @@ function CategoriesSection() {
   const [kind, setKind] = useState("expense");
 
   return (
-    <div className="surface-card mt-5 rounded-[28px] p-5 shadow-[0_10px_32px_rgba(0,0,0,0.04)]">
+    <div className="surface-card fin-shimmer mt-5 rounded-[28px] p-5 shadow-[0_10px_32px_rgba(0,0,0,0.04)]">
       <h2 className="text-base font-semibold">Minhas categorias</h2>
       <form
         className="mt-3 flex flex-wrap gap-2"
