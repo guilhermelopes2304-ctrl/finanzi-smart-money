@@ -385,22 +385,23 @@ export function AppShell({
         </button>
       </aside>
 
-      <header className="sticky top-0 z-20 border-b border-border/60 bg-background/78 px-4 py-2 backdrop-blur-2xl lg:hidden">
-        <div className="flex min-h-12 items-center justify-between gap-3">
-          <div className="flex min-w-0 items-center gap-2.5">
-            <div className="grid size-10 shrink-0 place-items-center rounded-2xl border border-border/60 bg-card/80 shadow-sm">
-              <Logo />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-fin-brand-hover">Seu dinheiro</p>
-              <p className="truncate text-sm font-semibold tracking-[-0.02em] text-foreground">FINANZZI</p>
-            </div>
-          </div>
+      <header className="sticky top-0 z-20 border-b border-border/50 bg-background/92 px-4 py-2.5 backdrop-blur-xl lg:hidden">
+        <div className="flex h-11 items-center justify-between gap-3">
+          <Link
+            to="/dashboard"
+            onClick={() => {
+              if (activePathname !== "/dashboard") beginNavigation();
+            }}
+            aria-label="Ir para o início"
+            className="flex min-w-0 items-center"
+          >
+            <Logo />
+          </Link>
           <button
             type="button"
             onClick={() => navigateWithFeedback(navigate, "/configuracoes")}
             aria-label="Abrir configurações"
-            className="fin-interactive fin-pressable grid size-10 overflow-hidden place-items-center rounded-2xl border border-border/60 bg-card/90 text-xs font-bold text-fin-brand-hover shadow-sm transition-all active:scale-95"
+            className="fin-interactive fin-pressable grid size-10 overflow-hidden place-items-center rounded-full border border-border/70 bg-card text-xs font-bold text-fin-brand-hover shadow-sm transition-transform active:scale-95"
           >
             {profile?.avatar_url ? (
               <img src={profile.avatar_url} alt="" className="size-full object-cover" />
