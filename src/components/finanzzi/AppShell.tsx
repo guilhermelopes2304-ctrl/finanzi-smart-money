@@ -385,7 +385,7 @@ export function AppShell({
         </button>
       </aside>
 
-      <header className="sticky top-0 z-20 border-b border-border/80 bg-background/92 px-4 pt-[max(0.625rem,env(safe-area-inset-top))] pb-2.5 backdrop-blur-xl lg:hidden">
+      <header className="sticky top-0 z-20 border-b border-border/80 bg-background/92 px-4 pt-2.5 pb-2.5 backdrop-blur-xl lg:hidden">
         <div className="flex min-h-11 items-center justify-between gap-3">
           <Logo />
           <button
