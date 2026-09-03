@@ -110,7 +110,11 @@ export function TransactionDialog({
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    if (!user) return;
+    if (!user || busy) return;
+    if (!description.trim()) {
+      toast.error("Informe uma descrição.");
+      return;
+    }
     if (total <= 0) {
       toast.error("Informe um valor maior que zero.");
       return;
@@ -134,7 +138,7 @@ export function TransactionDialog({
       });
       toast.success(message);
       invalidate();
-      onOpenChange(false);
+      requestAnimationFrame(() => onOpenChange(false));
     } catch {
       toast.error("Não foi possível salvar", {
         description: "Verifique sua conexão e tente novamente.",
@@ -146,7 +150,7 @@ export function TransactionDialog({
 
   return (
     <Dialog open={open} onOpenChange={(nextOpen) => { if (!busy) onOpenChange(nextOpen); }}>
-      <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-lg">
+      <DialogContent className="max-h-[min(92dvh,760px)] overscroll-contain overflow-y-auto pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{transaction ? "Editar lançamento" : "Novo lançamento"}</DialogTitle>
           <DialogDescription>
@@ -154,13 +158,13 @@ export function TransactionDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} aria-busy={busy} className="space-y-4">
           <div className="grid grid-cols-2 gap-2 rounded-lg bg-muted p-1">
             {(["expense", "income"] as TransactionType[]).map((option) => (
               <button
                 key={option}
                 type="button"
-                onClick={() => setType(option)}
+                onClick={() => { if (!busy) setType(option); }}
                 className={cn(
                   "rounded-md py-2 text-sm font-medium transition-colors",
                   type === option
@@ -331,7 +335,7 @@ export function TransactionDialog({
             <Button type="button" variant="outline" disabled={busy} onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={busy}>
+            <Button type="submit" disabled={busy || !description.trim() || total <= 0}>
               {busy ? "Salvando..." : "Salvar"}
             </Button>
           </DialogFooter>
