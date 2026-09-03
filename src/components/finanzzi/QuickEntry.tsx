@@ -399,7 +399,7 @@ function QuickEntryLive() {
   const calculatedItems = draft?.items ?? [];
 
   return (
-    <div className="surface-card overflow-hidden p-4 sm:p-5">
+    <div className="surface-card fin-home-entry-card overflow-hidden p-4 sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex items-start gap-3">
           <span className="grid size-10 place-items-center rounded-2xl bg-[#FF5A1F]/15 text-[#FF5A1F]">
@@ -410,10 +410,10 @@ function QuickEntryLive() {
               Registro rápido
             </p>
             <h2 className="mt-1 text-base font-semibold leading-tight sm:text-lg">
-              Fale ou escreva. Eu organizo.
+              Registre. O FINANZZI entende.
             </h2>
             <p className="mt-1 text-xs text-muted-foreground">
-              Conte o que aconteceu. Eu cuido da organização.
+              Ex.: “paguei 50 no almoço” ou fale naturalmente.
             </p>
           </div>
         </div>
