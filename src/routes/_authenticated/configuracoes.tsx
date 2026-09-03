@@ -111,9 +111,9 @@ function SettingsPage() {
 
   return (
     <div>
-      <PageHeader title="Minha conta" subtitle="Sua conta e suas preferências." />
+      <PageHeader title="Minha conta" subtitle="Perfil, preferências e tudo que mantém o FINANZZI do seu jeito." />
 
-      <section className="surface-card relative mb-4 overflow-hidden p-5 sm:p-6">
+      <section className="surface-card relative mb-5 overflow-hidden rounded-[28px] border-primary/15 bg-[linear-gradient(135deg,hsl(var(--primary)/0.12),hsl(var(--card))_55%,hsl(var(--primary)/0.04))] p-5 shadow-[0_14px_45px_rgba(0,0,0,0.07)] sm:p-6">
         <div className="pointer-events-none absolute -right-10 -top-12 size-40 rounded-full bg-primary/8 blur-3xl" />
         <div className="relative flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-start gap-3">
@@ -122,15 +122,15 @@ function SettingsPage() {
             </span>
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-primary">
-                Acesso atual
+                Sua experiência
               </p>
               <h2 className="mt-1 text-lg font-semibold">
-                FINANZZI {isPro ? "ativo" : "pendente"}
+                Seu FINANZZI {isPro ? "está completo" : "está pronto para você"}
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
                 {isPro
-                  ? "Seu acesso completo está ativo após a confirmação do pagamento."
-                  : "O acesso completo depende da confirmação do pagamento aprovado."}
+                  ? "Você está com acesso ativo e suas preferências ficam sincronizadas com a sua conta."
+                  : "Você pode continuar organizando seu dinheiro enquanto personaliza sua experiência."}
               </p>
             </div>
           </div>
@@ -165,7 +165,7 @@ function SettingsPage() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <form
-          className="surface-card space-y-4 p-5"
+          className="surface-card space-y-4 rounded-[28px] p-5 shadow-[0_10px_32px_rgba(0,0,0,0.04)]"
           onSubmit={(e) => {
             e.preventDefault();
             update.mutate({ name, monthly_income: parseBRL(income) });
@@ -289,7 +289,7 @@ function CategoriesSection() {
   const [kind, setKind] = useState("expense");
 
   return (
-    <div className="surface-card mt-4 p-5">
+    <div className="surface-card mt-5 rounded-[28px] p-5 shadow-[0_10px_32px_rgba(0,0,0,0.04)]">
       <h2 className="text-base font-semibold">Minhas categorias</h2>
       <form
         className="mt-3 flex flex-wrap gap-2"
