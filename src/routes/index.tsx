@@ -35,9 +35,9 @@ function SectionReveal({ children, className = "" }: { children: React.ReactNode
 
 function LiveCanvas() {
   return (
-    <div className="relative mx-auto w-full max-w-[720px]">
+    <div className="fin-live-canvas relative mx-auto w-full max-w-[720px]">
       <div className="pointer-events-none absolute inset-x-12 -top-16 h-48 rounded-full bg-[#FF5A1F]/25 blur-[90px]" />
-      <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[#121212]/95 p-3 shadow-[0_30px_100px_rgba(0,0,0,.42)] backdrop-blur-xl sm:p-5">
+      <div className="fin-live-panel relative overflow-hidden rounded-[32px] border border-white/10 bg-[#121212]/95 p-3 shadow-[0_30px_100px_rgba(0,0,0,.42)] backdrop-blur-xl sm:p-5">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#FF7A4A] to-transparent opacity-80" />
         <div className="grid gap-3 lg:grid-cols-[1.05fr_.95fr]">
           <div className="rounded-[24px] border border-white/8 bg-[#181818] p-4 sm:p-5">
@@ -104,7 +104,7 @@ function Landing() {
   ];
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#0A0A0A] font-sans text-white">
+    <div className="fin-landing min-h-screen overflow-x-hidden bg-[#0A0A0A] font-sans text-white">
       <header className="sticky top-0 z-50 border-b border-white/[.07] bg-[#0A0A0A]/80 backdrop-blur-xl">
         <div className="mx-auto flex h-[72px] max-w-6xl items-center justify-between px-4 sm:px-6">
           <Link to="/" aria-label="FINANZZI — início"><Logo /></Link>
@@ -121,14 +121,14 @@ function Landing() {
       </header>
 
       <main>
-        <section className="relative isolate overflow-hidden px-4 pb-20 pt-16 sm:px-6 sm:pb-28 sm:pt-24">
-          <div className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[480px] w-[760px] -translate-x-1/2 rounded-full bg-[#FF5A1F]/[.12] blur-[130px]" />
+        <section className="fin-hero relative isolate overflow-hidden px-4 pb-20 pt-16 sm:px-6 sm:pb-28 sm:pt-24">
+          <div className="fin-hero-grid pointer-events-none absolute inset-0 -z-10" />\n          <div className="fin-orb fin-orb-a pointer-events-none absolute -left-24 top-24 -z-10 size-72 rounded-full bg-[#FF5A1F]/15 blur-[90px]" />\n          <div className="fin-orb fin-orb-b pointer-events-none absolute right-0 top-0 -z-10 size-80 rounded-full bg-orange-400/10 blur-[110px]" />\n          <div className="fin-beam pointer-events-none absolute left-1/2 top-0 -z-10 h-[560px] w-[760px] -translate-x-1/2" />
           <div className="mx-auto max-w-6xl">
             <div className="mx-auto max-w-4xl text-center">
               <SectionReveal>
                 <span className="inline-flex items-center gap-2 rounded-full border border-[#FF5A1F]/20 bg-[#FF5A1F]/[.07] px-3.5 py-2 text-[11px] font-bold uppercase tracking-[.16em] text-[#FF9A78]"><Sparkles className="size-3.5" /> Comece gratuitamente</span>
-                <h1 className="mx-auto mt-7 max-w-4xl font-display text-[3.35rem] font-semibold leading-[.9] tracking-[-.075em] sm:text-7xl lg:text-[6.2rem]">Seu dinheiro não precisa ser complicado.</h1>
-                <p className="mx-auto mt-7 max-w-2xl text-base leading-7 text-white/55 sm:text-lg sm:leading-8">Você registra o que aconteceu do seu jeito. O FINANZZI transforma isso em uma visão clara para você saber onde está e o que vem depois.</p>
+                <h1 className="mx-auto mt-7 max-w-4xl font-display text-[3.35rem] font-semibold leading-[.9] tracking-[-.075em] sm:text-7xl lg:text-[6.2rem]">Seu dinheiro acompanha <span className="fin-gradient-text">seu ritmo.</span></h1>
+                <p className="mx-auto mt-7 max-w-2xl text-base leading-7 text-white/55 sm:text-lg sm:leading-8">Registre em segundos. Entenda seus gastos. Organize sem complicação. O FINANZZI acompanha o que acontece para você enxergar o próximo passo.</p>
                 <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
                   <Link to="/auth" search={{ mode: "signup" }} className="inline-flex h-14 items-center justify-center gap-2 rounded-full bg-[#FF5A1F] px-8 text-sm font-black text-white shadow-[0_16px_40px_rgba(255,90,31,.24)] transition hover:-translate-y-0.5 hover:bg-[#FF6A35]">Começar grátis <ArrowRight className="size-4" /></Link>
                   <a href="#como-funciona" className="inline-flex h-14 items-center justify-center rounded-full border border-white/10 bg-white/[.03] px-8 text-sm font-bold text-white/80 transition hover:bg-white/[.07]">Ver como funciona</a>
@@ -136,7 +136,7 @@ function Landing() {
                 <p className="mt-4 text-xs text-white/35">Crie sua conta e comece sem compromisso.</p>
               </SectionReveal>
             </div>
-            <SectionReveal className="mt-14 sm:mt-20"><LiveCanvas /></SectionReveal>
+            <SectionReveal className="fin-live-stage mt-14 sm:mt-20"><LiveCanvas /></SectionReveal>
           </div>
         </section>
 
@@ -209,7 +209,7 @@ function Landing() {
           </div>
         </section>
 
-        <section className="relative overflow-hidden px-4 py-24 text-center sm:px-6 sm:py-32">
+        <section className="fin-final-cta relative overflow-hidden px-4 py-24 text-center sm:px-6 sm:py-32">
           <div className="pointer-events-none absolute left-1/2 top-1/2 h-64 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#FF5A1F]/15 blur-[100px]" />
           <SectionReveal className="relative mx-auto max-w-4xl">
             <p className="text-[11px] font-bold uppercase tracking-[.2em] text-[#FF7A4A]">Seu dinheiro, com mais clareza</p>
