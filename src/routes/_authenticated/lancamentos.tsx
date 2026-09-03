@@ -87,7 +87,7 @@ function TransactionsPage() {
   }, [transactions, type, category, search, sort]);
 
   return (
-    <div>
+    <div className="fin-screen fin-transactions">
       <PageHeader
         title="Meu histórico"
         subtitle="Veja o que entrou e saiu. Para registrar algo novo, toque em Registrar."
