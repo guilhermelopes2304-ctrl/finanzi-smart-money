@@ -6,11 +6,11 @@ type ToasterProps = React.ComponentProps<typeof Sonner>;
 const Toaster = ({ ...props }: ToasterProps) => {
   return (
     <Sonner
-      className="toaster group finanzzi-toaster"
+      position="top-center" className="toaster group finanzzi-toaster"
       icons={{
         success: <span className="relative mr-3 grid size-9 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 ring-4 ring-primary/10"><CheckCircle2 className="size-[18px]" strokeWidth={2.75} /></span>,
       }}
-      toastOptions={{
+      offset={{ top: "max(1rem, env(safe-area-inset-top))", left: "1rem", right: "1rem" }}\n      mobileOffset={{ top: "max(1rem, env(safe-area-inset-top))", left: "1rem", right: "1rem" }}\n      toastOptions={{
         duration: 2800,
         classNames: {
           toast:
