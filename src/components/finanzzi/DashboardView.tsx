@@ -48,8 +48,9 @@ export function DashboardView({ profile, transactions, categories, accounts, bil
     <div ref={rootRef} className="fin-screen fin-dashboard fin-product-home min-h-full bg-background text-foreground">
       <div className="mx-auto w-full max-w-3xl px-4 pb-28 pt-3 sm:px-6 sm:pb-10 sm:pt-5">
         <Reveal>
-          <section data-fin-hero className="fin-home-intro relative overflow-hidden rounded-[30px] border border-white/[0.07] px-5 py-6 sm:px-8 sm:py-8">
+          <section data-fin-hero className="fin-home-intro fin-shimmer fin-ambient-glow relative overflow-hidden rounded-[30px] border border-white/[0.07] px-5 py-6 sm:px-8 sm:py-8">
             <div className="fin-home-grid pointer-events-none absolute inset-0" />
+            <div className="fin-radial-lines pointer-events-none absolute inset-0" />
             <div className="fin-home-orb pointer-events-none absolute -right-16 -top-20 size-64 rounded-full bg-primary/20 blur-3xl" />
             <div className="relative">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary/80">Seu dinheiro, no seu ritmo</p>
@@ -87,7 +88,7 @@ export function DashboardView({ profile, transactions, categories, accounts, bil
                 <EmptyState title="Seu histórico começa aqui" description="Registre algo acima. Em poucos segundos o FINANZZI começa a entender sua rotina." />
               </div>
             ) : (
-              <div className="overflow-hidden rounded-[26px] border border-white/[0.07] bg-card/75 shadow-[0_22px_60px_rgba(0,0,0,0.18)] backdrop-blur-xl">
+              <div className="fin-shimmer overflow-hidden rounded-[26px] border border-white/[0.07] bg-card/75 shadow-[0_22px_60px_rgba(0,0,0,0.18)] backdrop-blur-xl">
                 {recentTransactions.map((tx, index) => {
                   const isIncome = tx.type === "income";
                   return <div data-fin-transaction key={tx.id} className={`flex items-center gap-3 px-4 py-4 sm:px-5 ${index > 0 ? "border-t border-white/[0.06]" : ""}`}>
