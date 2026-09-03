@@ -55,5 +55,5 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   useEffect(() => { initObservability(); void initNativeShell(); }, []);
-  return <QueryClientProvider client={queryClient}><ThemeProvider><AuthProvider><Outlet /><PwaRuntime /><Toaster position="bottom-center" richColors offset="calc(env(safe-area-inset-bottom) + 92px)" /></AuthProvider></ThemeProvider></QueryClientProvider>;
+  return <QueryClientProvider client={queryClient}><ThemeProvider><AuthProvider><Outlet /><PwaRuntime /><Toaster /></AuthProvider></ThemeProvider></QueryClientProvider>;
 }
