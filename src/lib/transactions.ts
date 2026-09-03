@@ -25,9 +25,12 @@ export interface SaveTransactionInput {
  * dialog both go through here, so RLS-scoped user_id handling stays identical.
  */
 export async function saveTransaction(input: SaveTransactionInput): Promise<string> {
+  const description = input.description.trim();
+  if (!description) throw new Error("Informe uma descrição para o lançamento");
+  if (!Number.isFinite(input.amount) || input.amount <= 0) throw new Error("Informe um valor maior que zero");
   const parts = Math.max(1, Math.min(72, input.installments ?? 1));
   const base = {
-    description: input.description.trim(),
+    description,
     amount: input.amount,
     type: input.type,
     category_id: input.categoryId,
