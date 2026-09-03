@@ -116,7 +116,7 @@ function CardsPage() {
   }
 
   return (
-    <div>
+    <div className="fin-screen fin-cards">
       <PageHeader
         title="Cartões"
         subtitle="Veja seus cartões e o que já foi usado."
