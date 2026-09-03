@@ -68,7 +68,7 @@ function IntelligencePage() {
   }
 
   return (
-    <div>
+    <div className="fin-screen fin-insights">
       <PageHeader
         title="Entenda seu dinheiro"
         subtitle="Informações simples para ajudar você a perceber o que merece atenção."
