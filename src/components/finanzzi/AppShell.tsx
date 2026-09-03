@@ -425,16 +425,16 @@ export function AppShell({
 
       <main
         className={cn(
-          "min-w-0 px-3 pb-[calc(112px+env(safe-area-inset-bottom))] pt-4 sm:px-5 lg:px-8 lg:pb-10 lg:pt-8",
+          "min-w-0 px-3 pb-[calc(104px+env(safe-area-inset-bottom))] pt-3 sm:px-5 sm:pt-4 lg:px-8 lg:pb-10 lg:pt-7",
           desktopSidebarWidth,
         )}
       >
         <MotionPage className="mx-auto max-w-7xl">{children}</MotionPage>
       </main>
 
-      <nav className="fixed inset-x-3 bottom-[max(0.65rem,env(safe-area-inset-bottom))] z-30 overflow-hidden rounded-[1.6rem] border border-border/70 bg-card/82 shadow-[0_18px_55px_rgba(0,0,0,0.18)] backdrop-blur-2xl lg:hidden">
+      <nav className="fixed inset-x-3 bottom-[max(0.5rem,env(safe-area-inset-bottom))] z-30 overflow-hidden rounded-[1.6rem] border border-border/70 bg-card/82 shadow-[0_18px_55px_rgba(0,0,0,0.18)] backdrop-blur-2xl lg:hidden">
         <div className="pointer-events-none absolute inset-x-5 top-0 h-px bg-gradient-to-r from-transparent via-primary/45 to-transparent" />
-        <div className="grid h-[68px] grid-cols-5 items-center gap-1 px-1.5 py-1">
+        <div className="grid h-[66px] grid-cols-5 items-center gap-1 px-1.5 py-1">
           <NavItem item={MOBILE_NAV[0]} active={activePathname === MOBILE_NAV[0].to} mobile />
           <NavItem item={MOBILE_NAV[1]} active={activePathname === MOBILE_NAV[1].to} mobile />
           <NavItem item={MOBILE_NAV[2]} active={activePathname === MOBILE_NAV[2].to} mobile />
