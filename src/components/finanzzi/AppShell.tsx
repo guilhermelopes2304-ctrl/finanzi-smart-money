@@ -416,14 +416,14 @@ export function AppShell({
 
       <main
         className={cn(
-          "min-w-0 px-3 pb-[96px] pt-4 sm:px-5 lg:px-8 lg:pb-10 lg:pt-8",
+          "min-w-0 px-3 pb-[calc(112px+env(safe-area-inset-bottom))] pt-4 sm:px-5 lg:px-8 lg:pb-10 lg:pt-8",
           desktopSidebarWidth,
         )}
       >
         <MotionPage className="mx-auto max-w-7xl">{children}</MotionPage>
       </main>
 
-      <nav className="fixed inset-x-3 bottom-[max(0.65rem,env(safe-area-inset-bottom))] z-30 rounded-[1.5rem] border border-border/80 bg-card/95 shadow-[0_12px_40px_rgba(0,0,0,0.14)] backdrop-blur-xl lg:hidden">
+      <nav className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-30 rounded-[1.45rem] border border-border/80 bg-card/96 shadow-[0_14px_44px_rgba(0,0,0,0.16)] backdrop-blur-2xl lg:hidden">
         <div className="grid h-[66px] grid-cols-5 items-center gap-0.5 px-1.5 py-1">
           <NavItem item={MOBILE_NAV[0]} active={activePathname === MOBILE_NAV[0].to} mobile />
           <NavItem item={MOBILE_NAV[1]} active={activePathname === MOBILE_NAV[1].to} mobile />
