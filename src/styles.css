@@ -722,3 +722,11 @@ html[data-platform="ios"] body, html[data-platform="android"] body { min-height:
     margin-top: 0 !important;
   }
 }
+
+
+/* Installed iOS PWA: the app shell must not reserve status-bar space twice. */
+@media (display-mode: standalone) {
+  [data-fin-app-shell] > header {
+    padding-top: 10px !important;
+  }
+}
