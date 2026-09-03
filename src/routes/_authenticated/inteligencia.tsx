@@ -124,7 +124,7 @@ function IntelligencePage() {
           <Sparkles className="size-5 text-fin-brand-hover" />
         </div>
 
-        <div className="space-y-3"
+        <div className="space-y-3">
           {insights.opportunities.slice(0, 3).map((insight) => (
             <article key={insight.title} className="surface-card p-5 transition-transform duration-200 hover:-translate-y-0.5 sm:p-6">
               <div className="flex items-start gap-3">
