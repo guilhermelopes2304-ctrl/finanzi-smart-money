@@ -35,8 +35,17 @@ export function DashboardView({ profile, transactions, categories, accounts, bil
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 3), [transactions]);
 
+  useGSAP(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+    tl.from("[data-fin-hero]", { y: 18, opacity: 0, duration: 0.55 })
+      .from("[data-fin-entry]", { y: 16, opacity: 0, duration: 0.5 }, "-=0.28")
+      .from("[data-fin-recent]", { y: 12, opacity: 0, duration: 0.45 }, "-=0.24")
+      .from("[data-fin-transaction]", { y: 10, opacity: 0, duration: 0.32, stagger: 0.06 }, "-=0.18");
+  }, { scope: rootRef, dependencies: [recentTransactions.length] });
+
   return (
-    <div className="fin-screen fin-dashboard fin-product-home min-h-full bg-background text-foreground">
+    <div ref={rootRef} className="fin-screen fin-dashboard fin-product-home min-h-full bg-background text-foreground">
       <div className="mx-auto w-full max-w-3xl px-4 pb-28 pt-3 sm:px-6 sm:pb-10 sm:pt-5">
         <Reveal>
           <section data-fin-hero className="fin-home-intro relative overflow-hidden rounded-[30px] border border-white/[0.07] px-5 py-6 sm:px-8 sm:py-8">
