@@ -578,7 +578,7 @@ html[data-platform="ios"] body, html[data-platform="android"] body { min-height:
 .fin-screen {
   --fin-radius-lg: 28px;
   --fin-radius-md: 20px;
-  --fin-gap: 20px;
+  --fin-gap: 14px;
 }
 .fin-page-header {
   position: relative;
@@ -587,7 +587,7 @@ html[data-platform="ios"] body, html[data-platform="android"] body { min-height:
   content: "";
   position: absolute;
   left: 0;
-  bottom: -14px;
+  bottom: -6px;
   width: 42px;
   height: 2px;
   border-radius: 999px;
