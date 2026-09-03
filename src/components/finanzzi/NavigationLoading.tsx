@@ -1,18 +1,21 @@
 import { useEffect, useRef, useState } from "react";
 
-const MIN_VISIBLE_MS = 140;
-const MAX_VISIBLE_MS = 1200;
+const SHOW_DELAY_MS = 90;
+const MIN_VISIBLE_MS = 120;
+const MAX_VISIBLE_MS = 900;
 
 export function NavigationLoading() {
   const [loading, setLoading] = useState(false);
   const startedAt = useRef(0);
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const safetyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const showTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const clearTimers = () => {
       if (hideTimer.current) clearTimeout(hideTimer.current);
       if (safetyTimer.current) clearTimeout(safetyTimer.current);
+      if (showTimer.current) clearTimeout(showTimer.current);
       hideTimer.current = null;
       safetyTimer.current = null;
     };
@@ -20,11 +23,17 @@ export function NavigationLoading() {
     const start = () => {
       clearTimers();
       startedAt.current = Date.now();
-      setLoading(true);
-      safetyTimer.current = setTimeout(() => setLoading(false), MAX_VISIBLE_MS);
+      showTimer.current = setTimeout(() => {
+        setLoading(true);
+        safetyTimer.current = setTimeout(() => setLoading(false), MAX_VISIBLE_MS);
+      }, SHOW_DELAY_MS);
     };
 
     const stop = () => {
+      if (!loading && showTimer.current) {
+        clearTimers();
+        return;
+      }
       const elapsed = Date.now() - startedAt.current;
       const remaining = Math.max(0, MIN_VISIBLE_MS - elapsed);
       if (hideTimer.current) clearTimeout(hideTimer.current);
