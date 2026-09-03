@@ -110,7 +110,7 @@ function SettingsPage() {
   }
 
   return (
-    <div>
+    <div className="fin-screen fin-settings">
       <PageHeader title="Minha conta" subtitle="Perfil, preferências e tudo que mantém o FINANZZI do seu jeito." />
 
       <section className="surface-card relative mb-5 overflow-hidden rounded-[28px] border-primary/15 bg-[linear-gradient(135deg,hsl(var(--primary)/0.12),hsl(var(--card))_55%,hsl(var(--primary)/0.04))] p-5 shadow-[0_14px_45px_rgba(0,0,0,0.07)] sm:p-6">
