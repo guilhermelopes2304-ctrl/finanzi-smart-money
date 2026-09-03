@@ -385,14 +385,22 @@ export function AppShell({
         </button>
       </aside>
 
-      <header className="sticky top-0 z-20 border-b border-border/80 bg-background/92 px-4 pt-2.5 pb-2.5 backdrop-blur-xl lg:hidden">
-        <div className="flex min-h-11 items-center justify-between gap-3">
-          <Logo />
+      <header className="sticky top-0 z-20 border-b border-border/60 bg-background/78 px-4 py-2 backdrop-blur-2xl lg:hidden">
+        <div className="flex min-h-12 items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <div className="grid size-10 shrink-0 place-items-center rounded-2xl border border-border/60 bg-card/80 shadow-sm">
+              <Logo />
+            </div>
+            <div className="min-w-0">
+              <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-fin-brand-hover">Seu dinheiro</p>
+              <p className="truncate text-sm font-semibold tracking-[-0.02em] text-foreground">FINANZZI</p>
+            </div>
+          </div>
           <button
             type="button"
             onClick={() => navigateWithFeedback(navigate, "/configuracoes")}
             aria-label="Abrir configurações"
-            className="fin-interactive fin-pressable grid size-11 overflow-hidden place-items-center rounded-full border border-border/80 bg-card text-xs font-bold text-fin-brand-hover shadow-sm transition-transform active:scale-95"
+            className="fin-interactive fin-pressable grid size-10 overflow-hidden place-items-center rounded-2xl border border-border/60 bg-card/90 text-xs font-bold text-fin-brand-hover shadow-sm transition-all active:scale-95"
           >
             {profile?.avatar_url ? (
               <img src={profile.avatar_url} alt="" className="size-full object-cover" />
@@ -423,8 +431,9 @@ export function AppShell({
         <MotionPage className="mx-auto max-w-7xl">{children}</MotionPage>
       </main>
 
-      <nav className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-30 rounded-[1.45rem] border border-border/80 bg-card/96 shadow-[0_14px_44px_rgba(0,0,0,0.16)] backdrop-blur-2xl lg:hidden">
-        <div className="grid h-[66px] grid-cols-5 items-center gap-0.5 px-1.5 py-1">
+      <nav className="fixed inset-x-3 bottom-[max(0.65rem,env(safe-area-inset-bottom))] z-30 overflow-hidden rounded-[1.6rem] border border-border/70 bg-card/82 shadow-[0_18px_55px_rgba(0,0,0,0.18)] backdrop-blur-2xl lg:hidden">
+        <div className="pointer-events-none absolute inset-x-5 top-0 h-px bg-gradient-to-r from-transparent via-primary/45 to-transparent" />
+        <div className="grid h-[68px] grid-cols-5 items-center gap-1 px-1.5 py-1">
           <NavItem item={MOBILE_NAV[0]} active={activePathname === MOBILE_NAV[0].to} mobile />
           <NavItem item={MOBILE_NAV[1]} active={activePathname === MOBILE_NAV[1].to} mobile />
           <NavItem item={MOBILE_NAV[2]} active={activePathname === MOBILE_NAV[2].to} mobile />
