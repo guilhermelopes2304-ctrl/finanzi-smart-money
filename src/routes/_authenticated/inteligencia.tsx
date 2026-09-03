@@ -74,8 +74,8 @@ function IntelligencePage() {
         subtitle="Informações simples para ajudar você a perceber o que merece atenção."
       />
 
-      <section className="mb-5 rounded-2xl border border-fin-line bg-fin-brand-soft p-4 sm:p-5">
-        <div className="flex items-start gap-3">
+      <section className="relative mb-5 overflow-hidden rounded-[28px] border border-primary/15 bg-[linear-gradient(135deg,hsl(var(--primary)/0.14),hsl(var(--card))_55%,hsl(var(--primary)/0.05))] p-5 shadow-[0_14px_45px_rgba(0,0,0,0.07)] sm:p-6">
+        <div className="pointer-events-none absolute -right-12 -top-12 size-40 rounded-full bg-primary/10 blur-3xl" />\n        <div className="relative flex items-start gap-3">
           <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary text-[10px] font-black uppercase tracking-[0.16em] text-primary-foreground">
             FIN
           </span>
@@ -124,9 +124,9 @@ function IntelligencePage() {
           <Sparkles className="size-5 text-fin-brand-hover" />
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-3"
           {insights.opportunities.slice(0, 3).map((insight) => (
-            <article key={insight.title} className="surface-card p-4 sm:p-5">
+            <article key={insight.title} className="surface-card p-5 transition-transform duration-200 hover:-translate-y-0.5 sm:p-6">
               <div className="flex items-start gap-3">
                 <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-xl bg-fin-brand-soft text-fin-brand-hover">
                   <Sparkles className="size-4" />
@@ -162,7 +162,7 @@ function IntelligencePage() {
       </section>
 
       {slices[0] && (
-        <section className="mt-6 rounded-2xl border border-fin-line bg-card p-4 sm:p-5">
+        <section className="mt-6 overflow-hidden rounded-[28px] border border-primary/15 bg-card p-5 shadow-[0_12px_36px_rgba(0,0,0,0.05)] sm:p-6">
           <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-fin-brand-hover">
             Uma descoberta do período
           </p>
