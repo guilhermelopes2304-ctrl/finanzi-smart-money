@@ -312,8 +312,8 @@ function CardsPage() {
             const invoice = cardInvoice(c, transactions);
             const purchases = transactions.filter((tx) => tx.credit_card_id === c.id).slice(0, 5);
             return (
-              <div key={c.id} className="surface-card overflow-hidden">
-                <div className="bg-fin-brand-soft p-5">
+              <div key={c.id} className="surface-card fin-shimmer fin-ambient-glow overflow-hidden">
+                <div className="fin-card-face bg-fin-brand-soft p-5">
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-fin-brand-hover">
@@ -331,7 +331,7 @@ function CardsPage() {
                     Vence dia {c.due_day} · fecha dia {c.closing_day}
                   </p>
                 </div>
-                <div className="p-5">
+                <div className="p-5 fin-card-body">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="text-xs text-fin-copy">Disponível</p>
