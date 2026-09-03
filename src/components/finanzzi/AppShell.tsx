@@ -98,7 +98,7 @@ function NavItem({
       <Link
         to={item.to}
         onClick={() => {
-          beginNavigation();
+          if (!active) beginNavigation();
           onNavigate?.();
         }}
         className={cn(
@@ -217,7 +217,7 @@ function MoreMenu({
           key={item.to}
           to={item.to}
           onClick={() => {
-            beginNavigation();
+            if (activePathname !== item.to) beginNavigation();
             onClose?.();
           }}
           className={cn(
