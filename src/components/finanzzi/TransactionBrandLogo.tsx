@@ -39,8 +39,8 @@ export function TransactionBrandLogo({ description }: { description: string }) {
         src={brand.logoUrl}
         alt={brand.name}
         className="size-full object-contain"
-        loading="eager"
-        referrerPolicy="no-referrer"
+        loading="lazy"
+        referrerPolicy="no-referrer" decoding="async"
         onError={() => setFailed(true)}
       />
     </span>
