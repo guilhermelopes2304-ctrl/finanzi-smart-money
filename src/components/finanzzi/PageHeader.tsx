@@ -10,8 +10,8 @@ export function PageHeader({
   action?: ReactNode;
 }) {
   return (
-    <header className="fin-page-header mb-4 border-b border-border/70 pb-3.5 sm:mb-5 sm:pb-4">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <header className="fin-page-header mb-2 border-b border-border/70 pb-2 sm:mb-3 sm:pb-3">
+      <div className="flex flex-col gap-2.5 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0 max-w-2xl">
           <div className="mb-2 flex items-center gap-2">
             <span className="h-px w-6 bg-primary/70" />
