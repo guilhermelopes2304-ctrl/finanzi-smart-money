@@ -57,7 +57,7 @@ const NONE = "__none__";
 
 function BillsPage() {
   return (
-    <div>
+    <div className="fin-screen fin-accounts">
       <PageHeader
         title="Contas e pagamentos"
         subtitle="Veja o que está próximo e organize seus pagamentos."
