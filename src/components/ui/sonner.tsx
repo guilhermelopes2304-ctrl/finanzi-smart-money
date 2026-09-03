@@ -16,10 +16,10 @@ const Toaster = ({ ...props }: ToasterProps) => {
           </span>
         ),
       }}
-      offset="max(14px, env(safe-area-inset-top))"
-      mobileOffset="max(14px, env(safe-area-inset-top))"
+      offset="max(10px, calc(env(safe-area-inset-top) + 6px))"
+      mobileOffset="max(10px, calc(env(safe-area-inset-top) + 6px))"
       toastOptions={{
-        duration: 1600,
+        duration: 1800,
         classNames: {
           toast:
             "group toast group-[.toaster]:w-[min(340px,calc(100vw-32px))] group-[.toaster]:rounded-[18px] group-[.toaster]:border group-[.toaster]:border-primary/20 group-[.toaster]:bg-[#171719]/95 group-[.toaster]:px-4 group-[.toaster]:py-3.5 group-[.toaster]:text-white group-[.toaster]:shadow-[0_18px_55px_rgba(0,0,0,0.38)] group-[.toaster]:backdrop-blur-2xl group-[.toaster]:gap-3 group-[.toaster]:items-center",
