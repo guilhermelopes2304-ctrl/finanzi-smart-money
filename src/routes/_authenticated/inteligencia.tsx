@@ -75,7 +75,8 @@ function IntelligencePage() {
       />
 
       <section className="relative mb-5 overflow-hidden rounded-[28px] border border-primary/15 bg-[linear-gradient(135deg,hsl(var(--primary)/0.14),hsl(var(--card))_55%,hsl(var(--primary)/0.05))] p-5 shadow-[0_14px_45px_rgba(0,0,0,0.07)] sm:p-6">
-        <div className="pointer-events-none absolute -right-12 -top-12 size-40 rounded-full bg-primary/10 blur-3xl" />\n        <div className="relative flex items-start gap-3">
+        <div className="pointer-events-none absolute -right-12 -top-12 size-40 rounded-full bg-primary/10 blur-3xl" />
+        <div className="relative flex items-start gap-3">
           <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary text-[10px] font-black uppercase tracking-[0.16em] text-primary-foreground">
             FIN
           </span>
