@@ -49,7 +49,7 @@ function AuthPage() {
   const { user, loading } = useAuth();
 
   useEffect(() => {
-    if (!loading && user) void navigate({ to: "/dashboard" });
+    if (!loading && user) void navigate({ to: returnTo ?? "/dashboard" });
   }, [user, loading, navigate]);
 
   useEffect(() => {
