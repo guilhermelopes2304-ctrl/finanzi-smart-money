@@ -551,3 +551,24 @@ html[data-platform="ios"] body, html[data-platform="android"] body { min-height:
   .fin-login-button { padding-left: 10px; padding-right: 10px; font-size: 13px; }
   .fin-start-button { padding-left: 11px; padding-right: 11px; }
 }
+
+
+/* System-wide mobile polish and navigation resilience */
+[data-fin-app-shell] {
+  -webkit-tap-highlight-color: transparent;
+}
+@media (max-width: 1023px) {
+  [data-fin-app-shell] main {
+    padding-top: max(14px, env(safe-area-inset-top));
+  }
+  [data-fin-app-shell] button,
+  [data-fin-app-shell] a {
+    touch-action: manipulation;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .surface-card,
+  .fin-interactive {
+    will-change: transform;
+  }
+}
