@@ -115,7 +115,7 @@ function TransactionsPage() {
         />
       )}
 
-      <div className="mb-4 flex items-center justify-between gap-3">
+      <div className="mb-4 flex items-center justify-between gap-3 rounded-2xl border border-border/70 bg-card/70 px-4 py-3 shadow-sm">
         <p className="text-sm text-muted-foreground">
           {rows.length === 1 ? "1 registro no seu histórico." : `${rows.length} registros no seu histórico.`}
         </p>
@@ -202,11 +202,11 @@ function TransactionsPage() {
           }
         />
       ) : (
-        <div className="divide-y divide-border overflow-hidden rounded-[1.5rem] border border-border bg-card">
+        <div className="divide-y divide-border/70 overflow-hidden rounded-[28px] border border-border/70 bg-card shadow-[0_12px_36px_rgba(0,0,0,0.045)]">
           {rows.map((tx) => (
             <div
               key={tx.id}
-              className="fin-interactive flex flex-wrap items-center gap-3 px-4 py-4 hover:bg-muted/40 sm:px-5"
+              className="fin-interactive flex flex-wrap items-center gap-3 px-4 py-4 transition-colors hover:bg-primary/[0.035] sm:px-5"
             >
               <TransactionBrandLogo description={tx.description} />
               <div className="min-w-0 flex-1">
