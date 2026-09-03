@@ -559,7 +559,7 @@ html[data-platform="ios"] body, html[data-platform="android"] body { min-height:
 }
 @media (max-width: 1023px) {
   [data-fin-app-shell] main {
-    padding-top: max(14px, env(safe-area-inset-top));
+    padding-top: 0;
   }
   [data-fin-app-shell] button,
   [data-fin-app-shell] a {
@@ -707,5 +707,18 @@ html[data-platform="ios"] body, html[data-platform="android"] body { min-height:
   }
   .fin-bill-row > :nth-child(3) {
     align-self: flex-start;
+  }
+}
+
+
+/* The native/standalone shell already reserves space for the status area.
+   Do not add a second safe-area gap inside main. */
+@media (max-width: 1023px) {
+  [data-fin-app-shell][data-platform="ios"] main,
+  [data-fin-app-shell] main {
+    padding-top: 0 !important;
+  }
+  [data-fin-app-shell] .fin-page-header {
+    margin-top: 0 !important;
   }
 }
