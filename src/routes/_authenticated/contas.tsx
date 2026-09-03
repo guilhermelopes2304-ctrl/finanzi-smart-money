@@ -62,10 +62,10 @@ function BillsPage() {
         title="Contas e pagamentos"
         subtitle="Veja o que está próximo e organize seus pagamentos."
       />
-      <Tabs defaultValue="bills">
-        <TabsList className="mb-4">
-          <TabsTrigger value="bills">Contas a pagar</TabsTrigger>
-          <TabsTrigger value="accounts">Minhas contas</TabsTrigger>
+      <Tabs defaultValue="bills" className="fin-accounts-tabs">
+        <TabsList className="mb-5 grid h-auto w-full grid-cols-2 rounded-2xl bg-muted/60 p-1.5">
+          <TabsTrigger value="bills" className="min-h-11 rounded-xl px-3 text-xs sm:text-sm">Contas a pagar</TabsTrigger>
+          <TabsTrigger value="accounts" className="min-h-11 rounded-xl px-3 text-xs sm:text-sm">Minhas contas</TabsTrigger>
         </TabsList>
         <TabsContent value="bills">
           <BillsTab />
@@ -148,13 +148,13 @@ function BillsTab() {
 
   return (
     <div>
-      <section className="mb-6 rounded-[1.7rem] border border-fin-line bg-fin-brand-soft p-5 text-foreground sm:p-7">
+      <section className="mb-5 overflow-hidden rounded-[1.7rem] border border-primary/15 bg-fin-brand-soft p-5 text-foreground shadow-soft sm:mb-6 sm:p-7">
         <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-fin-brand-hover">
           Próximos 7 dias
         </p>
         <div className="mt-3 flex flex-wrap items-end justify-between gap-5">
           <div>
-            <p className="font-display text-4xl font-semibold tracking-[-0.05em] sm:text-6xl">
+            <p className="font-display text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">
               {formatBRL(next7.reduce((s, b) => s + Number(b.amount), 0))}
             </p>
             <p className="mt-2 text-sm text-fin-copy">para os próximos 7 dias.</p>
@@ -193,12 +193,8 @@ function BillsTab() {
         </section>
       )}
 
-      <div className="mb-4 flex flex-wrap items-center gap-2">
-        <details className="group">
-          <summary className="cursor-pointer list-none rounded-full border border-border bg-card px-3 py-1.5 text-sm font-semibold text-muted-foreground hover:bg-muted">
-            Mais opções
-          </summary>
-          <div className="mt-2 flex flex-wrap gap-2 rounded-2xl border border-border bg-card p-2 shadow-soft">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="scrollbar-none -mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
             {(["upcoming", "recurring", "subscription", "paid", "late"] as const).map((f) => (
               <button
                 key={f}
@@ -223,10 +219,9 @@ function BillsTab() {
               </button>
             ))}
           </div>
-        </details>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button className="ml-auto">
+            <Button className="w-full sm:ml-auto sm:w-auto">
               <Plus className="size-4" /> Adicionar conta
             </Button>
           </DialogTrigger>
@@ -342,7 +337,7 @@ function BillsTab() {
           {rows.map((bill) => {
             const status = billStatus(bill);
             return (
-              <div key={bill.id} className="flex flex-wrap items-center gap-3 px-4 py-4 sm:px-5">
+              <div key={bill.id} className="fin-bill-row flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:px-5">
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold">{bill.description}</p>
                   <p className="text-xs text-muted-foreground">
@@ -362,9 +357,9 @@ function BillsTab() {
                   {{ paid: "Pago", late: "Atrasado", pending: "Pendente" }[status]}
                 </span>
                 <span className="font-display font-semibold">{formatBRL(Number(bill.amount))}</span>
-                <div className="flex gap-1">
+                <div className="flex w-full gap-1 sm:w-auto">
                   {status !== "paid" && (
-                    <Button size="sm" variant="outline" onClick={() => markPaid(bill)}>
+                    <Button size="sm" variant="outline" className="flex-1 sm:flex-none" onClick={() => markPaid(bill)}>
                       <CheckCircle2 className="size-4" /> Pagar
                     </Button>
                   )}
@@ -412,10 +407,10 @@ function AccountsTab() {
 
   return (
     <div>
-      <div className="mb-4 flex justify-end">
+      <div className="mb-4 flex justify-stretch sm:justify-end">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="w-full sm:w-auto">
               <Plus className="size-4" /> Nova conta
             </Button>
           </DialogTrigger>
@@ -482,7 +477,7 @@ function AccountsTab() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {accounts.map((account) => (
-            <div key={account.id} className="surface-card p-5">
+            <div key={account.id} className="surface-card relative overflow-hidden p-5">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="font-medium">{account.name}</p>
@@ -501,7 +496,7 @@ function AccountsTab() {
                 />
               </div>
               <p className="mt-4 text-xs text-muted-foreground">Saldo atual</p>
-              <p className="font-display text-xl font-semibold">
+              <p className="mt-1 font-display text-2xl font-semibold tracking-[-0.03em]">
                 {formatBRL(accountBalance(account, transactions))}
               </p>
             </div>
