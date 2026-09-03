@@ -730,3 +730,50 @@ html[data-platform="ios"] body, html[data-platform="android"] body { min-height:
     padding-top: 10px !important;
   }
 }
+
+
+/* Product home: bring the landing's depth, light and orange atmosphere into the real app. */
+.fin-product-home {
+  background:
+    radial-gradient(circle at 85% -10%, rgba(255,90,31,.11), transparent 28rem),
+    radial-gradient(circle at 8% 42%, rgba(255,130,75,.035), transparent 24rem),
+    var(--color-background);
+}
+.fin-home-intro {
+  background:
+    linear-gradient(145deg, rgba(255,90,31,.09), transparent 46%),
+    linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.012)),
+    #101010;
+  box-shadow: 0 28px 90px rgba(0,0,0,.22);
+}
+.fin-home-grid {
+  opacity: .26;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 38px 38px;
+  mask-image: linear-gradient(110deg, black, transparent 76%);
+}
+.fin-home-entry {
+  filter: drop-shadow(0 24px 48px rgba(0,0,0,.16));
+}
+.fin-home-entry-card {
+  position: relative;
+  border-color: rgba(255,90,31,.22) !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(255,90,31,.10), transparent 40%),
+    rgba(24,24,24,.94) !important;
+  box-shadow: 0 22px 70px rgba(0,0,0,.30), 0 0 0 1px rgba(255,90,31,.035);
+}
+.fin-home-entry-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.025) 48%, transparent 61%);
+}
+.fin-home-entry-card > * { position: relative; }
+@media (max-width: 639px) {
+  .fin-product-home .fin-home-intro { border-radius: 26px; padding-top: 24px; }
+  .fin-product-home .fin-home-entry-card { border-radius: 24px; }
+}
