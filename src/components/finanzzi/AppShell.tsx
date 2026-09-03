@@ -385,14 +385,14 @@ export function AppShell({
         </button>
       </aside>
 
-      <header className="sticky top-0 z-20 border-b border-border bg-background px-4 py-2.5 lg:hidden">
+      <header className="sticky top-0 z-20 border-b border-border/80 bg-background/92 px-4 pt-[max(0.625rem,env(safe-area-inset-top))] pb-2.5 backdrop-blur-xl lg:hidden">
         <div className="flex min-h-11 items-center justify-between gap-3">
           <Logo />
           <button
             type="button"
             onClick={() => navigateWithFeedback(navigate, "/configuracoes")}
             aria-label="Abrir configurações"
-            className="fin-interactive fin-pressable grid size-10 overflow-hidden place-items-center rounded-full border border-border bg-card text-xs font-bold text-fin-brand-hover shadow-sm"
+            className="fin-interactive fin-pressable grid size-11 overflow-hidden place-items-center rounded-full border border-border/80 bg-card text-xs font-bold text-fin-brand-hover shadow-sm transition-transform active:scale-95"
           >
             {profile?.avatar_url ? (
               <img src={profile.avatar_url} alt="" className="size-full object-cover" />
