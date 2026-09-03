@@ -1,5 +1,7 @@
 /* eslint-disable prettier/prettier */
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
+import { gsap } from "gsap";
+import { useGSAP } from "@gsap/react";
 import { ArrowDownRight, ArrowRight, ArrowUpRight } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { formatBRL, formatDateBR } from "@/lib/format";
@@ -9,6 +11,8 @@ import { EmptyState } from "@/components/finanzzi/EmptyState";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Reveal } from "@/components/finanzzi/Reveal";
 import { TransactionBrandLogo } from "@/components/finanzzi/TransactionBrandLogo";
+
+gsap.registerPlugin(useGSAP);
 
 type DashboardViewProps = {
   profile?: Profile | null;
@@ -25,6 +29,7 @@ type DashboardViewProps = {
 
 export function DashboardView({ profile, transactions, categories, accounts, bills, goals, isLoading = false, previewMode = false, quickEntryPreviewData }: DashboardViewProps) {
   void categories; void accounts; void bills; void goals;
+  const rootRef = useRef<HTMLDivElement>(null);
   const firstName = profile?.name?.split(" ")[0] || "você";
   const recentTransactions = useMemo(() => [...transactions]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -34,7 +39,7 @@ export function DashboardView({ profile, transactions, categories, accounts, bil
     <div className="fin-screen fin-dashboard fin-product-home min-h-full bg-background text-foreground">
       <div className="mx-auto w-full max-w-3xl px-4 pb-28 pt-3 sm:px-6 sm:pb-10 sm:pt-5">
         <Reveal>
-          <section className="fin-home-intro relative overflow-hidden rounded-[30px] border border-white/[0.07] px-5 py-6 sm:px-8 sm:py-8">
+          <section data-fin-hero className="fin-home-intro relative overflow-hidden rounded-[30px] border border-white/[0.07] px-5 py-6 sm:px-8 sm:py-8">
             <div className="fin-home-grid pointer-events-none absolute inset-0" />
             <div className="fin-home-orb pointer-events-none absolute -right-16 -top-20 size-64 rounded-full bg-primary/20 blur-3xl" />
             <div className="relative">
@@ -50,14 +55,14 @@ export function DashboardView({ profile, transactions, categories, accounts, bil
         </Reveal>
 
         <Reveal delay={40} className="relative z-[1] -mt-4 sm:-mt-5">
-          <section aria-labelledby="quick-entry-title" className="fin-home-entry">
+          <section data-fin-entry aria-labelledby="quick-entry-title" className="fin-home-entry">
             <h2 id="quick-entry-title" className="sr-only">Registrar lançamento</h2>
             <QuickEntry previewMode={previewMode} previewData={quickEntryPreviewData ?? {}} />
           </section>
         </Reveal>
 
         <Reveal delay={90} className="mt-6">
-          <section aria-labelledby="recent-title">
+          <section data-fin-recent aria-labelledby="recent-title">
             <div className="mb-3 flex items-end justify-between gap-3 px-1">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-primary/75">Agora</p>
@@ -76,7 +81,7 @@ export function DashboardView({ profile, transactions, categories, accounts, bil
               <div className="overflow-hidden rounded-[26px] border border-white/[0.07] bg-card/75 shadow-[0_22px_60px_rgba(0,0,0,0.18)] backdrop-blur-xl">
                 {recentTransactions.map((tx, index) => {
                   const isIncome = tx.type === "income";
-                  return <div key={tx.id} className={`flex items-center gap-3 px-4 py-4 sm:px-5 ${index > 0 ? "border-t border-white/[0.06]" : ""}`}>
+                  return <div data-fin-transaction key={tx.id} className={`flex items-center gap-3 px-4 py-4 sm:px-5 ${index > 0 ? "border-t border-white/[0.06]" : ""}`}>
                     <TransactionBrandLogo description={tx.description} />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold">{tx.description}</p>
