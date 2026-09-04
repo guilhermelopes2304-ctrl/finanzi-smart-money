@@ -101,32 +101,34 @@ export function HomeChat({ profile, transactions, isLoading = false }: HomeChatP
   }
 
   return (
-    <section className="fixed inset-0 z-40 flex min-h-[100dvh] w-full overflow-hidden bg-background text-foreground lg:static lg:z-auto lg:min-h-[calc(100dvh-5rem)] lg:rounded-none">
+    <section className="fixed inset-0 z-40 flex h-[100dvh] min-h-0 w-full overflow-hidden overscroll-none bg-background text-foreground lg:static lg:z-auto lg:h-[calc(100dvh-5rem)] lg:rounded-none">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,hsl(var(--primary)/0.10),transparent_34%)]" />
-      <div className="relative flex min-h-[100dvh] w-full flex-col px-4 pb-[max(18px,env(safe-area-inset-bottom))] pt-[max(14px,env(safe-area-inset-top))] sm:px-8 lg:min-h-[calc(100dvh-5rem)] lg:pt-6">
+      <div className="relative flex h-full min-h-0 w-full flex-col overflow-hidden px-4 pb-[max(18px,env(safe-area-inset-bottom))] pt-[max(14px,env(safe-area-inset-top))] sm:px-8 lg:pt-6">
         <header className="flex h-11 shrink-0 items-center justify-between">
           <button type="button" onClick={() => setSidebarOpen(true)} aria-label="Abrir menu" className="grid size-10 place-items-center rounded-full text-muted-foreground transition hover:bg-card hover:text-foreground active:scale-95"><Menu className="size-5" /></button>
           <Link to="/dashboard" className="flex items-center gap-2" aria-label="FINANZZI"><span className="grid size-8 place-items-center rounded-xl bg-primary/10 text-primary"><Sparkles className="size-4" /></span><span className="text-sm font-bold tracking-[-0.02em]">FINANZZI</span></Link>
           <Link to="/dashboard" aria-label="Nova conversa" className="grid size-10 place-items-center rounded-full text-muted-foreground transition hover:bg-card hover:text-foreground active:scale-95"><Plus className="size-5" /></Link>
         </header>
 
-        <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center py-6 sm:py-10">
-          <div className={cn("text-center transition-all duration-300", messages.length ? "mb-8" : "mb-6") }>
+        <main className="mx-auto flex min-h-0 w-full max-w-3xl flex-1 flex-col overflow-hidden py-4 sm:py-7">
+          <div className={cn("shrink-0 text-center transition-all duration-300", messages.length ? "mb-5" : "mb-4") }>
             {messages.length === 0 ? <>
               <p className="text-xs font-semibold tracking-[0.16em] text-primary">OLÁ, {firstName.toUpperCase()}</p>
               <h1 className="mt-4 text-[2.15rem] font-semibold leading-[1.02] tracking-[-0.065em] sm:text-5xl">O que aconteceu<br className="sm:hidden" /> com seu dinheiro?</h1>
-              <p className="mx-auto mt-4 max-w-md text-sm leading-6 text-muted-foreground">Fale do seu jeito. Eu registro, organizo e te ajudo a entender.</p>
+              <p className="mx-auto mt-4 max-w-md text-sm leading-6 text-muted-foreground">Fale do seu jeito. Eu registro, organizo e te ajudo.</p>
             </> : <p className="text-xs font-medium text-muted-foreground">Conversa com o FINANZZI</p>}
           </div>
 
           {messages.length === 0 && !isLoading && recent.length > 0 && (
-            <div className="mx-auto mb-5 flex max-w-xl flex-wrap justify-center gap-2">
+            <div className="mx-auto mb-4 flex shrink-0 max-w-xl flex-wrap justify-center gap-2">
               {suggestions.map((item) => <button key={item} type="button" disabled={busy} onClick={() => void handleSend(item)} className="rounded-full border border-white/[0.09] bg-card/50 px-3.5 py-2 text-xs text-muted-foreground backdrop-blur-sm transition hover:border-primary/30 hover:bg-primary/[0.06] hover:text-foreground active:scale-[0.98]">{item}</button>)}
             </div>
           )}
 
-          <div className="space-y-3" aria-live="polite">
-            {messages.map((message) => <div key={message.id} className={message.role === "user" ? "ml-auto max-w-[88%] rounded-[22px] rounded-tr-md bg-primary px-4 py-3 text-sm text-primary-foreground whitespace-pre-line" : "mr-auto max-w-[92%] rounded-[22px] border border-white/[0.07] bg-card/65 px-4 py-3 text-sm whitespace-pre-line shadow-sm"}><p className="mb-1 text-[10px] font-bold uppercase tracking-[0.16em] opacity-60">{message.role === "user" ? "Você" : "FINANZZI"}</p>{message.text}</div>)}
+          <div className={cn("min-h-0 flex-1 overscroll-contain px-1", messages.length ? "overflow-y-auto touch-pan-y [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" : "overflow-hidden")} aria-live="polite">
+            <div className="space-y-3 pb-3">
+              {messages.map((message) => <div key={message.id} className={message.role === "user" ? "ml-auto max-w-[88%] rounded-[22px] rounded-tr-md bg-primary px-4 py-3 text-sm text-primary-foreground whitespace-pre-line" : "mr-auto max-w-[92%] rounded-[22px] border border-white/[0.07] bg-card/65 px-4 py-3 text-sm whitespace-pre-line shadow-sm"}><p className="mb-1 text-[10px] font-bold uppercase tracking-[0.16em] opacity-60">{message.role === "user" ? "Você" : "FINANZZI"}</p>{message.text}</div>)}
+            </div>
           </div>
         </main>
 
