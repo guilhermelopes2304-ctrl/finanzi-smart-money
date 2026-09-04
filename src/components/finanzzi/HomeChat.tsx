@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowDownRight, ArrowUpRight, Bot, ChevronLeft, ChevronRight, CircleHelp, CreditCard, History, Loader2, Menu, Plus, Send, Settings, Sparkles, Target, WalletCards } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
@@ -39,6 +39,49 @@ export function HomeChat({ profile, transactions, isLoading = false }: HomeChatP
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
+
+  // The Home owns the viewport while it is mounted. This prevents iOS Safari/PWA
+  // from scrolling the shell itself and exposing the page background above the app.
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+    const previous = {
+      htmlOverflow: html.style.overflow,
+      htmlOverscroll: html.style.overscrollBehavior,
+      htmlHeight: html.style.height,
+      bodyOverflow: body.style.overflow,
+      bodyOverscroll: body.style.overscrollBehavior,
+      bodyHeight: body.style.height,
+      bodyPosition: body.style.position,
+      bodyWidth: body.style.width,
+      bodyTop: body.style.top,
+    };
+    const scrollY = window.scrollY;
+
+    html.style.overflow = "hidden";
+    html.style.overscrollBehavior = "none";
+    html.style.height = "100%";
+    body.style.overflow = "hidden";
+    body.style.overscrollBehavior = "none";
+    body.style.height = "100%";
+    body.style.position = "fixed";
+    body.style.width = "100%";
+    body.style.top = `-${scrollY}px`;
+    window.scrollTo(0, 0);
+
+    return () => {
+      html.style.overflow = previous.htmlOverflow;
+      html.style.overscrollBehavior = previous.htmlOverscroll;
+      html.style.height = previous.htmlHeight;
+      body.style.overflow = previous.bodyOverflow;
+      body.style.overscrollBehavior = previous.bodyOverscroll;
+      body.style.height = previous.bodyHeight;
+      body.style.position = previous.bodyPosition;
+      body.style.width = previous.bodyWidth;
+      body.style.top = previous.bodyTop;
+      window.scrollTo(0, scrollY);
+    };
+  }, []);
 
   const firstName = profile?.name?.split(" ")[0] || "você";
   const recent = useMemo(() => [...transactions].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 4), [transactions]);
@@ -101,7 +144,7 @@ export function HomeChat({ profile, transactions, isLoading = false }: HomeChatP
   }
 
   return (
-    <section className="fixed inset-0 z-40 flex h-[100dvh] min-h-0 w-full overflow-hidden overscroll-none bg-background text-foreground lg:static lg:z-auto lg:h-[calc(100dvh-5rem)] lg:rounded-none">
+    <section className="fixed inset-0 z-40 flex h-[100dvh] min-h-0 w-full touch-none overflow-hidden overscroll-none bg-background text-foreground lg:static lg:z-auto lg:h-[calc(100dvh-5rem)]">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,hsl(var(--primary)/0.10),transparent_34%)]" />
       <div className="relative flex h-full min-h-0 w-full flex-col overflow-hidden px-4 pb-[max(18px,env(safe-area-inset-bottom))] pt-[max(14px,env(safe-area-inset-top))] sm:px-8 lg:pt-6">
         <header className="flex h-11 shrink-0 items-center justify-between">
@@ -125,7 +168,7 @@ export function HomeChat({ profile, transactions, isLoading = false }: HomeChatP
             </div>
           )}
 
-          <div className={cn("min-h-0 flex-1 overscroll-contain px-1", messages.length ? "overflow-y-auto touch-pan-y [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" : "overflow-hidden")} aria-live="polite">
+          <div className={cn("min-h-0 flex-1 overscroll-contain px-1 touch-pan-y", messages.length ? "overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" : "overflow-hidden")} aria-live="polite">
             <div className="space-y-3 pb-3">
               {messages.map((message) => <div key={message.id} className={message.role === "user" ? "ml-auto max-w-[88%] rounded-[22px] rounded-tr-md bg-primary px-4 py-3 text-sm text-primary-foreground whitespace-pre-line" : "mr-auto max-w-[92%] rounded-[22px] border border-white/[0.07] bg-card/65 px-4 py-3 text-sm whitespace-pre-line shadow-sm"}><p className="mb-1 text-[10px] font-bold uppercase tracking-[0.16em] opacity-60">{message.role === "user" ? "Você" : "FINANZZI"}</p>{message.text}</div>)}
             </div>
