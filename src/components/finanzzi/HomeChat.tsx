@@ -43,7 +43,7 @@ export function HomeChat({ profile, transactions }: HomeChatProps) {
           <button
             type="button"
             onClick={() => setShowShortcuts((value) => !value)}
-            className="grid size-10 shrink-0 place-items-center rounded-full border border-white/[0.08] bg-card/70 text-muted-foreground shadow-sm backdrop-blur-xl transition hover:border-primary/30 hover:text-foreground active:scale-95"
+            className="grid size-10 shrink-0 place-items-center rounded-full border border-white/[0.08] bg-card/70 text-muted-foreground shadow-sm backdrop-blur-xl transition hover:border-primary/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 active:scale-95"
             aria-label={showShortcuts ? "Ocultar atalhos" : "Mostrar atalhos"}
             aria-expanded={showShortcuts}
           >
@@ -119,7 +119,7 @@ export function HomeChat({ profile, transactions }: HomeChatProps) {
             <button
               key={label}
               type="button"
-              className="flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left text-xs text-muted-foreground transition hover:bg-primary/[0.08] hover:text-foreground active:scale-[0.99]"
+              className="flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left text-xs text-muted-foreground transition hover:bg-primary/[0.08] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 active:scale-[0.99]"
             >
               <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-background text-primary">
                 <Icon className="size-4" />
