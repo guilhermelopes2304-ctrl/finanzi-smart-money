@@ -1,17 +1,68 @@
-/* Home chat polish: compact top chrome + official FINANZZI mark */
+/* FINANZZI Home — Gemini-inspired responsive polish, without changing finance logic. */
 .fin-product-home [data-home-chat] > div.relative {
-  padding-top: max(6px, env(safe-area-inset-top)) !important;
+  padding-top: max(10px, env(safe-area-inset-top)) !important;
+  padding-bottom: max(12px, env(safe-area-inset-bottom)) !important;
+  isolation: isolate;
+}
+
+/* Soft animated FINANZZI aurora: subtle on mobile, richer on larger screens. */
+.fin-product-home [data-home-chat] > div.relative::before,
+.fin-product-home [data-home-chat] > div.relative::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: -1;
+  border-radius: 999px;
+  filter: blur(70px);
+  opacity: .16;
+  will-change: transform;
+}
+
+.fin-product-home [data-home-chat] > div.relative::before {
+  width: 48vw;
+  height: 48vw;
+  max-width: 520px;
+  max-height: 520px;
+  top: 4%;
+  left: 26%;
+  background: radial-gradient(circle, rgba(255,90,31,.34) 0%, rgba(255,90,31,.10) 38%, transparent 72%);
+  animation: finanzzi-aurora-one 13s ease-in-out infinite alternate;
+}
+
+.fin-product-home [data-home-chat] > div.relative::after {
+  width: 40vw;
+  height: 40vw;
+  max-width: 460px;
+  max-height: 460px;
+  right: -12%;
+  bottom: 10%;
+  background: radial-gradient(circle, rgba(255,122,72,.22) 0%, rgba(255,90,31,.07) 42%, transparent 72%);
+  animation: finanzzi-aurora-two 17s ease-in-out infinite alternate;
 }
 
 .fin-product-home [data-home-chat] > div.relative > header {
-  height: 38px !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  flex-basis: 42px !important;
+}
+
+.fin-product-home [data-home-chat] > div.relative > header > button,
+.fin-product-home [data-home-chat] > div.relative > header > a[aria-label="Nova conversa"] {
+  width: 42px !important;
+  height: 42px !important;
+  transition: transform .22s ease, background-color .22s ease;
+}
+
+.fin-product-home [data-home-chat] > div.relative > header > button:active,
+.fin-product-home [data-home-chat] > div.relative > header > a[aria-label="Nova conversa"]:active {
+  transform: scale(.92);
 }
 
 .fin-product-home [data-home-chat] > div.relative > header > a[aria-label="FINANZZI"] {
-  width: 112px !important;
+  width: 118px !important;
   height: 34px !important;
   display: block !important;
-  background: url('/brand/logo/finanzzi-logo.svg?v=home-brand') center / contain no-repeat !important;
+  background: url('/brand/logo/finanzzi-logo.svg?v=home-brand-2') center / contain no-repeat !important;
   font-size: 0 !important;
 }
 
@@ -19,14 +70,200 @@
   display: none !important;
 }
 
+/* Gemini-like vertical rhythm: generous breathing room, but no artificial card. */
+.fin-product-home [data-home-chat] > div.relative main {
+  padding-top: clamp(20px, 7dvh, 72px) !important;
+  padding-bottom: clamp(12px, 3dvh, 30px) !important;
+}
+
+.fin-product-home [data-home-chat] > div.relative main > div:first-child {
+  margin-bottom: clamp(20px, 3dvh, 34px) !important;
+}
+
+.fin-product-home [data-home-chat] > div.relative main h1 {
+  max-width: 720px !important;
+  font-size: clamp(2.25rem, 8.7vw, 4.65rem) !important;
+  line-height: .96 !important;
+  letter-spacing: -.075em !important;
+  text-wrap: balance;
+}
+
+.fin-product-home [data-home-chat] > div.relative main h1 + p {
+  max-width: 580px !important;
+  margin-top: clamp(14px, 2.2dvh, 22px) !important;
+  font-size: clamp(.95rem, 2.8vw, 1.15rem) !important;
+  line-height: 1.45 !important;
+}
+
+/* Suggestions behave like compact Gemini prompt chips/cards. */
+.fin-product-home [data-home-chat] > div.relative main > div:nth-child(2) {
+  width: min(100%, 700px) !important;
+  gap: 10px !important;
+}
+
+.fin-product-home [data-home-chat] > div.relative main > div:nth-child(2) button {
+  min-height: 56px !important;
+  border-radius: 20px !important;
+  padding: 14px 18px !important;
+  background: linear-gradient(180deg, rgba(28,28,28,.78), rgba(20,20,20,.78)) !important;
+  border: 1px solid rgba(255,255,255,.085) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.025) !important;
+  transition: transform .24s cubic-bezier(.2,.8,.2,1), border-color .24s ease, background .24s ease !important;
+}
+
+.fin-product-home [data-home-chat] > div.relative main > div:nth-child(2) button:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255,90,31,.28) !important;
+  background: linear-gradient(180deg, rgba(32,32,32,.9), rgba(23,23,23,.9)) !important;
+}
+
+/* Composer: floating, translucent and anchored like a native chat app. */
+.fin-product-home [data-home-chat] > div.relative > div:last-child > div:nth-child(2) {
+  min-height: 76px !important;
+  border-radius: 28px !important;
+  background: rgba(25,25,25,.86) !important;
+  border: 1px solid rgba(255,255,255,.095) !important;
+  box-shadow: 0 18px 55px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.025) !important;
+  backdrop-filter: blur(22px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(120%) !important;
+  transition: border-color .25s ease, transform .25s ease, box-shadow .25s ease !important;
+}
+
+.fin-product-home [data-home-chat] > div.relative > div:last-child > div:nth-child(2):focus-within {
+  border-color: rgba(255,90,31,.35) !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,.36), 0 0 0 1px rgba(255,90,31,.06), inset 0 1px 0 rgba(255,255,255,.03) !important;
+}
+
+.fin-product-home [data-home-chat] > div.relative > div:last-child button[aria-label="Enviar"] {
+  background: linear-gradient(145deg, #ff6a32, #ff5a1f) !important;
+  box-shadow: 0 8px 22px rgba(255,90,31,.22) !important;
+  transition: transform .2s ease, filter .2s ease !important;
+}
+
+.fin-product-home [data-home-chat] > div.relative > div:last-child button[aria-label="Enviar"]:not(:disabled):hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px) scale(1.02);
+}
+
+@keyframes finanzzi-aurora-one {
+  0% { transform: translate3d(-7%, -2%, 0) scale(.92); }
+  50% { transform: translate3d(4%, 5%, 0) scale(1.05); }
+  100% { transform: translate3d(10%, -4%, 0) scale(.98); }
+}
+
+@keyframes finanzzi-aurora-two {
+  0% { transform: translate3d(5%, 8%, 0) scale(1); }
+  50% { transform: translate3d(-5%, -3%, 0) scale(.88); }
+  100% { transform: translate3d(-12%, 4%, 0) scale(1.06); }
+}
+
 @media (max-width: 640px) {
   .fin-product-home [data-home-chat] > div.relative {
-    padding-left: 14px !important;
-    padding-right: 14px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .fin-product-home [data-home-chat] > div.relative > header {
+    height: 40px !important;
+    min-height: 40px !important;
+    flex-basis: 40px !important;
   }
 
   .fin-product-home [data-home-chat] > div.relative > header > a[aria-label="FINANZZI"] {
-    width: 96px !important;
+    width: 104px !important;
     height: 30px !important;
+  }
+
+  .fin-product-home [data-home-chat] > div.relative main {
+    padding-top: clamp(22px, 5.5dvh, 48px) !important;
+    padding-bottom: 10px !important;
+  }
+
+  .fin-product-home [data-home-chat] > div.relative main h1 {
+    font-size: clamp(2.35rem, 10.5vw, 3.55rem) !important;
+    line-height: .95 !important;
+  }
+
+  .fin-product-home [data-home-chat] > div.relative main h1 + p {
+    margin-top: 16px !important;
+    font-size: 15px !important;
+  }
+
+  .fin-product-home [data-home-chat] > div.relative main > div:nth-child(2) button {
+    min-height: 54px !important;
+    border-radius: 19px !important;
+  }
+
+  .fin-product-home [data-home-chat] > div.relative > div:last-child > div:nth-child(2) {
+    min-height: 72px !important;
+    border-radius: 26px !important;
+  }
+
+  .fin-product-home [data-home-chat] > div.relative::before {
+    width: 82vw;
+    height: 82vw;
+    left: 8%;
+    top: 7%;
+    opacity: .12;
+    filter: blur(58px);
+  }
+
+  .fin-product-home [data-home-chat] > div.relative::after {
+    width: 70vw;
+    height: 70vw;
+    right: -25%;
+    bottom: 7%;
+    opacity: .09;
+    filter: blur(60px);
+  }
+}
+
+/* Short phones: preserve the composer and prevent the greeting from being squeezed. */
+@media (max-height: 760px) {
+  .fin-product-home [data-home-chat] > div.relative main {
+    padding-top: 14px !important;
+    padding-bottom: 6px !important;
+  }
+
+  .fin-product-home [data-home-chat] > div.relative main > div:first-child {
+    margin-bottom: 14px !important;
+  }
+
+  .fin-product-home [data-home-chat] > div.relative main h1 {
+    font-size: clamp(2.05rem, 8.8vw, 3rem) !important;
+  }
+
+  .fin-product-home [data-home-chat] > div.relative main h1 + p {
+    margin-top: 11px !important;
+  }
+
+  .fin-product-home [data-home-chat] > div.relative main > div:nth-child(2) button {
+    min-height: 48px !important;
+  }
+
+  .fin-product-home [data-home-chat] > div.relative > div:last-child > div:nth-child(2) {
+    min-height: 66px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .fin-product-home [data-home-chat] > div.relative {
+    padding-left: 32px !important;
+    padding-right: 32px !important;
+  }
+
+  .fin-product-home [data-home-chat] > div.relative main > div:nth-child(2) {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fin-product-home [data-home-chat] > div.relative::before,
+  .fin-product-home [data-home-chat] > div.relative::after {
+    animation: none !important;
+  }
+
+  .fin-product-home [data-home-chat] * {
+    transition: none !important;
   }
 }
