@@ -1,0 +1,92 @@
+/* FINANZZI unified app shell: iOS/Android viewport discipline + shared visual language */
+:root {
+  --fin-safe-top: env(safe-area-inset-top, 0px);
+  --fin-safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html,
+body {
+  background: #111111;
+}
+
+html {
+  min-height: 100%;
+  overscroll-behavior: none;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+body,
+button,
+a,
+input,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+[data-fin-app-shell] {
+  min-height: 100dvh;
+  min-height: 100svh;
+  height: 100dvh;
+  height: 100svh;
+  overflow: hidden;
+  overscroll-behavior: none;
+  isolation: isolate;
+}
+
+[data-fin-app-shell] main {
+  min-height: 0;
+}
+
+/* Every non-home screen gets the same FINANZZI canvas instead of a white/legacy shell. */
+[data-fin-app-shell] main > div {
+  color: hsl(var(--foreground));
+}
+
+/* Fixed mobile chrome must live inside the visual viewport and respect the home indicator. */
+@media (max-width: 1023px) {
+  [data-fin-app-shell] > header {
+    flex: 0 0 auto;
+    padding-top: max(0.625rem, var(--fin-safe-top));
+  }
+
+  [data-fin-app-shell] > main {
+    height: calc(100dvh - var(--fin-safe-top));
+    max-height: calc(100dvh - var(--fin-safe-top));
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  [data-fin-app-shell] > nav {
+    bottom: max(0.5rem, var(--fin-safe-bottom));
+  }
+
+  /* Drawer/backdrop sits below the Dynamic Island safe area. */
+  [data-fin-app-shell] > div.fixed.z-40 {
+    padding-top: var(--fin-safe-top);
+  }
+
+  [data-fin-app-shell] > div.fixed.z-40 > section {
+    max-height: calc(100dvh - var(--fin-safe-top) - 0.5rem);
+    padding-bottom: max(1.25rem, calc(1rem + var(--fin-safe-bottom)));
+  }
+}
+
+@supports (-webkit-touch-callout: none) {
+  [data-fin-app-shell] {
+    min-height: -webkit-fill-available;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-fin-app-shell] *,
+  [data-fin-app-shell] *::before,
+  [data-fin-app-shell] *::after {
+    scroll-behavior: auto !important;
+  }
+}
