@@ -1,59 +1,60 @@
-/* FINANZZI official dark-first runtime guard. Loaded after the app stylesheet to neutralize legacy light/green utility classes. */
-body:has(#oferta),
-body:has(#oferta) main,
-body:has(#oferta) footer {
-  background: #111111 !important;
-  color: #ffffff;
-}
-body:has(#oferta) main > section {
-  background: #111111 !important;
-  color: #ffffff !important;
-}
-body:has(#oferta) [class*="bg-[#EAF9F0]"],
-body:has(#oferta) [class*="bg-[#FCFCF8]"],
-body:has(#oferta) [class*="bg-[#F4F6F5]"],
-body:has(#oferta) [class*="bg-white"] {
-  background-color: #181818 !important;
-}
-body:has(#oferta) [class*="text-[#111827]"],
-body:has(#oferta) [class*="text-[#556070]"],
-body:has(#oferta) [class*="text-[#0F9F52]"] {
-  color: #ffffff !important;
-}
-body:has(#oferta) [class*="border-[#E1E7E3]"] {
-  border-color: #2d2d2d !important;
-}
-body:has(#oferta) [class*="bg-[#19C96B]"] {
-  background-color: #ff5a1f !important;
-  color: #ffffff !important;
-}
-body:has(#oferta) [class*="text-[#19C96B]"] {
-  color: #ff5a1f !important;
-}
-[data-fin-app-shell] [class*="bg-[#EAF9F0]"],
+/* FINANZZI official dark-first runtime guard. Neutralizes legacy light/green utility surfaces across the authenticated product. */
+:root { color-scheme: dark; }
+html, body { background: #111111 !important; color: #ffffff; }
+[data-fin-app-shell] { background: #111111 !important; color: #ffffff !important; }
+[data-fin-app-shell] main,
+[data-fin-app-shell] section,
+[data-fin-app-shell] article,
+[data-fin-app-shell] aside,
+[data-fin-app-shell] header,
+[data-fin-app-shell] footer { --legacy-surface: #181818; }
+
+[data-fin-app-shell] [class*="bg-white"],
 [data-fin-app-shell] [class*="bg-[#FCFCF8]"],
 [data-fin-app-shell] [class*="bg-[#F4F6F5]"],
-[data-fin-app-shell] [class*="bg-white"] {
-  background-color: #181818 !important;
-}
+[data-fin-app-shell] [class*="bg-[#EAF9F0]"],
+[data-fin-app-shell] [class*="bg-[#F8FAF9]"] { background-color: #181818 !important; }
 [data-fin-app-shell] [class*="text-[#111827]"],
-[data-fin-app-shell] [class*="text-[#556070]"],
-[data-fin-app-shell] [class*="text-[#0F9F52]"] {
-  color: #ffffff !important;
+[data-fin-app-shell] [class*="text-[#1F2937]"],
+[data-fin-app-shell] [class*="text-[#374151]"],
+[data-fin-app-shell] [class*="text-[#556070]"] { color: #ffffff !important; }
+[data-fin-app-shell] [class*="border-[#E1E7E3]"],
+[data-fin-app-shell] [class*="border-[#E5E7EB]"],
+[data-fin-app-shell] [class*="border-[#DDE3E0]"] { border-color: #2d2d2d !important; }
+
+[data-fin-app-shell] [class*="bg-[#19C96B"],
+[data-fin-app-shell] [class*="bg-[#16A34A"],
+[data-fin-app-shell] [class*="bg-[#22C55E"],
+[data-fin-app-shell] [class*="bg-emerald-"],
+[data-fin-app-shell] [class*="bg-green-"] { background-color: #ff5a1f !important; color: #111111 !important; }
+[data-fin-app-shell] [class*="text-[#0F9F52"],
+[data-fin-app-shell] [class*="text-[#19C96B"],
+[data-fin-app-shell] [class*="text-emerald-"],
+[data-fin-app-shell] [class*="text-green-"] { color: #ff5a1f !important; }
+[data-fin-app-shell] [class*="border-emerald-"],
+[data-fin-app-shell] [class*="border-green-"] { border-color: #ff5a1f !important; }
+
+[data-fin-app-shell] [data-slot="card"],
+[data-fin-app-shell] .surface-card { background-color: #181818; border-color: #2d2d2d; box-shadow: none; }
+[data-fin-app-shell] button,
+[data-fin-app-shell] [role="button"] { -webkit-tap-highlight-color: transparent; }
+
+/* Home owns the viewport; shell/document cannot become a second scroll surface. */
+html:has([data-home-chat]),
+body:has([data-home-chat]),
+body:has([data-home-chat]) [data-fin-app-shell] {
+  height: 100dvh !important;
+  min-height: 0 !important;
+  max-height: 100dvh !important;
+  overflow: hidden !important;
 }
-[data-fin-app-shell] [class*="border-[#E1E7E3]"] {
-  border-color: #2d2d2d !important;
-}
-[data-fin-app-shell] [class*="bg-[#19C96B]"] {
-  background-color: #ff5a1f !important;
-  color: #ffffff !important;
-}
-[data-fin-app-shell] [class*="text-[#19C96B]"] {
-  color: #ff5a1f !important;
-}
+body:has([data-home-chat]) [data-fin-app-shell] main { min-height: 0 !important; overflow: hidden !important; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
