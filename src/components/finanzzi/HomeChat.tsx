@@ -102,13 +102,12 @@ export function HomeChat({ profile, transactions, isLoading = false }: HomeChatP
             </div>
           </div>
         </main>
-        <div className="mx-auto w-full max-w-3xl shrink-0 pb-[env(safe-area-inset-bottom)]">
-          <div className="mb-2 flex items-center justify-between px-1 text-[11px] text-muted-foreground"><span className="flex items-center gap-1.5"><Bot className="size-3.5 text-primary" /> {busy ? "Organizando..." : "Registre como você fala"}</span>{messages.length > 0 && <button type="button" onClick={() => setMessages([])} className="text-muted-foreground hover:text-foreground">Nova conversa</button>}</div>
+        <div className="mx-auto w-full max-w-3xl shrink-0 pb-[max(14px,env(safe-area-inset-bottom))]">
+          <div className="flex items-center justify-end px-1 text-[11px] text-muted-foreground">{messages.length > 0 && <button type="button" onClick={() => setMessages([])} className="text-muted-foreground hover:text-foreground">Nova conversa</button>}</div>
           <div className="flex items-end gap-2 rounded-[27px] border border-white/[0.10] bg-card/90 p-2 shadow-[0_16px_50px_rgba(0,0,0,0.28)] backdrop-blur-xl focus-within:border-primary/30">
             <textarea ref={inputRef} value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); void handleSend(); } }} placeholder="Digite o que aconteceu..." rows={1} disabled={busy} className="max-h-28 min-h-11 flex-1 resize-none bg-transparent px-3 py-3 text-sm outline-none placeholder:text-muted-foreground" aria-label="Mensagem financeira" />
             <button type="button" onClick={() => void handleSend()} disabled={!input.trim() || busy} className="grid size-11 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/20 transition active:scale-95 disabled:opacity-35" aria-label="Enviar">{busy ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}</button>
           </div>
-          <p className="mt-2 text-center text-[10px] text-muted-foreground/60">O FINANZZI pode organizar seus lançamentos a partir do que você escrever.</p>
         </div>
       </div>
       {sidebarOpen && <button type="button" aria-label="Fechar menu" className="fixed inset-0 z-[60] bg-black/45 backdrop-blur-[2px]" onClick={() => setSidebarOpen(false)} />}
