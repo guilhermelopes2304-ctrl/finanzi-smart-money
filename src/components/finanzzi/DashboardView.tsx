@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import type { Profile, Transaction } from "@/types/finance";
 import { HomeChat } from "@/components/finanzzi/HomeChat";
+import "@/styles/home-chat-polish.css";
 
 gsap.registerPlugin(useGSAP);
 
