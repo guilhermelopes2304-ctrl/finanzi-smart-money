@@ -5,6 +5,7 @@ import { Outlet, Link, createRootRouteWithContext, useRouter, HeadContent, Scrip
 import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import darkGuardCss from "../finanzi-dark-guard.css?url";
+import homeChatCss from "../finanzzi-home-chat.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { initObservability, captureTelemetry } from "../lib/observability";
 import { initNativeShell } from "../lib/native-shell";
@@ -38,6 +39,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" },
     { rel: "stylesheet", href: appCss },
     { rel: "stylesheet", href: darkGuardCss },
+    { rel: "stylesheet", href: homeChatCss },
     { rel: "icon", href: "/brand/logo/finanzzi-logo.svg?v=brand-orange-5", type: "image/svg+xml" },
     { rel: "apple-touch-icon", sizes: "180x180", href: "/brand/logo/finanzzi-logo.png?v=brand-orange-5" },
     { rel: "manifest", href: "/manifest.webmanifest?v=brand-orange-5" },
