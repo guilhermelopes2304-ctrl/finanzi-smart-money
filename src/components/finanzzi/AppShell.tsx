@@ -251,6 +251,7 @@ export function AppShell({
   const [moreOpen, setMoreOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const moreActive = MORE_NAV.some((item) => item.to === activePathname);
+  const isConversationalHome = activePathname === "/dashboard";
 
   useEffect(() => {
     window.dispatchEvent(new CustomEvent("finanzzi:navigation-end", { detail: pathname }));
@@ -385,32 +386,34 @@ export function AppShell({
         </button>
       </aside>
 
-      <header className="sticky top-0 z-20 border-b border-border/50 bg-background/92 px-4 py-2.5 backdrop-blur-xl lg:hidden">
-        <div className="flex h-11 items-center justify-between gap-3">
-          <Link
-            to="/dashboard"
-            onClick={() => {
-              if (activePathname !== "/dashboard") beginNavigation();
-            }}
-            aria-label="Ir para o início"
-            className="flex min-w-0 items-center"
-          >
-            <Logo />
-          </Link>
-          <button
-            type="button"
-            onClick={() => navigateWithFeedback(navigate, "/configuracoes")}
-            aria-label="Abrir configurações"
-            className="fin-interactive fin-pressable grid size-10 overflow-hidden place-items-center rounded-full border border-border/70 bg-card text-xs font-bold text-fin-brand-hover shadow-sm transition-transform active:scale-95"
-          >
-            {profile?.avatar_url ? (
-              <img src={profile.avatar_url} alt="" className="size-full object-cover" />
-            ) : (
-              initials(profile?.name)
-            )}
-          </button>
-        </div>
-      </header>
+      {!isConversationalHome && (
+        <header className="sticky top-0 z-20 border-b border-border/50 bg-background/92 px-4 py-2.5 backdrop-blur-xl lg:hidden">
+          <div className="flex h-11 items-center justify-between gap-3">
+            <Link
+              to="/dashboard"
+              onClick={() => {
+                if (activePathname !== "/dashboard") beginNavigation();
+              }}
+              aria-label="Ir para o início"
+              className="flex min-w-0 items-center"
+            >
+              <Logo />
+            </Link>
+            <button
+              type="button"
+              onClick={() => navigateWithFeedback(navigate, "/configuracoes")}
+              aria-label="Abrir configurações"
+              className="fin-interactive fin-pressable grid size-10 overflow-hidden place-items-center rounded-full border border-border/70 bg-card text-xs font-bold text-fin-brand-hover shadow-sm transition-transform active:scale-95"
+            >
+              {profile?.avatar_url ? (
+                <img src={profile.avatar_url} alt="" className="size-full object-cover" />
+              ) : (
+                initials(profile?.name)
+              )}
+            </button>
+          </div>
+        </header>
+      )}
 
       {isInternalTest && (
         <div
@@ -426,50 +429,53 @@ export function AppShell({
       <main
         className={cn(
           "min-w-0 px-3 pb-[calc(104px+env(safe-area-inset-bottom))] pt-3 sm:px-5 sm:pt-4 lg:px-8 lg:pb-10 lg:pt-7",
+          isConversationalHome && "px-0 pb-0 pt-0 sm:px-0 sm:pt-0 lg:px-0 lg:pt-0",
           desktopSidebarWidth,
         )}
       >
-        <MotionPage className="mx-auto max-w-7xl">{children}</MotionPage>
+        <MotionPage className={cn("mx-auto max-w-7xl", isConversationalHome && "max-w-none")}>{children}</MotionPage>
       </main>
 
-      <nav className="fixed inset-x-3 bottom-[max(0.5rem,env(safe-area-inset-bottom))] z-30 overflow-hidden rounded-[1.6rem] border border-border/70 bg-card/82 shadow-[0_18px_55px_rgba(0,0,0,0.18)] backdrop-blur-2xl lg:hidden">
-        <div className="pointer-events-none absolute inset-x-5 top-0 h-px bg-gradient-to-r from-transparent via-primary/45 to-transparent" />
-        <div className="grid h-[66px] grid-cols-5 items-center gap-1 px-1.5 py-1">
-          <NavItem item={MOBILE_NAV[0]} active={activePathname === MOBILE_NAV[0].to} mobile />
-          <NavItem item={MOBILE_NAV[1]} active={activePathname === MOBILE_NAV[1].to} mobile />
-          <NavItem item={MOBILE_NAV[2]} active={activePathname === MOBILE_NAV[2].to} mobile />
-          <NavItem
-            item={{ to: "/metas", label: "Metas", icon: Target }}
-            active={activePathname === "/metas"}
-            mobile
-          />
-          <button
-            type="button"
-            onClick={() => {
-              if (!visualReview) setMoreOpen(true);
-            }}
-            className={cn(
-              "group flex h-[58px] flex-col items-center justify-center gap-0.5 rounded-2xl text-[10px] font-semibold transition-all duration-200 fin-interactive fin-pressable",
-              moreOpen || moreActive
-                ? "text-fin-brand-hover"
-                : "text-muted-foreground hover:text-foreground",
-            )}
-            aria-expanded={moreOpen}
-          >
-            <span
+      {!isConversationalHome && (
+        <nav className="fixed inset-x-3 bottom-[max(0.5rem,env(safe-area-inset-bottom))] z-30 overflow-hidden rounded-[1.6rem] border border-border/70 bg-card/82 shadow-[0_18px_55px_rgba(0,0,0,0.18)] backdrop-blur-2xl lg:hidden">
+          <div className="pointer-events-none absolute inset-x-5 top-0 h-px bg-gradient-to-r from-transparent via-primary/45 to-transparent" />
+          <div className="grid h-[66px] grid-cols-5 items-center gap-1 px-1.5 py-1">
+            <NavItem item={MOBILE_NAV[0]} active={activePathname === MOBILE_NAV[0].to} mobile />
+            <NavItem item={MOBILE_NAV[1]} active={activePathname === MOBILE_NAV[1].to} mobile />
+            <NavItem item={MOBILE_NAV[2]} active={activePathname === MOBILE_NAV[2].to} mobile />
+            <NavItem
+              item={{ to: "/metas", label: "Metas", icon: Target }}
+              active={activePathname === "/metas"}
+              mobile
+            />
+            <button
+              type="button"
+              onClick={() => {
+                if (!visualReview) setMoreOpen(true);
+              }}
               className={cn(
-                "grid size-9 place-items-center rounded-xl transition-all duration-200",
+                "group flex h-[58px] flex-col items-center justify-center gap-0.5 rounded-2xl text-[10px] font-semibold transition-all duration-200 fin-interactive fin-pressable",
                 moreOpen || moreActive
-                  ? "bg-primary text-primary-foreground shadow-md shadow-primary/20 -translate-y-0.5"
-                  : "group-hover:bg-muted",
+                  ? "text-fin-brand-hover"
+                  : "text-muted-foreground hover:text-foreground",
               )}
+              aria-expanded={moreOpen}
             >
-              <MoreHorizontal className="size-[18px]" />
-            </span>
-            <span>Mais</span>
-          </button>
-        </div>
-      </nav>
+              <span
+                className={cn(
+                  "grid size-9 place-items-center rounded-xl transition-all duration-200",
+                  moreOpen || moreActive
+                    ? "bg-primary text-primary-foreground shadow-md shadow-primary/20 -translate-y-0.5"
+                    : "group-hover:bg-muted",
+                )}
+              >
+                <MoreHorizontal className="size-[18px]" />
+              </span>
+              <span>Mais</span>
+            </button>
+          </div>
+        </nav>
+      )}
 
       {moreOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
