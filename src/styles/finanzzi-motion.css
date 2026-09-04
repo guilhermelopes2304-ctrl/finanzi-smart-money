@@ -1,0 +1,62 @@
+/* FINANZZI motion layer — premium, restrained, mobile-safe */
+:root {
+  --fz-orange: #ff5a1f;
+  --fz-bg: #111111;
+  --fz-surface: #181818;
+}
+
+@keyframes finanzzi-aurora-drift {
+  0%, 100% { transform: translate3d(-3%, -2%, 0) scale(1); opacity: .62; }
+  50% { transform: translate3d(4%, 3%, 0) scale(1.08); opacity: .9; }
+}
+
+@keyframes finanzzi-glow-pulse {
+  0%, 100% { opacity: .28; }
+  50% { opacity: .5; }
+}
+
+@keyframes finanzzi-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.finanzzi-motion-root { position: relative; isolation: isolate; }
+.finanzzi-motion-root::before,
+.finanzzi-motion-root::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: -1;
+  border-radius: 9999px;
+  filter: blur(70px);
+  will-change: transform, opacity;
+}
+.finanzzi-motion-root::before {
+  width: 52vw; height: 38vw; max-width: 520px; max-height: 380px;
+  left: 22%; top: 7%;
+  background: radial-gradient(circle, rgb(255 90 31 / .20), transparent 68%);
+  animation: finanzzi-aurora-drift 11s ease-in-out infinite;
+}
+.finanzzi-motion-root::after {
+  width: 34vw; height: 30vw; max-width: 360px; max-height: 320px;
+  right: -8%; bottom: 8%;
+  background: radial-gradient(circle, rgb(255 90 31 / .13), transparent 68%);
+  animation: finanzzi-glow-pulse 7s ease-in-out infinite;
+}
+
+.finanzzi-motion-card { animation: finanzzi-float 6s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .finanzzi-motion-root::before,
+  .finanzzi-motion-root::after,
+  .finanzzi-motion-card { animation: none !important; }
+}
+
+@supports (-webkit-touch-callout: none) {
+  .finanzzi-pwa-shell {
+    min-height: 100svh;
+    height: 100dvh;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
