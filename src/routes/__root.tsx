@@ -7,6 +7,7 @@ import appCss from "../styles.css?url";
 import darkGuardCss from "../finanzi-dark-guard.css?url";
 import homeChatCss from "../finanzzi-home-chat.css?url";
 import shellCss from "../finanzzi-app-shell.css?url";
+import motionCss from "../styles/finanzzi-motion.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { initObservability, captureTelemetry } from "../lib/observability";
 import { initNativeShell } from "../lib/native-shell";
@@ -42,6 +43,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     { rel: "stylesheet", href: darkGuardCss },
     { rel: "stylesheet", href: homeChatCss },
     { rel: "stylesheet", href: shellCss },
+    { rel: "stylesheet", href: motionCss },
     { rel: "icon", href: "/brand/logo/finanzzi-logo.svg?v=brand-orange-5", type: "image/svg+xml" },
     { rel: "apple-touch-icon", sizes: "180x180", href: "/brand/logo/finanzzi-logo.png?v=brand-orange-5" },
     { rel: "manifest", href: "/manifest.webmanifest?v=brand-orange-5" },
