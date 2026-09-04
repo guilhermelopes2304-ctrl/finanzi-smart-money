@@ -20,7 +20,40 @@
   overflow: hidden !important;
   overscroll-behavior: none !important;
   touch-action: none !important;
+  isolation: isolate !important;
   background: #111111 !important;
+}
+/* FINANZZI aurora: slow, soft motion behind the conversation, never behind text as a hard blob. */
+[data-home-chat] section.fixed.inset-0::before,
+[data-home-chat] section.fixed.inset-0::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: -22% -18% !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
+  background:
+    radial-gradient(ellipse 42% 30% at 50% 16%, rgba(255,90,31,.16), transparent 72%),
+    radial-gradient(ellipse 34% 28% at 15% 58%, rgba(255,90,31,.075), transparent 74%),
+    radial-gradient(ellipse 36% 28% at 88% 72%, rgba(255,90,31,.055), transparent 76%);
+  filter: blur(26px) saturate(112%);
+  opacity: .9;
+  transform: translate3d(0,0,0) scale(1);
+  animation: finanzzi-aurora-drift 15s ease-in-out infinite alternate;
+  will-change: transform;
+}
+[data-home-chat] section.fixed.inset-0::after {
+  background:
+    radial-gradient(ellipse 28% 24% at 68% 22%, rgba(255,90,31,.09), transparent 70%),
+    radial-gradient(ellipse 30% 26% at 32% 78%, rgba(255,90,31,.06), transparent 72%);
+  filter: blur(44px);
+  opacity: .72;
+  animation-duration: 21s;
+  animation-direction: alternate-reverse;
+}
+@keyframes finanzzi-aurora-drift {
+  0% { transform: translate3d(-2%, -1%, 0) scale(1); }
+  50% { transform: translate3d(2%, 1.5%, 0) scale(1.045); }
+  100% { transform: translate3d(-1%, 2.5%, 0) scale(1.02); }
 }
 html:has([data-home-chat]),
 body:has([data-home-chat]) {
@@ -120,11 +153,15 @@ body:has([data-home-chat]) {
   border-radius: 18px !important;
   padding: 13px 17px !important;
   font-size: clamp(.86rem, 2.8vw, 1rem) !important;
-  background: #151515 !important;
-  border: 1px solid #2d2d2d !important;
+  background: rgba(21,21,21,.62) !important;
+  border: 1px solid rgba(255,255,255,.09) !important;
   color: #b7b7b7 !important;
   box-shadow: none !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  transition: transform .25s ease, border-color .25s ease, background-color .25s ease !important;
 }
+[data-home-chat] section.fixed.inset-0 main > div:nth-child(2) button:hover { transform: translateY(-1px); border-color: rgba(255,90,31,.3) !important; background: rgba(255,90,31,.055) !important; }
 [data-home-chat] section.fixed.inset-0 main > div.overflow-y-auto {
   min-height: 0 !important;
   overscroll-behavior-y: contain !important;
@@ -146,18 +183,21 @@ body:has([data-home-chat]) {
   padding: 0 !important;
   z-index: 20 !important;
 }
-[data-home-chat] section.fixed.inset-0 > div.relative > div:last-child > div:first-child {
-  margin-bottom: 5px !important;
-}
+[data-home-chat] section.fixed.inset-0 > div.relative > div:last-child > div:first-child { margin-bottom: 5px !important; }
 [data-home-chat] section.fixed.inset-0 > div.relative > div:last-child > div:nth-child(2) {
   min-height: 72px !important;
   border-radius: 27px !important;
   padding: 8px !important;
-  border: 1px solid #2d2d2d !important;
-  background: rgba(24,24,24,.94) !important;
-  box-shadow: 0 10px 35px rgba(0,0,0,.28) !important;
-  backdrop-filter: blur(18px) !important;
-  -webkit-backdrop-filter: blur(18px) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  background: rgba(24,24,24,.78) !important;
+  box-shadow: 0 10px 35px rgba(0,0,0,.28), 0 0 0 1px rgba(255,90,31,.025) !important;
+  backdrop-filter: blur(22px) saturate(125%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(125%) !important;
+  transition: border-color .2s ease, box-shadow .2s ease !important;
+}
+[data-home-chat] section.fixed.inset-0 > div.relative > div:last-child > div:nth-child(2):focus-within {
+  border-color: rgba(255,90,31,.35) !important;
+  box-shadow: 0 12px 42px rgba(0,0,0,.34), 0 0 0 1px rgba(255,90,31,.08) !important;
 }
 [data-home-chat] section.fixed.inset-0 > div.relative > div:last-child textarea {
   min-height: 54px !important;
@@ -170,17 +210,17 @@ body:has([data-home-chat]) {
   border-radius: 50% !important;
   background: #ff5a1f !important;
   color: #111111 !important;
-  box-shadow: none !important;
+  box-shadow: 0 8px 22px rgba(255,90,31,.2) !important;
+  transition: transform .2s ease, filter .2s ease !important;
 }
+[data-home-chat] section.fixed.inset-0 > div.relative > div:last-child button[aria-label="Enviar"]:not(:disabled):hover { filter: brightness(1.06); transform: scale(1.03); }
+[data-home-chat] section.fixed.inset-0 > div.relative > div:last-child button[aria-label="Enviar"]:not(:disabled):active { transform: scale(.96); }
 @media (max-width: 640px) {
   [data-home-chat] section.fixed.inset-0 > div.relative { padding-inline: 14px !important; }
   [data-home-chat] section.fixed.inset-0 main { padding-top: clamp(6px, 1.8dvh, 16px) !important; padding-bottom: 92px !important; }
   [data-home-chat] section.fixed.inset-0 main h1 { font-size: clamp(2.15rem, 10vw, 3.15rem) !important; }
   [data-home-chat] section.fixed.inset-0 main > div:nth-child(2) button { min-height: 52px !important; }
-  [data-home-chat] section.fixed.inset-0 > div.relative > div:last-child {
-    width: calc(100% - 28px) !important;
-    bottom: max(4px, var(--home-bottom-safe)) !important;
-  }
+  [data-home-chat] section.fixed.inset-0 > div.relative > div:last-child { width: calc(100% - 28px) !important; bottom: max(4px, var(--home-bottom-safe)) !important; }
 }
 @media (max-height: 760px) {
   [data-home-chat] section.fixed.inset-0 > div.relative > header { height: 40px !important; min-height: 40px !important; flex-basis: 40px !important; }
@@ -190,9 +230,9 @@ body:has([data-home-chat]) {
   [data-home-chat] section.fixed.inset-0 main > div:nth-child(2) button { min-height: 48px !important; }
   [data-home-chat] section.fixed.inset-0 > div.relative > div:last-child > div:nth-child(2) { min-height: 66px !important; }
 }
-@media (min-width: 768px) {
-  [data-home-chat] section.fixed.inset-0 > div.relative { padding-inline: 32px !important; }
-}
+@media (min-width: 768px) { [data-home-chat] section.fixed.inset-0 > div.relative { padding-inline: 32px !important; } }
 @media (prefers-reduced-motion: reduce) {
+  [data-home-chat] section.fixed.inset-0::before,
+  [data-home-chat] section.fixed.inset-0::after { animation: none !important; }
   [data-home-chat] * { transition: none !important; animation: none !important; }
 }
