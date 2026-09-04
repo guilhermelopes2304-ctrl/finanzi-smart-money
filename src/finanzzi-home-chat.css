@@ -1,168 +1,183 @@
-/* FINANZZI conversational Home — proportional mobile composition. */
+/* FINANZZI Home — fixed viewport, conversational workspace, responsive and identity-safe. */
 [data-home-chat] {
-  --home-top: max(18px, env(safe-area-inset-top));
-  --home-bottom: max(18px, env(safe-area-inset-bottom));
+  --home-top-safe: env(safe-area-inset-top, 0px);
+  --home-bottom-safe: env(safe-area-inset-bottom, 0px);
   height: 100dvh !important;
   min-height: 100dvh !important;
+  max-height: 100dvh !important;
   overflow: hidden !important;
+  overscroll-behavior: none !important;
+  background: #111111 !important;
 }
-
-[data-home-chat] > section {
-  height: 100dvh !important;
-  min-height: 0 !important;
-  overflow: hidden !important;
-}
-
-/* Keep the whole Home frame fixed; only its conversation viewport may scroll. */
+[data-home-chat] > section,
 [data-home-chat] section.fixed.inset-0 {
   position: fixed !important;
   inset: 0 !important;
+  width: 100% !important;
   height: 100dvh !important;
+  min-height: 0 !important;
   max-height: 100dvh !important;
   overflow: hidden !important;
   overscroll-behavior: none !important;
   touch-action: none !important;
+  background: #111111 !important;
 }
-
+html:has([data-home-chat]),
+body:has([data-home-chat]) {
+  height: 100% !important;
+  max-height: 100% !important;
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+}
+body:has([data-home-chat]) {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important;
+  padding: 0 !important;
+}
 [data-home-chat] section.fixed.inset-0 > div.relative {
+  width: 100% !important;
   height: 100% !important;
   min-height: 0 !important;
   overflow: hidden !important;
-  padding-top: calc(var(--home-top) + 12px) !important;
-  padding-bottom: var(--home-bottom) !important;
+  padding-top: var(--home-top-safe) !important;
+  padding-bottom: var(--home-bottom-safe) !important;
 }
-
-/* Compact floating controls, aligned to the visual edges of the reference. */
 [data-home-chat] section.fixed.inset-0 > div.relative > header {
-  height: 46px !important;
-  flex: 0 0 46px !important;
-  margin-top: 0 !important;
-  padding-inline: 2px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  flex: 0 0 44px !important;
+  margin: 0 !important;
+  padding: 0 2px !important;
 }
-
 [data-home-chat] section.fixed.inset-0 > div.relative > header > button,
 [data-home-chat] section.fixed.inset-0 > div.relative > header > a[aria-label="Nova conversa"] {
-  width: 42px !important;
-  height: 42px !important;
+  width: 44px !important;
+  height: 44px !important;
 }
-
-/* Use the real FINANZZI mark rather than the decorative Sparkles glyph. */
+[data-home-chat] section.fixed.inset-0 > div.relative > header > a[aria-label="FINANZZI"] {
+  display: inline-flex !important;
+  width: auto !important;
+  height: 38px !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
 [data-home-chat] section.fixed.inset-0 > div.relative > header > a[aria-label="FINANZZI"] span:first-child {
-  width: 34px !important;
-  height: 34px !important;
-  background: transparent url('/brand/logo/finanzzi-logo.svg?v=brand-orange-5') center / contain no-repeat !important;
+  width: 32px !important;
+  height: 32px !important;
+  flex: 0 0 32px !important;
+  background: transparent url('/brand/logo/finanzzi-logo.svg?v=home-brand') center / contain no-repeat !important;
   border-radius: 0 !important;
   color: transparent !important;
 }
 [data-home-chat] section.fixed.inset-0 > div.relative > header > a[aria-label="FINANZZI"] span:first-child svg { display: none !important; }
-[data-home-chat] section.fixed.inset-0 > div.relative > header > a[aria-label="FINANZZI"] span:last-child { display: none !important; }
-
-/* The welcome composition is vertically balanced inside the available viewport. */
+[data-home-chat] section.fixed.inset-0 > div.relative > header > a[aria-label="FINANZZI"] span:last-child {
+  display: inline !important;
+  color: #ffffff !important;
+  font-family: "Sora", ui-sans-serif, system-ui, sans-serif !important;
+  font-size: 15px !important;
+  line-height: 1 !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.025em !important;
+}
 [data-home-chat] section.fixed.inset-0 main {
   width: min(100%, 760px) !important;
   max-width: 760px !important;
   min-height: 0 !important;
   flex: 1 1 auto !important;
   overflow: hidden !important;
-  padding-top: clamp(28px, 5.2dvh, 76px) !important;
-  padding-bottom: clamp(12px, 2.5dvh, 32px) !important;
+  padding-top: clamp(8px, 2.2dvh, 22px) !important;
+  padding-bottom: clamp(8px, 2dvh, 18px) !important;
 }
-
-[data-home-chat] section.fixed.inset-0 main > div:first-child {
-  margin-bottom: clamp(18px, 2.6dvh, 34px) !important;
-}
-
+[data-home-chat] section.fixed.inset-0 main > div:first-child { margin-bottom: clamp(14px, 2dvh, 24px) !important; }
 [data-home-chat] section.fixed.inset-0 main h1 {
-  max-width: 680px !important;
+  max-width: 700px !important;
   margin-inline: auto !important;
-  font-size: clamp(2.25rem, 9vw, 4.75rem) !important;
+  font-size: clamp(2.2rem, 9.5vw, 4.75rem) !important;
   line-height: .98 !important;
   letter-spacing: -.07em !important;
 }
-
 [data-home-chat] section.fixed.inset-0 main h1 + p {
-  font-size: clamp(.9rem, 2.8vw, 1.05rem) !important;
-  line-height: 1.55 !important;
+  margin-top: 12px !important;
+  font-size: clamp(.88rem, 2.8vw, 1.05rem) !important;
+  line-height: 1.5 !important;
 }
-
-/* Suggestions become the clean stacked interaction cards from the reference. */
 [data-home-chat] section.fixed.inset-0 main > div:nth-child(2) {
   width: min(100%, 650px) !important;
   max-width: 650px !important;
   margin-inline: auto !important;
   display: grid !important;
   grid-template-columns: 1fr !important;
-  gap: 10px !important;
+  gap: 9px !important;
   margin-bottom: 0 !important;
 }
 [data-home-chat] section.fixed.inset-0 main > div:nth-child(2) button {
   width: 100% !important;
-  min-height: 58px !important;
+  min-height: 54px !important;
   justify-content: flex-start !important;
   text-align: left !important;
-  border-radius: 20px !important;
-  padding: 15px 18px !important;
-  font-size: clamp(.88rem, 2.8vw, 1rem) !important;
-  background: rgba(255,255,255,.018) !important;
-  border-color: rgba(255,255,255,.09) !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.02) !important;
+  border-radius: 18px !important;
+  padding: 13px 17px !important;
+  font-size: clamp(.86rem, 2.8vw, 1rem) !important;
+  background: #151515 !important;
+  border: 1px solid #2d2d2d !important;
+  color: #b7b7b7 !important;
+  box-shadow: none !important;
 }
-
-/* Composer stays visually anchored to the bottom instead of shortening the canvas. */
-[data-home-chat] section.fixed.inset-0 > div.relative > div:last-child {
-  width: min(100%, 760px) !important;
-  max-width: 760px !important;
-  flex: 0 0 auto !important;
-  padding-bottom: 2px !important;
-}
-[data-home-chat] section.fixed.inset-0 > div.relative > div:last-child > div:nth-child(2) {
-  min-height: 78px !important;
-  border-radius: 30px !important;
-  padding: 9px !important;
-  border-color: rgba(255,255,255,.11) !important;
-  background: rgba(18,18,18,.88) !important;
-  box-shadow: 0 18px 55px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.025) !important;
-}
-[data-home-chat] section.fixed.inset-0 > div.relative > div:last-child textarea {
-  min-height: 56px !important;
-  font-size: clamp(.95rem, 3.5vw, 1.05rem) !important;
-  padding-top: 17px !important;
-  padding-bottom: 17px !important;
-}
-[data-home-chat] section.fixed.inset-0 > div.relative > div:last-child button[aria-label="Enviar"] {
-  width: 54px !important;
-  height: 54px !important;
-  border-radius: 50% !important;
-}
-
-/* Conversation state: keep the composer fixed while only the message column scrolls. */
 [data-home-chat] section.fixed.inset-0 main > div.overflow-y-auto {
+  min-height: 0 !important;
   overscroll-behavior-y: contain !important;
   -webkit-overflow-scrolling: touch !important;
   touch-action: pan-y !important;
   scrollbar-width: none !important;
 }
 [data-home-chat] section.fixed.inset-0 main > div.overflow-y-auto::-webkit-scrollbar { display: none !important; }
-
+[data-home-chat] section.fixed.inset-0 > div.relative > div:last-child {
+  width: min(100%, 760px) !important;
+  max-width: 760px !important;
+  flex: 0 0 auto !important;
+  margin-inline: auto !important;
+  padding-bottom: 2px !important;
+}
+[data-home-chat] section.fixed.inset-0 > div.relative > div:last-child > div:first-child { margin-bottom: 6px !important; }
+[data-home-chat] section.fixed.inset-0 > div.relative > div:last-child > div:nth-child(2) {
+  min-height: 72px !important;
+  border-radius: 27px !important;
+  padding: 8px !important;
+  border: 1px solid #2d2d2d !important;
+  background: #181818 !important;
+  box-shadow: none !important;
+}
+[data-home-chat] section.fixed.inset-0 > div.relative > div:last-child textarea {
+  min-height: 54px !important;
+  font-size: 16px !important;
+  padding: 15px 12px !important;
+}
+[data-home-chat] section.fixed.inset-0 > div.relative > div:last-child button[aria-label="Enviar"] {
+  width: 54px !important;
+  height: 54px !important;
+  border-radius: 50% !important;
+  background: #ff5a1f !important;
+  color: #111111 !important;
+  box-shadow: none !important;
+}
+@media (max-width: 640px) {
+  [data-home-chat] section.fixed.inset-0 > div.relative { padding-inline: 14px !important; }
+  [data-home-chat] section.fixed.inset-0 main { padding-top: clamp(6px, 1.8dvh, 16px) !important; padding-bottom: 6px !important; }
+  [data-home-chat] section.fixed.inset-0 main h1 { font-size: clamp(2.15rem, 10vw, 3.15rem) !important; }
+  [data-home-chat] section.fixed.inset-0 main > div:nth-child(2) button { min-height: 52px !important; }
+}
+@media (max-height: 760px) {
+  [data-home-chat] section.fixed.inset-0 > div.relative > header { height: 40px !important; min-height: 40px !important; flex-basis: 40px !important; }
+  [data-home-chat] section.fixed.inset-0 main { padding-top: 4px !important; padding-bottom: 4px !important; }
+  [data-home-chat] section.fixed.inset-0 main > div:first-child { margin-bottom: 10px !important; }
+  [data-home-chat] section.fixed.inset-0 main h1 { font-size: clamp(2rem, 8.6vw, 3rem) !important; }
+  [data-home-chat] section.fixed.inset-0 main > div:nth-child(2) button { min-height: 48px !important; }
+  [data-home-chat] section.fixed.inset-0 > div.relative > div:last-child > div:nth-child(2) { min-height: 66px !important; }
+}
 @media (min-width: 768px) {
   [data-home-chat] section.fixed.inset-0 > div.relative { padding-inline: 32px !important; }
-  [data-home-chat] section.fixed.inset-0 main { padding-top: 42px !important; }
 }
-
-@media (max-width: 480px) {
-  [data-home-chat] section.fixed.inset-0 > div.relative { padding-inline: 16px !important; }
-  [data-home-chat] section.fixed.inset-0 main { padding-top: clamp(26px, 4dvh, 42px) !important; }
-  [data-home-chat] section.fixed.inset-0 main h1 { font-size: clamp(2.25rem, 10.4vw, 3.15rem) !important; }
-  [data-home-chat] section.fixed.inset-0 main > div:nth-child(2) button { min-height: 54px !important; }
-}
-
-@media (max-height: 760px) {
-  [data-home-chat] section.fixed.inset-0 main { padding-top: 18px !important; padding-bottom: 8px !important; }
-  [data-home-chat] section.fixed.inset-0 main h1 { font-size: clamp(2rem, 8.5vw, 3rem) !important; }
-  [data-home-chat] section.fixed.inset-0 main > div:nth-child(2) button { min-height: 48px !important; }
-  [data-home-chat] section.fixed.inset-0 > div.relative > div:last-child > div:nth-child(2) { min-height: 70px !important; }
-}
-
 @media (prefers-reduced-motion: reduce) {
   [data-home-chat] * { transition: none !important; animation: none !important; }
 }
