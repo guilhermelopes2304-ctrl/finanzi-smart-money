@@ -1,0 +1,32 @@
+/* Home chat polish: compact top chrome + official FINANZZI mark */
+.fin-product-home [data-home-chat] > div.relative {
+  padding-top: max(6px, env(safe-area-inset-top)) !important;
+}
+
+.fin-product-home [data-home-chat] > div.relative > header {
+  height: 38px !important;
+}
+
+.fin-product-home [data-home-chat] > div.relative > header > a[aria-label="FINANZZI"] {
+  width: 112px !important;
+  height: 34px !important;
+  display: block !important;
+  background: url('/brand/logo/finanzzi-logo.svg?v=home-brand') center / contain no-repeat !important;
+  font-size: 0 !important;
+}
+
+.fin-product-home [data-home-chat] > div.relative > header > a[aria-label="FINANZZI"] > * {
+  display: none !important;
+}
+
+@media (max-width: 640px) {
+  .fin-product-home [data-home-chat] > div.relative {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+
+  .fin-product-home [data-home-chat] > div.relative > header > a[aria-label="FINANZZI"] {
+    width: 96px !important;
+    height: 30px !important;
+  }
+}
