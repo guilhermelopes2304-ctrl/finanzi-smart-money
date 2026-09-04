@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { ArrowDownRight, ArrowUpRight, Bot, ChevronLeft, ChevronRight, CircleHelp, Loader2, Send, Sparkles, TrendingUp, WalletCards } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, Bot, ChevronLeft, ChevronRight, CircleHelp, CreditCard, History, Loader2, Menu, Plus, Send, Settings, Sparkles, Target, WalletCards } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { useAccounts, useBills, useCategories, useCreditCards, useGoals, useInvalidateFinance } from "@/hooks/useFinanceData";
 import { formatBRL, formatDateBR, monthRange } from "@/lib/format";
@@ -7,18 +8,26 @@ import { buildPeriod, expensesByCategory, spendCapacity, totalsFor } from "@/lib
 import { buildTransactionInput, interpretFinanceMessage } from "@/lib/channel-engine";
 import { saveTransaction } from "@/lib/transactions";
 import type { Profile, Transaction } from "@/types/finance";
+import { cn } from "@/lib/utils";
 
-type HomeChatProps = { profile?: Profile | null; transactions: Transaction[] };
+type HomeChatProps = { profile?: Profile | null; transactions: Transaction[]; isLoading?: boolean };
 type Message = { id: string; role: "user" | "fin"; text: string };
 
-const shortcuts = [
-  { label: "Quanto gastei este mês?", icon: TrendingUp },
-  { label: "Quanto tenho disponível?", icon: WalletCards },
-  { label: "Onde estou gastando mais?", icon: Sparkles },
-  { label: "Preciso de ajuda", icon: CircleHelp },
+const suggestions = [
+  "Gastei R$ 45 no almoço",
+  "Recebi R$ 2.000 de salário",
+  "Quanto gastei este mês?",
 ];
 
-export function HomeChat({ profile, transactions }: HomeChatProps) {
+const nav = [
+  { to: "/lancamentos", label: "Histórico", icon: History },
+  { to: "/contas", label: "Contas", icon: WalletCards },
+  { to: "/cartoes", label: "Cartões", icon: CreditCard },
+  { to: "/metas", label: "Metas", icon: Target },
+  { to: "/configuracoes", label: "Configurações", icon: Settings },
+];
+
+export function HomeChat({ profile, transactions, isLoading = false }: HomeChatProps) {
   const { user } = useAuth();
   const { data: accounts = [] } = useAccounts();
   const { data: bills = [] } = useBills();
@@ -26,13 +35,13 @@ export function HomeChat({ profile, transactions }: HomeChatProps) {
   const { data: cards = [] } = useCreditCards();
   const { data: goals = [] } = useGoals();
   const invalidate = useInvalidateFinance();
-  const [showShortcuts, setShowShortcuts] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
 
   const firstName = profile?.name?.split(" ")[0] || "você";
-  const recent = useMemo(() => [...transactions].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).slice(-4), [transactions]);
+  const recent = useMemo(() => [...transactions].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 4), [transactions]);
 
   function push(role: Message["role"], text: string) {
     setMessages((current) => [...current, { id: crypto.randomUUID(), role, text }]);
@@ -49,7 +58,7 @@ export function HomeChat({ profile, transactions }: HomeChatProps) {
     if (interpretation.intent === "record_transaction" && user && draft.amount > 0 && draft.confidence !== "low") {
       const transaction = buildTransactionInput(interpretation, { fallbackAccountId: accounts[0]?.id ?? null, notes: "Registrado pela Home" });
       if (!transaction) {
-        push("fin", "Consegui entender o valor, mas preciso de mais detalhes para registrar.");
+        push("fin", "Entendi o valor, mas preciso de mais detalhes para registrar.");
         return;
       }
       setBusy(true);
@@ -88,33 +97,55 @@ export function HomeChat({ profile, transactions }: HomeChatProps) {
       return;
     }
 
-    push("fin", "Entendi. Para registrar, tente algo como “gastei 45 no almoço” ou “recebi 2.000 de salário”.");
+    push("fin", "Posso registrar entradas e saídas ou responder sobre seus gastos. Tente: “gastei 45 no almoço”.");
   }
 
   return (
-    <section className="relative min-h-[calc(100dvh-7rem)] overflow-hidden rounded-[30px] border border-white/[0.07] bg-background shadow-[0_30px_100px_rgba(0,0,0,0.25)]">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,hsl(var(--primary)/0.13),transparent_42%)]" />
-      <div className="relative flex min-h-[calc(100dvh-7rem)] flex-col px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-5 sm:px-8 sm:pt-8">
-        <header className="flex items-center justify-between">
-          <div className="flex min-w-0 items-center gap-3"><div className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary"><Sparkles className="size-4" /></div><div className="min-w-0"><p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">FINANZZI</p><p className="truncate text-xs text-muted-foreground">Seu dinheiro, em conversa.</p></div></div>
-          <button type="button" onClick={() => setShowShortcuts((v) => !v)} aria-label={showShortcuts ? "Ocultar atalhos" : "Mostrar atalhos"} aria-expanded={showShortcuts} className="grid size-10 place-items-center rounded-full border border-white/[0.08] bg-card/70 text-muted-foreground backdrop-blur-xl transition hover:border-primary/30 hover:text-foreground active:scale-95">{showShortcuts ? <ChevronRight className="size-4" /> : <ChevronLeft className="size-4" />}</button>
+    <section className="fixed inset-0 z-40 flex min-h-[100dvh] w-full overflow-hidden bg-background text-foreground lg:static lg:z-auto lg:min-h-[calc(100dvh-5rem)] lg:rounded-none">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,hsl(var(--primary)/0.10),transparent_34%)]" />
+      <div className="relative flex min-h-[100dvh] w-full flex-col px-4 pb-[max(18px,env(safe-area-inset-bottom))] pt-[max(14px,env(safe-area-inset-top))] sm:px-8 lg:min-h-[calc(100dvh-5rem)] lg:pt-6">
+        <header className="flex h-11 shrink-0 items-center justify-between">
+          <button type="button" onClick={() => setSidebarOpen(true)} aria-label="Abrir menu" className="grid size-10 place-items-center rounded-full text-muted-foreground transition hover:bg-card hover:text-foreground active:scale-95"><Menu className="size-5" /></button>
+          <Link to="/dashboard" className="flex items-center gap-2" aria-label="FINANZZI"><span className="grid size-8 place-items-center rounded-xl bg-primary/10 text-primary"><Sparkles className="size-4" /></span><span className="text-sm font-bold tracking-[-0.02em]">FINANZZI</span></Link>
+          <Link to="/dashboard" aria-label="Nova conversa" className="grid size-10 place-items-center rounded-full text-muted-foreground transition hover:bg-card hover:text-foreground active:scale-95"><Plus className="size-5" /></Link>
         </header>
 
-        <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center py-8 sm:py-12">
-          <div className="mb-7 text-center sm:mb-9"><p className="text-xs font-bold uppercase tracking-[0.2em] text-primary/80">Olá, {firstName}</p><h1 className="mt-3 text-[2rem] font-semibold leading-[1.04] tracking-[-0.06em] sm:text-4xl">O que aconteceu com seu dinheiro?</h1><p className="mx-auto mt-4 max-w-md text-sm leading-6 text-muted-foreground">Escreva como você fala. Eu registro e organizo para você.</p></div>
+        <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center py-6 sm:py-10">
+          <div className={cn("text-center transition-all duration-300", messages.length ? "mb-8" : "mb-6") }>
+            {messages.length === 0 ? <>
+              <p className="text-xs font-semibold tracking-[0.16em] text-primary">OLÁ, {firstName.toUpperCase()}</p>
+              <h1 className="mt-4 text-[2.15rem] font-semibold leading-[1.02] tracking-[-0.065em] sm:text-5xl">O que aconteceu<br className="sm:hidden" /> com seu dinheiro?</h1>
+              <p className="mx-auto mt-4 max-w-md text-sm leading-6 text-muted-foreground">Fale do seu jeito. Eu registro, organizo e te ajudo a entender.</p>
+            </> : <p className="text-xs font-medium text-muted-foreground">Conversa com o FINANZZI</p>}
+          </div>
+
+          {messages.length === 0 && !isLoading && recent.length > 0 && (
+            <div className="mx-auto mb-5 flex max-w-xl flex-wrap justify-center gap-2">
+              {suggestions.map((item) => <button key={item} type="button" disabled={busy} onClick={() => void handleSend(item)} className="rounded-full border border-white/[0.09] bg-card/50 px-3.5 py-2 text-xs text-muted-foreground backdrop-blur-sm transition hover:border-primary/30 hover:bg-primary/[0.06] hover:text-foreground active:scale-[0.98]">{item}</button>)}
+            </div>
+          )}
 
           <div className="space-y-3" aria-live="polite">
-            {messages.map((message) => <div key={message.id} className={message.role === "user" ? "ml-auto max-w-[86%] rounded-[22px] rounded-tr-md bg-primary px-4 py-3 text-sm text-primary-foreground whitespace-pre-line" : "mr-auto max-w-[88%] rounded-[22px] border border-white/[0.07] bg-card/60 px-4 py-3 text-sm whitespace-pre-line shadow-sm"}><p className="mb-1 text-[10px] font-bold uppercase tracking-[0.16em] opacity-60">{message.role === "user" ? "Você" : "FINANZZI"}</p>{message.text}</div>)}
-            {messages.length === 0 && recent.length > 0 && <div className="space-y-2"><p className="px-1 text-[11px] font-medium text-muted-foreground">Últimos movimentos</p>{recent.map((tx) => { const income = tx.type === "income"; return <div key={tx.id} className="flex items-center justify-between rounded-2xl border border-white/[0.06] bg-card/35 px-4 py-3"><div className="min-w-0"><p className="truncate text-sm">{tx.description || "Lançamento"}</p><p className="text-[11px] text-muted-foreground">{formatDateBR(tx.date)}</p></div><span className="ml-3 flex shrink-0 items-center gap-1 text-sm font-bold">{income ? <ArrowUpRight className="size-3.5 text-primary" /> : <ArrowDownRight className="size-3.5 text-muted-foreground" />}{income ? "+" : "-"}{formatBRL(Number(tx.amount))}</span></div>; })}</div>}
+            {messages.map((message) => <div key={message.id} className={message.role === "user" ? "ml-auto max-w-[88%] rounded-[22px] rounded-tr-md bg-primary px-4 py-3 text-sm text-primary-foreground whitespace-pre-line" : "mr-auto max-w-[92%] rounded-[22px] border border-white/[0.07] bg-card/65 px-4 py-3 text-sm whitespace-pre-line shadow-sm"}><p className="mb-1 text-[10px] font-bold uppercase tracking-[0.16em] opacity-60">{message.role === "user" ? "Você" : "FINANZZI"}</p>{message.text}</div>)}
           </div>
         </main>
 
-        <div className="mx-auto w-full max-w-3xl"><div className="mb-2 flex items-center gap-2 px-1 text-xs text-muted-foreground"><Bot className="size-3.5 text-primary" /><span>{busy ? "Organizando seu lançamento..." : "Digite uma entrada ou saída"}</span></div><div className="flex items-end gap-2 rounded-[26px] border border-white/[0.09] bg-card/90 p-2 shadow-2xl shadow-black/20 backdrop-blur-xl"><textarea value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); void handleSend(); } }} placeholder="Ex.: gastei 45 no almoço" rows={1} disabled={busy} className="max-h-28 min-h-11 flex-1 resize-none bg-transparent px-3 py-3 text-sm outline-none placeholder:text-muted-foreground" aria-label="Mensagem financeira"/><button type="button" onClick={() => void handleSend()} disabled={!input.trim() || busy} className="grid size-11 shrink-0 place-items-center rounded-2xl bg-primary text-primary-foreground disabled:opacity-40" aria-label="Enviar">{busy ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}</button></div></div>
+        <div className="mx-auto w-full max-w-3xl shrink-0">
+          <div className="mb-2 flex items-center justify-between px-1 text-[11px] text-muted-foreground"><span className="flex items-center gap-1.5"><Bot className="size-3.5 text-primary" /> {busy ? "Organizando..." : "Registre como você fala"}</span>{messages.length > 0 && <button type="button" onClick={() => setMessages([])} className="text-muted-foreground hover:text-foreground">Nova conversa</button>}</div>
+          <div className="flex items-end gap-2 rounded-[27px] border border-white/[0.10] bg-card/90 p-2 shadow-[0_16px_50px_rgba(0,0,0,0.28)] backdrop-blur-xl focus-within:border-primary/30">
+            <textarea value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); void handleSend(); } }} placeholder="Digite o que aconteceu..." rows={1} disabled={busy} className="max-h-28 min-h-11 flex-1 resize-none bg-transparent px-3 py-3 text-sm outline-none placeholder:text-muted-foreground" aria-label="Mensagem financeira" />
+            <button type="button" onClick={() => void handleSend()} disabled={!input.trim() || busy} className="grid size-11 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/20 transition active:scale-95 disabled:opacity-35" aria-label="Enviar">{busy ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}</button>
+          </div>
+          <p className="mt-2 text-center text-[10px] text-muted-foreground/60">O FINANZZI pode organizar seus lançamentos a partir do que você escrever.</p>
+        </div>
       </div>
 
-      <aside className={`absolute right-0 top-1/2 z-20 w-[min(84vw,290px)] -translate-y-1/2 rounded-l-[24px] border border-r-0 border-white/[0.08] bg-card/95 p-3 shadow-[0_20px_70px_rgba(0,0,0,0.35)] backdrop-blur-2xl transition-all duration-300 ${showShortcuts ? "translate-x-0 opacity-100" : "pointer-events-none translate-x-full opacity-0"}`} aria-hidden={!showShortcuts}>
-        <div className="px-2 pb-2 pt-1"><p className="text-xs font-semibold">Atalhos</p><p className="mt-1 text-[11px] leading-4 text-muted-foreground">Perguntas rápidas para explorar seu dinheiro.</p></div>
-        <div className="space-y-1">{shortcuts.map(({ label, icon: Icon }) => <button key={label} type="button" disabled={busy} onClick={() => { setShowShortcuts(false); void handleSend(label); }} className="flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left text-xs text-muted-foreground transition hover:bg-primary/[0.08] hover:text-foreground active:scale-[0.99] disabled:opacity-50"><span className="grid size-8 shrink-0 place-items-center rounded-xl bg-background text-primary"><Icon className="size-4" /></span><span>{label}</span></button>)}</div>
+      {sidebarOpen && <button type="button" aria-label="Fechar menu" className="fixed inset-0 z-[60] bg-black/45 backdrop-blur-[2px]" onClick={() => setSidebarOpen(false)} />}
+      <aside className={cn("fixed inset-y-0 left-0 z-[70] flex w-[min(86vw,320px)] flex-col border-r border-white/[0.08] bg-card/95 p-4 shadow-[20px_0_70px_rgba(0,0,0,0.35)] backdrop-blur-2xl transition-transform duration-300", sidebarOpen ? "translate-x-0" : "-translate-x-full")}>
+        <div className="flex items-center justify-between px-2 py-1"><div><p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">FINANZZI</p><p className="mt-1 text-[11px] text-muted-foreground">Tudo do seu dinheiro, sem poluição.</p></div><button type="button" onClick={() => setSidebarOpen(false)} aria-label="Fechar menu" className="grid size-10 place-items-center rounded-full hover:bg-background"><ChevronLeft className="size-5" /></button></div>
+        <button type="button" onClick={() => { setMessages([]); setInput(""); setSidebarOpen(false); }} className="mt-7 flex items-center gap-3 rounded-2xl border border-white/[0.08] bg-background px-4 py-3 text-left text-sm font-semibold transition hover:border-primary/30"><span className="grid size-8 place-items-center rounded-xl bg-primary text-primary-foreground"><Plus className="size-4" /></span>Nova conversa</button>
+        <nav className="mt-6 space-y-1">{nav.map(({ to, label, icon: Icon }) => <Link key={to} to={to} onClick={() => setSidebarOpen(false)} className="flex items-center gap-3 rounded-2xl px-3 py-3.5 text-sm text-muted-foreground transition hover:bg-background hover:text-foreground"><span className="grid size-9 place-items-center rounded-xl bg-background text-primary"><Icon className="size-4" /></span>{label}<ChevronRight className="ml-auto size-4 opacity-40" /></Link>)}</nav>
+        <div className="mt-auto rounded-2xl border border-primary/10 bg-primary/[0.05] p-4"><p className="flex items-center gap-2 text-xs font-semibold"><Sparkles className="size-3.5 text-primary" /> Atalhos inteligentes</p><div className="mt-3 space-y-1.5">{suggestions.map((item) => <button key={item} type="button" disabled={busy} onClick={() => { setSidebarOpen(false); void handleSend(item); }} className="w-full rounded-xl px-2 py-2 text-left text-[11px] text-muted-foreground hover:bg-primary/[0.08] hover:text-foreground">{item}</button>)}</div></div>
       </aside>
     </section>
   );
