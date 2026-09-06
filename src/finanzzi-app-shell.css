@@ -50,7 +50,6 @@ textarea {
   color: hsl(var(--foreground));
 }
 
-/* The shell owns the viewport. Inner pages own vertical scrolling. */
 @media (max-width: 1023px) {
   [data-fin-app-shell] > div > main {
     height: auto;
@@ -65,19 +64,16 @@ textarea {
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Home keeps the chat viewport locked; only its conversation area scrolls. */
   [data-fin-app-shell] > div > main:has(textarea[aria-label="Mensagem financeira"]) {
     overflow: hidden;
   }
 
-  /* Drawer/backdrop must remain above every page and respect the Dynamic Island/home indicator. */
   [data-fin-app-shell] [role="dialog"][aria-label="Menu FINANZZI"] {
     padding-top: 0;
     padding-bottom: 0;
   }
 }
 
-/* Desktop keeps the sidebar fixed and the content column independently scrollable. */
 @media (min-width: 1024px) {
   [data-fin-app-shell] > div > main {
     overflow-y: auto;
@@ -86,13 +82,48 @@ textarea {
   }
 }
 
-/* Anchor targets never disappear underneath persistent navigation. */
+/* Internal-page anchors stay clear of the shared mobile chrome. */
+[data-fin-app-shell] .fin-page-header {
+  scroll-margin-top: 5rem;
+}
+
+/* Settings: show one clean access-status badge instead of duplicating billing state. */
+.fin-settings > section:first-of-type > .relative.flex > .flex.flex-wrap.items-center > span:nth-of-type(2) {
+  display: none;
+}
+
+/* Settings categories: badges form a stable responsive grid and keep the delete action inside each cell. */
+.fin-settings > .surface-card.mt-5 > .mt-4 {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.fin-settings > .surface-card.mt-5 > .mt-4 > span {
+  min-width: 0;
+  width: 100%;
+  justify-content: space-between;
+  white-space: normal;
+}
+
+@media (min-width: 420px) {
+  .fin-settings > .surface-card.mt-5 > .mt-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .fin-settings > .surface-card.mt-5 > .mt-4 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Landing: anchors and final sections remain reachable beneath the navbar. */
 body:not(:has([data-fin-app-shell])) main section,
 body:not(:has([data-fin-app-shell])) [id] {
   scroll-margin-top: 5rem;
 }
 
-/* Landing sections have enough breathing room at the end of the mobile viewport. */
 @media (max-width: 767px) {
   body:not(:has([data-fin-app-shell])) main > section:last-child,
   body:not(:has([data-fin-app-shell])) main > section[data-section="faq"],
