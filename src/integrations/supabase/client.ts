@@ -7,7 +7,7 @@ function isNewSupabaseApiKey(value: string): boolean {
 }
 
 function createSupabaseFetch(supabaseKey: string): typeof fetch {
-  return (input, init) => {
+  return async (input, init) => {
     const headers = new Headers(
       typeof Request !== 'undefined' && input instanceof Request ? input.headers : undefined,
     );
@@ -22,10 +22,22 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
     }
 
     headers.set('apikey', supabaseKey);
-    return fetch(input, { ...init, headers });
+
+    // Evita que login/refresh fique preso em loading indefinidamente.
+    const controller = new AbortController();
+    const timeout = typeof window !== 'undefined' ? window.setTimeout(() => controller.abort(), 15000) : undefined;
+    const callerSignal = init?.signal;
+    const abortFromCaller = () => controller.abort();
+    callerSignal?.addEventListener('abort', abortFromCaller, { once: true });
+
+    try {
+      return await fetch(input, { ...init, headers, signal: controller.signal });
+    } finally {
+      if (timeout !== undefined && typeof window !== 'undefined') window.clearTimeout(timeout);
+      callerSignal?.removeEventListener('abort', abortFromCaller);
+    }
   };
 }
-
 
 function createSupabaseClient() {
   // Use import.meta.env for client-side (Vite build-time replacement)
@@ -65,4 +77,3 @@ export const supabase = new Proxy({} as ReturnType<typeof createSupabaseClient>,
     return Reflect.get(_supabase, prop, receiver);
   },
 });
-
