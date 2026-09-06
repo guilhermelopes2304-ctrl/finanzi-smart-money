@@ -138,11 +138,8 @@ export function AppShellV2({ children, visualReview = false }: { children: React
 
       <div className={cn("flex min-h-0 min-w-0 flex-1 flex-col", desktopSidebarWidth)}>
         <header
-          className={cn(
-            "relative z-20 flex shrink-0 items-center border-b border-border/60 bg-background/90 px-4 backdrop-blur-xl lg:hidden",
-            isHome ? "h-14" : "min-h-[56px] py-2.5",
-          )}
-          style={{ paddingTop: isHome ? "max(0.5rem, env(safe-area-inset-top))" : "max(0.625rem, env(safe-area-inset-top))" }}
+          className="relative z-20 flex h-14 shrink-0 items-center border-b border-border/60 bg-background/90 px-4 backdrop-blur-xl lg:hidden"
+          style={{ paddingTop: "max(0.5rem, env(safe-area-inset-top))" }}
         >
           <div className="grid w-full grid-cols-[44px_1fr_44px] items-center gap-2">
             <button type="button" onClick={() => setDrawerOpen(true)} aria-label="Abrir menu" className="grid size-11 place-items-center rounded-full border border-border/70 bg-card/80 text-foreground shadow-sm backdrop-blur-xl active:scale-95">
@@ -159,12 +156,12 @@ export function AppShellV2({ children, visualReview = false }: { children: React
 
         <main
           className={cn(
-            "min-h-0 min-w-0 flex-1 px-3 pt-3 sm:px-5 sm:pt-4 lg:px-8 lg:pt-7",
-            isHome ? "overflow-hidden px-0 pt-0 sm:px-0 sm:pt-0 lg:px-0 lg:pt-0" : "overflow-y-auto overscroll-contain",
+            "min-h-0 min-w-0 flex-1 overscroll-y-contain px-3 pt-3 sm:px-5 sm:pt-4 lg:px-8 lg:pt-7",
+            isHome ? "overflow-hidden px-0 pt-0 sm:px-0 sm:pt-0 lg:px-0 lg:pt-0" : "overflow-y-auto",
           )}
           style={{ paddingBottom: isHome ? 0 : "max(1rem, env(safe-area-inset-bottom))", WebkitOverflowScrolling: "touch" }}
         >
-          <MotionPage className={cn("h-full min-h-0 mx-auto max-w-7xl", isHome && "max-w-none")}>
+          <MotionPage className={cn("min-h-full mx-auto max-w-7xl", isHome && "h-full max-w-none")}>
             {children}
           </MotionPage>
         </main>
