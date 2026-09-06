@@ -7,17 +7,19 @@
 html,
 body {
   background: #111111;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 html {
   min-height: 100%;
-  overscroll-behavior: none;
+  overscroll-behavior-x: none;
 }
 
 body {
   min-height: 100%;
   margin: 0;
-  overscroll-behavior: none;
+  overscroll-behavior-x: none;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -41,39 +43,61 @@ textarea {
 
 [data-fin-app-shell] main {
   min-height: 0;
+  overflow-x: hidden;
 }
 
-/* Every non-home screen gets the same FINANZZI canvas instead of a white/legacy shell. */
 [data-fin-app-shell] main > div {
   color: hsl(var(--foreground));
 }
 
-/* Fixed mobile chrome must live inside the visual viewport and respect the home indicator. */
+/* The shell owns the viewport. Inner pages own vertical scrolling. */
 @media (max-width: 1023px) {
-  [data-fin-app-shell] > header {
-    flex: 0 0 auto;
-    padding-top: max(0.625rem, var(--fin-safe-top));
+  [data-fin-app-shell] > div > main {
+    height: auto;
+    max-height: none;
+    min-height: 0;
+    overflow-x: hidden;
   }
 
-  [data-fin-app-shell] > main {
-    height: calc(100dvh - var(--fin-safe-top));
-    max-height: calc(100dvh - var(--fin-safe-top));
+  [data-fin-app-shell] > div > main:not(:has(textarea[aria-label="Mensagem financeira"])) {
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Home keeps the chat viewport locked; only its conversation area scrolls. */
+  [data-fin-app-shell] > div > main:has(textarea[aria-label="Mensagem financeira"]) {
     overflow: hidden;
-    overscroll-behavior: none;
   }
 
-  [data-fin-app-shell] > nav {
-    bottom: max(0.5rem, var(--fin-safe-bottom));
+  /* Drawer/backdrop must remain above every page and respect the Dynamic Island/home indicator. */
+  [data-fin-app-shell] [role="dialog"][aria-label="Menu FINANZZI"] {
+    padding-top: 0;
+    padding-bottom: 0;
   }
+}
 
-  /* Drawer/backdrop sits below the Dynamic Island safe area. */
-  [data-fin-app-shell] > div.fixed.z-40 {
-    padding-top: var(--fin-safe-top);
+/* Desktop keeps the sidebar fixed and the content column independently scrollable. */
+@media (min-width: 1024px) {
+  [data-fin-app-shell] > div > main {
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
   }
+}
 
-  [data-fin-app-shell] > div.fixed.z-40 > section {
-    max-height: calc(100dvh - var(--fin-safe-top) - 0.5rem);
-    padding-bottom: max(1.25rem, calc(1rem + var(--fin-safe-bottom)));
+/* Anchor targets never disappear underneath persistent navigation. */
+body:not(:has([data-fin-app-shell])) main section,
+body:not(:has([data-fin-app-shell])) [id] {
+  scroll-margin-top: 5rem;
+}
+
+/* Landing sections have enough breathing room at the end of the mobile viewport. */
+@media (max-width: 767px) {
+  body:not(:has([data-fin-app-shell])) main > section:last-child,
+  body:not(:has([data-fin-app-shell])) main > section[data-section="faq"],
+  body:not(:has([data-fin-app-shell])) main > section[data-section="pricing"] {
+    padding-bottom: 3rem;
   }
 }
 
@@ -84,6 +108,8 @@ textarea {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html,
+  body,
   [data-fin-app-shell] *,
   [data-fin-app-shell] *::before,
   [data-fin-app-shell] *::after {
