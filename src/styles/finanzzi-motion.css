@@ -6,13 +6,13 @@
 }
 
 @keyframes finanzzi-aurora-drift {
-  0%, 100% { transform: translate3d(-3%, -2%, 0) scale(1); opacity: .62; }
+  0%, 100% { transform: translate3d(-3%, -2%, 0) scale(1); opacity: .58; }
   50% { transform: translate3d(4%, 3%, 0) scale(1.08); opacity: .9; }
 }
 
 @keyframes finanzzi-glow-pulse {
-  0%, 100% { opacity: .28; }
-  50% { opacity: .5; }
+  0%, 100% { opacity: .22; transform: scale(.98); }
+  50% { opacity: .48; transform: scale(1.04); }
 }
 
 @keyframes finanzzi-float {
@@ -20,6 +20,94 @@
   50% { transform: translateY(-3px); }
 }
 
+@keyframes finanzzi-message-in {
+  from { opacity: 0; transform: translate3d(0, 10px, 0) scale(.985); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes finanzzi-composer-glow {
+  0%, 100% { box-shadow: 0 16px 50px rgb(0 0 0 / .28), 0 0 0 rgb(255 90 31 / 0); }
+  50% { box-shadow: 0 18px 54px rgb(0 0 0 / .32), 0 0 30px rgb(255 90 31 / .08); }
+}
+
+/* The Home is the visual motion surface. No markup changes are required. */
+section:has(textarea[aria-label="Mensagem financeira"]) {
+  position: relative;
+  isolation: isolate;
+}
+
+section:has(textarea[aria-label="Mensagem financeira"])::before,
+section:has(textarea[aria-label="Mensagem financeira"])::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 9999px;
+  filter: blur(72px);
+  will-change: transform, opacity;
+}
+
+section:has(textarea[aria-label="Mensagem financeira"])::before {
+  width: 62vw;
+  height: 42vw;
+  max-width: 640px;
+  max-height: 420px;
+  left: 18%;
+  top: 5%;
+  background: radial-gradient(circle, rgb(255 90 31 / .18), transparent 68%);
+  animation: finanzzi-aurora-drift 12s ease-in-out infinite;
+}
+
+section:has(textarea[aria-label="Mensagem financeira"])::after {
+  width: 42vw;
+  height: 36vw;
+  max-width: 420px;
+  max-height: 360px;
+  right: -10%;
+  bottom: 6%;
+  background: radial-gradient(circle, rgb(255 90 31 / .12), transparent 70%);
+  animation: finanzzi-glow-pulse 8s ease-in-out infinite;
+}
+
+section:has(textarea[aria-label="Mensagem financeira"]) > div:first-child {
+  position: relative;
+  z-index: 1;
+}
+
+/* Conversation cards enter without moving the viewport. */
+section:has(textarea[aria-label="Mensagem financeira"]) .space-y-3 > div {
+  animation: finanzzi-message-in .32s cubic-bezier(.2,.75,.25,1) both;
+}
+
+section:has(textarea[aria-label="Mensagem financeira"]) .space-y-3 > div:nth-child(2) { animation-delay: 35ms; }
+section:has(textarea[aria-label="Mensagem financeira"]) .space-y-3 > div:nth-child(3) { animation-delay: 70ms; }
+section:has(textarea[aria-label="Mensagem financeira"]) .space-y-3 > div:nth-child(4) { animation-delay: 105ms; }
+
+/* Suggestion chips get a restrained floating feel. */
+section:has(textarea[aria-label="Mensagem financeira"]) button.rounded-full {
+  animation: finanzzi-float 7s ease-in-out infinite;
+}
+section:has(textarea[aria-label="Mensagem financeira"]) button.rounded-full:nth-child(2) { animation-delay: -2s; }
+section:has(textarea[aria-label="Mensagem financeira"]) button.rounded-full:nth-child(3) { animation-delay: -4s; }
+
+/* Composer remains visually anchored while the conversation scrolls. */
+section:has(textarea[aria-label="Mensagem financeira"]) textarea[aria-label="Mensagem financeira"] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+section:has(textarea[aria-label="Mensagem financeira"]) textarea[aria-label="Mensagem financeira"]:focus {
+  outline: none;
+}
+
+section:has(textarea[aria-label="Mensagem financeira"]) textarea[aria-label="Mensagem financeira"]:focus-visible {
+  caret-color: var(--fz-orange);
+}
+
+section:has(textarea[aria-label="Mensagem financeira"]) textarea[aria-label="Mensagem financeira"]:focus + button {
+  box-shadow: 0 0 28px rgb(255 90 31 / .18);
+}
+
+/* Existing Motion System hooks remain available for reusable components. */
 .finanzzi-motion-root { position: relative; isolation: isolate; }
 .finanzzi-motion-root::before,
 .finanzzi-motion-root::after {
@@ -47,6 +135,10 @@
 .finanzzi-motion-card { animation: finanzzi-float 6s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
+  section:has(textarea[aria-label="Mensagem financeira"])::before,
+  section:has(textarea[aria-label="Mensagem financeira"])::after,
+  section:has(textarea[aria-label="Mensagem financeira"]) .space-y-3 > div,
+  section:has(textarea[aria-label="Mensagem financeira"]) button.rounded-full,
   .finanzzi-motion-root::before,
   .finanzzi-motion-root::after,
   .finanzzi-motion-card { animation: none !important; }
