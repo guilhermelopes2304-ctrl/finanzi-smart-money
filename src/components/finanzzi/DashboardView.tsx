@@ -25,12 +25,16 @@ export function DashboardView({ profile, transactions, isLoading = false }: Dash
 
   useGSAP(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    gsap.fromTo("[data-home-chat]", { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" });
+    gsap.fromTo("[data-home-chat]", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "power3.out" });
   }, { scope: rootRef });
 
   return (
     <div ref={rootRef} className="fin-screen fin-dashboard fin-product-home min-h-full bg-background text-foreground">
-      <section data-home-chat aria-label="Assistente financeiro" className="min-h-[calc(100dvh-5rem)]">
+      <section
+        data-home-chat
+        aria-label="Assistente financeiro"
+        className="min-h-[calc(100dvh-5rem)] [&>section>div>main]:justify-center [&>section>div>main]:py-0 [&>section>div>main>div:nth-child(2)]:grid [&>section>div>main>div:nth-child(2)]:grid-cols-1 [&>section>div>main>div:nth-child(2)>button]:w-full [&>section>div>main>div:nth-child(2)>button]:text-left"
+      >
         <HomeChat profile={profile} transactions={transactions} isLoading={isLoading} />
       </section>
     </div>
