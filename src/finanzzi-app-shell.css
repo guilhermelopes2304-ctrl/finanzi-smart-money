@@ -1,102 +1,91 @@
-/* FINANZZI unified app shell: iOS/Android viewport discipline + shared visual language */
+/* FINANZZI — unified premium app shell.
+   One viewport, one scroll container, one visual language across authenticated routes. */
 :root {
   --fin-safe-top: env(safe-area-inset-top, 0px);
   --fin-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --fin-bg: #0d0d0d;
+  --fin-surface: #141414;
+  --fin-border: rgba(255,255,255,.09);
+  --fin-brand: #ff4d00;
 }
 
 html,
 body {
-  background: #111111;
+  background: var(--fin-bg);
   overflow-x: hidden;
+  overscroll-behavior-x: none;
   scroll-behavior: smooth;
 }
 
-html {
-  min-height: 100%;
-  overscroll-behavior-x: none;
-}
+html { min-height: 100%; }
 
 body {
   min-height: 100%;
   margin: 0;
-  overscroll-behavior-x: none;
-  -webkit-overflow-scrolling: touch;
-}
-
-body,
-button,
-a,
-input,
-textarea {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   -webkit-tap-highlight-color: transparent;
 }
 
+button,
+a,
+input,
+textarea { -webkit-tap-highlight-color: transparent; }
+
 [data-fin-app-shell] {
-  min-height: 100dvh;
-  min-height: 100svh;
-  height: 100dvh;
-  height: 100svh;
-  overflow: hidden;
-  overscroll-behavior: none;
+  position: relative;
   isolation: isolate;
-}
-
-[data-fin-app-shell] main {
-  min-height: 0;
-  overflow-x: hidden;
-}
-
-[data-fin-app-shell] main > div {
+  width: 100%;
+  height: 100dvh;
+  min-height: 100svh;
+  overflow: hidden;
+  background:
+    radial-gradient(900px 500px at 50% -160px, rgba(255,77,0,.10), transparent 62%),
+    var(--fin-bg);
   color: hsl(var(--foreground));
 }
 
-@media (max-width: 1023px) {
-  [data-fin-app-shell] > div > main {
-    height: auto;
-    max-height: none;
-    min-height: 0;
-    overflow-x: hidden;
-  }
-
-  [data-fin-app-shell] > div > main:not(:has(textarea[aria-label="Mensagem financeira"])) {
-    overflow-y: auto;
-    overscroll-behavior-y: contain;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  [data-fin-app-shell] > div > main:has(textarea[aria-label="Mensagem financeira"]) {
-    overflow: hidden;
-  }
-
-  [data-fin-app-shell] [role="dialog"][aria-label="Menu FINANZZI"] {
-    padding-top: 0;
-    padding-bottom: 0;
-  }
+[data-fin-app-shell]::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(700px 420px at 85% 15%, rgba(255,77,0,.035), transparent 65%),
+    radial-gradient(600px 360px at 10% 80%, rgba(255,255,255,.018), transparent 70%);
 }
 
-@media (min-width: 1024px) {
-  [data-fin-app-shell] > div > main {
-    overflow-y: auto;
-    overscroll-behavior-y: contain;
-    -webkit-overflow-scrolling: touch;
-  }
+[data-fin-app-shell] main {
+  min-width: 0;
+  min-height: 0;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.12) transparent;
 }
 
-/* Internal-page anchors stay clear of the shared mobile chrome. */
-[data-fin-app-shell] .fin-page-header {
-  scroll-margin-top: 5rem;
+[data-fin-app-shell] main::-webkit-scrollbar { width: 5px; }
+[data-fin-app-shell] main::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 999px; }
+
+[data-fin-app-shell] .fin-page-header { scroll-margin-top: 1rem; }
+
+/* Shared premium surfaces without changing financial logic. */
+[data-fin-app-shell] .surface-card {
+  border-color: var(--fin-border);
+  background: linear-gradient(145deg, rgba(255,255,255,.035), rgba(255,255,255,.012));
+  box-shadow: 0 14px 40px rgba(0,0,0,.18);
 }
 
-/* Settings: show one clean access-status badge instead of duplicating billing state. */
-.fin-settings > section:first-of-type > .relative.flex > .flex.flex-wrap.items-center > span:nth-of-type(2) {
-  display: none;
-}
+[data-fin-app-shell] .fin-interactive { transition: transform .18s ease, background-color .18s ease, border-color .18s ease, box-shadow .18s ease; }
+[data-fin-app-shell] .fin-pressable:active { transform: scale(.985); }
 
-/* Settings categories: badges form a stable responsive grid and keep the delete action inside each cell. */
+/* Settings consistency. */
+.fin-settings > section:first-of-type > .relative.flex > .flex.flex-wrap.items-center > span:nth-of-type(2) { display: none; }
+
 .fin-settings > .surface-card.mt-5 > .mt-4 {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 0.5rem;
+  gap: .5rem;
 }
 
 .fin-settings > .surface-card.mt-5 > .mt-4 > span {
@@ -107,43 +96,54 @@ textarea {
 }
 
 @media (min-width: 420px) {
-  .fin-settings > .surface-card.mt-5 > .mt-4 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  .fin-settings > .surface-card.mt-5 > .mt-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (min-width: 768px) {
-  .fin-settings > .surface-card.mt-5 > .mt-4 {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
+  .fin-settings > .surface-card.mt-5 > .mt-4 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
-/* Landing: anchors and final sections remain reachable beneath the navbar. */
+/* Landing anchors. */
 body:not(:has([data-fin-app-shell])) main section,
-body:not(:has([data-fin-app-shell])) [id] {
-  scroll-margin-top: 5rem;
+body:not(:has([data-fin-app-shell])) [id] { scroll-margin-top: 5rem; }
+
+@media (max-width: 1023px) {
+  [data-fin-app-shell] > div > main {
+    min-height: 0;
+    height: auto;
+    max-height: none;
+    overflow-x: hidden;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  [data-fin-app-shell] > div > main:has(textarea[aria-label="Mensagem financeira"]) { overflow: hidden; }
+
+  [data-fin-app-shell] [role="dialog"][aria-label="Menu FINANZZI"] { padding: 0; }
+}
+
+@media (min-width: 1024px) {
+  [data-fin-app-shell] > div > main {
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 @media (max-width: 767px) {
   body:not(:has([data-fin-app-shell])) main > section:last-child,
   body:not(:has([data-fin-app-shell])) main > section[data-section="faq"],
-  body:not(:has([data-fin-app-shell])) main > section[data-section="pricing"] {
-    padding-bottom: 3rem;
-  }
+  body:not(:has([data-fin-app-shell])) main > section[data-section="pricing"] { padding-bottom: 3rem; }
 }
 
 @supports (-webkit-touch-callout: none) {
-  [data-fin-app-shell] {
-    min-height: -webkit-fill-available;
-  }
+  [data-fin-app-shell] { min-height: -webkit-fill-available; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html,
-  body,
-  [data-fin-app-shell] *,
-  [data-fin-app-shell] *::before,
-  [data-fin-app-shell] *::after {
+  html, body, [data-fin-app-shell] *, [data-fin-app-shell] *::before, [data-fin-app-shell] *::after {
     scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
   }
 }
