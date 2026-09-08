@@ -9,6 +9,16 @@ interface AuthState {
 }
 
 const AuthContext = createContext<AuthState>({ user: null, session: null, loading: true });
+const AUTH_INIT_TIMEOUT_MS = 10000;
+
+function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) => {
+      window.setTimeout(() => reject(new Error("AUTH_INIT_TIMEOUT")), timeoutMs);
+    }),
+  ]);
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
@@ -24,14 +34,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (initializedRef.current) setLoading(false);
     });
 
-    void supabase.auth
-      .getSession()
+    void withTimeout(supabase.auth.getSession(), AUTH_INIT_TIMEOUT_MS)
       .then(({ data }) => {
         if (!mounted) return;
         setSession(data.session);
       })
       .catch((error) => {
-        console.error("[FINANZZI] Falha ao inicializar sessão:", error);
+        if (error instanceof Error && error.message === "AUTH_INIT_TIMEOUT") {
+          console.error("[FINANZZI] Tempo limite ao inicializar autenticação.");
+        } else {
+          console.error("[FINANZZI] Falha ao inicializar sessão:", error);
+        }
         if (!mounted) return;
         setSession(null);
       })
