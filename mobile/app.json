@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "FINANZZI",
+    "slug": "finanzzi",
+    "scheme": "finanzzi",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "ios": { "supportsTablet": true, "bundleIdentifier": "com.finanzzi.app" },
+    "plugins": ["expo-router", "expo-glass-effect"],
+    "experiments": { "typedRoutes": true }
+  }
+}
