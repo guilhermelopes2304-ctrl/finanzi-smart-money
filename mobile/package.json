@@ -5,6 +5,7 @@
   "main": "expo-router/entry",
   "scripts": { "start": "expo start", "ios": "expo run:ios", "lint": "expo lint" },
   "dependencies": {
+    "@expo/vector-icons": "^14.1.0",
     "@supabase/supabase-js": "^2.112.2",
     "expo": "^54.0.0",
     "expo-glass-effect": "~0.1.10",
