@@ -1,37 +1,23 @@
-import { GlassView } from 'expo-glass-effect';
+import { GlassView, isGlassEffectAPIAvailable } from 'expo-glass-effect';
 import { useState } from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '@/lib/supabase';
+import { Ionicons } from '@expo/vector-icons';
+
+const C = { bg: '#0A0A0C', text: '#F5F5F7', muted: '#8E8E96', orange: '#D95F18', red: '#FF6F72', green: '#63C98F' };
+type Mode = 'login' | 'signup';
 
 export default function Auth() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
-
-  const signIn = async () => {
-    setBusy(true); setError('');
-    const { error: authError } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
-    if (authError) setError(authError.message);
-    setBusy(false);
-  };
-
-  return (
-    <SafeAreaView style={styles.safe}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.center}>
-        <View style={styles.brand}><Text style={styles.eyebrow}>FINANZZI</Text><Text style={styles.title}>Seu dinheiro, no controle.</Text><Text style={styles.subtitle}>Entre para acessar sua vida financeira.</Text></View>
-        <GlassView style={styles.card} glassEffectStyle="regular">
-          <TextInput value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" placeholder="Seu e-mail" placeholderTextColor="#8E8E93" style={styles.input} />
-          <TextInput value={password} onChangeText={setPassword} secureTextEntry placeholder="Sua senha" placeholderTextColor="#8E8E93" style={styles.input} />
-          {error ? <Text style={styles.error}>{error}</Text> : null}
-          <Pressable onPress={signIn} disabled={busy || !email || !password} style={({ pressed }) => [styles.button, pressed && { transform: [{ scale: 0.98 }] }]}>
-            {busy ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Entrar</Text>}
-          </Pressable>
-        </GlassView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
-  );
+  const [mode, setMode] = useState<Mode>('login'); const [name, setName] = useState(''); const [email, setEmail] = useState(''); const [password, setPassword] = useState(''); const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const [message, setMessage] = useState('');
+  const signIn = async () => { setBusy(true); setError(''); setMessage(''); const { error: authError } = await supabase.auth.signInWithPassword({ email: email.trim(), password }); if (authError) setError(authError.message); setBusy(false); };
+  const signUp = async () => { setBusy(true); setError(''); setMessage(''); if (name.trim().length < 2) { setError('Informe seu nome.'); setBusy(false); return; } const { data, error: authError } = await supabase.auth.signUp({ email: email.trim(), password, options: { data: { name: name.trim() } } }); if (authError) setError(authError.message); else if (!data.session) setMessage('Conta criada. Verifique seu e-mail para confirmar o acesso.'); else setMessage('Conta criada com sucesso.'); setBusy(false); };
+  const submit = () => mode === 'login' ? void signIn() : void signUp(); const glass = Platform.OS === 'ios' && isGlassEffectAPIAvailable();
+  return <SafeAreaView style={styles.safe}><KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.center}>
+    <View style={styles.brand}><Text style={styles.eyebrow}>FINANZZI</Text><Text style={styles.title}>{mode === 'login' ? 'Seu dinheiro, no controle.' : 'Comece a organizar seu dinheiro.'}</Text><Text style={styles.subtitle}>{mode === 'login' ? 'Entre para acessar sua vida financeira.' : 'Crie sua conta e continue pelo aplicativo.'}</Text></View>
+    {glass ? <GlassView style={styles.card} glassEffectStyle="regular">{form()}</GlassView> : <View style={[styles.card, styles.fallback]}>{form()}</View>}
+    <Pressable onPress={() => { setMode(mode === 'login' ? 'signup' : 'login'); setError(''); setMessage(''); }} style={styles.switch}><Text style={styles.switchText}>{mode === 'login' ? 'Ainda não tenho conta' : 'Já tenho uma conta'}</Text></Pressable>
+  </KeyboardAvoidingView></SafeAreaView>;
+  function form() { return <>{mode === 'signup' ? <TextInput value={name} onChangeText={setName} placeholder="Seu nome" placeholderTextColor="#737379" style={styles.input} autoCapitalize="words" /> : null}<TextInput value={email} onChangeText={setEmail} autoCapitalize="none" autoCorrect={false} keyboardType="email-address" placeholder="Seu e-mail" placeholderTextColor="#737379" style={styles.input} /><TextInput value={password} onChangeText={setPassword} secureTextEntry placeholder="Sua senha" placeholderTextColor="#737379" style={styles.input} />{mode === 'signup' ? <Text style={styles.helper}>Use pelo menos 6 caracteres.</Text> : null}{error ? <View style={styles.feedback}><Ionicons name="alert-circle-outline" size={17} color={C.red} /><Text style={styles.error}>{error}</Text></View> : null}{message ? <View style={styles.feedback}><Ionicons name="checkmark-circle-outline" size={17} color={C.green} /><Text style={styles.message}>{message}</Text></View> : null}<Pressable onPress={submit} disabled={busy || !email.trim() || password.length < 6} style={({ pressed }) => [styles.button, (busy || !email.trim() || password.length < 6) && styles.disabled, pressed && styles.pressed]}>{busy ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>{mode === 'login' ? 'Entrar' : 'Criar conta'}</Text>}</Pressable></>; }
 }
-
-const styles = StyleSheet.create({ safe:{flex:1,backgroundColor:'#F5F5F7'},center:{flex:1,justifyContent:'center',padding:24},brand:{marginBottom:28},eyebrow:{fontSize:12,fontWeight:'800',letterSpacing:2,color:'#F97316'},title:{fontSize:34,fontWeight:'700',letterSpacing:-1.3,color:'#111113',marginTop:8},subtitle:{fontSize:16,color:'#6E6E73',marginTop:8},card:{padding:18,borderRadius:28,gap:12},input:{height:54,borderRadius:17,backgroundColor:'rgba(118,118,128,.12)',paddingHorizontal:16,fontSize:16,color:'#111113'},button:{height:54,borderRadius:27,backgroundColor:'#F97316',alignItems:'center',justifyContent:'center',marginTop:4},buttonText:{color:'#fff',fontSize:16,fontWeight:'700'},error:{color:'#C0392B',fontSize:13,lineHeight:18}}
+const styles = StyleSheet.create({ safe: { flex: 1, backgroundColor: C.bg }, center: { flex: 1, justifyContent: 'center', padding: 24 }, brand: { marginBottom: 28 }, eyebrow: { fontSize: 11, fontWeight: '800', letterSpacing: 2, color: C.orange }, title: { fontSize: 34, fontWeight: '700', letterSpacing: -1.3, color: C.text, marginTop: 8 }, subtitle: { fontSize: 16, color: C.muted, marginTop: 8, lineHeight: 22 }, card: { padding: 18, borderRadius: 28, gap: 12 }, fallback: { backgroundColor: '#17171A', borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)' }, input: { height: 54, borderRadius: 17, backgroundColor: 'rgba(118,118,128,0.14)', paddingHorizontal: 16, fontSize: 16, color: C.text }, helper: { color: C.muted, fontSize: 12, marginTop: -4, marginLeft: 3 }, feedback: { flexDirection: 'row', alignItems: 'flex-start', gap: 7 }, error: { color: C.red, fontSize: 13, lineHeight: 18, flex: 1 }, message: { color: C.green, fontSize: 13, lineHeight: 18, flex: 1 }, button: { height: 54, borderRadius: 27, backgroundColor: C.orange, alignItems: 'center', justifyContent: 'center', marginTop: 4 }, buttonText: { color: '#fff', fontSize: 16, fontWeight: '800' }, disabled: { opacity: 0.42 }, pressed: { transform: [{ scale: 0.985 }] }, switch: { alignItems: 'center', paddingVertical: 18 }, switchText: { color: C.orange, fontSize: 14, fontWeight: '700' } });
