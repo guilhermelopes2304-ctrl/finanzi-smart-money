@@ -1,0 +1,39 @@
+/* FINANZZI iOS-style web/PWA refinement. Intentionally not native Liquid Glass. */
+:root{--fin-ios-orange:#ff5a1f;--fin-ios-glass:rgba(24,24,24,.78);--fin-ios-border:rgba(255,255,255,.09);--fin-ios-shadow:0 16px 44px rgba(0,0,0,.28),0 2px 10px rgba(0,0,0,.18)}
+html,body{overflow-x:clip} [data-fin-app-shell]{min-width:0} [data-fin-app-shell] main{min-width:0;overflow-x:clip}
+@media(max-width:1023px){
+ [data-fin-app-shell]>header{top:0;min-height:calc(3.25rem + env(safe-area-inset-top));padding-top:max(.45rem,env(safe-area-inset-top));background:color-mix(in srgb,#111 78%,transparent)!important;border-bottom-color:rgba(255,255,255,.07)!important;-webkit-backdrop-filter:blur(22px) saturate(1.35);backdrop-filter:blur(22px) saturate(1.35)}
+ [data-fin-app-shell]>header>div{height:2.75rem} [data-fin-app-shell]>header a,[data-fin-app-shell]>header button{min-width:44px;min-height:44px;border-radius:14px}
+ [data-fin-app-shell]>header button{border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.035)}
+ [data-fin-app-shell]>header a:hover,[data-fin-app-shell]>header button:hover{transform:none;background:rgba(255,255,255,.06)}
+ [data-fin-app-shell] main{padding-bottom:calc(6.25rem + env(safe-area-inset-bottom))!important}
+ [data-fin-app-shell] main>div{width:100%;max-width:100%} [data-fin-app-shell] .fin-screen{min-width:0} [data-fin-app-shell] .fin-screen>*{min-width:0;max-width:100%}
+}
+@media(max-width:640px){
+ [data-fin-app-shell] .fixed.inset-x-2.bottom-2{left:max(.625rem,env(safe-area-inset-left))!important;right:max(.625rem,env(safe-area-inset-right))!important;bottom:max(.625rem,env(safe-area-inset-bottom))!important;width:auto!important;min-height:4.25rem;padding:.35rem!important;border:1px solid var(--fin-ios-border)!important;border-radius:1.45rem!important;background:var(--fin-ios-glass)!important;box-shadow:var(--fin-ios-shadow)!important;-webkit-backdrop-filter:blur(24px) saturate(1.45);backdrop-filter:blur(24px) saturate(1.45);isolation:isolate}
+ [data-fin-app-shell] .fixed.inset-x-2.bottom-2::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.055),transparent 48%)}
+ [data-fin-app-shell] .fixed.inset-x-2.bottom-2>*{position:relative;z-index:1}
+ [data-fin-app-shell] .fixed.inset-x-2.bottom-2 a,[data-fin-app-shell] .fixed.inset-x-2.bottom-2 button{min-width:0;min-height:3.5rem;flex:1 1 0;border-radius:1rem!important;color:#9b9b9b}
+ [data-fin-app-shell] .fixed.inset-x-2.bottom-2 a:hover,[data-fin-app-shell] .fixed.inset-x-2.bottom-2 button:hover{transform:none;background:rgba(255,255,255,.055)}
+ [data-fin-app-shell] .fixed.inset-x-2.bottom-2 a[aria-current=page],[data-fin-app-shell] .fixed.inset-x-2.bottom-2 a[data-active=true]{color:#fff!important}
+ [data-fin-app-shell] .fixed.inset-x-2.bottom-2 a[aria-current=page] span:first-child,[data-fin-app-shell] .fixed.inset-x-2.bottom-2 a[data-active=true] span:first-child{background:var(--fin-ios-orange)!important;color:#fff!important;box-shadow:0 8px 22px rgba(255,90,31,.22)}
+ [data-fin-app-shell] .fixed.inset-x-2.bottom-2 a span:first-child{transition:transform 180ms cubic-bezier(.22,1,.36,1),background-color 180ms ease}
+ [data-fin-app-shell] .fixed.inset-x-2.bottom-2 a:active span:first-child,[data-fin-app-shell] .fixed.inset-x-2.bottom-2 button:active{transform:scale(.94)}
+ [data-fin-app-shell] .fixed.inset-x-2.bottom-2 button[class*=bg-primary]{flex:0 0 3.35rem;width:3.35rem;min-width:3.35rem;min-height:3.35rem;margin-inline:.12rem;border-radius:1.1rem!important;background:var(--fin-ios-orange)!important;color:#fff!important;box-shadow:0 10px 26px rgba(255,90,31,.28)!important}
+ [data-fin-app-shell] section.absolute.inset-x-0.bottom-0{max-height:calc(100dvh - env(safe-area-inset-top) - .5rem);padding-top:.65rem;padding-bottom:max(1.25rem,env(safe-area-inset-bottom));border-color:rgba(255,255,255,.08)!important;background:rgba(24,24,24,.96)!important;box-shadow:0 -18px 60px rgba(0,0,0,.42)!important;-webkit-backdrop-filter:blur(28px) saturate(1.35);backdrop-filter:blur(28px) saturate(1.35)}
+ [data-fin-app-shell] .fin-settings{padding-inline:.1rem} [data-fin-app-shell] .fin-settings .surface-card{border-radius:1.35rem!important;box-shadow:0 10px 30px rgba(0,0,0,.22)!important}
+ [data-fin-app-shell] .fin-settings form.surface-card,[data-fin-app-shell] .fin-settings>.surface-card{padding:1rem!important}
+ [data-fin-app-shell] .fin-settings .flex.flex-wrap.items-center.justify-between{align-items:flex-start}
+ [data-fin-app-shell] .fin-settings .flex.flex-wrap.items-center.justify-between>.flex.flex-wrap{width:100%}
+ [data-fin-app-shell] .fin-settings .flex.items-center.gap-4.rounded-2xl{align-items:flex-start}
+ [data-fin-app-shell] .fin-settings .flex.items-center.gap-4.rounded-2xl>div:last-child{min-width:0}
+ [data-fin-app-shell] .fin-settings .flex.items-center.gap-4.rounded-2xl p{overflow-wrap:anywhere}
+ [data-fin-app-shell] .fin-settings footer .flex,[data-fin-app-shell] .fin-settings footer button{width:100%}
+ body:has(.min-h-screen.overflow-hidden.bg-\[\#111111\]){min-height:100dvh} body:has(.min-h-screen.overflow-hidden.bg-\[\#111111\]) main{min-height:100dvh}
+ body:has(.min-h-screen.overflow-hidden.bg-\[\#111111\]) main>div:last-child{justify-content:flex-start;padding-top:max(1rem,env(safe-area-inset-top));padding-bottom:max(2rem,env(safe-area-inset-bottom))}
+ body:has(.min-h-screen.overflow-hidden.bg-\[\#111111\]) input{scroll-margin-top:5rem;scroll-margin-bottom:1.5rem}
+ [data-sonner-toaster][data-position=top-center]{top:max(1rem,env(safe-area-inset-top))!important} [data-sonner-toaster][data-position=top-center] [data-sonner-toast]{max-width:calc(100vw - 24px);border-radius:1rem}
+ [data-fin-app-shell] h1,[data-fin-app-shell] h2,[data-fin-app-shell] h3,[data-fin-app-shell] p,[data-fin-app-shell] span{overflow-wrap:anywhere} [data-fin-app-shell] .fin-number{overflow-wrap:normal;word-break:normal}
+}
+@media(prefers-reduced-motion:reduce){[data-fin-app-shell] .fixed.inset-x-2.bottom-2 a,[data-fin-app-shell] .fixed.inset-x-2.bottom-2 button,[data-fin-app-shell]>header a,[data-fin-app-shell]>header button{transition:none!important}}
+@supports not ((backdrop-filter:blur(1px))){[data-fin-app-shell] .fixed.inset-x-2.bottom-2,[data-fin-app-shell]>header{background:#181818!important}}
