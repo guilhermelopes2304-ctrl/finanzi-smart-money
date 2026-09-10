@@ -1,196 +1,45 @@
-/* FINANZZI — unified premium app shell.
-   One viewport, one scroll container, one visual language across authenticated routes. */
-:root {
-  --fin-safe-top: env(safe-area-inset-top, 0px);
-  --fin-safe-bottom: env(safe-area-inset-bottom, 0px);
-  --fin-bg: #0d0d0d;
-  --fin-surface: #141414;
-  --fin-border: rgba(255,255,255,.09);
-  --fin-brand: #ff4d00;
-}
-
-html,
-body {
-  background: var(--fin-bg);
-  overflow-x: hidden;
-  overscroll-behavior-x: none;
-  scroll-behavior: smooth;
-}
-
+/* FINANZZI — premium product shell. Native mobile can share the same visual tokens. */
+:root { --fin-safe-top: env(safe-area-inset-top, 0px); --fin-safe-bottom: env(safe-area-inset-bottom, 0px); --fin-bg: #0d0d0d; --fin-surface: #141414; --fin-border: rgba(255,255,255,.09); --fin-brand: #ff4d00; }
+html, body { background: var(--fin-bg); overflow-x: hidden; overscroll-behavior-x: none; scroll-behavior: smooth; }
 html { min-height: 100%; }
-
-body {
-  min-height: 100%;
-  margin: 0;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  -webkit-tap-highlight-color: transparent;
-}
-
-button,
-a,
-input,
-textarea { -webkit-tap-highlight-color: transparent; }
-
-[data-fin-app-shell] {
-  position: relative;
-  isolation: isolate;
-  width: 100%;
-  height: 100dvh;
-  min-height: 100svh;
-  overflow: hidden;
-  background:
-    radial-gradient(900px 500px at 50% -160px, rgba(255,77,0,.10), transparent 62%),
-    var(--fin-bg);
-  color: hsl(var(--foreground));
-}
-
-[data-fin-app-shell]::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: -1;
-  background:
-    radial-gradient(700px 420px at 85% 15%, rgba(255,77,0,.035), transparent 65%),
-    radial-gradient(600px 360px at 10% 80%, rgba(255,255,255,.018), transparent 70%);
-}
-
-[data-fin-app-shell] main {
-  min-width: 0;
-  min-height: 0;
-  overflow-x: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,.12) transparent;
-}
-
+body { min-height: 100%; margin: 0; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; -webkit-tap-highlight-color: transparent; }
+button, a, input, textarea { -webkit-tap-highlight-color: transparent; }
+[data-fin-app-shell] { position: relative; isolation: isolate; width: 100%; min-height: 100dvh; background: radial-gradient(800px 460px at 50% -180px, rgba(255,77,0,.085), transparent 64%), var(--fin-bg); color: hsl(var(--foreground)); }
+[data-fin-app-shell]::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1; background: radial-gradient(600px 400px at 90% 20%, rgba(255,77,0,.028), transparent 68%), radial-gradient(600px 380px at 5% 85%, rgba(255,255,255,.014), transparent 70%); }
+[data-fin-app-shell] main { min-width: 0; min-height: 0; overflow-x: hidden; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.12) transparent; }
 [data-fin-app-shell] main::-webkit-scrollbar { width: 5px; }
 [data-fin-app-shell] main::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 999px; }
-
-[data-fin-app-shell] .fin-page-header { scroll-margin-top: 1rem; }
-
-[data-fin-app-shell] .surface-card {
-  border-color: var(--fin-border);
-  background: linear-gradient(145deg, rgba(255,255,255,.035), rgba(255,255,255,.012));
-  box-shadow: 0 14px 40px rgba(0,0,0,.18);
-}
-
-[data-fin-app-shell] .fin-interactive { transition: transform .18s ease, background-color .18s ease, border-color .18s ease, box-shadow .18s ease; }
+[data-fin-app-shell] .fin-interactive { transition: transform .18s ease, background-color .18s ease, border-color .18s ease, box-shadow .18s ease, opacity .18s ease; }
 [data-fin-app-shell] .fin-pressable:active { transform: scale(.985); }
+[data-fin-app-shell] .fin-screen { width: 100%; max-width: 1120px; margin-inline: auto; padding-bottom: 1.5rem; }
+[data-fin-app-shell] .fin-screen > section, [data-fin-app-shell] .fin-screen > div > section, [data-fin-app-shell] .fin-screen article { min-width: 0; }
+[data-fin-app-shell] .surface-card { border-color: var(--fin-border); background: linear-gradient(145deg, rgba(255,255,255,.035), rgba(255,255,255,.012)), rgba(20,20,20,.94); box-shadow: 0 16px 44px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.022); }
+[data-fin-app-shell] .surface-card:hover { border-color: rgba(255,77,0,.16); }
+[data-fin-app-shell] input, [data-fin-app-shell] textarea, [data-fin-app-shell] select { min-height: 44px; }
 
-[data-fin-app-shell] .fin-screen {
-  width: 100%;
-  max-width: 1120px;
-  margin-inline: auto;
-  padding-bottom: 1.5rem;
-}
-
-[data-fin-app-shell] .fin-screen > section,
-[data-fin-app-shell] .fin-screen > div > section,
-[data-fin-app-shell] .fin-screen article {
-  min-width: 0;
-}
-
-[data-fin-app-shell] .fin-screen .surface-card {
-  border-radius: 22px;
-  background:
-    linear-gradient(145deg, rgba(255,255,255,.040), rgba(255,255,255,.012) 55%),
-    rgba(20,20,20,.96);
-  box-shadow: 0 16px 44px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.025);
-}
-
-[data-fin-app-shell] .fin-screen .surface-card:hover { border-color: rgba(255,77,0,.18); }
-[data-fin-app-shell] .fin-screen .fin-page-header-action > * { max-width: 100%; }
-[data-fin-app-shell] .fin-screen input,
-[data-fin-app-shell] .fin-screen textarea,
-[data-fin-app-shell] .fin-screen select { min-height: 44px; border-radius: 14px; }
-[data-fin-app-shell] .fin-screen [role="tablist"] { border: 1px solid rgba(255,255,255,.07); box-shadow: inset 0 1px 0 rgba(255,255,255,.025); }
-
-[data-fin-app-shell] .fin-transactions .fin-page-header { margin-bottom: 1rem; }
-[data-fin-app-shell] .fin-transactions [data-fin-history-item] > .overflow-hidden,
-[data-fin-app-shell] .fin-transactions .overflow-hidden.rounded-\[24px\] { box-shadow: 0 16px 40px rgba(0,0,0,.20); }
-[data-fin-app-shell] .fin-accounts-tabs [role="tablist"] { margin-bottom: .75rem; }
-[data-fin-app-shell] .fin-accounts section { border-color: rgba(255,255,255,.075); }
-[data-fin-app-shell] .fin-cards .surface-card { overflow: hidden; }
-[data-fin-app-shell] .fin-cards .surface-card::before { content: ""; display: block; height: 1px; margin: -1px 0 0; background: linear-gradient(90deg, transparent, rgba(255,77,0,.32), transparent); opacity: .7; }
-[data-fin-app-shell] .fin-insights .surface-card,
-[data-fin-app-shell] .fin-screen.fin-reports .surface-card { position: relative; overflow: hidden; }
-[data-fin-app-shell] .fin-insights .surface-card::after,
-[data-fin-app-shell] .fin-screen.fin-reports .surface-card::after { content: ""; position: absolute; inset: auto -20% -70% 40%; height: 180px; background: radial-gradient(circle, rgba(255,77,0,.07), transparent 68%); pointer-events: none; }
-[data-fin-app-shell] .fin-goals .surface-card,
-[data-fin-app-shell] .fin-metas .surface-card { box-shadow: 0 14px 38px rgba(0,0,0,.18); }
-
-/* iOS/PWA material language. This is a web approximation, never a claim of native Liquid Glass. */
+/* Web/PWA material language: inspired by iOS materials, never presented as native Liquid Glass. */
 @media (display-mode: standalone), (display-mode: fullscreen), (max-width: 1023px) {
-  [data-fin-app-shell] {
-    min-height: 100dvh;
-    min-height: -webkit-fill-available;
-  }
-
-  [data-fin-app-shell] main {
-    padding-bottom: max(5.75rem, calc(4.75rem + var(--fin-safe-bottom))) !important;
-  }
-
+  [data-fin-app-shell] { min-height: 100dvh; min-height: -webkit-fill-available; }
+  [data-fin-app-shell] main { padding-bottom: calc(94px + var(--fin-safe-bottom)) !important; }
   [data-fin-app-shell] .fin-mobile-tabbar {
-    padding-bottom: max(.35rem, var(--fin-safe-bottom));
-    background: linear-gradient(180deg, rgba(20,20,22,.72), rgba(14,14,16,.90));
-    border: 1px solid rgba(255,255,255,.11);
-    box-shadow: 0 18px 50px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.07);
-    -webkit-backdrop-filter: blur(26px) saturate(150%);
-    backdrop-filter: blur(26px) saturate(150%);
+    min-height: 68px;
+    padding-bottom: max(6px, var(--fin-safe-bottom));
+    background: rgba(20,20,22,.74);
+    border: 1px solid rgba(255,255,255,.12);
+    box-shadow: 0 18px 50px rgba(0,0,0,.46), inset 0 1px 0 rgba(255,255,255,.08);
+    -webkit-backdrop-filter: blur(28px) saturate(155%);
+    backdrop-filter: blur(28px) saturate(155%);
   }
-
-  [data-fin-app-shell] .fin-mobile-tab {
-    -webkit-touch-callout: none;
-    user-select: none;
-  }
-
+  [data-fin-app-shell] .fin-mobile-tab { -webkit-touch-callout: none; user-select: none; min-height: 52px; }
   [data-fin-app-shell] .fin-mobile-tab:active { transform: scale(.96); }
-
-  [data-fin-app-shell] .fin-mobile-add {
-    background: linear-gradient(145deg, #ff6a1a, #f04400);
-    border: 1px solid rgba(255,255,255,.18);
-    box-shadow: 0 12px 28px rgba(255,77,0,.30), inset 0 1px 0 rgba(255,255,255,.20);
-  }
-
-  [data-fin-app-shell] header {
-    -webkit-backdrop-filter: blur(22px) saturate(135%);
-    backdrop-filter: blur(22px) saturate(135%);
-  }
+  [data-fin-app-shell] .fin-mobile-add { background: linear-gradient(145deg, #ff6a1a, #f04400); border: 1px solid rgba(255,255,255,.20); box-shadow: 0 12px 30px rgba(255,77,0,.30), inset 0 1px 0 rgba(255,255,255,.20); }
+  [data-fin-app-shell] header { -webkit-backdrop-filter: blur(24px) saturate(145%); backdrop-filter: blur(24px) saturate(145%); }
 }
-
-.fin-settings > section:first-of-type > .relative.flex > .flex.flex-wrap.items-center > span:nth-of-type(2) { display: none; }
-.fin-settings > .surface-card.mt-5 > .mt-4 { display: grid; grid-template-columns: repeat(1, minmax(0, 1fr)); gap: .5rem; }
-.fin-settings > .surface-card.mt-5 > .mt-4 > span { min-width: 0; width: 100%; justify-content: space-between; white-space: normal; }
-
-@media (min-width: 420px) { .fin-settings > .surface-card.mt-5 > .mt-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 768px) { .fin-settings > .surface-card.mt-5 > .mt-4 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-
-body:not(:has([data-fin-app-shell])) main section,
-body:not(:has([data-fin-app-shell])) [id] { scroll-margin-top: 5rem; }
-
 @media (max-width: 1023px) {
-  [data-fin-app-shell] > div > main { min-height: 0; height: auto; max-height: none; overflow-x: hidden; overscroll-behavior-y: contain; -webkit-overflow-scrolling: touch; }
-  [data-fin-app-shell] > div > main:has(textarea[aria-label="Mensagem financeira"]) { overflow: hidden; }
-  [data-fin-app-shell] [role="dialog"][aria-label="Menu FINANZZI"] { padding: 0; }
-  [data-fin-app-shell] .fin-screen { padding-bottom: 2rem; }
+  [data-fin-app-shell] .fin-screen { padding-bottom: 1rem; }
   [data-fin-app-shell] .fin-page-header-action { width: 100%; }
-  [data-fin-app-shell] .fin-page-header-action > button,
-  [data-fin-app-shell] .fin-page-header-action > a { min-height: 44px; }
+  [data-fin-app-shell] .fin-page-header-action > button, [data-fin-app-shell] .fin-page-header-action > a { min-height: 44px; }
 }
-
-@media (min-width: 1024px) {
-  [data-fin-app-shell] > div > main { overflow-y: auto; overscroll-behavior-y: contain; -webkit-overflow-scrolling: touch; }
-}
-
-@media (max-width: 767px) {
-  body:not(:has([data-fin-app-shell])) main > section:last-child,
-  body:not(:has([data-fin-app-shell])) main > section[data-section="faq"],
-  body:not(:has([data-fin-app-shell])) main > section[data-section="pricing"] { padding-bottom: 3rem; }
-}
-
+@media (min-width: 1024px) { [data-fin-app-shell] main { overflow-y: auto; overscroll-behavior-y: contain; -webkit-overflow-scrolling: touch; } }
 @supports (-webkit-touch-callout: none) { [data-fin-app-shell] { min-height: -webkit-fill-available; } }
-
-@media (prefers-reduced-motion: reduce) {
-  html, body, [data-fin-app-shell] *, [data-fin-app-shell] *::before, [data-fin-app-shell] *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
-}
+@media (prefers-reduced-motion: reduce) { html, body, [data-fin-app-shell] *, [data-fin-app-shell] *::before, [data-fin-app-shell] *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
