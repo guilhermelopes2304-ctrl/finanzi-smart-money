@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import type { Account, Category, CreditCard, Recurrence, TransactionType } from "@/types/finance";
 export type Confidence="high"|"medium"|"low";
 export interface QuickParseItem{description:string;quantity:number;unitPrice:number;total:number}
