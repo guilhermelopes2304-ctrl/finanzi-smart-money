@@ -33,7 +33,8 @@ export async function saveTransaction(input: SaveTransactionInput): Promise<stri
     return input.editingId;
   }
   if (parts > 1) {
-    const rows = buildInstallments({ userId: input.userId, creditCardId: base.credit_card_id, accountId: base.account_id, categoryId: base.category_id, description: base.description, totalAmount: input.amount, firstDate: input.date, installments: parts, notes: base.notes, paymentMethod: input.method, type: input.type });
+    const purchaseId = crypto.randomUUID();
+    const rows = buildInstallments({ purchaseId, userId: input.userId, creditCardId: base.credit_card_id, accountId: base.account_id, categoryId: base.category_id, description: base.description, totalAmount: input.amount, firstDate: input.date, installments: parts, notes: base.notes, paymentMethod: input.method, type: input.type });
     const { data, error } = await supabase.from("transactions").insert(rows).select("id").order("date", { ascending: true }).limit(1);
     if (error) throw new Error(error.message);
     const id = data?.[0]?.id;
@@ -59,6 +60,18 @@ export async function saveTransaction(input: SaveTransactionInput): Promise<stri
 }
 
 export async function deleteTransaction(userId: string, transactionId: string): Promise<void> {
-  const { error } = await supabase.from("transactions").delete().eq("id", transactionId).eq("user_id", userId);
+  const { data: transaction, error: lookupError } = await supabase
+    .from("transactions")
+    .select("purchase_id")
+    .eq("id", transactionId)
+    .eq("user_id", userId)
+    .single();
+  if (lookupError) throw new Error(lookupError.message);
+
+  const purchaseId = transaction?.purchase_id;
+  const query = supabase.from("transactions").delete().eq("user_id", userId);
+  const { error } = purchaseId
+    ? await query.eq("purchase_id", purchaseId)
+    : await query.eq("id", transactionId);
   if (error) throw new Error(error.message);
 }
