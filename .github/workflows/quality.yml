@@ -5,6 +5,9 @@ on:
     branches:
       - main
       - feat/finanzzi-redesign-final
+  push:
+    branches:
+      - 'feat/ios26-liquid-glass-native'
 
 permissions:
   contents: read
@@ -30,13 +33,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          files=$(git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" | grep -E '^(src|scripts|tests)/.*\.(js|jsx|ts|tsx|mjs|cjs)$' || true)
+          files=$(git diff --name-only "${{ github.event.pull_request.base.sha || github.event.before }}" "${{ github.event.pull_request.head.sha || github.sha }}" | grep -E '^(src|scripts|tests)/.*\.(js|jsx|ts|tsx|mjs|cjs)$' || true)
           if [ -n "$files" ]; then printf '%s\n' "$files" | xargs bunx eslint; else echo "No lintable web files changed."; fi
       - name: Biome changed files (lint)
         shell: bash
         run: |
           set -euo pipefail
-          files=$(git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" | grep -E '^(src|scripts|tests)/.*\.(js|jsx|ts|tsx|json|jsonc)$' || true)
+          files=$(git diff --name-only "${{ github.event.pull_request.base.sha || github.before }}" "${{ github.event.pull_request.head.sha || github.sha }}" | grep -E '^(src|scripts|tests)/.*\.(js|jsx|ts|tsx|json|jsonc)$' || true)
           if [ -n "$files" ]; then printf '%s\n' "$files" | xargs bunx @biomejs/biome@2.5.11 lint; else echo "No Biome-supported web files changed."; fi
       - name: ArchContract architecture gate
         run: bunx arch-contract@0.1.0 check --format github
@@ -52,6 +55,7 @@ jobs:
       - name: Build
         run: bun run build
       - name: Commitlint gate
+        if: github.event_name == 'pull_request'
         run: |
           printf '%s\n' "${{ github.event.pull_request.title }}" | npx --yes @commitlint/cli@21.2.1 --default-config --verbose
 
