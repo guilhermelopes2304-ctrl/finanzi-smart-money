@@ -1,82 +1,49 @@
+import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { GlassCard } from '@/components/GlassCard';
-import { supabase } from '@/lib/supabase';
+import { QuickEntrySheet } from '@/components/QuickEntrySheet';
+import { formatBRL, loadFinanceSnapshot, monthKey, transactionIcon } from '@/lib/finance';
+import type { FinanceSnapshot } from '@/lib/types';
 import { useNativeAuth } from '@/providers/AuthProvider';
 import { Ionicons } from '@expo/vector-icons';
-import * as Haptics from 'expo-haptics';
-import { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, Pressable, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
-const orange = '#F97316';
-type Tx = { id: string; description: string; amount: number; type: 'income' | 'expense'; date: string };
+const C = { bg: '#0A0A0C', text: '#F5F5F7', muted: '#8E8E96', orange: '#D95F18', green: '#63C98F', red: '#FF6F72', line: 'rgba(255,255,255,0.09)' };
 
 export default function Home() {
-  const { session } = useNativeAuth();
-  const [balance, setBalance] = useState(0);
-  const [transactions, setTransactions] = useState<Tx[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!session?.user.id) return;
-    let active = true;
-    const load = async () => {
-      setLoading(true);
-      const [profileResult, txResult] = await Promise.all([
-        supabase.from('profiles').select('current_balance').eq('id', session.user.id).maybeSingle(),
-        supabase.from('transactions').select('id,description,amount,type,date').eq('user_id', session.user.id).order('date', { ascending: false }).limit(20),
-      ]);
-      if (!active) return;
-      if (profileResult.data?.current_balance != null) setBalance(Number(profileResult.data.current_balance));
-      if (txResult.data) setTransactions(txResult.data as Tx[]);
-      setLoading(false);
-    };
-    void load();
-    return () => { active = false; };
+  const router = useRouter(); const { session } = useNativeAuth();
+  const [data, setData] = useState<FinanceSnapshot | null>(null); const [loading, setLoading] = useState(true); const [refreshing, setRefreshing] = useState(false); const [error, setError] = useState(''); const [quickVisible, setQuickVisible] = useState(false);
+  const load = useCallback(async (silent = false) => {
+    if (!session?.user.id) return; if (!silent) setLoading(true); setError('');
+    try { setData(await loadFinanceSnapshot(session.user.id)); } catch (e) { setError(e instanceof Error ? e.message : 'Não foi possível carregar seus dados.'); }
+    finally { setLoading(false); setRefreshing(false); }
   }, [session?.user.id]);
-
-  const month = new Date().toISOString().slice(0, 7);
+  useEffect(() => { void load(); }, [load]);
+  const currentMonth = monthKey(new Date()); const previousMonth = monthKey(new Date(new Date().setMonth(new Date().getMonth() - 1)));
   const monthly = useMemo(() => {
-    const items = transactions.filter((tx) => tx.date.startsWith(month));
-    return {
-      income: items.filter((tx) => tx.type === 'income').reduce((sum, tx) => sum + Number(tx.amount), 0),
-      expense: items.filter((tx) => tx.type === 'expense').reduce((sum, tx) => sum + Number(tx.amount), 0),
-    };
-  }, [transactions, month]);
-
-  const quickAdd = async () => { await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); };
-  const format = (value: number) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  const firstName = session?.user.user_metadata?.name?.split(' ')[0] ?? 'Gui';
-
+    const current = data?.transactions.filter((tx) => monthKey(tx.date) === currentMonth) ?? []; const previous = data?.transactions.filter((tx) => monthKey(tx.date) === previousMonth) ?? [];
+    const sum = (rows: typeof current, type: 'income' | 'expense') => rows.filter((tx) => tx.type === type).reduce((s, tx) => s + Number(tx.amount), 0);
+    return { income: sum(current, 'income'), expense: sum(current, 'expense'), previousExpense: sum(previous, 'expense') };
+  }, [data?.transactions, currentMonth, previousMonth]);
+  const recent = data?.transactions.slice(0, 4) ?? []; const firstName = data?.profile?.name?.split(' ')[0] ?? session?.user.user_metadata?.name?.split(' ')[0] ?? 'você'; const balance = Number(data?.profile?.current_balance ?? 0);
+  const change = monthly.previousExpense > 0 ? Math.round(((monthly.expense - monthly.previousExpense) / monthly.previousExpense) * 100) : null;
+  async function openQuick() { await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); setQuickVisible(true); }
   return (
     <SafeAreaView style={styles.safe}>
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <View style={styles.header}>
-          <View><Text style={styles.eyebrow}>FINANZZI</Text><Text style={styles.title}>Olá, {firstName}.</Text></View>
-          <GlassCard style={styles.avatar}><Text style={styles.avatarText}>{firstName[0]?.toUpperCase() ?? 'G'}</Text></GlassCard>
-        </View>
-        <GlassCard style={styles.balance}>
-          <Text style={styles.label}>Saldo disponível</Text>
-          {loading ? <ActivityIndicator color={orange} style={{ alignSelf: 'flex-start', marginVertical: 16 }} /> : <Text style={styles.amount}>{format(balance)}</Text>}
-          <View style={styles.balanceRow}><View><Text style={styles.muted}>Entradas</Text><Text style={styles.green}>{format(monthly.income)}</Text></View><View><Text style={styles.muted}>Saídas</Text><Text style={styles.red}>{format(monthly.expense)}</Text></View></View>
-        </GlassCard>
-        <Pressable onPress={quickAdd} style={styles.quickWrap}>
-          <GlassCard interactive style={styles.quick}><View style={styles.plus}><Ionicons name="add" size={25} color="#fff" /></View><View style={{ flex: 1 }}><Text style={styles.quickTitle}>Registrar gasto</Text><Text style={styles.quickSub}>Diga o que você comprou</Text></View><Ionicons name="arrow-forward" size={20} color="#8E8E93" /></GlassCard>
-        </Pressable>
-        <View style={styles.sectionHead}><Text style={styles.sectionTitle}>Movimentações</Text><Text style={styles.link}>Ver tudo</Text></View>
-        <GlassCard style={styles.list}>
-          {loading ? <ActivityIndicator color={orange} style={{ paddingVertical: 24 }} /> : transactions.slice(0, 5).map((tx) => {
-            const positive = tx.type === 'income';
-            return <View key={tx.id} style={styles.transaction}>
-              <View style={styles.icon}><Ionicons name={positive ? 'arrow-down' : 'cart'} size={19} color={orange} /></View>
-              <View style={{ flex: 1 }}><Text style={styles.name} numberOfLines={1}>{tx.description || 'Lançamento'}</Text><Text style={styles.muted}>{new Date(`${tx.date}T12:00:00`).toLocaleDateString('pt-BR')}</Text></View>
-              <Text style={[styles.value, positive && styles.green]}>{positive ? '+' : '−'} {format(Number(tx.amount))}</Text>
-            </View>;
-          })}
-          {!loading && transactions.length === 0 ? <Text style={styles.empty}>Ainda não há lançamentos.</Text> : null}
-        </GlassCard>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); void load(true); }} tintColor={C.orange} />}>
+        <View style={styles.header}><View><Text style={styles.eyebrow}>FINANZZI</Text><Text style={styles.greeting}>Olá, {firstName}.</Text></View><Pressable onPress={() => router.push('/profile')} accessibilityLabel="Abrir perfil" hitSlop={8}><GlassCard style={styles.avatar}><Text style={styles.avatarText}>{firstName.slice(0, 1).toUpperCase()}</Text></GlassCard></Pressable></View>
+        {error ? <GlassCard style={styles.errorCard}><Ionicons name="cloud-offline-outline" size={20} color={C.red} /><View style={styles.flex}><Text style={styles.errorTitle}>Não foi possível atualizar</Text><Text style={styles.errorText}>{error}</Text></View><Pressable onPress={() => void load()}><Text style={styles.retry}>Tentar</Text></Pressable></GlassCard> : null}
+        <GlassCard style={styles.balanceCard} tintColor="rgba(217,95,24,0.10)"><View style={styles.balanceTop}><Text style={styles.balanceLabel}>Saldo disponível</Text><Ionicons name="eye-outline" size={19} color={C.muted} /></View>{loading ? <ActivityIndicator color={C.orange} style={styles.loader} /> : <Text style={styles.balance}>{formatBRL(balance)}</Text>}<View style={styles.balanceStats}><View><Text style={styles.statLabel}>Entradas no mês</Text><Text style={styles.income}>{formatBRL(monthly.income)}</Text></View><View><Text style={styles.statLabel}>Saídas no mês</Text><Text style={styles.expense}>{formatBRL(monthly.expense)}</Text></View></View></GlassCard>
+        <Pressable onPress={openQuick} accessibilityRole="button" accessibilityLabel="Registrar novo gasto" style={({ pressed }) => pressed && styles.pressed}><GlassCard interactive style={styles.quickCard} tintColor="rgba(217,95,24,0.13)"><View style={styles.quickIcon}><Ionicons name="add" size={26} color="#fff" /></View><View style={styles.flex}><Text style={styles.quickTitle}>Registrar gasto</Text><Text style={styles.quickSubtitle}>Digite ou descreva o que aconteceu</Text></View><Ionicons name="arrow-up-right" size={21} color={C.muted} /></GlassCard></Pressable>
+        <View style={styles.sectionHeader}><Text style={styles.sectionTitle}>Movimentações</Text><Pressable onPress={() => router.push('/(tabs)/lancamentos')}><Text style={styles.link}>Ver tudo</Text></Pressable></View>
+        <GlassCard style={styles.listCard}>{loading ? <ActivityIndicator color={C.orange} style={{ paddingVertical: 28 }} /> : recent.length === 0 ? <View style={styles.empty}><Ionicons name="wallet-outline" size={25} color={C.muted} /><Text style={styles.emptyTitle}>Seu histórico começa aqui</Text><Text style={styles.emptyText}>Registre o primeiro lançamento e o FINANZZI começa a organizar sua vida financeira.</Text></View> : recent.map((tx, index) => { const category = data?.categories.find((c) => c.id === tx.category_id)?.name; const positive = tx.type === 'income'; return <View key={tx.id} style={[styles.transaction, index === recent.length - 1 && styles.lastRow]}><View style={styles.transactionIcon}><Ionicons name={transactionIcon(tx.description, category)} size={19} color={C.orange} /></View><View style={styles.flex}><Text style={styles.transactionName} numberOfLines={1}>{tx.description || 'Lançamento'}</Text><Text style={styles.transactionMeta}>{category ?? 'Sem categoria'} · {new Date(`${tx.date}T12:00:00`).toLocaleDateString('pt-BR')}</Text></View><Text style={[styles.transactionValue, positive ? styles.income : styles.outgoing]}>{positive ? '+' : '−'} {formatBRL(Number(tx.amount))}</Text></View>; })}</GlassCard>
+        {change !== null ? <View style={styles.insight}><Ionicons name={change > 0 ? 'trending-up-outline' : 'trending-down-outline'} size={20} color={change > 0 ? C.red : C.green} /><View style={styles.flex}><Text style={styles.insightTitle}>{change > 0 ? `Saídas ${change}% acima` : `Saídas ${Math.abs(change)}% abaixo`} do mês anterior</Text><Text style={styles.insightText}>Veja o que mudou em Inteligência.</Text></View><Pressable onPress={() => router.push('/(tabs)/inteligencia')}><Ionicons name="chevron-forward" size={19} color={C.muted} /></Pressable></View> : null}
       </ScrollView>
+      {session?.user.id ? <QuickEntrySheet visible={quickVisible} userId={session.user.id} categories={data?.categories ?? []} accounts={data?.accounts ?? []} cards={data?.cards ?? []} onClose={() => setQuickVisible(false)} onSaved={() => void load(true)} /> : null}
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({ safe:{flex:1,backgroundColor:'#F5F5F7'}, content:{padding:20,paddingBottom:120,gap:18}, header:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginTop:8}, eyebrow:{fontSize:12,fontWeight:'800',letterSpacing:2,color:orange}, title:{fontSize:34,fontWeight:'700',letterSpacing:-1.2,color:'#111113',marginTop:2}, avatar:{width:46,height:46,alignItems:'center',justifyContent:'center',borderRadius:23},avatarText:{fontSize:17,fontWeight:'700',color:'#111113'},balance:{padding:24,minHeight:185,justifyContent:'space-between'},label:{fontSize:15,color:'#6E6E73'},amount:{fontSize:42,fontWeight:'700',letterSpacing:-1.8,color:'#111113',marginVertical:6},balanceRow:{flexDirection:'row',gap:48},muted:{fontSize:13,color:'#8E8E93'},green:{color:'#249A5A',fontWeight:'700'},red:{color:'#D94A4A',fontWeight:'700'},quickWrap:{marginTop:0},quick:{padding:17,flexDirection:'row',alignItems:'center',gap:14},plus:{width:46,height:46,borderRadius:23,backgroundColor:orange,alignItems:'center',justifyContent:'center'},quickTitle:{fontSize:16,fontWeight:'700',color:'#111113'},quickSub:{fontSize:13,color:'#8E8E93',marginTop:2},sectionHead:{flexDirection:'row',justifyContent:'space-between',alignItems:'center'},sectionTitle:{fontSize:21,fontWeight:'700',color:'#111113'},link:{fontSize:14,fontWeight:'600',color:orange},list:{paddingHorizontal:17},transaction:{minHeight:72,flexDirection:'row',alignItems:'center',gap:13,borderBottomWidth:StyleSheet.hairlineWidth,borderBottomColor:'rgba(60,60,67,.16)'},icon:{width:40,height:40,borderRadius:20,backgroundColor:'rgba(249,115,22,.12)',alignItems:'center',justifyContent:'center'},name:{fontSize:15,fontWeight:'600',color:'#111113'},value:{fontSize:14,fontWeight:'700',color:'#111113'},empty:{paddingVertical:28,textAlign:'center',color:'#8E8E93',fontSize:14}});
+const styles = StyleSheet.create({ safe: { flex: 1, backgroundColor: C.bg }, content: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 126, gap: 16 }, flex: { flex: 1 }, header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }, eyebrow: { color: C.orange, fontSize: 11, fontWeight: '800', letterSpacing: 2 }, greeting: { color: C.text, fontSize: 32, fontWeight: '700', letterSpacing: -1.2, marginTop: 2 }, avatar: { width: 46, height: 46, borderRadius: 23, alignItems: 'center', justifyContent: 'center' }, avatarText: { color: C.text, fontSize: 17, fontWeight: '800' }, balanceCard: { borderRadius: 28, padding: 22, minHeight: 196 }, balanceTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }, balanceLabel: { color: C.muted, fontSize: 14, fontWeight: '600' }, loader: { alignSelf: 'flex-start', marginVertical: 21 }, balance: { color: C.text, fontSize: 41, fontWeight: '750', letterSpacing: -1.8, marginTop: 10, marginBottom: 18 }, balanceStats: { flexDirection: 'row', gap: 42 }, statLabel: { color: C.muted, fontSize: 12, marginBottom: 3 }, income: { color: C.green, fontWeight: '750' }, expense: { color: C.red, fontWeight: '750' }, quickCard: { borderRadius: 24, minHeight: 74, padding: 14, flexDirection: 'row', alignItems: 'center', gap: 13 }, quickIcon: { width: 46, height: 46, borderRadius: 23, backgroundColor: C.orange, alignItems: 'center', justifyContent: 'center' }, quickTitle: { color: C.text, fontSize: 16, fontWeight: '750' }, quickSubtitle: { color: C.muted, fontSize: 13, marginTop: 2 }, sectionHeader: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', marginTop: 3 }, sectionTitle: { color: C.text, fontSize: 21, fontWeight: '750', letterSpacing: -0.4 }, link: { color: C.orange, fontSize: 14, fontWeight: '700' }, listCard: { borderRadius: 24, paddingHorizontal: 16 }, transaction: { minHeight: 73, flexDirection: 'row', alignItems: 'center', gap: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.line }, lastRow: { borderBottomWidth: 0 }, transactionIcon: { width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(217,95,24,0.12)', alignItems: 'center', justifyContent: 'center' }, transactionName: { color: C.text, fontSize: 15, fontWeight: '650' }, transactionMeta: { color: C.muted, fontSize: 12, marginTop: 3 }, transactionValue: { fontSize: 14, fontWeight: '750' }, outgoing: { color: C.text }, empty: { alignItems: 'center', paddingVertical: 28, paddingHorizontal: 14 }, emptyTitle: { color: C.text, fontSize: 16, fontWeight: '750', marginTop: 10 }, emptyText: { color: C.muted, fontSize: 13, lineHeight: 19, textAlign: 'center', marginTop: 5 }, insight: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 4, paddingTop: 3 }, insightTitle: { color: C.text, fontSize: 14, fontWeight: '700' }, insightText: { color: C.muted, fontSize: 12, marginTop: 3 }, errorCard: { borderRadius: 20, padding: 14, flexDirection: 'row', alignItems: 'center', gap: 10 }, errorTitle: { color: C.text, fontSize: 13, fontWeight: '700' }, errorText: { color: C.muted, fontSize: 11, marginTop: 2 }, retry: { color: C.orange, fontSize: 13, fontWeight: '750' }, pressed: { transform: [{ scale: 0.985 }] } });
