@@ -30,24 +30,32 @@ export async function saveTransaction(input: SaveTransactionInput): Promise<stri
   if (input.editingId) {
     const { error } = await supabase.from("transactions").update(base).eq("id", input.editingId).eq("user_id", input.userId);
     if (error) throw new Error(error.message);
-    return "Lançamento atualizado";
+    return input.editingId;
   }
   if (parts > 1) {
     const rows = buildInstallments({ userId: input.userId, creditCardId: base.credit_card_id, accountId: base.account_id, categoryId: base.category_id, description: base.description, totalAmount: input.amount, firstDate: input.date, installments: parts, notes: base.notes, paymentMethod: input.method, type: input.type });
-    const { error } = await supabase.from("transactions").insert(rows);
+    const { data, error } = await supabase.from("transactions").insert(rows).select("id").order("date", { ascending: true }).limit(1);
     if (error) throw new Error(error.message);
-    trackProductEvent("first_transaction"); return `Lançamento criado em ${parts} parcelas`;
+    const id = data?.[0]?.id;
+    if (!id) throw new Error("O lançamento foi criado, mas não foi possível confirmar seu identificador");
+    trackProductEvent("first_transaction");
+    return id;
   }
   if (input.recurrence !== "none") {
     const occurrences = input.recurrence === "yearly" ? 3 : 12;
     const rows = Array.from({ length: occurrences }, (_, i) => ({ ...base, user_id: input.userId, date: input.recurrence === "weekly" ? addDaysISO(input.date, i * 7) : addMonthsISO(input.date, input.recurrence === "yearly" ? i * 12 : i) }));
-    const { error } = await supabase.from("transactions").insert(rows);
+    const { data, error } = await supabase.from("transactions").insert(rows).select("id").order("date", { ascending: true }).limit(1);
     if (error) throw new Error(error.message);
-    trackProductEvent("first_transaction"); return "Lançamento recorrente criado";
+    const id = data?.[0]?.id;
+    if (!id) throw new Error("O lançamento foi criado, mas não foi possível confirmar seu identificador");
+    trackProductEvent("first_transaction");
+    return id;
   }
-  const { error } = await supabase.from("transactions").insert({ ...base, user_id: input.userId });
+  const { data, error } = await supabase.from("transactions").insert({ ...base, user_id: input.userId }).select("id").single();
   if (error) throw new Error(error.message);
-  trackProductEvent("first_transaction"); return "Lançamento registrado";
+  if (!data?.id) throw new Error("O lançamento foi criado, mas não foi possível confirmar seu identificador");
+  trackProductEvent("first_transaction");
+  return data.id;
 }
 
 export async function deleteTransaction(userId: string, transactionId: string): Promise<void> {
