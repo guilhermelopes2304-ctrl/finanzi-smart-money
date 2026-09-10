@@ -81,6 +81,9 @@ jobs:
       - name: Export iOS bundle
         working-directory: mobile
         run: npm run export -- --output-dir dist
+      - name: Export Android bundle
+        working-directory: mobile
+        run: npm run export:android -- --output-dir dist-android
 
   e2e:
     runs-on: ubuntu-latest
