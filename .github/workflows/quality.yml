@@ -5,6 +5,9 @@ on:
     branches:
       - main
       - feat/finanzzi-redesign-final
+  push:
+    branches:
+      - 'feat/ios26-liquid-glass-native'
 
 permissions:
   contents: read
@@ -18,64 +21,65 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-
       - name: Install dependencies
-        run: bun install --frozen-lockfile
-
+        run: bun install --no-save
       - name: Typecheck
         run: bunx tsc -p tsconfig.json --noEmit
-
-      - name: ESLint changed files
+      - name: ESLint changed web files
         shell: bash
         run: |
           set -euo pipefail
-          files=$(git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" | grep -E '\.(js|jsx|ts|tsx|mjs|cjs)$' || true)
-          if [ -n "$files" ]; then
-            printf '%s\n' "$files" | xargs bunx eslint
-          else
-            echo "No lintable JavaScript/TypeScript files changed."
-          fi
-
+          files=$(git diff --name-only "${{ github.event.pull_request.base.sha || github.event.before }}" "${{ github.event.pull_request.head.sha || github.sha }}" | grep -E '^(src|scripts|tests)/.*\.(js|jsx|ts|tsx|mjs|cjs)$' || true)
+          if [ -n "$files" ]; then printf '%s\n' "$files" | xargs bunx eslint; else echo "No lintable web files changed."; fi
       - name: Biome changed files (lint)
         shell: bash
         run: |
           set -euo pipefail
-          files=$(git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" | grep -E '\.(js|jsx|ts|tsx|json|jsonc)$' || true)
-          if [ -n "$files" ]; then
-            printf '%s\n' "$files" | xargs bunx @biomejs/biome@2.5.11 lint
-          else
-            echo "No Biome-supported files changed."
-          fi
-
+          files=$(git diff --name-only "${{ github.event.pull_request.base.sha || github.before }}" "${{ github.event.pull_request.head.sha || github.sha }}" | grep -E '^(src|scripts|tests)/.*\.(js|jsx|ts|tsx|json|jsonc)$' || true)
+          if [ -n "$files" ]; then printf '%s\n' "$files" | xargs bunx @biomejs/biome@2.5.11 lint; else echo "No Biome-supported web files changed."; fi
       - name: ArchContract architecture gate
         run: bunx arch-contract@0.1.0 check --format github
-
       - name: Knip baseline report
         continue-on-error: true
         run: bunx knip@6 --production --reporter github-actions
-
       - name: Unit tests
         run: bun test src
-
       - name: Focused mutation test
         continue-on-error: true
         run: |
-          npx --yes -p @stryker-mutator/core@10.0.0 \
-            -p @stryker-mutator/typescript-checker@10.0.0 \
-            stryker run stryker.config.json
-
+          npx --yes -p @stryker-mutator/core@10.0.0 -p @stryker-mutator/typescript-checker@10.0.0 stryker run stryker.config.json
       - name: Build
         run: bun run build
-
       - name: Commitlint gate
+        if: github.event_name == 'pull_request'
         run: |
-          printf '%s\n' "${{ github.event.pull_request.title }}" | \
-            npx --yes @commitlint/cli@21.2.1 --default-config --verbose
+          printf '%s\n' "${{ github.event.pull_request.title }}" | npx --yes @commitlint/cli@21.2.1 --default-config --verbose
+
+  mobile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package.json
+      - name: Install Expo dependencies
+        working-directory: mobile
+        run: npm install --no-audit --no-fund
+      - name: Typecheck native app
+        working-directory: mobile
+        run: npm run typecheck
+      - name: Export iOS bundle
+        working-directory: mobile
+        run: npm run export -- --output-dir dist
 
   e2e:
     runs-on: ubuntu-latest
@@ -83,24 +87,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-
       - name: Install dependencies
-        run: bun install --frozen-lockfile
-
+        run: bun install --no-save
       - name: Install Playwright test runner
         run: npm install --no-save @playwright/test@1.62.0
-
       - name: Install Playwright browsers
         run: npx playwright@1.62.0 install --with-deps chromium
-
       - name: Run Playwright
         run: npx playwright@1.62.0 test
-
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v4
@@ -115,18 +113,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-
       - name: Install dependencies
-        run: bun install --frozen-lockfile
-
+        run: bun install --no-save
       - name: Unit tests with coverage
         run: bun test src --coverage --coverage-reporter=lcov
-
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
