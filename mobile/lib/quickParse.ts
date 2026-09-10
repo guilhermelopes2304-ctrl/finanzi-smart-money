@@ -1,0 +1,89 @@
+import type { Account, Category, CreditCard, PaymentMethod, Recurrence, TransactionType } from '@/lib/types';
+
+export type QuickItem = { description: string; quantity: number; unitPrice: number; total: number };
+export type QuickResult = {
+  type: TransactionType; amount: number; items: QuickItem[]; description: string;
+  categoryId: string | null; accountId: string | null; cardId: string | null;
+  recurrence: Recurrence; installments: number | null; confidence: 'high' | 'medium' | 'low'; raw: string;
+};
+
+const expenseWords = ['gastei', 'gasto', 'paguei', 'pagar', 'pago', 'comprei', 'compra', 'saiu', 'debitou', 'despesa'];
+const incomeWords = ['recebi', 'receber', 'ganhei', 'entrou', 'caiu', 'salario', 'salário', 'renda', 'receita', 'pix recebido', 'vendi'];
+const synonyms: Record<string, string[]> = {
+  mercado: ['alimentação', 'alimentacao', 'supermercado'], supermercado: ['alimentação', 'alimentacao'], restaurante: ['alimentação', 'alimentacao'], ifood: ['alimentação', 'alimentacao'],
+  uber: ['transporte'], gasolina: ['transporte'], combustivel: ['transporte'], combustível: ['transporte'], taxi: ['transporte'], ônibus: ['transporte'], onibus: ['transporte'],
+  farmacia: ['saúde', 'saude'], farmácia: ['saúde', 'saude'], remedio: ['saúde', 'saude'], academia: ['saúde', 'saude'], medico: ['saúde', 'saude'], médico: ['saúde', 'saude'],
+  netflix: ['lazer'], spotify: ['lazer'], prime: ['lazer'], cinema: ['lazer'], viagem: ['lazer'],
+  roupa: ['compras', 'vestuário', 'vestuario'], tenis: ['compras'], celular: ['compras'], presente: ['compras'],
+  luz: ['moradia', 'casa', 'contas'], energia: ['moradia', 'casa', 'contas'], agua: ['moradia', 'casa', 'contas'], aluguel: ['moradia', 'casa'], internet: ['moradia', 'casa', 'contas'],
+};
+
+function normalize(text: string) { return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+function money(raw: string) { const n = Number.parseFloat(raw.includes(',') ? raw.replace(/\./g, '').replace(',', '.') : raw); return Number.isFinite(n) && n > 0 ? n : null; }
+
+function extractItems(text: string): QuickItem[] {
+  const n = normalize(text);
+  const patterns = [
+    /(?:^|\b(?:e|mais)\s+|\b(?:comprei|paguei|peguei|adquiri)\s+)(\d{1,3})\s+(.+?)\s+(?:a\s+|de\s+)(?:r\$\s*)?(\d{1,3}(?:\.\d{3})*(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)\s*(?:reais?|r\$)?\s*(?:cada)?(?=\s*(?:e|mais)\s+\d+\s|$)/g,
+    /(?:^|\b(?:e|mais)\s+|\b(?:comprei|paguei|peguei|adquiri)\s+)(\d{1,3})\s+(.+?)\s+(?:por\s+)?(?:r\$\s*)?(\d{1,3}(?:\.\d{3})*(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)\s*(?:reais?|r\$)?\s+cada\b(?=\s*(?:e|mais)\s+\d+\s|$)/g,
+  ];
+  const matches = patterns.flatMap((pattern) => Array.from(n.matchAll(pattern))).sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
+  const seen = new Set<string>();
+  return matches.flatMap((m) => {
+    const quantity = Number(m[1]); const description = (m[2] ?? '').replace(/^de\s+/, '').replace(/\s+/g, ' ').trim(); const unitPrice = money(m[3] ?? '');
+    const key = `${m.index}:${quantity}:${description}:${unitPrice}`;
+    if (seen.has(key) || !Number.isInteger(quantity) || quantity < 2 || !description || !unitPrice) return [];
+    seen.add(key); return [{ description, quantity, unitPrice, total: Number((quantity * unitPrice).toFixed(2)) }];
+  });
+}
+
+function matchCategory(words: string[], categories: Category[], type: TransactionType) {
+  const pool = categories.filter((c) => c.kind === type || c.kind === 'both');
+  for (const word of words) {
+    const direct = pool.find((c) => normalize(c.name) === word || normalize(c.name).includes(word) || word.includes(normalize(c.name)));
+    if (direct) return direct.id;
+    const target = synonyms[word]; if (target) { const found = pool.find((c) => target.includes(normalize(c.name))); if (found) return found.id; }
+  }
+  return null;
+}
+
+function matchOwned(text: string, words: string[], rows: Array<{ id: string; name: string; bank: string | null }>) {
+  for (const row of rows) {
+    const name = normalize(row.name); const bank = row.bank ? normalize(row.bank) : '';
+    if ((name && text.includes(name)) || (bank && text.includes(bank))) return row.id;
+    if (words.some((word) => word.length > 3 && (name.includes(word) || bank.includes(word)))) return row.id;
+  }
+  return null;
+}
+
+function description(raw: string, items: QuickItem[]) {
+  if (items.length) return items.map((item) => item.description).join(', ');
+  const cleaned = raw.replace(/(?:r\$\s*)?\d+(?:[.,]\d{1,2})?\s*(?:reais?|r\$)?/gi, ' ').replace(/\s+/g, ' ').trim();
+  return cleaned.replace(/^(?:eu\s+)?(?:gastei|paguei|comprei|recebi|ganhei|vendi)\s+/i, '').trim().slice(0, 80) || 'Lançamento';
+}
+
+function recurrence(raw: string): Recurrence {
+  const n = normalize(raw);
+  if (/(todo|cada)\s+mes|mensal|por\s+mes/.test(n)) return 'monthly';
+  if (/(todo|cada)\s+semana|semanal/.test(n)) return 'weekly';
+  if (/(todo|cada)\s+ano|anual|por\s+ano/.test(n)) return 'yearly';
+  if (!/(comprei|paguei|gastei|recebi|ganhei|vendi)/.test(n) && /(netflix|spotify|prime|icloud|academia|internet|celular|aluguel|condominio|luz)/.test(n)) return 'monthly';
+  return 'none';
+}
+
+function installments(raw: string) { const m = normalize(raw).match(/(?:em|por|x\s*de?)\s*(\d{1,2})\s*x|\b(\d{1,2})\s*x\b/); const value = Number(m?.[1] ?? m?.[2] ?? 0); return value >= 2 ? Math.min(72, value) : null; }
+
+export function parseQuickEntry(raw: string, categories: Category[], cards: CreditCard[], accounts: Account[]): QuickResult {
+  const text = normalize(raw); const words = text.split(/[^a-z0-9]+/).filter(Boolean); const items = extractItems(raw);
+  const genericAmount = text.match(/(?:r\$\s*)?(\d{1,3}(?:\.\d{3})*(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)/);
+  const amount = items.length ? Number(items.reduce((sum, item) => sum + item.total, 0).toFixed(2)) : money(genericAmount?.[1] ?? '') ?? 0;
+  const type: TransactionType = incomeWords.some((w) => text.includes(w)) ? 'income' : 'expense';
+  const categoryId = amount ? matchCategory(words, categories, type) : null;
+  const accountId = matchOwned(text, words, accounts);
+  const cardId = matchOwned(text, words, cards);
+  const rec = recurrence(raw); const parts = installments(raw);
+  const confidence = amount && (categoryId || items.length) ? 'high' : amount ? 'medium' : 'low';
+  return { type, amount, items, description: description(raw, items), categoryId, accountId, cardId, recurrence: rec, installments: parts, confidence, raw: raw.trim() };
+}
+
+export const defaultPaymentMethod: PaymentMethod = 'pix';
