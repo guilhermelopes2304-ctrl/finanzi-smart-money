@@ -1,6 +1,6 @@
-import { GlassContainer, isGlassEffectAPIAvailable } from 'expo-glass-effect';
+import { GlassContainer, GlassView, isGlassEffectAPIAvailable } from 'expo-glass-effect';
 import { PropsWithChildren } from 'react';
-import { Platform, StyleSheet, View, ViewStyle } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
 export function GlassFilterGroup({ children, style }: PropsWithChildren<{ style?: ViewStyle }>) {
   const available = Platform.OS === 'ios' && isGlassEffectAPIAvailable();
@@ -8,4 +8,10 @@ export function GlassFilterGroup({ children, style }: PropsWithChildren<{ style?
   return <GlassContainer spacing={8} style={[styles.container, style]}>{children}</GlassContainer>;
 }
 
-const styles = StyleSheet.create({ container: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start' }, fallback: { flexDirection: 'row', gap: 8 } });
+export function GlassFilter({ active, label, onPress }: { active: boolean; label: string; onPress: () => void }) {
+  const available = Platform.OS === 'ios' && isGlassEffectAPIAvailable();
+  if (!available) return <Pressable onPress={onPress} style={[styles.filter, active && styles.activeFallback]}><Text style={[styles.text, active && styles.activeText]}>{label}</Text></Pressable>;
+  return <Pressable onPress={onPress} style={styles.pressable}><GlassView style={[styles.filter, active && styles.active]} glassEffectStyle="regular" isInteractive><Text style={[styles.text, active && styles.activeText]}>{label}</Text></GlassView></Pressable>;
+}
+
+const styles = StyleSheet.create({ container: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start' }, fallback: { flexDirection: 'row', gap: 8 }, pressable: { borderRadius: 17 }, filter: { height: 34, minWidth: 66, borderRadius: 17, paddingHorizontal: 13, alignItems: 'center', justifyContent: 'center' }, active: { backgroundColor: 'rgba(217,95,24,0.18)' }, activeFallback: { backgroundColor: 'rgba(217,95,24,0.18)' }, text: { color: '#8E8E96', fontSize: 13, fontWeight: '650' }, activeText: { color: '#D95F18' } });
