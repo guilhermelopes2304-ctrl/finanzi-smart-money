@@ -1,0 +1,34 @@
+import { useRouter } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { GlassCard } from '@/components/GlassCard';
+import { formatBRL, loadFinanceSnapshot } from '@/lib/finance';
+import type { FinanceSnapshot } from '@/lib/types';
+import { supabase } from '@/lib/supabase';
+import { useNativeAuth } from '@/providers/AuthProvider';
+import { Ionicons } from '@expo/vector-icons';
+
+const C = { bg: '#0A0A0C', text: '#F5F5F7', muted: '#8E8E96', orange: '#D95F18', red: '#FF6F72', line: 'rgba(255,255,255,0.09)' };
+
+export default function Profile() {
+  const router = useRouter(); const { session } = useNativeAuth(); const [data, setData] = useState<FinanceSnapshot | null>(null); const [loading, setLoading] = useState(true); const [signingOut, setSigningOut] = useState(false);
+  const load = useCallback(async () => { if (!session?.user.id) return; try { setData(await loadFinanceSnapshot(session.user.id)); } finally { setLoading(false); } }, [session?.user.id]);
+  useEffect(() => { void load(); }, [load]);
+  const profile = data?.profile; const name = profile?.name || session?.user.user_metadata?.name || 'Usuário'; const email = profile?.email || session?.user.email || '';
+  async function logout() { setSigningOut(true); await supabase.auth.signOut(); setSigningOut(false); router.replace('/auth'); }
+  return (
+    <SafeAreaView style={styles.safe}>
+      <ScrollView contentContainerStyle={styles.content}>
+        <View style={styles.top}><Pressable onPress={() => router.back()} hitSlop={10}><Ionicons name="chevron-back" size={27} color={C.text} /></Pressable><Text style={styles.topTitle}>Perfil</Text><View style={{ width: 27 }} /></View>
+        {loading ? <ActivityIndicator color={C.orange} style={{ marginTop: 80 }} /> : <>
+          <GlassCard style={styles.identity}><View style={styles.avatar}><Text style={styles.avatarText}>{name.slice(0, 1).toUpperCase()}</Text></View><Text style={styles.name}>{name}</Text><Text style={styles.email}>{email}</Text></GlassCard>
+          <Text style={styles.section}>Resumo</Text><GlassCard style={styles.card}><Row label="Saldo atual" value={formatBRL(Number(profile?.current_balance ?? 0))} /><Row label="Renda mensal" value={formatBRL(Number(profile?.monthly_income ?? 0))} /><Row label="Contas" value={`${data?.accounts.length ?? 0}`} /><Row label="Cartões" value={`${data?.cards.length ?? 0}`} last /></GlassCard>
+          <Text style={styles.section}>Conta</Text><GlassCard style={styles.card}><Pressable style={styles.menu} onPress={() => router.push('/auth')}><Ionicons name="person-outline" size={19} color={C.muted} /><Text style={styles.menuText}>Dados de acesso</Text><Ionicons name="chevron-forward" size={18} color={C.muted} /></Pressable><Pressable style={styles.menu} onPress={logout} disabled={signingOut}><Ionicons name="log-out-outline" size={19} color={C.red} /><Text style={styles.logout}>{signingOut ? 'Saindo…' : 'Sair da conta'}</Text></Pressable></GlassCard>
+        </>}
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+function Row({ label, value, last }: { label: string; value: string; last?: boolean }) { return <View style={[styles.row, last && styles.last]}><Text style={styles.label}>{label}</Text><Text style={styles.value}>{value}</Text></View>; }
+const styles = StyleSheet.create({ safe: { flex: 1, backgroundColor: C.bg }, content: { padding: 20, paddingBottom: 50 }, top: { height: 52, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }, topTitle: { color: C.text, fontSize: 17, fontWeight: '750' }, identity: { borderRadius: 27, padding: 26, alignItems: 'center', marginTop: 12 }, avatar: { width: 76, height: 76, borderRadius: 38, backgroundColor: C.orange, alignItems: 'center', justifyContent: 'center' }, avatarText: { color: '#fff', fontSize: 28, fontWeight: '800' }, name: { color: C.text, fontSize: 22, fontWeight: '750', marginTop: 13 }, email: { color: C.muted, fontSize: 13, marginTop: 4 }, section: { color: C.muted, fontSize: 12, fontWeight: '800', letterSpacing: 1.3, marginTop: 22, marginBottom: 8, textTransform: 'uppercase' }, card: { borderRadius: 23, paddingHorizontal: 16 }, row: { minHeight: 52, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.line }, last: { borderBottomWidth: 0 }, label: { color: C.muted, fontSize: 14 }, value: { color: C.text, fontSize: 14, fontWeight: '700' }, menu: { minHeight: 55, flexDirection: 'row', alignItems: 'center', gap: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.line }, menuText: { color: C.text, fontSize: 14, flex: 1 }, logout: { color: C.red, fontSize: 14, fontWeight: '700', flex: 1 } });
