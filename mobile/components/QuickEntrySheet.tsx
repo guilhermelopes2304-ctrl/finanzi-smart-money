@@ -1,0 +1,137 @@
+import * as Haptics from 'expo-haptics';
+import { useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { GlassCard } from '@/components/GlassCard';
+import { addDays, addMonths, formatBRL } from '@/lib/finance';
+import { defaultPaymentMethod, parseQuickEntry, type QuickResult } from '@/lib/quickParse';
+import type { Account, Category, CreditCard } from '@/lib/types';
+import { supabase } from '@/lib/supabase';
+
+const ORANGE = '#D95F18';
+const DARK = '#0B0B0D';
+const SURFACE = '#17171A';
+
+export function QuickEntrySheet({
+  visible,
+  userId,
+  categories,
+  accounts,
+  cards,
+  onClose,
+  onSaved,
+}: {
+  visible: boolean; userId: string; categories: Category[]; accounts: Account[]; cards: CreditCard[];
+  onClose: () => void; onSaved: () => void;
+}) {
+  const [text, setText] = useState('');
+  const [result, setResult] = useState<QuickResult | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => { if (!visible) { setText(''); setResult(null); setError(''); setSaving(false); } }, [visible]);
+
+  const parsed = useMemo(() => text.trim() ? parseQuickEntry(text, categories, cards, accounts) : null, [text, categories, cards, accounts]);
+
+  useEffect(() => { setResult(parsed); setError(''); }, [parsed]);
+
+  async function save() {
+    if (!result || result.amount <= 0 || saving) return;
+    setSaving(true); setError('');
+    try {
+      const date = new Date().toISOString().slice(0, 10);
+      const base = {
+        user_id: userId,
+        description: result.description,
+        amount: result.amount,
+        type: result.type,
+        category_id: result.categoryId,
+        account_id: result.accountId,
+        credit_card_id: result.cardId,
+        payment_method: result.cardId ? 'credito' : defaultPaymentMethod,
+        notes: result.items.length ? result.items.map((item) => `${item.quantity} ${item.description} × ${formatBRL(item.unitPrice)}`).join('; ') : null,
+        recurrence: result.recurrence,
+      };
+
+      if (result.installments && result.installments > 1) {
+        const count = result.installments;
+        const installmentAmount = Number((result.amount / count).toFixed(2));
+        const rows = Array.from({ length: count }, (_, index) => ({
+          ...base,
+          amount: index === count - 1 ? Number((result.amount - installmentAmount * (count - 1)).toFixed(2)) : installmentAmount,
+          date: addMonths(date, index),
+          installment_number: index + 1,
+          installment_total: count,
+          recurrence: 'none',
+        }));
+        const { error: insertError } = await supabase.from('transactions').insert(rows);
+        if (insertError) throw new Error(insertError.message);
+      } else if (result.recurrence !== 'none') {
+        const count = result.recurrence === 'yearly' ? 3 : 12;
+        const rows = Array.from({ length: count }, (_, index) => ({
+          ...base,
+          date: result.recurrence === 'weekly' ? addDays(date, index * 7) : addMonths(date, result.recurrence === 'yearly' ? index * 12 : index),
+        }));
+        const { error: insertError } = await supabase.from('transactions').insert(rows);
+        if (insertError) throw new Error(insertError.message);
+      } else {
+        const { error: insertError } = await supabase.from('transactions').insert({ ...base, date });
+        if (insertError) throw new Error(insertError.message);
+      }
+
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      onSaved(); onClose();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Não foi possível registrar o lançamento.');
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+    } finally { setSaving(false); }
+  }
+
+  const categoryName = categories.find((c) => c.id === result?.categoryId)?.name;
+  const accountName = accounts.find((a) => a.id === result?.accountId)?.name;
+  const cardName = cards.find((c) => c.id === result?.cardId)?.name;
+
+  return (
+    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
+      <View style={styles.screen}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.flex}>
+          <View style={styles.topbar}><Text style={styles.topTitle}>Novo lançamento</Text><Pressable onPress={onClose} accessibilityLabel="Fechar"><Text style={styles.cancel}>Cancelar</Text></Pressable></View>
+          <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+            <Text style={styles.eyebrow}>QUICK ENTRY</Text>
+            <Text style={styles.title}>Fale do seu jeito.</Text>
+            <Text style={styles.subtitle}>Ex.: “comprei 3 óleos de motor de 15 reais”.</Text>
+            <TextInput
+              autoFocus multiline value={text} onChangeText={setText} placeholder="O que aconteceu com seu dinheiro?" placeholderTextColor="#737379"
+              style={styles.input} textAlignVertical="top" accessibilityLabel="Descrição do lançamento"
+            />
+
+            {result && result.amount > 0 ? (
+              <GlassCard style={styles.preview} tintColor="rgba(217,95,24,0.08)">
+                <View style={styles.previewHeader}><Text style={styles.previewLabel}>PRÉVIA</Text><Text style={styles.confidence}>{result.confidence === 'high' ? 'Alta confiança' : 'Revise antes de salvar'}</Text></View>
+                {result.items.length ? result.items.map((item) => (
+                  <View key={`${item.description}-${item.quantity}`} style={styles.itemRow}>
+                    <View style={styles.itemQty}><Text style={styles.qty}>{item.quantity}</Text></View>
+                    <View style={styles.itemCopy}><Text style={styles.itemName}>{item.description}</Text><Text style={styles.itemMeta}>× {formatBRL(item.unitPrice)}</Text></View>
+                    <Text style={styles.itemTotal}>{formatBRL(item.total)}</Text>
+                  </View>
+                )) : <View><Text style={styles.itemName}>{result.description}</Text><Text style={styles.itemMeta}>{result.type === 'income' ? 'Entrada' : 'Saída'}</Text></View>}
+                <View style={styles.totalRow}><Text style={styles.totalLabel}>Total</Text><Text style={[styles.total, result.type === 'income' && styles.income]}>{formatBRL(result.amount)}</Text></View>
+                <View style={styles.metaRow}>
+                  <Text style={styles.metaChip}>{categoryName ?? 'Sem categoria'}</Text>
+                  <Text style={styles.metaChip}>{cardName ?? accountName ?? 'Sem conta'}</Text>
+                </View>
+              </GlassCard>
+            ) : null}
+
+            {error ? <Text style={styles.error}>{error}</Text> : null}
+            <Pressable onPress={save} disabled={!result || result.amount <= 0 || saving} style={({ pressed }) => [styles.save, (!result || result.amount <= 0) && styles.disabled, pressed && styles.pressed]}>
+              {saving ? <ActivityIndicator color="#fff" /> : <Text style={styles.saveText}>Confirmar lançamento</Text>}
+            </Pressable>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </View>
+    </Modal>
+  );
+}
+
+const styles = StyleSheet.create({
+  flex: { flex: 1 }, screen: { flex: 1, backgroundColor: DARK }, topbar: { height: 60, paddingHorizontal: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }, topTitle: { color: '#F5F5F7', fontSize: 17, fontWeight: '700' }, cancel: { color: ORANGE, fontSize: 16, fontWeight: '600' }, content: { padding: 22, paddingBottom: 40, gap: 16 }, eyebrow: { color: ORANGE, fontSize: 11, fontWeight: '800', letterSpacing: 1.7 }, title: { color: '#F5F5F7', fontSize: 34, fontWeight: '750', letterSpacing: -1.3, marginTop: -4 }, subtitle: { color: '#9A9AA1', fontSize: 15, lineHeight: 21, marginTop: -7 }, input: { minHeight: 122, borderRadius: 22, backgroundColor: SURFACE, color: '#F5F5F7', padding: 17, fontSize: 17, lineHeight: 24, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)' }, preview: { borderRadius: 24, padding: 18, gap: 12 }, previewHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }, previewLabel: { color: '#8F8F96', fontSize: 11, fontWeight: '800', letterSpacing: 1.4 }, confidence: { color: '#7ECA9D', fontSize: 11, fontWeight: '700' }, itemRow: { flexDirection: 'row', alignItems: 'center', gap: 11 }, itemQty: { width: 34, height: 34, borderRadius: 17, backgroundColor: 'rgba(217,95,24,0.14)', alignItems: 'center', justifyContent: 'center' }, qty: { color: ORANGE, fontSize: 14, fontWeight: '800' }, itemCopy: { flex: 1 }, itemName: { color: '#F5F5F7', fontSize: 16, fontWeight: '650' }, itemMeta: { color: '#8F8F96', fontSize: 13, marginTop: 2 }, itemTotal: { color: '#F5F5F7', fontSize: 15, fontWeight: '700' }, totalRow: { marginTop: 4, paddingTop: 14, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: 'rgba(255,255,255,0.14)', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }, totalLabel: { color: '#A4A4AA', fontSize: 14 }, total: { color: ORANGE, fontSize: 25, fontWeight: '800', letterSpacing: -0.5 }, income: { color: '#6ED19A' }, metaRow: { flexDirection: 'row', gap: 8, flexWrap: 'wrap' }, metaChip: { color: '#BDBDC2', backgroundColor: 'rgba(118,118,128,0.12)', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 12, fontSize: 12 }, error: { color: '#FF7A7A', fontSize: 13, lineHeight: 18 }, save: { height: 56, borderRadius: 28, backgroundColor: ORANGE, alignItems: 'center', justifyContent: 'center', marginTop: 2 }, disabled: { opacity: 0.42 }, pressed: { transform: [{ scale: 0.985 }] }, saveText: { color: '#fff', fontSize: 16, fontWeight: '800' }, });
