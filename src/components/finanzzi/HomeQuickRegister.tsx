@@ -6,7 +6,7 @@ import { useAccounts, useBills, useCategories, useCreditCards, useInvalidateFina
 import { interpretFinanceMessage } from "@/lib/channel-engine";
 import { deleteTransaction, saveTransaction } from "@/lib/transactions";
 import { saveRecurringBill } from "@/lib/bills";
-import { formatBRL, parseBRL, todayISO } from "@/lib/format";
+import { formatBRL, todayISO } from "@/lib/format";
 import { supabase } from "@/integrations/supabase/client";
 import { TransactionDialog } from "@/components/finanzzi/TransactionDialog";
 import type { Transaction, TransactionType } from "@/types/finance";
@@ -15,7 +15,6 @@ import { cn } from "@/lib/utils";
 type SpeechResultLike = { isFinal: boolean; 0?: { transcript?: string } };
 type SpeechRecognitionLike = { lang: string; continuous: boolean; interimResults: boolean; onresult: ((event: { resultIndex?: number; results: SpeechResultLike[] }) => void) | null; onerror: ((event?: { error?: string }) => void) | null; onend: (() => void) | null; start: () => void; stop: () => void };
 type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
-
 type Props = { profileName?: string | null };
 
 async function findSavedTransaction(userId: string, description: string, amount: number, type: TransactionType) {
@@ -28,10 +27,9 @@ async function findSavedTransaction(userId: string, description: string, amount:
     .eq("type", type)
     .eq("date", todayISO())
     .order("date", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .limit(1);
   if (error) throw new Error(error.message);
-  return (data as Transaction | null) ?? null;
+  return (data?.[0] as Transaction | undefined) ?? null;
 }
 
 export function HomeQuickRegister({ profileName }: Props) {
@@ -47,7 +45,6 @@ export function HomeQuickRegister({ profileName }: Props) {
   const [saved, setSaved] = useState<Transaction | null>(null);
   const [editOpen, setEditOpen] = useState(false);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
-
   const firstName = profileName?.split(" ")[0] || "você";
 
   async function register(rawText: string) {
@@ -101,28 +98,14 @@ export function HomeQuickRegister({ profileName }: Props) {
     }
   }
 
-  function submit(event: React.FormEvent) {
-    event.preventDefault();
-    void register(text);
-  }
-
-  function stopListening() {
-    recognitionRef.current?.stop();
-    recognitionRef.current = null;
-    setListening(false);
-  }
+  function submit(event: React.FormEvent) { event.preventDefault(); void register(text); }
+  function stopListening() { recognitionRef.current?.stop(); recognitionRef.current = null; setListening(false); }
 
   function startVoice() {
     const voiceWindow = window as typeof window & { SpeechRecognition?: SpeechRecognitionConstructor; webkitSpeechRecognition?: SpeechRecognitionConstructor };
     const Ctor = voiceWindow.SpeechRecognition ?? voiceWindow.webkitSpeechRecognition;
-    if (!Ctor) {
-      toast.error("O reconhecimento de voz não está disponível neste navegador.");
-      return;
-    }
-    if (listening) {
-      stopListening();
-      return;
-    }
+    if (!Ctor) { toast.error("O reconhecimento de voz não está disponível neste navegador."); return; }
+    if (listening) { stopListening(); return; }
     const recognition = new Ctor();
     recognition.lang = "pt-BR";
     recognition.continuous = false;
@@ -133,8 +116,7 @@ export function HomeQuickRegister({ profileName }: Props) {
       for (let index = event.resultIndex ?? 0; index < event.results.length; index += 1) {
         const result = event.results[index];
         const transcript = result?.[0]?.transcript ?? "";
-        if (result?.isFinal) finalText += transcript;
-        else interimText += transcript;
+        if (result?.isFinal) finalText += transcript; else interimText += transcript;
       }
       if (finalText.trim()) {
         recognitionRef.current = null;
@@ -148,10 +130,7 @@ export function HomeQuickRegister({ profileName }: Props) {
       setListening(false);
       if (event?.error === "not-allowed" || event?.error === "service-not-allowed") toast.error("Permita o acesso ao microfone para registrar por voz.");
     };
-    recognition.onend = () => {
-      recognitionRef.current = null;
-      setListening(false);
-    };
+    recognition.onend = () => { recognitionRef.current = null; setListening(false); };
     recognitionRef.current = recognition;
     setListening(true);
     try { recognition.start(); } catch { recognitionRef.current = null; setListening(false); }
@@ -169,9 +148,7 @@ export function HomeQuickRegister({ profileName }: Props) {
       toast.success("Lançamento cancelado", { description: "O valor foi removido dos seus registros." });
     } catch {
       toast.error("Não foi possível cancelar o lançamento.");
-    } finally {
-      setBusy(false);
-    }
+    } finally { setBusy(false); }
   }
 
   return (
@@ -181,7 +158,6 @@ export function HomeQuickRegister({ profileName }: Props) {
         <h1 className="mt-3 text-[2rem] font-semibold leading-tight tracking-[-0.05em] sm:text-4xl">Registre seu dinheiro sem complicação.</h1>
         <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-foreground">Digite ou fale o que aconteceu. O FINANZZI registra automaticamente.</p>
       </div>
-
       <form onSubmit={submit} className="mt-7 rounded-[28px] border border-white/[0.10] bg-card/90 p-2 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl focus-within:border-primary/35">
         <div className="flex items-center gap-2">
           <textarea value={text} onChange={(event) => setText(event.target.value)} disabled={busy} rows={1} placeholder="Ex.: gastei 45 no combustível" aria-label="Registrar entrada ou saída" className="min-h-12 min-w-0 flex-1 resize-none bg-transparent px-3 py-3 text-base outline-none placeholder:text-muted-foreground" />
@@ -190,7 +166,6 @@ export function HomeQuickRegister({ profileName }: Props) {
         </div>
         <div className="px-3 pb-2 pt-1 text-[11px] text-muted-foreground">Ex.: “comprei 3 óleos de motor de 15 reais” ou “recebi 2 mil de salário”.</div>
       </form>
-
       {saved && (
         <div className="mt-5 rounded-[24px] border border-primary/20 bg-primary/[0.045] p-4 shadow-sm animate-fin-enter sm:p-5">
           <div className="flex items-start gap-3">
@@ -207,7 +182,6 @@ export function HomeQuickRegister({ profileName }: Props) {
           </div>
         </div>
       )}
-
       {saved && <TransactionDialog open={editOpen} onOpenChange={(open) => { setEditOpen(open); if (!open) invalidate(); }} transaction={saved} />}
     </section>
   );
