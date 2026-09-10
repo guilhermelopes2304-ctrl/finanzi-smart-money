@@ -78,7 +78,6 @@ textarea { -webkit-tap-highlight-color: transparent; }
 [data-fin-app-shell] .fin-interactive { transition: transform .18s ease, background-color .18s ease, border-color .18s ease, box-shadow .18s ease; }
 [data-fin-app-shell] .fin-pressable:active { transform: scale(.985); }
 
-/* Internal screen refinement: shared rhythm, hierarchy and premium depth. */
 [data-fin-app-shell] .fin-screen {
   width: 100%;
   max-width: 1120px;
@@ -100,113 +99,80 @@ textarea { -webkit-tap-highlight-color: transparent; }
   box-shadow: 0 16px 44px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.025);
 }
 
-[data-fin-app-shell] .fin-screen .surface-card:hover {
-  border-color: rgba(255,77,0,.18);
-}
-
-[data-fin-app-shell] .fin-screen .fin-page-header-action > * {
-  max-width: 100%;
-}
-
+[data-fin-app-shell] .fin-screen .surface-card:hover { border-color: rgba(255,77,0,.18); }
+[data-fin-app-shell] .fin-screen .fin-page-header-action > * { max-width: 100%; }
 [data-fin-app-shell] .fin-screen input,
 [data-fin-app-shell] .fin-screen textarea,
-[data-fin-app-shell] .fin-screen select {
-  min-height: 44px;
-  border-radius: 14px;
-}
+[data-fin-app-shell] .fin-screen select { min-height: 44px; border-radius: 14px; }
+[data-fin-app-shell] .fin-screen [role="tablist"] { border: 1px solid rgba(255,255,255,.07); box-shadow: inset 0 1px 0 rgba(255,255,255,.025); }
 
-[data-fin-app-shell] .fin-screen [role="tablist"] {
-  border: 1px solid rgba(255,255,255,.07);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
-}
-
-/* History */
 [data-fin-app-shell] .fin-transactions .fin-page-header { margin-bottom: 1rem; }
 [data-fin-app-shell] .fin-transactions [data-fin-history-item] > .overflow-hidden,
-[data-fin-app-shell] .fin-transactions .overflow-hidden.rounded-\[24px\] {
-  box-shadow: 0 16px 40px rgba(0,0,0,.20);
-}
-
-/* Accounts */
+[data-fin-app-shell] .fin-transactions .overflow-hidden.rounded-\[24px\] { box-shadow: 0 16px 40px rgba(0,0,0,.20); }
 [data-fin-app-shell] .fin-accounts-tabs [role="tablist"] { margin-bottom: .75rem; }
-[data-fin-app-shell] .fin-accounts section {
-  border-color: rgba(255,255,255,.075);
-}
-
-/* Cards */
-[data-fin-app-shell] .fin-cards .surface-card {
-  overflow: hidden;
-}
-[data-fin-app-shell] .fin-cards .surface-card::before {
-  content: "";
-  display: block;
-  height: 1px;
-  margin: -1px 0 0;
-  background: linear-gradient(90deg, transparent, rgba(255,77,0,.32), transparent);
-  opacity: .7;
-}
-
-/* Insights / reports */
+[data-fin-app-shell] .fin-accounts section { border-color: rgba(255,255,255,.075); }
+[data-fin-app-shell] .fin-cards .surface-card { overflow: hidden; }
+[data-fin-app-shell] .fin-cards .surface-card::before { content: ""; display: block; height: 1px; margin: -1px 0 0; background: linear-gradient(90deg, transparent, rgba(255,77,0,.32), transparent); opacity: .7; }
 [data-fin-app-shell] .fin-insights .surface-card,
-[data-fin-app-shell] .fin-screen.fin-reports .surface-card {
-  position: relative;
-  overflow: hidden;
-}
+[data-fin-app-shell] .fin-screen.fin-reports .surface-card { position: relative; overflow: hidden; }
 [data-fin-app-shell] .fin-insights .surface-card::after,
-[data-fin-app-shell] .fin-screen.fin-reports .surface-card::after {
-  content: "";
-  position: absolute;
-  inset: auto -20% -70% 40%;
-  height: 180px;
-  background: radial-gradient(circle, rgba(255,77,0,.07), transparent 68%);
-  pointer-events: none;
-}
-
-/* Goals */
+[data-fin-app-shell] .fin-screen.fin-reports .surface-card::after { content: ""; position: absolute; inset: auto -20% -70% 40%; height: 180px; background: radial-gradient(circle, rgba(255,77,0,.07), transparent 68%); pointer-events: none; }
 [data-fin-app-shell] .fin-goals .surface-card,
-[data-fin-app-shell] .fin-metas .surface-card {
-  box-shadow: 0 14px 38px rgba(0,0,0,.18);
+[data-fin-app-shell] .fin-metas .surface-card { box-shadow: 0 14px 38px rgba(0,0,0,.18); }
+
+/* iOS/PWA material language. This is a web approximation, never a claim of native Liquid Glass. */
+@media (display-mode: standalone), (display-mode: fullscreen), (max-width: 1023px) {
+  [data-fin-app-shell] {
+    min-height: 100dvh;
+    min-height: -webkit-fill-available;
+  }
+
+  [data-fin-app-shell] main {
+    padding-bottom: max(5.75rem, calc(4.75rem + var(--fin-safe-bottom))) !important;
+  }
+
+  [data-fin-app-shell] .fin-mobile-tabbar {
+    padding-bottom: max(.35rem, var(--fin-safe-bottom));
+    background: linear-gradient(180deg, rgba(20,20,22,.72), rgba(14,14,16,.90));
+    border: 1px solid rgba(255,255,255,.11);
+    box-shadow: 0 18px 50px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.07);
+    -webkit-backdrop-filter: blur(26px) saturate(150%);
+    backdrop-filter: blur(26px) saturate(150%);
+  }
+
+  [data-fin-app-shell] .fin-mobile-tab {
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+
+  [data-fin-app-shell] .fin-mobile-tab:active { transform: scale(.96); }
+
+  [data-fin-app-shell] .fin-mobile-add {
+    background: linear-gradient(145deg, #ff6a1a, #f04400);
+    border: 1px solid rgba(255,255,255,.18);
+    box-shadow: 0 12px 28px rgba(255,77,0,.30), inset 0 1px 0 rgba(255,255,255,.20);
+  }
+
+  [data-fin-app-shell] header {
+    -webkit-backdrop-filter: blur(22px) saturate(135%);
+    backdrop-filter: blur(22px) saturate(135%);
+  }
 }
 
-/* Settings */
 .fin-settings > section:first-of-type > .relative.flex > .flex.flex-wrap.items-center > span:nth-of-type(2) { display: none; }
-.fin-settings > .surface-card.mt-5 > .mt-4 {
-  display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: .5rem;
-}
-.fin-settings > .surface-card.mt-5 > .mt-4 > span {
-  min-width: 0;
-  width: 100%;
-  justify-content: space-between;
-  white-space: normal;
-}
+.fin-settings > .surface-card.mt-5 > .mt-4 { display: grid; grid-template-columns: repeat(1, minmax(0, 1fr)); gap: .5rem; }
+.fin-settings > .surface-card.mt-5 > .mt-4 > span { min-width: 0; width: 100%; justify-content: space-between; white-space: normal; }
 
-@media (min-width: 420px) {
-  .fin-settings > .surface-card.mt-5 > .mt-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
+@media (min-width: 420px) { .fin-settings > .surface-card.mt-5 > .mt-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 768px) { .fin-settings > .surface-card.mt-5 > .mt-4 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
-@media (min-width: 768px) {
-  .fin-settings > .surface-card.mt-5 > .mt-4 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
-
-/* Landing anchors. */
 body:not(:has([data-fin-app-shell])) main section,
 body:not(:has([data-fin-app-shell])) [id] { scroll-margin-top: 5rem; }
 
 @media (max-width: 1023px) {
-  [data-fin-app-shell] > div > main {
-    min-height: 0;
-    height: auto;
-    max-height: none;
-    overflow-x: hidden;
-    overscroll-behavior-y: contain;
-    -webkit-overflow-scrolling: touch;
-  }
-
+  [data-fin-app-shell] > div > main { min-height: 0; height: auto; max-height: none; overflow-x: hidden; overscroll-behavior-y: contain; -webkit-overflow-scrolling: touch; }
   [data-fin-app-shell] > div > main:has(textarea[aria-label="Mensagem financeira"]) { overflow: hidden; }
   [data-fin-app-shell] [role="dialog"][aria-label="Menu FINANZZI"] { padding: 0; }
-
   [data-fin-app-shell] .fin-screen { padding-bottom: 2rem; }
   [data-fin-app-shell] .fin-page-header-action { width: 100%; }
   [data-fin-app-shell] .fin-page-header-action > button,
@@ -214,11 +180,7 @@ body:not(:has([data-fin-app-shell])) [id] { scroll-margin-top: 5rem; }
 }
 
 @media (min-width: 1024px) {
-  [data-fin-app-shell] > div > main {
-    overflow-y: auto;
-    overscroll-behavior-y: contain;
-    -webkit-overflow-scrolling: touch;
-  }
+  [data-fin-app-shell] > div > main { overflow-y: auto; overscroll-behavior-y: contain; -webkit-overflow-scrolling: touch; }
 }
 
 @media (max-width: 767px) {
@@ -227,14 +189,8 @@ body:not(:has([data-fin-app-shell])) [id] { scroll-margin-top: 5rem; }
   body:not(:has([data-fin-app-shell])) main > section[data-section="pricing"] { padding-bottom: 3rem; }
 }
 
-@supports (-webkit-touch-callout: none) {
-  [data-fin-app-shell] { min-height: -webkit-fill-available; }
-}
+@supports (-webkit-touch-callout: none) { [data-fin-app-shell] { min-height: -webkit-fill-available; } }
 
 @media (prefers-reduced-motion: reduce) {
-  html, body, [data-fin-app-shell] *, [data-fin-app-shell] *::before, [data-fin-app-shell] *::after {
-    scroll-behavior: auto !important;
-    animation-duration: .01ms !important;
-    transition-duration: .01ms !important;
-  }
+  html, body, [data-fin-app-shell] *, [data-fin-app-shell] *::before, [data-fin-app-shell] *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
