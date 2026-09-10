@@ -10,6 +10,9 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.finanzzi.app"
     },
+    "android": {
+      "package": "com.finanzzi.app"
+    },
     "plugins": ["expo-router"],
     "experiments": {
       "typedRoutes": true
