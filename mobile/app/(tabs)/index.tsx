@@ -10,7 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const orange = '#F97316';
 type Tx = { id: string; description: string; amount: number; type: 'income' | 'expense'; date: string };
 
-auto function Home() {
+export default function Home() {
   const { session } = useNativeAuth();
   const [balance, setBalance] = useState(0);
   const [transactions, setTransactions] = useState<Tx[]>([]);
@@ -54,17 +54,14 @@ auto function Home() {
           <View><Text style={styles.eyebrow}>FINANZZI</Text><Text style={styles.title}>Olá, {firstName}.</Text></View>
           <GlassCard style={styles.avatar}><Text style={styles.avatarText}>{firstName[0]?.toUpperCase() ?? 'G'}</Text></GlassCard>
         </View>
-
         <GlassCard style={styles.balance}>
           <Text style={styles.label}>Saldo disponível</Text>
           {loading ? <ActivityIndicator color={orange} style={{ alignSelf: 'flex-start', marginVertical: 16 }} /> : <Text style={styles.amount}>{format(balance)}</Text>}
           <View style={styles.balanceRow}><View><Text style={styles.muted}>Entradas</Text><Text style={styles.green}>{format(monthly.income)}</Text></View><View><Text style={styles.muted}>Saídas</Text><Text style={styles.red}>{format(monthly.expense)}</Text></View></View>
         </GlassCard>
-
         <Pressable onPress={quickAdd} style={styles.quickWrap}>
           <GlassCard interactive style={styles.quick}><View style={styles.plus}><Ionicons name="add" size={25} color="#fff" /></View><View style={{ flex: 1 }}><Text style={styles.quickTitle}>Registrar gasto</Text><Text style={styles.quickSub}>Diga o que você comprou</Text></View><Ionicons name="arrow-forward" size={20} color="#8E8E93" /></GlassCard>
         </Pressable>
-
         <View style={styles.sectionHead}><Text style={styles.sectionTitle}>Movimentações</Text><Text style={styles.link}>Ver tudo</Text></View>
         <GlassCard style={styles.list}>
           {loading ? <ActivityIndicator color={orange} style={{ paddingVertical: 24 }} /> : transactions.slice(0, 5).map((tx) => {
