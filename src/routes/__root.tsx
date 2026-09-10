@@ -1,7 +1,7 @@
 // biome-ignore-all lint/security/noDangerouslySetInnerHtml: fixed bootstrap scripts contain no user-controlled input.
 /* eslint-disable prettier/prettier */
 import { type QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Outlet, Link, createRootRouteWithContext, useRouter, useRouterState, HeadContent, Scripts } from "@tanstack/react-router";
+import { Outlet, Link, createRootRouteWithContext, useRouter, HeadContent, Scripts } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import darkGuardCss from "../finanzzi-dark-guard.css?url";
