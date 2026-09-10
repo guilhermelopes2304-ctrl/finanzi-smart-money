@@ -24,6 +24,13 @@ const NAV: readonly NavItemDefinition[] = [
   { to: "/configuracoes", label: "Configurações", icon: Settings },
 ];
 
+const MOBILE_NAV: readonly NavItemDefinition[] = [
+  { to: "/dashboard", label: "Início", icon: Home },
+  { to: "/lancamentos", label: "Histórico", icon: Wallet },
+  { to: "/relatorios", label: "Resumo", icon: BarChart3 },
+  { to: "/configuracoes", label: "Perfil", icon: Settings },
+];
+
 function beginNavigation() {
   window.dispatchEvent(new CustomEvent("finanzzi:navigation-start"));
 }
@@ -69,6 +76,34 @@ function MobileDrawer({ activePathname, onClose }: { activePathname: string; onC
         <div className="shrink-0 border-t border-white/[.07] px-4 py-4"><p className="px-2 text-xs text-muted-foreground">Sua vida financeira, em um só lugar.</p></div>
       </aside>
     </div>
+  );
+}
+
+function MobileTabBar({ activePathname, onAdd }: { activePathname: string; onAdd: () => void }) {
+  return (
+    <nav className="fin-mobile-tabbar fixed inset-x-3 bottom-2 z-[70] flex items-end justify-between gap-1 px-2 pt-2 lg:hidden" aria-label="Navegação principal">
+      {MOBILE_NAV.slice(0, 2).map((item) => {
+        const active = activePathname === item.to;
+        return (
+          <Link key={item.to} to={item.to} onClick={() => { if (!active) beginNavigation(); }} aria-current={active ? "page" : undefined} className={cn("fin-mobile-tab flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[10px] font-semibold", active ? "text-fin-brand-hover" : "text-muted-foreground")}>
+            <span className={cn("grid size-8 place-items-center rounded-xl transition-transform", active && "bg-fin-brand-soft") }><item.icon className="size-[18px]" strokeWidth={active ? 2.25 : 1.9} /></span>
+            <span className="truncate">{item.label}</span>
+          </Link>
+        );
+      })}
+      <button type="button" onClick={onAdd} aria-label="Registrar lançamento" className="fin-mobile-add -mt-6 grid size-14 shrink-0 place-items-center rounded-full text-white shadow-[0_10px_28px_rgba(255,77,0,.32)] transition-transform active:scale-95">
+        <Plus className="size-6" strokeWidth={2.4} />
+      </button>
+      {MOBILE_NAV.slice(2).map((item) => {
+        const active = activePathname === item.to;
+        return (
+          <Link key={item.to} to={item.to} onClick={() => { if (!active) beginNavigation(); }} aria-current={active ? "page" : undefined} className={cn("fin-mobile-tab flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[10px] font-semibold", active ? "text-fin-brand-hover" : "text-muted-foreground")}>
+            <span className={cn("grid size-8 place-items-center rounded-xl transition-transform", active && "bg-fin-brand-soft") }><item.icon className="size-[18px]" strokeWidth={active ? 2.25 : 1.9} /></span>
+            <span className="truncate">{item.label}</span>
+          </Link>
+        );
+      })}
+    </nav>
   );
 }
 
@@ -151,6 +186,7 @@ export function AppShellV2({ children, visualReview = false }: { children: React
       </div>
 
       {drawerOpen && <MobileDrawer activePathname={activePathname} onClose={() => setDrawerOpen(false)} />}
+      {!visualReview && <MobileTabBar activePathname={activePathname} onAdd={() => setTransactionOpen(true)} />}
       {!visualReview && <Suspense fallback={null}><TransactionDialog open={transactionOpen} onOpenChange={setTransactionOpen} /></Suspense>}
     </div>
   );
